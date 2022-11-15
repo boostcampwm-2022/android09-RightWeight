@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -84,4 +85,7 @@ dependencies {
     val pagingVersion = "3.1.1"
     implementation("androidx.paging:paging-common-ktx:$pagingVersion")
     implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
+
+    //google
+    implementation("com.google.android.gms:play-services-auth:20.3.0")
 }
