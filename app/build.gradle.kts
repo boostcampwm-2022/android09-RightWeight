@@ -69,7 +69,16 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     //firebase ?: retrofit
+    implementation("com.google.android.gms:play-services-ads-base:21.3.0")
 
+
+    //retrofit
+    val retrofitVersion = "2.9.0"
+    val okhttp3Version = "5.0.0"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.okhttp3:okhttp:$okhttp3Version")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okhttp3Version")
 
     //paging
     val pagingVersion = "3.1.1"
