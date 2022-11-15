@@ -30,7 +30,7 @@ class ApiModule {
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://identitytoolkit.googleapis.com/v1")
+            .baseUrl("https://identitytoolkit.googleapis.com/v1/")
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()

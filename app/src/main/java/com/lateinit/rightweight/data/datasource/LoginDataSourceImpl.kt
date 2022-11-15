@@ -1,5 +1,7 @@
 package com.lateinit.rightweight.data.datasource
 
+import android.util.Log
+import com.google.gson.Gson
 import com.lateinit.rightweight.data.RightWeightRetrofitService
 import javax.inject.Inject
 
@@ -7,7 +9,26 @@ class LoginDataSourceImpl @Inject constructor(
     val api: RightWeightRetrofitService
 ) : LoginDataSource {
 
-    fun loginToFirebase(token: String){
-        api.loginToFirebase(token, true)
+    override suspend fun loginToFirebase(key: String, token: String){
+
+        val gson = Gson()
+
+        //val postBody = PostBody(token, "google.com")
+        val postBody = "id_token=$token&providerId=google.com"
+
+        val loginResponse = api.loginToFirebase(key, LoginRequestBody(postBody, "http://localhost", true, true))
+        Log.d("loginResponse", loginResponse.toString())
     }
 }
+
+data class LoginRequestBody(
+    val postBody: String,
+    val requestUri: String,
+    val returnIdpCredential: Boolean,
+    val returnSecureToken: Boolean
+)
+
+data class PostBody(
+    val id_token: String,
+    val providerId: String,
+)

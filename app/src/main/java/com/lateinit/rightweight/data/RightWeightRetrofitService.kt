@@ -1,16 +1,15 @@
 package com.lateinit.rightweight.data
 
 import com.lateinit.rightweight.R
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.Query
+import com.lateinit.rightweight.data.datasource.LoginRequestBody
+import retrofit2.http.*
 
 interface RightWeightRetrofitService {
 
     @Headers("Content-Type: application/json")
-    @POST("/accounts:signInWithCustomToken?key=${R.string.default_web_client_id}")
-    fun loginToFirebase(
-        @Query("token") token: String,
-        @Query("returnSecureToken") returnSecureToken: Boolean
+    @POST("./accounts:signInWithIdp")
+    suspend fun loginToFirebase(
+        @Query("key") key: String,
+        @Body body: LoginRequestBody,
     ): LoginResponse
 }
