@@ -74,7 +74,7 @@ dependencies {
 
     //retrofit
     val retrofitVersion = "2.9.0"
-    val okhttp3Version = "5.0.0"
+    val okhttp3Version = "5.0.0-alpha.6"
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
     implementation("com.squareup.okhttp3:okhttp:$okhttp3Version")
