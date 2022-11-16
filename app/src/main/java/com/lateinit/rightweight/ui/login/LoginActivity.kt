@@ -26,7 +26,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        login()
+
+        binding.buttonGoogleLogin.setOnClickListener(){
+            login()
+        }
         supportActionBar?.hide()
     }
 
