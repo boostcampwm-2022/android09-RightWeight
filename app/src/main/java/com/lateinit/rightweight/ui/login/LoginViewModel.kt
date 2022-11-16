@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.LoginResponse
@@ -39,6 +40,8 @@ class LoginViewModel @Inject constructor(
 
     fun loginToFirebase(key: String, token: String) {
         viewModelScope.launch(networkExceptionHandler) {
+            _loginResponse.value = null
+            _networkResult.value = null
             _loginResponse.value = loginRepository.loginToFirebase(key, token)
             _networkResult.value = NetworkState.NO_ERROR
         }
