@@ -3,15 +3,17 @@ package com.lateinit.rightweight.ui.home
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var _binding: ActivityHomeBinding? = null
     private val binding get() = _binding!!
@@ -26,7 +28,6 @@ class HomeActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
-
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -61,11 +62,17 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.logout -> Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
+            R.id.withdraw -> Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+        }
+        return false
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
-
 
 }
