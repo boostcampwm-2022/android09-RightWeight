@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/calendar"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_shared_routine"
+        android:icon="@drawable/ic_shared_routine"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_routine_management"
+        android:icon="@drawable/ic_routine_management"
+        android:title="@string/management"
+        app:showAsAction="ifRoom" />
+</menu>
