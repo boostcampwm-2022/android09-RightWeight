@@ -19,6 +19,7 @@ class HomeActivity : AppCompatActivity() {
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
+        setSupportActionBar(binding.materialToolbar)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
         val navController = navHostFragment.navController
