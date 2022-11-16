@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme"
+                app:theme="@style/ToolBarStyle"
                 app:layout_constraintBottom_toTopOf="@id/fragment_container_view_home"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

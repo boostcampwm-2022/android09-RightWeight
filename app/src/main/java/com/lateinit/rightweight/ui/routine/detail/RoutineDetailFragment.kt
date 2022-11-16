@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 
 class RoutineDetailFragment : Fragment() {
 
@@ -15,7 +16,7 @@ class RoutineDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.detail)
         return inflater.inflate(R.layout.fragment_routine_detail, container, false)
     }
 

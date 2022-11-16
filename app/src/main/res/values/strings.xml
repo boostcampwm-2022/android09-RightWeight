@@ -6,4 +6,6 @@
     <string name="management">관리</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">회원탈퇴</string>
+    <string name="detail">상세</string>
+    <string name="editor">생성/수정</string>
 </resources>

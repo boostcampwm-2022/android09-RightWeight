@@ -1,11 +1,10 @@
 package com.lateinit.rightweight.ui.login
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -27,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.buttonGoogleLogin.setOnClickListener(){
+        binding.buttonGoogleLogin.setOnClickListener() {
             login()
         }
         supportActionBar?.hide()
@@ -57,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginToFireBase(idToken: String?) {
-        idToken?.let{
+        idToken?.let {
             viewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
         }
     }

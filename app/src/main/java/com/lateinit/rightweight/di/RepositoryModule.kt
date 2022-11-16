@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.di
 
-import com.lateinit.rightweight.data.RightWeightRetrofitService
 import com.lateinit.rightweight.data.datasource.LoginDataSource
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.LoginRepositoryImpl

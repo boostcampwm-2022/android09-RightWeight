@@ -27,17 +27,23 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
         val navController = navHostFragment.navController
+
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_exercise,
+                R.id.navigation_exercise -> {
+                    binding.materialToolbar.visibility = View.GONE
+                    binding.bottomNavigation.visibility = View.GONE
+                }
                 R.id.navigation_shared_routine_detail,
                 R.id.navigation_routine_detail,
                 R.id.navigation_routine_editor -> {
+                    binding.materialToolbar.visibility = View.VISIBLE
                     binding.bottomNavigation.visibility = View.GONE
                 }
                 else -> {
+                    binding.materialToolbar.visibility = View.VISIBLE
                     binding.bottomNavigation.visibility = View.VISIBLE
                 }
             }

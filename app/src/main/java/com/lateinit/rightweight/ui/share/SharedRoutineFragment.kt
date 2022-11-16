@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 
 class SharedRoutineFragment : Fragment() {
 
@@ -15,6 +16,8 @@ class SharedRoutineFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.share)
+
         return inflater.inflate(R.layout.fragment_shared_routine, container, false)
     }
 

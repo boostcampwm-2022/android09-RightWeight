@@ -11,9 +11,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
-): ViewModel() {
+) : ViewModel() {
 
-    fun loginToFirebase(key: String, token: String){
+    fun loginToFirebase(key: String, token: String) {
         viewModelScope.launch {
             loginRepository.loginToFirebase(key, token)
         }
