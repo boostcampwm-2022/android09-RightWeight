@@ -9,20 +9,72 @@
         android:id="@+id/navigation_home"
         android:name="com.lateinit.rightweight.ui.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+
+
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_exercise"
+            app:destination="@id/navigation_exercise" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_routine_management"
+            app:destination="@id/navigation_routine_management" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_shared_routine"
+        android:name="com.lateinit.rightweight.ui.share.SharedRoutineFragment"
+        android:label="fragment_shared_routine"
+        tools:layout="@layout/fragment_shared_routine" >
+
+        <action
+            android:id="@+id/action_navigation_shared_routine_to_navigation_shared_routine_detail"
+            app:destination="@id/navigation_shared_routine_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_routine_management"
+        android:name="com.lateinit.rightweight.ui.routine.management.RoutineManagementFragment"
+        android:label="fragment_routine_management"
+        tools:layout="@layout/fragment_routine_management" >
+
+        <action
+            android:id="@+id/action_navigation_routine_management_to_navigation_routine_editor"
+            app:destination="@id/navigation_routine_editor" />
+        <action
+            android:id="@+id/action_navigation_routine_management_to_navigation_routine_detail"
+            app:destination="@id/navigation_routine_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_exercise"
+        android:name="com.lateinit.rightweight.ui.exercise.ExerciseFragment"
+        android:label="fragment_exercise"
+        tools:layout="@layout/fragment_exercise"
+        />
+    <fragment
+        android:id="@+id/navigation_routine_editor"
+        android:name="com.lateinit.rightweight.ui.routine.editor.RoutineEditorFragment"
+        android:label="fragment_routine_editor"
+        tools:layout="@layout/fragment_routine_editor" />
+    <fragment
+        android:id="@+id/navigation_shared_routine_detail"
+        android:name="com.lateinit.rightweight.ui.share.detail.SharedRoutineDetailFragment"
+        android:label="fragment_shared_routine_detail"
+        tools:layout="@layout/fragment_shared_routine_detail" >
+        <action
+            android:id="@+id/action_navigation_shared_routine_detail_to_navigation_routine_management"
+            app:destination="@id/navigation_routine_management" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_routine_detail"
+        android:name="com.lateinit.rightweight.ui.routine.detail.RoutineDetailFragment"
+        android:label="fragment_routine_detail"
+        tools:layout="@layout/fragment_routine_detail" >
+
+        <action
+            android:id="@+id/action_navigation_routine_detail_to_navigation_routine_editor"
+            app:destination="@id/navigation_routine_editor" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.lateinit.rightweight.ui.calendar.CalendarFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" />
-    <fragment
-        android:id="@+id/navigation_shared_routine"
-        android:name="com.lateinit.rightweight.ui.share.SharedRoutineFragment"
-        android:label="fragment_shared_routine"
-        tools:layout="@layout/fragment_shared_routine" />
-    <fragment
-        android:id="@+id/navigation_routine_management"
-        android:name="com.lateinit.rightweight.ui.routine.management.RoutineManagementFragment"
-        android:label="fragment_routine_management"
-        tools:layout="@layout/fragment_routine_management" />
 </navigation>
