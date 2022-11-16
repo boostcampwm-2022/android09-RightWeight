@@ -50,6 +50,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
+        binding.navigationView.setNavigationItemSelectedListener(this)
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
@@ -73,10 +74,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.logout -> Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
-            R.id.withdraw -> Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+            R.id.logout -> {
+                Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
+            }
+            R.id.withdraw -> {
+                Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+            }
         }
-        return false
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
     override fun onDestroy() {
