@@ -7,7 +7,7 @@
         android:title="@string/logout" />
 
     <item
-        android:id="@+id/item2"
+        android:id="@+id/withdraw"
         android:icon="@drawable/ic_withdraw"
         android:title="@string/withdraw" />
 </menu>
