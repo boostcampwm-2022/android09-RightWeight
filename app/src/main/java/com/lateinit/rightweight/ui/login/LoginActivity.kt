@@ -31,6 +31,20 @@ class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     val viewModel: LoginViewModel by viewModels()
 
+    val getGoogleLoginResultText =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                var account: GoogleSignInAccount? = null
+                try {
+                    account = task.getResult(ApiException::class.java)
+                    loginToFireBase(account?.idToken)
+                } catch (e: ApiException) {
+                    Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(this.toString(), "onCreate")
@@ -76,20 +90,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-    val getGoogleLoginResultText =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                var account: GoogleSignInAccount? = null
-                try {
-                    account = task.getResult(ApiException::class.java)
-                    loginToFireBase(account?.idToken)
-                } catch (e: ApiException) {
-                    Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
     fun login() {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

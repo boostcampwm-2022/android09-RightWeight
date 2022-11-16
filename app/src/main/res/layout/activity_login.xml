@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="116dp"
             android:text="Right Weight"
-            android:textSize="32sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,19 +27,21 @@
             android:id="@+id/image_view_right_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="227dp"
+            android:layout_marginTop="111dp"
             android:src="@drawable/img_right_weight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/text_view_title" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/button_google_login"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="44dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="117dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
