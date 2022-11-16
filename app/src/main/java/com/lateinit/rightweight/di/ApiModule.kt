@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,16 +45,32 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun buildOkHttpClient(): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor()
+    fun buildOkHttpClient(
+        customInterceptor: Interceptor
+    ): OkHttpClient {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         } else {
-            interceptor.level = HttpLoggingInterceptor.Level.NONE
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
         }
         return OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
-            .addInterceptor(interceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(customInterceptor)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun customInterceptor(): Interceptor = Interceptor {
+        chain -> chain.run {
+            proceed(
+                request()
+                    .newBuilder()
+                    .addHeader("Content-Type", "application/json")
+                    .build()
+            )
+        }
     }
 }
