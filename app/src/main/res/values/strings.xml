@@ -8,4 +8,7 @@
     <string name="withdraw">회원탈퇴</string>
     <string name="detail">상세</string>
     <string name="editor">생성/수정</string>
+    <string name="search">검색</string>
+    <string name="edit">수정</string>
+    <string name="more">더보기</string>
 </resources>
