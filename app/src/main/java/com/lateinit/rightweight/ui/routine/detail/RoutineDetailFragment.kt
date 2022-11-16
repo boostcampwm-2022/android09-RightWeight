@@ -17,7 +17,6 @@ class RoutineDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.detail)
-        (requireActivity() as HomeActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_routine_detail, menu)

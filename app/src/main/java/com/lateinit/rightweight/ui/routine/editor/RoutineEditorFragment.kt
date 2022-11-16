@@ -15,7 +15,6 @@ class RoutineEditorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.editor)
-        (requireActivity() as HomeActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         return inflater.inflate(R.layout.fragment_routine_editor, container, false)
     }
 }
