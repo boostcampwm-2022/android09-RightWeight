@@ -1,11 +1,11 @@
 package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.ui.home.HomeActivity
@@ -17,6 +17,17 @@ class RoutineDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.detail)
+        (requireActivity() as HomeActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_routine_detail, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         return inflater.inflate(R.layout.fragment_routine_detail, container, false)
     }
 
