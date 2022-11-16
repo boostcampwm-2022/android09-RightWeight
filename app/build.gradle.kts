@@ -64,6 +64,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-paging:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     //navigation
     val navVersion = "2.5.3"
