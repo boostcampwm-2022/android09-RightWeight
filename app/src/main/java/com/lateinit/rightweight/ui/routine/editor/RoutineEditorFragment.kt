@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 
 class RoutineEditorFragment : Fragment() {
 
@@ -13,6 +14,7 @@ class RoutineEditorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.editor)
         return inflater.inflate(R.layout.fragment_routine_editor, container, false)
     }
 }

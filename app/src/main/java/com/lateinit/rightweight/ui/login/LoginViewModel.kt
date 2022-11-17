@@ -27,7 +27,6 @@ class LoginViewModel @Inject constructor(
     private val _loginResponse = MutableStateFlow<LoginResponse?>(null)
     val loginResponse = _loginResponse.asStateFlow()
 
-
     val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         when (throwable) {

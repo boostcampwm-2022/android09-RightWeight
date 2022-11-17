@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.buttonGoogleLogin.setOnClickListener(){
+        binding.buttonGoogleLogin.setOnClickListener() {
             login()
         }
         supportActionBar?.hide()
@@ -101,7 +101,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginToFireBase(idToken: String?) {
-        idToken?.let{
+        idToken?.let {
             viewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
         }
     }
