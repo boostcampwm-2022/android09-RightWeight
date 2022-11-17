@@ -36,7 +36,18 @@
 |![공유 화면](https://user-images.githubusercontent.com/49135657/201581154-be02271b-a5ea-4ddb-9968-493c6b1d07d0.png)|![루틴 열람 페이지 - type2](https://user-images.githubusercontent.com/49135657/201581174-604483ab-c113-41ae-986d-6270cecdda52.png)|![수정 페이지 - type2](https://user-images.githubusercontent.com/49135657/201581226-da549dce-74cd-4056-9c82-cfe724309c37.png)
 
 
-
-
 - 나만의 루틴 생성과 공유
 - 다른 사람이 공유한 루틴 복제
+
+## 데모
+
+<details>
+<summary>1주차 데모</summary>
+<div markdown="1">      
+
+  [1주차 데모.webm](https://user-images.githubusercontent.com/75258748/202416457-e470e729-91c6-40e2-908a-f9595e662901.webm)
+
+</div>
+</details>
+
+
