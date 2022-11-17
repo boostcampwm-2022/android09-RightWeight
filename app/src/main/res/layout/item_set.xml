@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="set"
-            type="com.lateinit.rightweight.data.database.entity.Set" />
+            type="com.lateinit.rightweight.data.database.entity.ExerciseSet" />
 
     </data>
 
@@ -16,23 +17,27 @@
 
         <TextView
             android:id="@+id/text_view_set_order"
+            bind_set_text_number="@{set.order}"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            bind_set_text_number="@{set.order}"
+            android:gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
 
         <EditText
             android:id="@+id/edit_text_set_weight"
+            bind_set_text_number="@{set.weight}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            bind_set_text_number="@{set.weight}"
+            android:inputType="number"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_weight_unit"
             app:layout_constraintStart_toEndOf="@+id/text_view_set_order"
-            app:layout_constraintTop_toTopOf="@+id/text_view_set_order" />
+            app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
+            tools:text="50" />
 
         <TextView
             android:id="@+id/text_view_weight_unit"
@@ -44,16 +49,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/edit_text_set_number"
+            android:id="@+id/edit_text_set_count"
+            bind_set_text_number="@{set.count}"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            bind_set_text_number="@{set.number}"
+            android:inputType="number"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
-            app:layout_constraintEnd_toStartOf="@+id/text_view_number_unit"
-            app:layout_constraintTop_toTopOf="@+id/text_view_set_order" />
+            app:layout_constraintEnd_toStartOf="@+id/text_view_count_unit"
+            app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
+            tools:text="12" />
 
         <TextView
-            android:id="@+id/text_view_number_unit"
+            android:id="@+id/text_view_count_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"

@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.database.entity.Set
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.databinding.ItemSetBinding
 
 
 class RoutineSetAdapter(val routineEventListener: RoutineDayAdapter.RoutineEventListener) :
-    ListAdapter<Set, RoutineSetAdapter.SetViewHolder>(diffUtil) {
+    ListAdapter<ExerciseSet, RoutineSetAdapter.SetViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetViewHolder {
         return SetViewHolder(parent)
@@ -26,22 +26,22 @@ class RoutineSetAdapter(val routineEventListener: RoutineDayAdapter.RoutineEvent
     ) {
         private val binding = ItemSetBinding.bind(itemView)
 
-        fun bind(set: Set) {
-            binding.set = set
+        fun bind(exerciseSet: ExerciseSet) {
+            binding.set = exerciseSet
             binding.buttonSetRemove.setOnClickListener {
-                routineEventListener.onSetRemove(set.exerciseId, layoutPosition)
+                routineEventListener.onSetRemove(exerciseSet.exerciseId, layoutPosition)
                 notifyItemRemoved(layoutPosition)
             }
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Set>() {
-            override fun areItemsTheSame(oldItem: Set, newItem: Set): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<ExerciseSet>() {
+            override fun areItemsTheSame(oldItem: ExerciseSet, newItem: ExerciseSet): Boolean {
                 return oldItem.setId == newItem.setId
             }
 
-            override fun areContentsTheSame(oldItem: Set, newItem: Set): Boolean {
+            override fun areContentsTheSame(oldItem: ExerciseSet, newItem: ExerciseSet): Boolean {
                 return oldItem == newItem
             }
 

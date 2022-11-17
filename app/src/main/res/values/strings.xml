@@ -20,4 +20,6 @@
     <string name="exercise_add">운동 추가</string>
     <string name="set_weight_kg">kg</string>
     <string name="set_number">회</string>
+    <string name="remove">삭제</string>
+    <string name="set_add">세트 추가</string>
 </resources>

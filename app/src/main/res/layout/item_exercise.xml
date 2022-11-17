@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="exercise"
+            type="com.lateinit.rightweight.data.database.entity.Exercise" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_view_exercise_part"
+            style="@style/Text.Small.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@{exercise.part}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="등" />
+
+        <EditText
+            android:id="@+id/edit_text_exercise_title"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:inputType="text"
+            android:text="@{exercise.title}"
+            app:layout_constraintBottom_toBottomOf="@+id/text_view_exercise_part"
+            app:layout_constraintStart_toEndOf="@+id/text_view_exercise_part"
+            app:layout_constraintTop_toTopOf="@id/text_view_exercise_part" />
+
+
+        <Button
+            android:id="@+id/button_exercise_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/secondaryColor"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="@string/remove"
+            app:layout_constraintBottom_toBottomOf="@+id/text_view_exercise_part"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_view_exercise_part" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_exercise_title"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_set" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_set_add"
+            style="@style/Text.Small.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/secondaryColor"
+            android:padding="4dp"
+            android:text="@string/set_add"
+            app:icon="@drawable/ic_add"
+            app:iconGravity="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view_set" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
