@@ -59,6 +59,9 @@
 
 
   [2차 데모.webm](https://user-images.githubusercontent.com/75258748/202416457-e470e729-91c6-40e2-908a-f9595e662901.webm)
+  
+  [루틴 생성.webm](https://user-images.githubusercontent.com/54586491/202475664-7dc28303-1afa-400d-b15d-31d09d1c428e.webm)
+
 
 </div>
 </details>
