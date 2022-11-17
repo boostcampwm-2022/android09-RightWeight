@@ -1,8 +1,18 @@
 package com.lateinit.rightweight.ui.routine.editor
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.databinding.ItemDayBinding
 
-class RoutineDayAdapter(val routineEventListener: RoutineEventListener) {
+class RoutineDayAdapter(
+    val routineEventListener: RoutineEventListener
+) : ListAdapter<Day, RoutineDayAdapter.DayViewHolder>(diffUtil) {
 
     interface RoutineEventListener {
 
@@ -14,7 +24,7 @@ class RoutineDayAdapter(val routineEventListener: RoutineEventListener) {
 
         fun onDayMoveDown(position: Int)
 
-        fun onExerciseAdd(dayId: String)
+        fun onExerciseAdd(position: Int)
 
         fun onExerciseRemove(dayId: String, position: Int)
 
@@ -24,4 +34,61 @@ class RoutineDayAdapter(val routineEventListener: RoutineEventListener) {
 
         fun onSetRemove(exerciseId: String, position: Int)
     }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): DayViewHolder {
+        return DayViewHolder(parent)
+    }
+
+    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
+        holder.bind(getItem(position) ?: return)
+    }
+
+    inner class DayViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
+    ){
+        private val binding = ItemDayBinding.bind(itemView)
+        fun bind(day: Day){
+            binding.day = day
+
+            val routineExerciseAdapter = RoutineExerciseAdapter(routineEventListener)
+            binding.recyclerViewExercise.adapter = routineExerciseAdapter
+            routineExerciseAdapter.submitList(day.exercises)
+
+            binding.buttonDayMoveUp.setOnClickListener {
+                routineEventListener.onDayMoveUp(layoutPosition)
+            }
+
+            binding.buttonDayMoveDown.setOnClickListener {
+                routineEventListener.onDayMoveDown(layoutPosition)
+            }
+
+            binding.buttonExerciseAdd.setOnClickListener{
+                routineEventListener.onExerciseAdd(layoutPosition)
+            }
+
+            binding.buttonRemoveDay.setOnClickListener {
+                routineEventListener.onDayRemove(layoutPosition)
+            }
+
+        }
+
+    }
+
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<Day>() {
+            override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean {
+                return oldItem.dayId == newItem.dayId
+            }
+
+            override fun areContentsTheSame(oldItem: Day, newItem: Day): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+    }
+
+
 }

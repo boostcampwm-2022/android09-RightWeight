@@ -22,4 +22,5 @@
     <string name="set_number">회</string>
     <string name="remove">삭제</string>
     <string name="set_add">세트 추가</string>
+    <string name="day_order">Day%d</string>
 </resources>

@@ -97,6 +97,8 @@
                     app:layout_constraintBottom_toTopOf="@id/button_day_add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    tools:listitem="@layout/item_day"
+                    tools:itemCount="2"
                     app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description" />
 
                 <com.google.android.material.button.MaterialButton
@@ -106,6 +108,7 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/white"
                     android:padding="16dp"
+                    android:layout_marginBottom="50dp"
                     android:text="@string/day_add"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart"
@@ -114,8 +117,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/recycler_view_day" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.button.MaterialButton
