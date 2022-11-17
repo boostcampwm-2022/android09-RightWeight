@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.lateinit.rightweight.ui.home.HomeFragment"
-        android:label="fragment_home"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_home">
 
 
@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/navigation_shared_routine"
         android:name="com.lateinit.rightweight.ui.share.SharedRoutineFragment"
-        android:label="fragment_shared_routine"
+        android:label="@string/share"
         tools:layout="@layout/fragment_shared_routine">
 
         <action
@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/navigation_routine_management"
         android:name="com.lateinit.rightweight.ui.routine.management.RoutineManagementFragment"
-        android:label="fragment_routine_management"
+        android:label="@string/management"
         tools:layout="@layout/fragment_routine_management">
 
         <action
@@ -45,17 +45,16 @@
     <fragment
         android:id="@+id/navigation_exercise"
         android:name="com.lateinit.rightweight.ui.exercise.ExerciseFragment"
-        android:label="fragment_exercise"
         tools:layout="@layout/fragment_exercise" />
     <fragment
         android:id="@+id/navigation_routine_editor"
         android:name="com.lateinit.rightweight.ui.routine.editor.RoutineEditorFragment"
-        android:label="fragment_routine_editor"
+        android:label="@string/editor"
         tools:layout="@layout/fragment_routine_editor" />
     <fragment
         android:id="@+id/navigation_shared_routine_detail"
         android:name="com.lateinit.rightweight.ui.share.detail.SharedRoutineDetailFragment"
-        android:label="fragment_shared_routine_detail"
+        android:label="@string/detail"
         tools:layout="@layout/fragment_shared_routine_detail">
         <action
             android:id="@+id/action_navigation_shared_routine_detail_to_navigation_routine_management"
@@ -64,7 +63,7 @@
     <fragment
         android:id="@+id/navigation_routine_detail"
         android:name="com.lateinit.rightweight.ui.routine.detail.RoutineDetailFragment"
-        android:label="fragment_routine_detail"
+        android:label="@string/detail"
         tools:layout="@layout/fragment_routine_detail">
 
         <action

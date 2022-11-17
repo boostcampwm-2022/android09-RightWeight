@@ -9,6 +9,8 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
@@ -29,7 +31,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
         val navController = navHostFragment.navController
 
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home, R.id.navigation_calendar, R.id.navigation_shared_routine, R.id.navigation_routine_management
+            )
+        )
         binding.bottomNavigation.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navController, binding.drawerLayout)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -41,18 +50,18 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.id.navigation_routine_detail,
                 R.id.navigation_routine_editor -> {
                     binding.materialToolbar.visibility = View.VISIBLE
-                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_back)
-                    binding.materialToolbar.setNavigationOnClickListener {
-                        onBackPressed()
-                    }
+//                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_back)
+//                    binding.materialToolbar.setNavigationOnClickListener {
+//                        onBackPressed()
+//                    }
                     binding.bottomNavigation.visibility = View.GONE
                 }
                 else -> {
                     binding.materialToolbar.visibility = View.VISIBLE
-                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_menu)
-                    binding.materialToolbar.setNavigationOnClickListener {
-                        binding.drawerLayout.openDrawer(GravityCompat.START)
-                    }
+//                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_menu)
+//                    binding.materialToolbar.setNavigationOnClickListener {
+//                        binding.drawerLayout.openDrawer(GravityCompat.START)
+//                    }
                     binding.bottomNavigation.visibility = View.VISIBLE
                 }
             }
@@ -63,14 +72,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> {
-//                binding.drawerLayout.openDrawer(GravityCompat.START)
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {

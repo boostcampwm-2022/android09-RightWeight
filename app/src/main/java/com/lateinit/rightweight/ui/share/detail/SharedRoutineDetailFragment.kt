@@ -13,8 +13,6 @@ class SharedRoutineDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.detail)
-
         return inflater.inflate(R.layout.fragment_shared_routine_detail, container, false)
     }
 

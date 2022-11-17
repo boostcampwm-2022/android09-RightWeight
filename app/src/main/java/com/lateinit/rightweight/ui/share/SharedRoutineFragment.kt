@@ -16,7 +16,6 @@ class SharedRoutineFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.share)
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_shared_routine, menu)
