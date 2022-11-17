@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.database.entity.Set
 
 @Dao
 interface RoutineDao {
@@ -15,7 +15,7 @@ interface RoutineDao {
         routine: Routine,
         days: List<Day>,
         exercises: List<Exercise>,
-        sets: List<Set>
+        sets: List<ExerciseSet>
     ) {
         insertRoutineInfo(routine)
         insertDays(days)
@@ -33,5 +33,5 @@ interface RoutineDao {
     suspend fun insertExercises(exercises: List<Exercise>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSets(sets: List<Set>)
+    suspend fun insertSets(sets: List<ExerciseSet>)
 }
