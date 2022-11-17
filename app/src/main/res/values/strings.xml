@@ -4,4 +4,7 @@
     <string name="calendar">달력</string>
     <string name="share">공유</string>
     <string name="management">관리</string>
+    <string name="routine_title">루틴 명</string>
+    <string name="routine_description">설명</string>
+    <string name="routine_save">루틴 저장하기</string>
 </resources>
