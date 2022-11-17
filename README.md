@@ -40,9 +40,14 @@
 - 다른 사람이 공유한 루틴 복제
 
 ## 데모
+
 <details>
 <summary>1주차 데모</summary>
 <div markdown="1">    
+  
+### 1주차 
+  ![image](https://user-images.githubusercontent.com/75258748/202417931-3e4a332e-1975-478f-8b60-5c25ddccfecc.png)
+
 
 ### 데모 시나리오
 - 로그인 화면에서 로그인
