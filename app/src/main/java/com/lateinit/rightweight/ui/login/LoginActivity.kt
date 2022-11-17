@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.ui.login
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
 import com.lateinit.rightweight.ui.home.HomeActivity
@@ -62,7 +64,8 @@ class LoginActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.loginResponse.collect() { loginResponse ->
                     Log.d("loginResponse", loginResponse.toString())
-                    val nickname = loginResponse?.fullName.toString()
+                    val sharedPreferences = baseContext.getSharedPreferences(baseContext.getString(R.string.app_name), Context.MODE_PRIVATE)
+                    sharedPreferences.edit().putString("loginData", Gson().toJson(loginResponse)).apply()
                 }
             }
         }
