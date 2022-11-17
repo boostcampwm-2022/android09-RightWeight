@@ -16,7 +16,6 @@ class RoutineManagementFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.management)
         return inflater.inflate(R.layout.fragment_routine_management, container, false)
     }
 

@@ -15,7 +15,6 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as HomeActivity).supportActionBar?.setTitle(R.string.calendar)
         return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
 
