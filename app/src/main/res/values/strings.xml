@@ -16,4 +16,8 @@
     <string name="core">코어</string>
     <string name="forearm">전완근</string>
     <string name="cardio">유산소</string>
+    <string name="day_add">Day 추가</string>
+    <string name="exercise_add">운동 추가</string>
+    <string name="set_weight_kg">kg</string>
+    <string name="set_number">회</string>
 </resources>
