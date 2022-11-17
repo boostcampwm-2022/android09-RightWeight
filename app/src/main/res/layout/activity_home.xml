@@ -6,14 +6,15 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.home.HomeActivity">
 
-            <com.google.android.material.appbar.MaterialToolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/material_toolbar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -23,8 +24,7 @@
                 app:layout_constraintBottom_toTopOf="@id/fragment_container_view_home"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navigationIcon="@drawable/ic_menu" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_container_view_home"

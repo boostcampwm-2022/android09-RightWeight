@@ -3,12 +3,9 @@ package com.lateinit.rightweight.ui.routine.detail
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.ui.home.HomeActivity
 
 class RoutineDetailFragment : Fragment() {
 
@@ -16,16 +13,7 @@ class RoutineDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_routine_detail, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_routine_detail, container, false)
     }
 
@@ -37,5 +25,9 @@ class RoutineDetailFragment : Fragment() {
             it.findNavController()
                 .navigate(R.id.action_navigation_routine_detail_to_navigation_routine_editor)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_routine_detail, menu)
     }
 }

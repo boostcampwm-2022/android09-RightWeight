@@ -8,77 +8,63 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var _binding: ActivityHomeBinding? = null
     private val binding get() = _binding!!
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
-        setSupportActionBar(binding.materialToolbar)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_calendar, R.id.navigation_shared_routine, R.id.navigation_routine_management
-            )
-        )
         binding.bottomNavigation.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        setupActionBarWithNavController(navController, binding.drawerLayout)
 
+        setActionBar()
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_exercise -> {
-                    binding.materialToolbar.visibility = View.GONE
+                    supportActionBar?.hide()
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                R.id.navigation_routine_detail -> {
+                    supportActionBar?.show()
                     binding.bottomNavigation.visibility = View.GONE
                 }
                 R.id.navigation_shared_routine_detail,
-                R.id.navigation_routine_detail,
                 R.id.navigation_routine_editor -> {
-                    binding.materialToolbar.visibility = View.VISIBLE
-//                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_back)
-//                    binding.materialToolbar.setNavigationOnClickListener {
-//                        onBackPressed()
-//                    }
+                    supportActionBar?.show()
                     binding.bottomNavigation.visibility = View.GONE
                 }
                 else -> {
-                    binding.materialToolbar.visibility = View.VISIBLE
-//                    binding.materialToolbar.setNavigationIcon(R.drawable.ic_menu)
-//                    binding.materialToolbar.setNavigationOnClickListener {
-//                        binding.drawerLayout.openDrawer(GravityCompat.START)
-//                    }
+                    supportActionBar?.show()
                     binding.bottomNavigation.visibility = View.VISIBLE
                 }
             }
         }
 
-        binding.navigationView.setNavigationItemSelectedListener(this)
-        // disable drawer swipe gesture
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                binding.drawerLayout.openDrawer(GravityCompat.START)
-            }
-        }
-        return super.onOptionsItemSelected(item)
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
     }
 
     override fun onBackPressed() {
@@ -107,4 +93,20 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         _binding = null
     }
 
+    private fun setActionBar() {
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home,
+                R.id.navigation_calendar,
+                R.id.navigation_shared_routine,
+                R.id.navigation_routine_management
+            ),
+            binding.drawerLayout
+        )
+        setSupportActionBar(binding.materialToolbar)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.navigationView.setNavigationItemSelectedListener(this)
+        // disable drawer swipe gesture
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
 }
