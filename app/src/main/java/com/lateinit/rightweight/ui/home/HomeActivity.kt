@@ -1,6 +1,10 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -11,16 +15,28 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
+import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.ui.login.LoginActivity
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var _binding: ActivityHomeBinding? = null
     private val binding get() = _binding!!
 
+    lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(this.toString(), "onCreate")
+
+        sharedPreferences = baseContext.getSharedPreferences(
+            baseContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE
+        )
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
@@ -58,6 +74,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
+        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+        val loginResponse = Gson().fromJson(
+            sharedPreferences.getString("loginResponse", null),
+            LoginResponse::class.java
+        )
+        headerBinding.loginResponse = loginResponse
+
         binding.navigationView.setNavigationItemSelectedListener(this)
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -84,6 +107,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.logout -> {
                 Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit().putString("loginResponse", null)
+                    .apply()
+                val intent = Intent(baseContext, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
             R.id.withdraw -> {
                 Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
@@ -93,9 +121,25 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(this.toString(), "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(this.toString(), "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(this.toString(), "onStop")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        Log.d(this.toString(), "onDestroy")
     }
+
 
 }
