@@ -42,10 +42,10 @@
 ## 데모
 
 <details>
-<summary>1주차 데모</summary>
+<summary>2주차 데모</summary>
 <div markdown="1">    
   
-### 1주차 
+### 2주차 
   ![image](https://user-images.githubusercontent.com/75258748/202417931-3e4a332e-1975-478f-8b60-5c25ddccfecc.png)
 
 
@@ -58,7 +58,7 @@
 - ~~Room에 루틴이 저장되었는지 확인~~
 
 
-  [1주차 데모.webm](https://user-images.githubusercontent.com/75258748/202416457-e470e729-91c6-40e2-908a-f9595e662901.webm)
+  [2차 데모.webm](https://user-images.githubusercontent.com/75258748/202416457-e470e729-91c6-40e2-908a-f9595e662901.webm)
 
 </div>
 </details>
