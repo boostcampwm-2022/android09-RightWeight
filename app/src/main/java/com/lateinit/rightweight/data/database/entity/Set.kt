@@ -24,9 +24,9 @@ data class Set(
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,
     @ColumnInfo(name = "weight")
-    val weight: Int,
+    var weight: Int = 0,
     @ColumnInfo(name = "number")
-    val number: Int,
+    var number: Int = 0,
     @ColumnInfo(name = "order")
     val order: Long,
 )
