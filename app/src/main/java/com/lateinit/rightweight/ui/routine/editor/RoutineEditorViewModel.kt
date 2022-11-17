@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.database.entity.Set
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun addDay() {
         val tempDays = _days.value?.toMutableList() ?: mutableListOf()
-        val day = Day(createUUID(), routineId, tempDays.size.toLong())
+        val day = Day(createUUID(), routineId, tempDays.size)
 
         tempDays.add(day)
         dayMap[day.dayId] = day
@@ -83,7 +83,9 @@ class RoutineEditorViewModel @Inject constructor(
         val exercise = Exercise(
             exerciseId = createUUID(),
             dayId = tempDay.dayId,
-            order = tempExercises.size.toLong()
+            title = DEFAULT_EXERCISE_TITLE,
+            order = tempExercises.size,
+            part = ExercisePartType.CHEST
         )
 
         tempExercises.add(exercise)
@@ -134,10 +136,10 @@ class RoutineEditorViewModel @Inject constructor(
         val tempExercises = tempDay.exercises.toMutableList()
         val tempExercise = exerciseMap[exerciseId] ?: return
         val tempExerciseSets = tempExercise.exerciseSets.toMutableList()
-        val exerciseSet = Set(
+        val exerciseSet = ExerciseSet(
             setId = createUUID(),
             exerciseId = tempExercise.exerciseId,
-            order = tempExerciseSets.size.toLong()
+            order = tempExerciseSets.size
         )
 
         tempExerciseSets.add(exerciseSet)
@@ -195,11 +197,13 @@ class RoutineEditorViewModel @Inject constructor(
             }
         }
     }
+
     private fun createUUID(): String {
         return UUID.randomUUID().toString()
     }
 
     companion object {
         private const val FIRST_DAY_POSITION = 0
+        private const val DEFAULT_EXERCISE_TITLE = ""
     }
 }

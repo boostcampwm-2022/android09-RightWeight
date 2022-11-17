@@ -24,9 +24,9 @@ data class ExerciseSet(
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,
     @ColumnInfo(name = "weight")
-    var weight: Int,
+    val weight: Int = 0,
     @ColumnInfo(name = "count")
-    var count: Int,
+    val count: Int = 0,
     @ColumnInfo(name = "order")
     val order: Int
 )
