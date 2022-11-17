@@ -1,13 +1,14 @@
 package com.lateinit.rightweight.ui.login
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,20 +17,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
 import com.lateinit.rightweight.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
     val viewModel: LoginViewModel by viewModels()
+
+    lateinit var sharedPreferences: SharedPreferences
 
     val getGoogleLoginResultText =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -49,6 +50,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(this.toString(), "onCreate")
 
+        sharedPreferences = baseContext.getSharedPreferences(
+            baseContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE
+        )
+
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
@@ -58,31 +64,32 @@ class LoginActivity : AppCompatActivity() {
         }
         supportActionBar?.hide()
 
-        lifecycleScope.launch(){
+        lifecycleScope.launch() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.loginResponse.collect() { loginResponse ->
-                    Log.d("loginResponse", loginResponse.toString())
-                    val nickname = loginResponse?.fullName.toString()
+                    sharedPreferences.edit()
+                        .putString("loginResponse", Gson().toJson(loginResponse)).apply()
                 }
             }
         }
 
-        lifecycleScope.launch(){
+        lifecycleScope.launch() {
             val lifecycleScopeInstance = this
-            repeatOnLifecycle(Lifecycle.State.CREATED){
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 val repeatOnLifecycleInstance = this
                 Log.d("call", "")
-                viewModel.networkResult.collect(){ networkResult ->
+                viewModel.networkResult.collect() { networkResult ->
                     Log.d("NetworkResult", networkResult.toString())
                     Log.d("lifecycleScope", lifecycleScopeInstance.toString())
                     Log.d("repeatOnLifecycle", repeatOnLifecycleInstance.toString())
-                    when(networkResult){
-                        NetworkState.NO_ERROR ->{
+                    when (networkResult) {
+                        NetworkState.NO_ERROR -> {
                             val intent = Intent(baseContext, HomeActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(intent)
                         }
-                        NetworkState.WRONG_CONNECTION ->{
-                            Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG). show()
+                        NetworkState.WRONG_CONNECTION -> {
+                            Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG).show()
                         }
                         else -> {}
                     }
