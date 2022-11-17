@@ -30,6 +30,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -63,6 +64,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-paging:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     //navigation
     val navVersion = "2.5.3"
@@ -88,4 +90,7 @@ dependencies {
 
     //google
     implementation("com.google.android.gms:play-services-auth:20.3.0")
+
+    // desugar
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.0")
 }
