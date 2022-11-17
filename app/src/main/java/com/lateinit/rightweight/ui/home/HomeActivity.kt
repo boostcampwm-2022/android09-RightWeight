@@ -1,6 +1,8 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -11,8 +13,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
+import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +35,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+
+        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+        val sharedPreferences = baseContext.getSharedPreferences(baseContext.getString(R.string.app_name), Context.MODE_PRIVATE)
+        val loginResponse = Gson().fromJson(sharedPreferences.getString("loginResponse", null), LoginResponse::class.java)
+        headerBinding.loginResponse = loginResponse
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {

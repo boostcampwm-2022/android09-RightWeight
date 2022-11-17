@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.loginResponse.collect() { loginResponse ->
                     Log.d("loginResponse", loginResponse.toString())
                     val sharedPreferences = baseContext.getSharedPreferences(baseContext.getString(R.string.app_name), Context.MODE_PRIVATE)
-                    sharedPreferences.edit().putString("loginData", Gson().toJson(loginResponse)).apply()
+                    sharedPreferences.edit().putString("loginResponse", Gson().toJson(loginResponse)).apply()
                 }
             }
         }
