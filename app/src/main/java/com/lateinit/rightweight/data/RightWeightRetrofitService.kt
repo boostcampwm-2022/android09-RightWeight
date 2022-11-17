@@ -6,7 +6,6 @@ import retrofit2.http.*
 
 interface RightWeightRetrofitService {
 
-    @Headers("Content-Type: application/json")
     @POST("./accounts:signInWithIdp")
     suspend fun loginToFirebase(
         @Query("key") key: String,
