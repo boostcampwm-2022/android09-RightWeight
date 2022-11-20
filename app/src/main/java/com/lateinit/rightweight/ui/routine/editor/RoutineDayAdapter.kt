@@ -48,15 +48,11 @@ class RoutineDayAdapter(
 
     inner class DayViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
-    ){
+    ) {
         private val binding = ItemDayBinding.bind(itemView)
-        fun bind(day: Day){
-            binding.day = day
+        private val routineExerciseAdapter = RoutineExerciseAdapter(routineEventListener)
 
-            val routineExerciseAdapter = RoutineExerciseAdapter(routineEventListener)
-            binding.recyclerViewExercise.adapter = routineExerciseAdapter
-            routineExerciseAdapter.submitList(day.exercises)
-
+        init {
             binding.buttonDayMoveUp.setOnClickListener {
                 routineEventListener.onDayMoveUp(layoutPosition)
             }
@@ -65,14 +61,19 @@ class RoutineDayAdapter(
                 routineEventListener.onDayMoveDown(layoutPosition)
             }
 
-            binding.buttonExerciseAdd.setOnClickListener{
+            binding.buttonExerciseAdd.setOnClickListener {
                 routineEventListener.onExerciseAdd(layoutPosition)
             }
 
             binding.buttonRemoveDay.setOnClickListener {
                 routineEventListener.onDayRemove(layoutPosition)
             }
+        }
 
+        fun bind(day: Day) {
+            binding.day = day
+            binding.recyclerViewExercise.adapter = routineExerciseAdapter
+            routineExerciseAdapter.submitList(day.exercises)
         }
 
     }

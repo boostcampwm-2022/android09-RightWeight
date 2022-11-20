@@ -25,11 +25,12 @@ class RoutineExerciseAdapter(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
     ) {
         private val binding = ItemExerciseBinding.bind(itemView)
+        private val routineSetAdapter = RoutineSetAdapter(routineEventListener)
+
         fun bind(exercise: Exercise) {
 
             binding.exercise = exercise
 
-            val routineSetAdapter = RoutineSetAdapter(routineEventListener)
             binding.recyclerViewSet.adapter = routineSetAdapter
             routineSetAdapter.submitList(exercise.exerciseSets)
 
