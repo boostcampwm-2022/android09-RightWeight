@@ -26,7 +26,7 @@ data class Exercise @JvmOverloads constructor(
     @ColumnInfo(name = "day_id")
     val dayId: String,
     @ColumnInfo(name = "title")
-    val title: String,
+    var title: String,
     @ColumnInfo(name = "order")
     val order: Int,
     @ColumnInfo(name = "part")
