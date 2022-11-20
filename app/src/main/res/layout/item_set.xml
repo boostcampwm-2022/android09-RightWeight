@@ -18,8 +18,9 @@
         <TextView
             android:id="@+id/text_view_set_order"
             bind_set_text_number="@{set.order}"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:gravity="center_horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,11 +29,12 @@
 
         <EditText
             android:id="@+id/edit_text_set_weight"
-            android:text="@={set.weight}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="12dp"
             android:inputType="number"
+            android:maxLength="3"
+            android:text="@={set.weight}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_weight_unit"
             app:layout_constraintStart_toEndOf="@+id/text_view_set_order"
@@ -50,10 +52,11 @@
 
         <EditText
             android:id="@+id/edit_text_set_count"
-            android:text="@={set.count}"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="number"
+            android:maxLength="3"
+            android:text="@={set.count}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_count_unit"
             app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
