@@ -28,7 +28,7 @@
 
         <EditText
             android:id="@+id/edit_text_set_weight"
-            bind_set_text_number="@{set.weight}"
+            android:text="@={set.weight}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -50,7 +50,7 @@
 
         <EditText
             android:id="@+id/edit_text_set_count"
-            bind_set_text_number="@{set.count}"
+            android:text="@={set.count}"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:inputType="number"

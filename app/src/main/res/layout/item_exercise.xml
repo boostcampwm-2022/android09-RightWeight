@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:inputType="text"
-            android:text="@{exercise.title}"
+            android:text="@={exercise.title}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_exercise_part"
             app:layout_constraintStart_toEndOf="@+id/text_view_exercise_part"
             app:layout_constraintTop_toTopOf="@id/text_view_exercise_part" />
