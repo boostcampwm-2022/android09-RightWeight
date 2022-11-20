@@ -93,4 +93,7 @@ dependencies {
 
     // desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.0")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.11.0")
 }

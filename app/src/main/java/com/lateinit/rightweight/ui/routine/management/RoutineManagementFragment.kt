@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 
 class RoutineManagementFragment : Fragment() {
 

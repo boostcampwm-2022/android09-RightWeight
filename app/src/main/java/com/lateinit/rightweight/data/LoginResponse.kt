@@ -17,4 +17,4 @@ data class LoginResponse(
     val expiresIn: String?,
     val rawUserInfo: String?,
 
-)
+    )
