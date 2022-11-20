@@ -31,8 +31,14 @@ class RoutineEditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()
+    }
+
+    private fun setBinding() {
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
     }
 
     private fun setRoutineDayAdapter() {
