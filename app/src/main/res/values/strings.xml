@@ -23,4 +23,7 @@
     <string name="remove">삭제</string>
     <string name="set_add">세트 추가</string>
     <string name="day_order">Day%d</string>
+    <string name="input_exercise_name">운동이름을 입력하세요</string>
+    <string name="input_routine_name">루틴이름을 입력해 주세요</string>
+    <string name="input_routine_description">루틴에 대한 설명을 입력해 주세요</string>
 </resources>

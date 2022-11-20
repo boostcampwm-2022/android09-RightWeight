@@ -15,17 +15,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_view_exercise_part"
-            style="@style/Text.Small.Bold"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_edit_text_exercise_part"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@{exercise.part}"
+            android:labelFor="@+id/text_view_exercise_part"
+            app:hintEnabled="false"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="등" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <AutoCompleteTextView
+                android:id="@+id/text_view_exercise_part"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="true"
+                android:textAppearance="@style/Text.Small"
+                tools:text="등" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
             android:id="@+id/edit_text_exercise_title"
@@ -34,9 +43,11 @@
             android:layout_marginStart="16dp"
             android:inputType="text"
             android:text="@={exercise.title}"
-            app:layout_constraintBottom_toBottomOf="@+id/text_view_exercise_part"
-            app:layout_constraintStart_toEndOf="@+id/text_view_exercise_part"
-            app:layout_constraintTop_toTopOf="@id/text_view_exercise_part" />
+            android:hint="@string/input_exercise_name"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_edit_text_exercise_part"
+            app:layout_constraintStart_toEndOf="@+id/layout_edit_text_exercise_part"
+            app:layout_constraintTop_toTopOf="@id/layout_edit_text_exercise_part"
+            android:autofillHints="" />
 
 
         <Button
@@ -48,18 +59,19 @@
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:text="@string/remove"
-            app:layout_constraintBottom_toBottomOf="@+id/text_view_exercise_part"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_text_exercise_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_view_exercise_part" />
+            app:layout_constraintTop_toTopOf="@+id/edit_text_exercise_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_exercise_title"
+            app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_exercise_part"
             tools:itemCount="5"
             tools:listitem="@layout/item_set" />
 
