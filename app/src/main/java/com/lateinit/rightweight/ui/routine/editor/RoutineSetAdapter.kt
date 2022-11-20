@@ -30,7 +30,6 @@ class RoutineSetAdapter(val routineEventListener: RoutineDayAdapter.RoutineEvent
             binding.set = exerciseSet
             binding.buttonSetRemove.setOnClickListener {
                 routineEventListener.onSetRemove(exerciseSet.exerciseId, layoutPosition)
-                notifyItemRemoved(layoutPosition)
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.ui.routine.editor
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -36,12 +35,9 @@ class RoutineExerciseAdapter(
 
             binding.buttonExerciseRemove.setOnClickListener {
                 routineEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
-                notifyItemRemoved(layoutPosition)
             }
             binding.buttonSetAdd.setOnClickListener {
                 routineEventListener.onSetAdd(exercise.exerciseId)
-                Log.d("setsAdd","${exercise.exerciseSets}")
-                routineSetAdapter.submitList(exercise.exerciseSets)
             }
         }
     }
