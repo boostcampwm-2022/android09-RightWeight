@@ -97,18 +97,19 @@
                     app:layout_constraintBottom_toTopOf="@id/button_day_add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:listitem="@layout/item_day"
+                    app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
                     tools:itemCount="2"
-                    app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description" />
+                    tools:listitem="@layout/item_day" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_day_add"
                     style="@style/Text.Small.Bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-                    android:padding="16dp"
                     android:layout_marginBottom="50dp"
+                    android:backgroundTint="@color/white"
+                    android:onClick="@{() -> viewModel.addDay()}"
+                    android:padding="16dp"
                     android:text="@string/day_add"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart"
@@ -124,6 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:onClick="@{() -> viewModel.saveRoutine()}"
             android:padding="16dp"
             android:text="@string/routine_save"
             android:textColor="@color/white"
