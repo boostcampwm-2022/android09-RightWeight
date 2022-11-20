@@ -14,7 +14,7 @@ class RoutineDayAdapter(val routineEventListener: RoutineEventListener) {
 
         fun onDayMoveDown(position: Int)
 
-        fun onExerciseAdd(dayId: String)
+        fun onExerciseAdd(position: Int)
 
         fun onExerciseRemove(dayId: String, position: Int)
 
