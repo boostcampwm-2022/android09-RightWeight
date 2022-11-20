@@ -182,17 +182,17 @@ class RoutineEditorViewModel @Inject constructor(
                 if (title == null || title.isEmpty()) return@launch
                 if (description == null || description.isEmpty()) return@launch
 
-                val exercises = days.map { day -> day.exercises }.flatten()
-                val exerciseSets = exercises.map { exercise ->
+                val exercises = days.flatMap { day -> day.exercises }
+                val exerciseSets = exercises.flatMap { exercise ->
                     if (exercise.title.isEmpty()) return@launch
                     exercise.exerciseSets
-                }.flatten()
+                }
 
                 routineRepository.insertRoutine(
                     Routine(routineId, title, "author", description, LocalDateTime.now()),
-                    days,
-                    exercises,
-                    exerciseSets
+                    days.mapIndexed { index, day -> day.copy(order = index) },
+                    exercises.mapIndexed { index, exercise -> exercise.copy(order = index) },
+                    exerciseSets.mapIndexed { index, exerciseSet -> exerciseSet.copy(order = index) }
                 )
             }
         }
