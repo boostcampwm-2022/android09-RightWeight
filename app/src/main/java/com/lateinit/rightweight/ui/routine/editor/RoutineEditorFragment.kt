@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
 import dagger.hilt.android.AndroidEntryPoint
+import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 
 @AndroidEntryPoint
 class RoutineEditorFragment : Fragment() {
