@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,11 +26,16 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
+private const val LOGOUT_DIALOG_TAG = "LOGOUT"
+private const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
+
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    CommonDialogFragment.NoticeDialogListener {
 
     private var _binding: ActivityHomeBinding? = null
     private val binding get() = _binding!!
@@ -77,15 +83,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-                Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show()
-                sharedPreferences.edit().putString("loginResponse", null)
-                    .apply()
-                val intent = Intent(baseContext, LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
+                logout()
             }
             R.id.withdraw -> {
-                Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+                withdraw()
             }
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -159,5 +160,26 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    private fun logout() {
+        CommonDialogFragment(R.string.logout_message).show(supportFragmentManager, LOGOUT_DIALOG_TAG)
+    }
+    private fun withdraw() {
+        CommonDialogFragment(R.string.withdraw_message).show(supportFragmentManager, WITHDRAW_DIALOG_TAG)
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        when (dialog.tag) {
+            LOGOUT_DIALOG_TAG -> {
+                sharedPreferences.edit().putString("loginResponse", null).apply()
+                val intent = Intent(baseContext, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+            }
+            WITHDRAW_DIALOG_TAG -> {
+                Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
