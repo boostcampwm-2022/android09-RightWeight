@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -29,6 +30,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -62,6 +64,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-paging:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     //navigation
     val navVersion = "2.5.3"
@@ -69,10 +72,28 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     //firebase ?: retrofit
+    implementation("com.google.android.gms:play-services-ads-base:21.3.0")
 
+
+    //retrofit
+    val retrofitVersion = "2.9.0"
+    val okhttp3Version = "5.0.0-alpha.6"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.okhttp3:okhttp:$okhttp3Version")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okhttp3Version")
 
     //paging
     val pagingVersion = "3.1.1"
     implementation("androidx.paging:paging-common-ktx:$pagingVersion")
     implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
+
+    //google
+    implementation("com.google.android.gms:play-services-auth:20.3.0")
+
+    // desugar
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.0")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.11.0")
 }
