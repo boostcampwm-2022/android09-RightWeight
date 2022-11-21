@@ -12,50 +12,42 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        app:cardCornerRadius="8dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/button_day_move_up"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_move_up"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/button_day_move_down"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_move_down"
-                app:layout_constraintBottom_toTopOf="@+id/recycler_view_exercise"
-                app:layout_constraintStart_toStartOf="@+id/button_day_move_up"
-                app:layout_constraintTop_toBottomOf="@+id/button_day_move_up" />
-
-            <TextView
-                android:id="@+id/text_view_day_title"
-                style="@style/Text.Small.Bold"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_edit_text_exercise_part"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@{String.format(@string/day_order,day.order)}"
-                app:layout_constraintBottom_toBottomOf="@+id/button_day_move_down"
-                app:layout_constraintEnd_toStartOf="@+id/button_remove_day"
-                app:layout_constraintStart_toEndOf="@+id/button_day_move_up"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="DAY1" />
+                android:labelFor="@+id/text_view_exercise_part"
+                app:hintEnabled="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/text_view_day_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="true"
+                    android:textAppearance="@style/Text.Small"
+                    tools:text="DAY1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/button_remove_day"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/ic_remove"
-                app:layout_constraintBottom_toBottomOf="@+id/button_day_move_down"
+                app:layout_constraintBottom_toBottomOf="@+id/layout_edit_text_exercise_part"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/text_view_day_title"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -63,27 +55,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:labelFor="@+id/text_view_day_title"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_day_move_down"
+                app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_exercise_part"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_exercise" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_exercise_add"
-                style="@style/Text.Small.Bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/secondaryColor"
-                android:padding="16dp"
-                android:text="@string/exercise_add"
-                app:icon="@drawable/ic_add"
-                app:iconGravity="textStart"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recycler_view_exercise" />
+                tools:listitem="@layout/item_exercise_in_day" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
