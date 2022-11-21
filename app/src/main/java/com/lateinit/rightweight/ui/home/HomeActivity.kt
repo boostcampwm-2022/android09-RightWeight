@@ -148,7 +148,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.id.navigation_home,
                 R.id.navigation_calendar,
                 R.id.navigation_shared_routine,
-                R.id.navigation_routine_management
+                R.id.navigation_routine_management,
+                R.id.navigation_exercise
             ),
             binding.drawerLayout
         )
