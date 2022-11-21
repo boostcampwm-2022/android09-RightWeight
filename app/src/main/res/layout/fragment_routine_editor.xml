@@ -44,7 +44,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_view_title">
@@ -53,6 +52,7 @@
                         android:id="@+id/edit_text_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/input_routine_name"
                         android:text="@={viewModel.routineTitle}"
                         android:textAppearance="@style/Text.Small" />
 
@@ -74,7 +74,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:hintEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/text_view_description"
                     app:layout_constraintTop_toBottomOf="@id/text_view_description">
@@ -83,23 +82,42 @@
                         android:id="@+id/edit_text_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/input_routine_description"
                         android:text="@={viewModel.routineDescription}"
                         android:textAppearance="@style/Text.Small" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_day"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@id/button_day_add"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_day" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_day_add"
+                    style="@style/Text.Small.Bold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"
+                    android:backgroundTint="@color/white"
+                    android:onClick="@{() -> viewModel.addDay()}"
+                    android:padding="16dp"
+                    android:text="@string/day_add"
+                    app:icon="@drawable/ic_add"
+                    app:iconGravity="textStart"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description" />
-
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_day" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.button.MaterialButton
@@ -107,13 +125,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:onClick="@{() -> viewModel.saveRoutine()}"
             android:padding="16dp"
             android:text="@string/routine_save"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

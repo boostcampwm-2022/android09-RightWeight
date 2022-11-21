@@ -18,7 +18,6 @@ class RoutineEditorFragment : Fragment() {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
     private val viewModel: RoutineEditorViewModel by viewModels()
-
     private lateinit var routineDayAdapter: RoutineDayAdapter
 
     override fun onCreateView(
@@ -31,6 +30,7 @@ class RoutineEditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()

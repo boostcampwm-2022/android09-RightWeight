@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.ui.home
 
+
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -48,9 +49,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
-
         setNavController()
         setActionBar()
+
 
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
         val loginResponse = Gson().fromJson(
@@ -108,6 +109,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onDestroy() {
         super.onDestroy()
+
         Log.d(this.toString(), "onDestroy")
     }
 
