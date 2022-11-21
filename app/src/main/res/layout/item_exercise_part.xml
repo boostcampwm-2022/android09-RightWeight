@@ -4,6 +4,6 @@
     android:layout_height="wrap_content"
     android:ellipsize="end"
     android:maxLines="1"
-    android:padding="16dp"
+    android:padding="12dp"
     android:textAppearance="@style/Text.Small"
     android:textColor="@color/black" />
