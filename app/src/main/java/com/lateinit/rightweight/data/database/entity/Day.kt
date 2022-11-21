@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -17,12 +18,14 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class Day(
+data class Day @JvmOverloads constructor(
     @PrimaryKey
     @ColumnInfo(name = "day_id")
     val dayId: String,
     @ColumnInfo(name = "routine_id")
     val routineId: String,
     @ColumnInfo(name = "order")
-    val order: Long,
+    val order: Int,
+    @Ignore
+    val exercises: List<Exercise> = emptyList()
 )

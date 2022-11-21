@@ -17,16 +17,16 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class Set(
+data class ExerciseSet(
     @PrimaryKey
     @ColumnInfo(name = "set_id")
     val setId: String,
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,
     @ColumnInfo(name = "weight")
-    val weight: Int,
-    @ColumnInfo(name = "number")
-    val number: Int,
+    var weight: String = "",
+    @ColumnInfo(name = "count")
+    var count: String = "",
     @ColumnInfo(name = "order")
-    val order: Long,
+    val order: Int
 )

@@ -7,10 +7,10 @@ import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.database.entity.Set
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 
 @Database(
-    entities = [Routine::class, Day::class, Exercise::class, Set::class],
+    entities = [Routine::class, Day::class, Exercise::class, ExerciseSet::class],
     version = 1,
     exportSchema = false
 )
