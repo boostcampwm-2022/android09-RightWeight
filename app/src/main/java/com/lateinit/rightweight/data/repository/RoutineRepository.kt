@@ -2,8 +2,8 @@ package com.lateinit.rightweight.data.repository
 
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.database.entity.Set
 
 interface RoutineRepository {
 
@@ -11,6 +11,6 @@ interface RoutineRepository {
         routine: Routine,
         days: List<Day>,
         exercises: List<Exercise>,
-        sets: List<Set>
+        sets: List<ExerciseSet>
     )
 }

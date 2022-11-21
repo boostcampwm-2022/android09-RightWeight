@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.ui.routine.editor
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -90,6 +91,5 @@ class RoutineDayAdapter(
 
         }
     }
-
 
 }

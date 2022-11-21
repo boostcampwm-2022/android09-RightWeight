@@ -24,9 +24,9 @@ import com.google.gson.Gson
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
-import dagger.hilt.android.AndroidEntryPoint
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 import com.lateinit.rightweight.ui.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -49,35 +49,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
-
-        navController = navHostFragment.navController
-
-        binding.bottomNavigation.setupWithNavController(navController)
-
+        setNavController()
         setActionBar()
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.navigation_exercise -> {
-                    supportActionBar?.hide()
-                    binding.bottomNavigation.visibility = View.GONE
-                }
-                R.id.navigation_routine_detail -> {
-                    supportActionBar?.show()
-                    binding.bottomNavigation.visibility = View.GONE
-                }
-                R.id.navigation_shared_routine_detail,
-                R.id.navigation_routine_editor -> {
-                    supportActionBar?.show()
-                    binding.bottomNavigation.visibility = View.GONE
-                }
-                else -> {
-                    supportActionBar?.show()
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
-            }
-        }
 
 
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
@@ -86,11 +59,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             LoginResponse::class.java
         )
         headerBinding.loginResponse = loginResponse
-
-        binding.navigationView.setNavigationItemSelectedListener(this)
-        // disable drawer swipe gesture
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
@@ -142,7 +112,36 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Log.d(this.toString(), "onDestroy")
     }
-    
+
+    private fun setNavController() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
+        navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navigation_exercise -> {
+                    supportActionBar?.hide()
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                R.id.navigation_routine_detail -> {
+                    supportActionBar?.show()
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                R.id.navigation_shared_routine_detail,
+                R.id.navigation_routine_editor -> {
+                    supportActionBar?.show()
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                else -> {
+                    supportActionBar?.show()
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
     private fun setActionBar() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -156,6 +155,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.materialToolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navigationView.setNavigationItemSelectedListener(this)
+
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
