@@ -33,16 +33,4 @@
     <string name="search">검색</string>
     <string name="edit">수정</string>
     <string name="more">더보기</string>
-    <string name="routine_title">루틴 명</string>
-    <string name="routine_description">설명</string>
-    <string name="routine_save">루틴 저장하기</string>
-    <string name="chest">가슴</string>
-    <string name="back">등</string>
-    <string name="leg">하체</string>
-    <string name="shoulder">어깨</string>
-    <string name="biceps">이두</string>
-    <string name="triceps">삼두</string>
-    <string name="core">코어</string>
-    <string name="forearm">전완근</string>
-    <string name="cardio">유산소</string>
 </resources>
