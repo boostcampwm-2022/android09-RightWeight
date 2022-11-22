@@ -42,4 +42,5 @@
     <string name="forearm">전완근</string>
     <string name="cardio">유산소</string>
     <string name="end_exercise">운동 종료</string>
+    <string name="mock_routine_id">d56c8432-efc2-475e-836f-1f7dd79f3f00</string>
 </resources>
