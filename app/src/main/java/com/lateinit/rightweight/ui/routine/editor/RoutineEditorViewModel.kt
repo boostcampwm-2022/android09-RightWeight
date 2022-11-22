@@ -120,12 +120,12 @@ class RoutineEditorViewModel @Inject constructor(
         val tempExercises = tempDay.exercises.toMutableList()
         val tempExercise = tempExercises[exercisePosition]
 
-
-        tempExercises[exercisePosition] = tempExercise.copy(part = exercisePartType)
+        tempExercises[exercisePosition] = tempExercise.copy(part = exercisePartType).also { exercise ->
+            exerciseMap[exercise.exerciseId] = exercise
+        }
         tempDays[tempDays.indexOf(tempDay)] = tempDay.copy(exercises = tempExercises).also { day ->
             dayMap[day.dayId] = day
         }
-        exerciseMap[tempExercise.exerciseId] = tempExercise
         _days.value = tempDays
     }
 
