@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
 import com.lateinit.rightweight.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,6 +70,16 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.loginResponse.collect() { loginResponse ->
                     sharedPreferences.edit()
                         .putString("loginResponse", Gson().toJson(loginResponse)).apply()
+
+                    if (loginResponse != null) {
+                        val userInfo = sharedPreferences.getString("userInfo", null)
+                        if (userInfo == null) {
+                            sharedPreferences.edit().putString(
+                                "userInfo",
+                                Gson().toJson(User(loginResponse.localId, null, null))
+                            ).apply()
+                        }
+                    }
                 }
             }
         }
