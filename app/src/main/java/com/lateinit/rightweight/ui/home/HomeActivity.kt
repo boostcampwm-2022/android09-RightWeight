@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.ui.home
 
-
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,11 +26,10 @@ import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
-
-private const val LOGOUT_DIALOG_TAG = "LOGOUT"
-private const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -41,7 +39,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val binding get() = _binding!!
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    private val dialog: CommonDialogFragment by lazy {
+        CommonDialogFragment()
+    }
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -163,10 +163,19 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        CommonDialogFragment(R.string.logout_message).show(supportFragmentManager, LOGOUT_DIALOG_TAG)
+        dialog.show(
+            supportFragmentManager,
+            LOGOUT_DIALOG_TAG,
+            R.string.logout_message
+        )
     }
+
     private fun withdraw() {
-        CommonDialogFragment(R.string.withdraw_message).show(supportFragmentManager, WITHDRAW_DIALOG_TAG)
+        dialog.show(
+            supportFragmentManager,
+            WITHDRAW_DIALOG_TAG,
+            R.string.withdraw_message
+        )
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {

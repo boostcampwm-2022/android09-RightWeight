@@ -6,21 +6,18 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.lateinit.rightweight.R
 
-class CommonDialogFragment(@StringRes val messageId: Int) : DialogFragment() {
-    // Use this instance of the interface to deliver action events
-    internal lateinit var listener: NoticeDialogListener
+class CommonDialogFragment : DialogFragment() {
 
-    /* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
+    internal lateinit var listener: NoticeDialogListener
+    var messageId: Int = R.string.logout_message
+
     interface NoticeDialogListener {
         fun onDialogPositiveClick(dialog: DialogFragment)
-//        fun onDialogNegativeClick(dialog: DialogFragment)
     }
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // Verify that the host activity implements the callback interface
@@ -29,8 +26,10 @@ class CommonDialogFragment(@StringRes val messageId: Int) : DialogFragment() {
             listener = context as NoticeDialogListener
         } catch (e: ClassCastException) {
             // The activity doesn't implement the interface, throw exception
-            throw ClassCastException((context.toString() +
-                    " must implement NoticeDialogListener"))
+            throw ClassCastException(
+                (context.toString() +
+                        " must implement NoticeDialogListener")
+            )
         }
     }
 
@@ -39,14 +38,28 @@ class CommonDialogFragment(@StringRes val messageId: Int) : DialogFragment() {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
             builder.setMessage(messageId)
-                .setPositiveButton(R.string.submit) { dialog, id ->
+                .setPositiveButton(R.string.submit) { _, _ ->
                     listener.onDialogPositiveClick(this)
                 }
-                .setNegativeButton(R.string.cancel) { dialog, id ->
+                .setNegativeButton(R.string.cancel) { dialog, _ ->
                     dialog.cancel()
                 }
             // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    fun show(
+        manager: FragmentManager,
+        tag: String?,
+        @StringRes messageId: Int
+    ) {
+        this.messageId = messageId
+        show(manager, tag)
+    }
+
+    companion object {
+        const val LOGOUT_DIALOG_TAG = "LOGOUT"
+        const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
     }
 }
