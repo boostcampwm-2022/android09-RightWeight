@@ -22,4 +22,7 @@ interface RoutineDao {
 
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineById(routineId: String): Routine
+
+    @Query("SELECT * FROM routine NATURAL JOIN day WHERE routine_id = :routineId ORDER BY `order`")
+    suspend fun getDaysByRoutineId(routineId: String): List<Day>
 }

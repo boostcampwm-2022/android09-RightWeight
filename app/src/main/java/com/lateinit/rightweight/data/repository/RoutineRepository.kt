@@ -15,4 +15,5 @@ interface RoutineRepository {
     )
 
     suspend fun getRoutineById(routineId: String): Routine
+    suspend fun getDaysByRoutineId(routineId: String): List<Day>
 }
