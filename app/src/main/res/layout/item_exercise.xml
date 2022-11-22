@@ -21,7 +21,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="4dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_edit_text_exercise_part"
@@ -48,7 +49,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:labelFor="@+id/text_view_exercise_part"
                 app:hintEnabled="false"
                 app:layout_constraintBottom_toBottomOf="@+id/layout_edit_text_exercise_part"
@@ -74,7 +75,7 @@
                 android:id="@+id/button_exercise_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="8dp"
                 android:backgroundTint="@color/secondaryColor"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
@@ -93,7 +94,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_exercise_part"
-                tools:itemCount="5"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_set" />
 
             <com.google.android.material.button.MaterialButton

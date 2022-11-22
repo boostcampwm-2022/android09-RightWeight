@@ -99,11 +99,35 @@
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toTopOf="@id/recycler_view_exercise"
+                    app:layout_constraintBottom_toTopOf="@id/button_remove_day"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
                     tools:listitem="@layout/item_day" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_remove_day"
+                    style="@style/Text.Small.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->viewModel.removeDay(selectedDayPosition)}"
+                    android:text="Day삭제"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toStartOf="@id/button_add_day"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_add_day"
+                    style="@style/Text.Small.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->viewModel.addDay()}"
+                    android:text="Day추가"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/button_remove_day"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_exercise"
@@ -114,7 +138,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day"
+                    app:layout_constraintTop_toBottomOf="@+id/button_remove_day"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_exercise" />
 
@@ -124,7 +148,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/secondaryColor"
-                    android:onClick="@{()->viewModel.addExercise(selectedDayPosition)}"
+                    android:onClick="@{()->viewModel.addExercise()}"
                     android:padding="16dp"
                     android:text="@string/exercise_add"
                     app:icon="@drawable/ic_add"

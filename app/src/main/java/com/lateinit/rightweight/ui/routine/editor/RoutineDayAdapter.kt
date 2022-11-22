@@ -1,9 +1,9 @@
 package com.lateinit.rightweight.ui.routine.editor
 
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +16,7 @@ class RoutineDayAdapter(
 ) : ListAdapter<Day, RoutineDayAdapter.DayViewHolder>(diffUtil) {
 
     private var lastPosition = -1
-    private var selectedPosition = -1
+    private var selectedPosition = 0
 
     interface RoutineEventListener {
 
@@ -38,16 +38,15 @@ class RoutineDayAdapter(
         return DayViewHolder(parent)
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind()
         if (selectedPosition == position) {
             holder.itemView.apply {
-                background = context.getDrawable(R.drawable.bg_day_order_seleted)
+                background = getDrawable(context, R.drawable.bg_day_order_seleted)
             }
         } else {
             holder.itemView.apply {
-                background = context.getDrawable(R.drawable.bg_day_order)
+                background = getDrawable(context, R.drawable.bg_day_order)
             }
         }
     }
