@@ -6,12 +6,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
 
 class RoutineExerciseAdapter(
-    val routineEventListener: RoutineDayAdapter.RoutineEventListener
+    val exerciseEventListener: ExerciseEventListener
 ) : ListAdapter<Exercise, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
+
+    interface ExerciseEventListener {
+        fun onExerciseAdd(position: Int)
+
+        fun onExerciseRemove(dayId: String, position: Int)
+
+        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartType)
+
+        fun onSetAdd(exerciseId: String)
+
+        fun onSetRemove(exerciseId: String, position: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         return ExerciseViewHolder(parent)
@@ -25,7 +38,7 @@ class RoutineExerciseAdapter(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
     ) {
         private val binding = ItemExerciseBinding.bind(itemView)
-        private val routineSetAdapter = RoutineSetAdapter(routineEventListener)
+        private val routineSetAdapter = RoutineSetAdapter(exerciseEventListener)
 
         fun bind(exercise: Exercise) {
 
@@ -35,10 +48,10 @@ class RoutineExerciseAdapter(
             routineSetAdapter.submitList(exercise.exerciseSets)
 
             binding.buttonExerciseRemove.setOnClickListener {
-                routineEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
+                exerciseEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
             }
             binding.buttonSetAdd.setOnClickListener {
-                routineEventListener.onSetAdd(exercise.exerciseId)
+                exerciseEventListener.onSetAdd(exercise.exerciseId)
             }
         }
     }
