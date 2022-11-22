@@ -33,12 +33,14 @@ class ExerciseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonStartAndPauseExercise.setOnClickListener(){
-            Log.d("isTimerRunning", binding.isTimerRunning.toString())
             when(binding.isTimerRunning){
                 true -> pauseTimer()
                 false -> startTimer()
                 else -> startTimer()
             }
+        }
+        binding.buttonEndExercise.setOnClickListener(){
+            stopTimer()
         }
     }
 
@@ -47,10 +49,10 @@ class ExerciseFragment : Fragment() {
         getTimerStatus()
 
         val timeFilter = IntentFilter()
-        timeFilter.addAction("timer_moment")
+        timeFilter.addAction(TimerService.MOMENT_ACTION_NAME)
         timerMomentReceiver = object : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                val timeCount = p1?.getIntExtra("time_count", 0)!!
+                val timeCount = p1?.getIntExtra(TimerService.TIME_COUNT_INTENT_EXTRA, 0)!!
                 val timeString = getTimeString(timeCount)
 
                 binding.timeString = timeString
@@ -59,17 +61,16 @@ class ExerciseFragment : Fragment() {
         requireContext().registerReceiver(timerMomentReceiver, timeFilter)
 
         val statusFilter = IntentFilter()
-        statusFilter.addAction("timer_status")
+        statusFilter.addAction(TimerService.STATUS_ACTION_NAME)
         timerStatusReceiver = object : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
                 p1?.let{
-                    val isTimerRunning = p1.getBooleanExtra("is_timer_running", false)
-                    val timeCount = p1.getIntExtra("time_count", 0)
+                    val isTimerRunning = p1.getBooleanExtra(TimerService.IS_TIMER_RUNNING_INTENT_EXTRA, false)
+                    val timeCount = p1.getIntExtra(TimerService.TIME_COUNT_INTENT_EXTRA, 0)
                     val timeString = getTimeString(timeCount)
 
                     binding.timeString = timeString
                     binding.isTimerRunning = isTimerRunning
-                    Log.d("isTimerRunning2", binding.isTimerRunning.toString())
                 }
             }
         }
@@ -85,19 +86,25 @@ class ExerciseFragment : Fragment() {
 
     fun startTimer() {
         val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra("timer_manage_action", "start")
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START)
         requireActivity().startService(timerService)
     }
 
     fun pauseTimer() {
         val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra("timer_manage_action", "pause")
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.PAUSE)
+        requireActivity().startService(timerService)
+    }
+
+    fun stopTimer() {
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
         requireActivity().startService(timerService)
     }
 
     fun getTimerStatus() {
         val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra("timer_manage_action", "status")
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STATUS)
         requireActivity().startService(timerService)
     }
 

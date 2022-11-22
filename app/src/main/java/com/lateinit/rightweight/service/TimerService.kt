@@ -22,6 +22,20 @@ class TimerService: Service() {
     lateinit var customNotification: Notification
     lateinit var notificationLayout: RemoteViews
 
+    companion object{
+        const val MANAGE_ACTION_NAME = "timer_manage_action"
+        const val MOMENT_ACTION_NAME = "timer_moment_action"
+        const val STATUS_ACTION_NAME = "timer_status_action"
+        const val CHANNEL_ID = "timer_notification"
+        const val CHANNEL_NAME = "Timer"
+        const val START = "start"
+        const val PAUSE = "pause"
+        const val STATUS = "status"
+        const val STOP = "stop"
+        const val TIME_COUNT_INTENT_EXTRA = "time_count"
+        const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
+    }
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -31,19 +45,19 @@ class TimerService: Service() {
         createChannel()
         setNotification()
 
-        val action = intent?.getStringExtra("timer_manage_action")!!
+        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)!!
 
         when (action) {
-            "start" -> {
+            START -> {
                 startTimer()
             }
-            "pause" -> {
+            PAUSE -> {
                 pauseTimer()
             }
-            "status" -> {
+            STATUS -> {
                 sendStatus()
             }
-            "stop" ->{
+            STOP ->{
                 pauseTimer()
                 stopNotification()
             }
@@ -56,8 +70,8 @@ class TimerService: Service() {
     private fun createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                "timer_notification",
-                "Timer",
+                CHANNEL_ID,
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationChannel.setSound(null, null)
@@ -91,7 +105,8 @@ class TimerService: Service() {
     }
 
     private fun stopNotification(){
-        stopNotification()
+        foregroundUpdateTimer.cancel()
+        stopForeground(true)
     }
 
     private fun updateNotification(){
@@ -108,8 +123,8 @@ class TimerService: Service() {
             override fun run() {
                 timeCount++
                 val timerIntent = Intent()
-                timerIntent.action = "timer_moment"
-                timerIntent.putExtra("time_count", timeCount)
+                timerIntent.action = MOMENT_ACTION_NAME
+                timerIntent.putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
                 sendBroadcast(timerIntent)
             }
         }, 0, 1000)
@@ -123,9 +138,9 @@ class TimerService: Service() {
 
     private fun sendStatus() {
         val statusIntent = Intent()
-        statusIntent.action = "timer_status"
-        statusIntent.putExtra("is_timer_running", isTimerRunning)
-        statusIntent.putExtra("time_count", timeCount)
+        statusIntent.action = STATUS_ACTION_NAME
+        statusIntent.putExtra(IS_TIMER_RUNNING_INTENT_EXTRA, isTimerRunning)
+        statusIntent.putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
         sendBroadcast(statusIntent)
     }
 
