@@ -7,6 +7,9 @@
         <variable
             name="timeString"
             type="String"/>
+        <variable
+            name="isTimerRunning"
+            type="Boolean"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/secondaryDarkColor"
-                android:src="@drawable/ic_baseline_play_arrow"
+                isTimerRunning="@{isTimerRunning}"
                 app:layout_anchor="@id/bottom_app_bar"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

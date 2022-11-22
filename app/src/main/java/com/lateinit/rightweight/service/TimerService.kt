@@ -6,6 +6,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import java.util.*
 
 class TimerService: Service() {
@@ -19,12 +20,13 @@ class TimerService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createChannel()
+        //createChannel()
 
         val action = intent?.getStringExtra("timer_manage_action")!!
 
         when (action) {
             "start" -> startTimer()
+            "pause" -> pauseTimer()
             "status" -> sendStatus()
         }
 
@@ -48,7 +50,6 @@ class TimerService: Service() {
 
     private fun startTimer() {
         isTimerRunning = true
-
         sendStatus()
 
         timer = Timer()
@@ -61,6 +62,12 @@ class TimerService: Service() {
                 sendBroadcast(timerIntent)
             }
         }, 0, 1000)
+    }
+
+    private fun pauseTimer() {
+        timer.cancel()
+        isTimerRunning = false
+        sendStatus()
     }
 
     private fun sendStatus() {

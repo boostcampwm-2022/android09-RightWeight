@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,12 +33,18 @@ class ExerciseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonStartAndPauseExercise.setOnClickListener(){
-            startTimer()
+            Log.d("isTimerRunning", binding.isTimerRunning.toString())
+            when(binding.isTimerRunning){
+                true -> pauseTimer()
+                false -> startTimer()
+                else -> startTimer()
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        getTimerStatus()
 
         val timeFilter = IntentFilter()
         timeFilter.addAction("timer_moment")
@@ -50,6 +57,23 @@ class ExerciseFragment : Fragment() {
             }
         }
         requireContext().registerReceiver(timerMomentReceiver, timeFilter)
+
+        val statusFilter = IntentFilter()
+        statusFilter.addAction("timer_status")
+        timerStatusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, p1: Intent?) {
+                p1?.let{
+                    val isTimerRunning = p1.getBooleanExtra("is_timer_running", false)
+                    val timeCount = p1.getIntExtra("time_count", 0)
+                    val timeString = getTimeString(timeCount)
+
+                    binding.timeString = timeString
+                    binding.isTimerRunning = isTimerRunning
+                    Log.d("isTimerRunning2", binding.isTimerRunning.toString())
+                }
+            }
+        }
+        requireContext().registerReceiver(timerStatusReceiver, statusFilter)
     }
 
     fun getTimeString(timeCount: Int): String{
@@ -62,6 +86,18 @@ class ExerciseFragment : Fragment() {
     fun startTimer() {
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra("timer_manage_action", "start")
+        requireActivity().startService(timerService)
+    }
+
+    fun pauseTimer() {
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra("timer_manage_action", "pause")
+        requireActivity().startService(timerService)
+    }
+
+    fun getTimerStatus() {
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra("timer_manage_action", "status")
         requireActivity().startService(timerService)
     }
 
