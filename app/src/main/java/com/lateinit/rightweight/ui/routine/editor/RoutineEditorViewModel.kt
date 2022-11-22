@@ -188,6 +188,11 @@ class RoutineEditorViewModel @Inject constructor(
                 exercise.exerciseSets
             }
 
+            exerciseSets.forEach { exerciseSet ->
+                if (exerciseSet.weight.isEmpty()) exerciseSet.weight = DEFAULT_SET_WEIGHT
+                if (exerciseSet.count.isEmpty()) exerciseSet.count = DEFAULT_SET_COUNT
+            }
+
             routineRepository.insertRoutine(
                 Routine(routineId, title, "author", description, LocalDateTime.now()),
                 days,
@@ -231,5 +236,7 @@ class RoutineEditorViewModel @Inject constructor(
         private const val FIRST_DAY_POSITION = 0
         private const val DEFAULT_EXERCISE_TITLE = ""
         private const val DEFAULT_CURRENT_DAY_ID = ""
+        private const val DEFAULT_SET_WEIGHT = "0"
+        private const val DEFAULT_SET_COUNT = "0"
     }
 }
