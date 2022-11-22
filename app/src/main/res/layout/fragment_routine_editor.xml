@@ -9,6 +9,10 @@
         <variable
             name="viewModel"
             type="com.lateinit.rightweight.ui.routine.editor.RoutineEditorViewModel" />
+
+        <variable
+            name="selectedDayPosition"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingHorizontal="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/button_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -119,8 +123,8 @@
                     style="@style/Text.Small.Bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="50dp"
                     android:backgroundTint="@color/secondaryColor"
+                    android:onClick="@{()->viewModel.addExercise(selectedDayPosition)}"
                     android:padding="16dp"
                     android:text="@string/exercise_add"
                     app:icon="@drawable/ic_add"

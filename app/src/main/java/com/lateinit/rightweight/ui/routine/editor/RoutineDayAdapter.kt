@@ -1,6 +1,7 @@
 package com.lateinit.rightweight.ui.routine.editor
 
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -13,6 +14,9 @@ import com.lateinit.rightweight.databinding.ItemDayBinding
 class RoutineDayAdapter(
     val routineEventListener: RoutineEventListener
 ) : ListAdapter<Day, RoutineDayAdapter.DayViewHolder>(diffUtil) {
+
+    private var lastPosition = -1
+    private var selectedPosition = -1
 
     interface RoutineEventListener {
 
@@ -34,8 +38,18 @@ class RoutineDayAdapter(
         return DayViewHolder(parent)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-        holder.bind(getItem(position) ?: return)
+        holder.bind()
+        if (selectedPosition == position) {
+            holder.itemView.apply {
+                background = context.getDrawable(R.drawable.bg_day_order_seleted)
+            }
+        } else {
+            holder.itemView.apply {
+                background = context.getDrawable(R.drawable.bg_day_order)
+            }
+        }
     }
 
     inner class DayViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
@@ -43,28 +57,18 @@ class RoutineDayAdapter(
     ) {
         private val binding = ItemDayBinding.bind(itemView)
 
-        init {
-//            binding.buttonDayMoveUp.setOnClickListener {
-//                routineEventListener.onDayMoveUp(layoutPosition)
-//            }
-//
-//            binding.buttonDayMoveDown.setOnClickListener {
-//                routineEventListener.onDayMoveDown(layoutPosition)
-//            }
-//
-//            binding.buttonExerciseAdd.setOnClickListener {
-//                routineEventListener.onExerciseAdd(layoutPosition)
-//            }
-//
-//            binding.buttonRemoveDay.setOnClickListener {
-//                routineEventListener.onDayRemove(layoutPosition)
-//            }
-
-        }
-
-        fun bind(day: Day) {
+        fun bind() {
+            "Day${layoutPosition + 1}"
+            binding.textViewDay.text = String.format(
+                binding.root.context.getString(R.string.day_order),
+                layoutPosition + 1
+            )
             itemView.setOnClickListener {
                 routineEventListener.onDayClick(layoutPosition)
+                lastPosition = selectedPosition
+                selectedPosition = layoutPosition
+                notifyItemChanged(lastPosition)
+                notifyItemChanged(selectedPosition)
             }
         }
 

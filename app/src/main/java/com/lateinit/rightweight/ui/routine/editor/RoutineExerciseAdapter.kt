@@ -44,6 +44,7 @@ class RoutineExerciseAdapter(
 
             binding.exercise = exercise
 
+
             binding.recyclerViewSet.adapter = routineSetAdapter
             routineSetAdapter.submitList(exercise.exerciseSets)
 
