@@ -13,4 +13,6 @@ interface RoutineRepository {
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
     )
+
+    suspend fun getRoutineById(routineId: String): Routine
 }
