@@ -34,7 +34,7 @@ class RoutineExerciseAdapter(
             }
             val exercisePartAdapter =
                 ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
-            ExerciseViewHolder(this, exercisePartAdapter, routineEventListener)
+            ExerciseViewHolder(this, exercisePartAdapter, exerciseEventListener)
         }
     }
 
@@ -45,7 +45,7 @@ class RoutineExerciseAdapter(
     class ExerciseViewHolder(
         parent: ViewGroup,
         exercisePartAdapter: ArrayAdapter<String>,
-        routineEventListener: RoutineDayAdapter.RoutineEventListener
+        exerciseEventListener: ExerciseEventListener
     ) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
     ) {
@@ -58,7 +58,7 @@ class RoutineExerciseAdapter(
             binding.textViewExercisePart.setAdapter(exercisePartAdapter)
 
             binding.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
-                routineEventListener.onExercisePartChange(
+                exerciseEventListener.onExercisePartChange(
                     exercise.dayId,
                     layoutPosition,
                     ExercisePartType.values()[position]
