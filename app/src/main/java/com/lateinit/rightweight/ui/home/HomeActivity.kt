@@ -181,6 +181,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (dialog.tag) {
             LOGOUT_DIALOG_TAG -> {
                 sharedPreferences.edit().putString("loginResponse", null).apply()
+                sharedPreferences.edit().putString("userInfo", null).apply()
                 val intent = Intent(baseContext, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
