@@ -42,7 +42,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setNavController()
         setActionBar()
-
 
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
         val loginResponse = Gson().fromJson(
