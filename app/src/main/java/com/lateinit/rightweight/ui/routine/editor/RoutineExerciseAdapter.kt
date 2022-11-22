@@ -12,8 +12,20 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
 
 class RoutineExerciseAdapter(
-    private val routineEventListener: RoutineDayAdapter.RoutineEventListener
+    private val exerciseEventListener: ExerciseEventListener
 ) : ListAdapter<Exercise, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
+
+    interface ExerciseEventListener {
+        fun onExerciseAdd(position: Int)
+
+        fun onExerciseRemove(dayId: String, position: Int)
+
+        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartType)
+
+        fun onSetAdd(exerciseId: String)
+
+        fun onSetRemove(exerciseId: String, position: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         return with(parent) {
@@ -38,7 +50,7 @@ class RoutineExerciseAdapter(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
     ) {
         private val binding = ItemExerciseBinding.bind(itemView)
-        private val routineSetAdapter = RoutineSetAdapter(routineEventListener)
+        private val routineSetAdapter = RoutineSetAdapter(exerciseEventListener)
 
         private lateinit var exercise: Exercise
 
@@ -54,11 +66,11 @@ class RoutineExerciseAdapter(
             }
 
             binding.buttonExerciseRemove.setOnClickListener {
-                routineEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
+                exerciseEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
             }
 
             binding.buttonSetAdd.setOnClickListener {
-                routineEventListener.onSetAdd(exercise.exerciseId)
+                exerciseEventListener.onSetAdd(exercise.exerciseId)
             }
         }
 

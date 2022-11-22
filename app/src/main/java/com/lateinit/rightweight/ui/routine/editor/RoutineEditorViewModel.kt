@@ -76,6 +76,10 @@ class RoutineEditorViewModel @Inject constructor(
         _days.value = tempDays
     }
 
+    fun clickDay(position: Int){
+
+    }
+
     fun addExercise(dayPosition: Int) {
         val tempDays = _days.value?.toMutableList() ?: return
         val tempDay = tempDays[dayPosition]

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.databinding.ItemDayBinding
 
@@ -25,15 +24,7 @@ class RoutineDayAdapter(
 
         fun onDayMoveDown(position: Int)
 
-        fun onExerciseAdd(position: Int)
-
-        fun onExerciseRemove(dayId: String, position: Int)
-
-        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartType)
-
-        fun onSetAdd(exerciseId: String)
-
-        fun onSetRemove(exerciseId: String, position: Int)
+        fun onDayClick(position: Int)
     }
 
     override fun onCreateViewHolder(
@@ -51,30 +42,30 @@ class RoutineDayAdapter(
         LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
     ) {
         private val binding = ItemDayBinding.bind(itemView)
-        private val routineExerciseAdapter = RoutineExerciseAdapter(routineEventListener)
 
         init {
-            binding.buttonDayMoveUp.setOnClickListener {
-                routineEventListener.onDayMoveUp(layoutPosition)
-            }
+//            binding.buttonDayMoveUp.setOnClickListener {
+//                routineEventListener.onDayMoveUp(layoutPosition)
+//            }
+//
+//            binding.buttonDayMoveDown.setOnClickListener {
+//                routineEventListener.onDayMoveDown(layoutPosition)
+//            }
+//
+//            binding.buttonExerciseAdd.setOnClickListener {
+//                routineEventListener.onExerciseAdd(layoutPosition)
+//            }
+//
+//            binding.buttonRemoveDay.setOnClickListener {
+//                routineEventListener.onDayRemove(layoutPosition)
+//            }
 
-            binding.buttonDayMoveDown.setOnClickListener {
-                routineEventListener.onDayMoveDown(layoutPosition)
-            }
-
-            binding.buttonExerciseAdd.setOnClickListener {
-                routineEventListener.onExerciseAdd(layoutPosition)
-            }
-
-            binding.buttonRemoveDay.setOnClickListener {
-                routineEventListener.onDayRemove(layoutPosition)
-            }
         }
 
         fun bind(day: Day) {
-            binding.day = day
-            binding.recyclerViewExercise.adapter = routineExerciseAdapter
-            routineExerciseAdapter.submitList(day.exercises)
+            itemView.setOnClickListener {
+                routineEventListener.onDayClick(layoutPosition)
+            }
         }
 
     }
