@@ -76,12 +76,15 @@ class RoutineEditorViewModel @Inject constructor(
                 exerciseToSet.value?.remove(exercise.exerciseId)
             }
         }
+
+        val reorderedDays = LinkedList(days.reordered())
+
         currentDay.value = when {
-            days.isEmpty() -> null
-            dayPosition == days.size -> days[days.lastIndex]
-            else -> days[dayPosition]
+            reorderedDays.isEmpty() -> null
+            dayPosition == reorderedDays.size -> reorderedDays.last
+            else -> reorderedDays[dayPosition]
         }
-        _days.value = LinkedList(days.reordered())
+        _days.value = reorderedDays
     }
 
     fun clickDay(dayPosition: Int) {
