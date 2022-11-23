@@ -9,6 +9,7 @@
             name="exercise"
             type="com.lateinit.rightweight.data.database.entity.Exercise" />
 
+        <import type="com.lateinit.rightweight.util.ExtensionsKt" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:clickable="false"
-            android:text="@{exercise.part.partName}"
+            android:text="@{ExtensionsKt.getPartNameRes(exercise.part)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

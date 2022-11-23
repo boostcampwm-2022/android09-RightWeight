@@ -10,6 +10,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
+import com.lateinit.rightweight.util.getPartNameRes
 
 class RoutineExerciseAdapter(
     private val exerciseEventListener: ExerciseEventListener
@@ -29,7 +30,7 @@ class RoutineExerciseAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         return with(parent) {
             val exerciseParts = ExercisePartType.values().map { exercisePart ->
-                context.getString(exercisePart.partName)
+                context.getString(exercisePart.getPartNameRes())
             }
             val exercisePartAdapter =
                 ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
@@ -77,7 +78,7 @@ class RoutineExerciseAdapter(
             this.exercise = exercise
             binding.exercise = exercise
 
-            val exercisePartName = binding.root.context.getString(exercise.part.partName)
+            val exercisePartName = binding.root.context.getString(exercise.part.getPartNameRes())
             binding.textViewExercisePart.setText(exercisePartName, false)
 
             binding.recyclerViewSet.adapter = routineSetAdapter
