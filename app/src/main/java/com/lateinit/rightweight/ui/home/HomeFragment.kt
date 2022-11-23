@@ -19,7 +19,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
-    private val viewModel: UserViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,20 +35,28 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setAdapter()
         setBinding()
+
         binding.floatingActionButtonStartExercise.setOnClickListener {
             it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
         }
-        binding.cardViewHomeRoutineContainer.setOnClickListener {
+        binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
             val item =
                 (requireActivity() as HomeActivity).binding.bottomNavigation.menu.findItem(R.id.navigation_routine_management)
             NavigationUI.onNavDestinationSelected(item, findNavController())
+        }
 
+        homeViewModel.exercises.observe(viewLifecycleOwner) {
+            homeAdapter.submitList(it)
+        }
+        userViewModel.userInfo.observe(viewLifecycleOwner) {
+            homeViewModel.getDay(it.dayId)
         }
     }
 
     override fun onResume() {
-        viewModel.getUser()
+        userViewModel.getUser()
         super.onResume()
     }
 
@@ -57,7 +67,13 @@ class HomeFragment : Fragment() {
 
     private fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+        binding.userViewModel = userViewModel
+        binding.homeViewModel = homeViewModel
+    }
+
+    private fun setAdapter() {
+        homeAdapter = HomeAdapter()
+        binding.recyclerViewTodayRoutine.adapter = homeAdapter
     }
 
 }
