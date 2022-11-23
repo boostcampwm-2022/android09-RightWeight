@@ -42,7 +42,7 @@
     <string name="forearm">전완근</string>
     <string name="cardio">유산소</string>
     <string name="end_exercise">운동 종료</string>
-    <string name="mock_routine_id">2c96d1cd-16cb-4261-bf2f-52ab8fc35a46</string>
+    <string name="mock_routine_id">14a3f0f1-94eb-4d40-a73f-c9483a00ac5d</string>
     <string name="reset">초기화</string>
     <string name="reset_message">루틴이 Day1부터 시작됩니다. 초기화 하시겠습니까?</string>
 </resources>

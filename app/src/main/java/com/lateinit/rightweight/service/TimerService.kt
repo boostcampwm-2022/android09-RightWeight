@@ -51,7 +51,7 @@ class TimerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createChannel()
 
-        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)!!
+        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 
         when (action) {
             START -> {
@@ -104,7 +104,7 @@ class TimerService : Service() {
             SCREEN_MOVE_INTENT_EXTRA,
             R.id.action_navigation_home_to_navigation_exercise
         )
-        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
