@@ -2,6 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="timeString"
+            type="String"/>
+        <variable
+            name="isTimerRunning"
+            type="Boolean"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,7 +22,7 @@
             android:layout_height="match_parent">
 
             <com.google.android.material.bottomappbar.BottomAppBar
-                android:id="@+id/bottomAppBar"
+                android:id="@+id/bottom_app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -26,12 +36,12 @@
                     android:layout_marginHorizontal="20dp">
 
                     <TextView
-                        android:id="@+id/textView_timer"
+                        android:id="@+id/text_view_timer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/error"
                         android:textColor="@color/white"
-                        android:text="00:00:00"
+                        android:text="@{timeString}"
                         style="@style/Text.Medium"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +49,7 @@
 
                     <Button
                         android:id="@+id/button_end_exercise"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:backgroundTint="@color/error"
                         android:textColor="@color/white"
@@ -52,12 +62,12 @@
             </com.google.android.material.bottomappbar.BottomAppBar>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/button_start_pause_exercise"
+                android:id="@+id/button_start_and_pause_exercise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/secondaryDarkColor"
-                android:src="@drawable/ic_baseline_play_arrow"
-                app:layout_anchor="@id/bottomAppBar"/>
+                isTimerRunning="@{isTimerRunning}"
+                app:layout_anchor="@id/bottom_app_bar"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

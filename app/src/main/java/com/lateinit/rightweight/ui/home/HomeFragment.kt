@@ -1,6 +1,8 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.lateinit.rightweight.service.TimerService
 import androidx.navigation.ui.NavigationUI
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
@@ -27,6 +30,16 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private lateinit var homeAdapter: HomeAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val navigationRouteId = requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
+        Log.d("navigationRouteId", navigationRouteId.toString())
+        if(navigationRouteId != -1){
+            findNavController().navigate(navigationRouteId)
+        }
     }
 
     override fun onCreateView(
