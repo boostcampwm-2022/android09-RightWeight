@@ -51,7 +51,7 @@ class TimerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createChannel()
 
-        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)!!
+        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 
         when (action) {
             START -> {

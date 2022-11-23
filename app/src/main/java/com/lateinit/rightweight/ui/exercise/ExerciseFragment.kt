@@ -25,17 +25,15 @@ class ExerciseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP_NOTIFICATION)
-        requireActivity().startService(timerService)
-
         binding = FragmentExerciseBinding.inflate(layoutInflater, container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        requireActivity().startService(timerService)
 
         binding.buttonStartAndPauseExercise.setOnClickListener(){
             when(binding.isTimerRunning){
@@ -47,6 +45,14 @@ class ExerciseFragment : Fragment() {
         binding.buttonEndExercise.setOnClickListener(){
             stopTimer()
         }
+    }
+
+    override fun onStart(){
+        super.onStart()
+
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP_NOTIFICATION)
+        requireActivity().startService(timerService)
     }
 
     override fun onResume() {
@@ -114,8 +120,8 @@ class ExerciseFragment : Fragment() {
         requireActivity().startService(timerService)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
+        super.onStop()
 
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
