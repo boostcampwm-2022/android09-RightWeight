@@ -105,6 +105,19 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
                     tools:listitem="@layout/item_day" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_exercise"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_exercise" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_remove_day"
                     style="@style/Text.Small.Bold"

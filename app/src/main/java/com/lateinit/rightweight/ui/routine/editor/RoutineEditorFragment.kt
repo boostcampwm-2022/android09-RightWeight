@@ -36,6 +36,7 @@ class RoutineEditorFragment : Fragment() {
         setRoutineDayAdapter()
         setRoutineDaysObserve()
         setExerciseAdapter()
+        setDayExercisesObserve()
     }
 
     private fun setBinding() {
@@ -77,7 +78,7 @@ class RoutineEditorFragment : Fragment() {
     private fun setExerciseAdapter(){
         exerciseAdapter = RoutineExerciseAdapter(object : RoutineExerciseAdapter.ExerciseEventListener{
             override fun onExerciseAdd(position: Int) {
-                viewModel.addExercise(position)
+                //viewModel.addExercise(position)
             }
 
             override fun onExerciseRemove(dayId: String, position: Int) {
@@ -102,6 +103,12 @@ class RoutineEditorFragment : Fragment() {
 
         })
         binding.recyclerViewExercise.adapter = exerciseAdapter
+    }
+
+    private fun setDayExercisesObserve() {
+        viewModel.dayExercises.observe(viewLifecycleOwner) {
+            exerciseAdapter.submitList(it)
+        }
     }
 
     override fun onDestroyView() {

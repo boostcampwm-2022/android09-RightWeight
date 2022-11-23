@@ -38,7 +38,6 @@
                     android:id="@+id/text_view_exercise_part"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:includeFontPadding="true"
                     android:dropDownHeight="140dp"
                     android:focusable="false"
                     android:includeFontPadding="true"
@@ -73,7 +72,6 @@
                     app:layout_constraintStart_toEndOf="@+id/layout_edit_text_exercise_part"
                     app:layout_constraintTop_toTopOf="@id/layout_edit_text_exercise_part" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
             <Button
                 android:id="@+id/button_exercise_remove"
