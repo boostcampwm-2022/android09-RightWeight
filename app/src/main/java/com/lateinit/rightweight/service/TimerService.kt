@@ -30,6 +30,8 @@ class TimerService : Service() {
         const val START = "start"
         const val PAUSE = "pause"
         const val STOP = "stop"
+        const val START_NOTIFICATION = "start_notification"
+        const val STOP_NOTIFICATION = "stop_notification"
         const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
@@ -64,6 +66,13 @@ class TimerService : Service() {
             STOP -> {
                 pauseTimer()
                 foregroundUpdateTimer.cancel()
+            }
+            START_NOTIFICATION ->{
+                setNotification()
+            }
+            STOP_NOTIFICATION ->{
+                foregroundUpdateTimer.cancel()
+                stopForeground(true)
             }
         }
 

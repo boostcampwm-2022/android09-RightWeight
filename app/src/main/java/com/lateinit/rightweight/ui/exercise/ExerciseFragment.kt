@@ -25,6 +25,11 @@ class ExerciseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP_NOTIFICATION)
+        requireActivity().startService(timerService)
+
         binding = FragmentExerciseBinding.inflate(layoutInflater, container,false)
         return binding.root
     }
@@ -106,6 +111,14 @@ class ExerciseFragment : Fragment() {
     fun getTimerStatus() {
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STATUS)
+        requireActivity().startService(timerService)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
         requireActivity().startService(timerService)
     }
 
