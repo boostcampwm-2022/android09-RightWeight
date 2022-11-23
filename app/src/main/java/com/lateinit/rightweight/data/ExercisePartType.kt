@@ -6,7 +6,7 @@ import com.lateinit.rightweight.R
 enum class ExercisePartType(@StringRes val partName: Int) {
     CHEST(R.string.chest),
     BACK(R.string.back),
-    LEG(R.string.back),
+    LEG(R.string.leg),
     SHOULDER(R.string.shoulder),
     BICEPS(R.string.biceps),
     TRICEPS(R.string.triceps),
