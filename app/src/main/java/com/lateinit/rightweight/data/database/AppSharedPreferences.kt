@@ -20,6 +20,6 @@ class AppSharedPreferences(context: Context) {
         return Gson().fromJson(
             sharedPreferences.getString(userKey, null),
             User::class.java
-        )
+        ) ?: User(null, null, null)
     }
 }
