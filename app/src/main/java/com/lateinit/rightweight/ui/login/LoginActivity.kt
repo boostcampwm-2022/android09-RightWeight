@@ -25,6 +25,7 @@ import com.lateinit.rightweight.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
@@ -50,6 +51,17 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(this.toString(), "onCreate")
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail().build()
+        val client = GoogleSignIn.getClient(applicationContext, options)
+
+        client.silentSignIn().addOnSuccessListener {
+            Log.d("LoginActivity", "success")
+            val intent = Intent(baseContext, HomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+        }
 
         sharedPreferences = baseContext.getSharedPreferences(
             baseContext.getString(R.string.app_name),
@@ -68,10 +80,10 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.loginResponse.collect() { loginResponse ->
-                    sharedPreferences.edit()
-                        .putString("loginResponse", Gson().toJson(loginResponse)).apply()
-
                     if (loginResponse != null) {
+                        sharedPreferences.edit()
+                            .putString("loginResponse", Gson().toJson(loginResponse)).apply()
+
                         val userInfo = sharedPreferences.getString("userInfo", null)
                         if (userInfo == null) {
                             sharedPreferences.edit().putString(
