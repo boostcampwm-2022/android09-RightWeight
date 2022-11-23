@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             tools:context=".ui.home.HomeActivity">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/material_toolbar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
