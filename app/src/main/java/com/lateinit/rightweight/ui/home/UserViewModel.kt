@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -20,8 +21,8 @@ class UserViewModel @Inject constructor(
 
     private val _userInfo = MutableLiveData<User>()
     val userInfo: LiveData<User> get() = _userInfo
-    private val _routineTitle = MutableLiveData<String>()
-    val routineTitle: LiveData<String> get() = _routineTitle
+    private val _routine = MutableLiveData<Routine>()
+    val routine: LiveData<Routine> get() = _routine
 
     init {
         getUser()
@@ -35,6 +36,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun resetRoutine() {
+        val routine = routine.value ?: return
+        setUser(routine.routineId)
+    }
+
     fun getUser() {
         viewModelScope.launch {
             val user = userRepository.getUser()
@@ -45,12 +51,10 @@ class UserViewModel @Inject constructor(
 
     private fun getRoutineById() {
         viewModelScope.launch {
-            val routineId = userRepository.getUser().routineId ?: run {
-                _routineTitle.postValue("루틴을 설정해주세요.")
-                return@launch
-            }
+            val routineId = userRepository.getUser().routineId ?: return@launch
+
             val routine = routineRepository.getRoutineById(routineId)
-            _routineTitle.postValue(routine.title)
+            _routine.postValue(routine)
         }
     }
 }
