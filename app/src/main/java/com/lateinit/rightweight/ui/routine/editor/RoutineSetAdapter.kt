@@ -10,7 +10,7 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.databinding.ItemSetBinding
 
 
-class RoutineSetAdapter(val routineEventListener: RoutineDayAdapter.RoutineEventListener) :
+class RoutineSetAdapter(val exerciseEventListener: RoutineExerciseAdapter.ExerciseEventListener) :
     ListAdapter<ExerciseSet, RoutineSetAdapter.SetViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SetViewHolder {
@@ -29,7 +29,7 @@ class RoutineSetAdapter(val routineEventListener: RoutineDayAdapter.RoutineEvent
         fun bind(exerciseSet: ExerciseSet) {
             binding.set = exerciseSet
             binding.buttonSetRemove.setOnClickListener {
-                routineEventListener.onSetRemove(exerciseSet.exerciseId, layoutPosition)
+                exerciseEventListener.onSetRemove(exerciseSet.exerciseId, layoutPosition)
             }
         }
     }

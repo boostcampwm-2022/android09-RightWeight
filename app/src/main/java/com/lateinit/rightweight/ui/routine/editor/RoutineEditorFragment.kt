@@ -19,6 +19,7 @@ class RoutineEditorFragment : Fragment() {
 
     private val viewModel: RoutineEditorViewModel by viewModels()
     private lateinit var routineDayAdapter: RoutineDayAdapter
+    private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +35,7 @@ class RoutineEditorFragment : Fragment() {
         setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()
+        setExerciseAdapter()
     }
 
     private fun setBinding() {
@@ -59,6 +61,21 @@ class RoutineEditorFragment : Fragment() {
                 viewModel.moveDownDay(position)
             }
 
+            override fun onDayClick(position: Int) {
+                viewModel.clickDay(position)
+            }
+        })
+        binding.recyclerViewDay.adapter = routineDayAdapter
+    }
+
+    private fun setRoutineDaysObserve() {
+        viewModel.days.observe(viewLifecycleOwner) {
+            routineDayAdapter.submitList(it)
+        }
+    }
+
+    private fun setExerciseAdapter(){
+        exerciseAdapter = RoutineExerciseAdapter(object : RoutineExerciseAdapter.ExerciseEventListener{
             override fun onExerciseAdd(position: Int) {
                 viewModel.addExercise(position)
             }
@@ -84,13 +101,7 @@ class RoutineEditorFragment : Fragment() {
             }
 
         })
-        binding.recyclerViewDay.adapter = routineDayAdapter
-    }
-
-    private fun setRoutineDaysObserve() {
-        viewModel.days.observe(viewLifecycleOwner) {
-            routineDayAdapter.submitList(it)
-        }
+        binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
     override fun onDestroyView() {
