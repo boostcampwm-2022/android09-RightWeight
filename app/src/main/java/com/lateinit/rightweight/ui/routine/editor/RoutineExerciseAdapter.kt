@@ -16,7 +16,6 @@ class RoutineExerciseAdapter(
 ) : ListAdapter<Exercise, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
 
     interface ExerciseEventListener {
-        fun onExerciseAdd(position: Int)
 
         fun onExerciseRemove(dayId: String, position: Int)
 
@@ -57,9 +56,6 @@ class RoutineExerciseAdapter(
         init {
             binding.textViewExercisePart.setAdapter(exercisePartAdapter)
 
-
-            binding.recyclerViewSet.adapter = routineSetAdapter
-            routineSetAdapter.submitList(exercise.exerciseSets)
             binding.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
                 exerciseEventListener.onExercisePartChange(
                     exercise.dayId,

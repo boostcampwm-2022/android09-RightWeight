@@ -9,10 +9,6 @@
         <variable
             name="viewModel"
             type="com.lateinit.rightweight.ui.routine.editor.RoutineEditorViewModel" />
-
-        <variable
-            name="selectedDayPosition"
-            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,26 +101,13 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
                     tools:listitem="@layout/item_day" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_exercise"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day"
-                    tools:itemCount="2"
-                    tools:listitem="@layout/item_exercise" />
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_remove_day"
                     style="@style/Text.Small.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->viewModel.removeDay(selectedDayPosition)}"
-                    android:text="Day삭제"
+                    android:onClick="@{()->viewModel.removeDay()}"
+                    android:text="@string/day_remove"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toStartOf="@id/button_add_day"
                     app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{()->viewModel.addDay()}"
-                    android:text="Day추가"
+                    android:text="@string/day_add"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/button_remove_day"

@@ -46,13 +46,6 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setRoutineDayAdapter() {
         routineDayAdapter = RoutineDayAdapter(object : RoutineDayAdapter.RoutineEventListener {
-            override fun onDayAdd() {
-                viewModel.addDay()
-            }
-
-            override fun onDayRemove(position: Int) {
-                viewModel.removeDay(position)
-            }
 
             override fun onDayMoveUp(position: Int) {
                 viewModel.moveUpDay(position)
@@ -77,9 +70,6 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setExerciseAdapter(){
         exerciseAdapter = RoutineExerciseAdapter(object : RoutineExerciseAdapter.ExerciseEventListener{
-            override fun onExerciseAdd(position: Int) {
-                //viewModel.addExercise(position)
-            }
 
             override fun onExerciseRemove(dayId: String, position: Int) {
                 viewModel.removeExercise(dayId, position)

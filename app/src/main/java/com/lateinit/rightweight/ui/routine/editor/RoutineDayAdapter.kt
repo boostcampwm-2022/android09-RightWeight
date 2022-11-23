@@ -20,10 +20,6 @@ class RoutineDayAdapter(
 
     interface RoutineEventListener {
 
-        fun onDayAdd()
-
-        fun onDayRemove(position: Int)
-
         fun onDayMoveUp(position: Int)
 
         fun onDayMoveDown(position: Int)
@@ -39,7 +35,7 @@ class RoutineDayAdapter(
     }
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-        holder.bind()
+        holder.bind(getItem(position))
         if (selectedPosition == position) {
             holder.itemView.apply {
                 background = getDrawable(context, R.drawable.bg_day_order_seleted)
@@ -56,12 +52,9 @@ class RoutineDayAdapter(
     ) {
         private val binding = ItemDayBinding.bind(itemView)
 
-        fun bind() {
-            "Day${layoutPosition + 1}"
-            binding.textViewDay.text = String.format(
-                binding.root.context.getString(R.string.day_order),
-                layoutPosition + 1
-            )
+        fun bind(day: Day) {
+            binding.day = day
+
             itemView.setOnClickListener {
                 routineEventListener.onDayClick(layoutPosition)
                 lastPosition = selectedPosition
