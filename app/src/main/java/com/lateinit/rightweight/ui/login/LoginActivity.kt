@@ -1,10 +1,7 @@
 package com.lateinit.rightweight.ui.login
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -17,11 +14,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
 import com.lateinit.rightweight.ui.home.HomeActivity
+import com.lateinit.rightweight.ui.home.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,9 +27,8 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
-    val viewModel: LoginViewModel by viewModels()
-
-    lateinit var sharedPreferences: SharedPreferences
+    val loginViewModel: LoginViewModel by viewModels()
+    val userViewModel: UserViewModel by viewModels()
 
     val getGoogleLoginResultText =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -50,23 +46,16 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(this.toString(), "onCreate")
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail().build()
         val client = GoogleSignIn.getClient(applicationContext, options)
 
         client.silentSignIn().addOnSuccessListener {
-            Log.d("LoginActivity", "success")
             val intent = Intent(baseContext, HomeActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         }
-
-        sharedPreferences = baseContext.getSharedPreferences(
-            baseContext.getString(R.string.app_name),
-            Context.MODE_PRIVATE
-        )
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
@@ -79,17 +68,14 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch() {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.loginResponse.collect() { loginResponse ->
+                loginViewModel.loginResponse.collect() { loginResponse ->
                     if (loginResponse != null) {
-                        sharedPreferences.edit()
-                            .putString("loginResponse", Gson().toJson(loginResponse)).apply()
+                        userViewModel.setLoginResponse(loginResponse)
 
-                        val userInfo = sharedPreferences.getString("userInfo", null)
-                        if (userInfo == null) {
-                            sharedPreferences.edit().putString(
-                                "userInfo",
-                                Gson().toJson(User(loginResponse.localId, null, null))
-                            ).apply()
+                        userViewModel.userInfo.value ?: run {
+                            loginResponse.localId?.let { localId ->
+                                userViewModel.setUser(User(localId, null, null))
+                            }
                         }
                     }
                 }
@@ -100,11 +86,7 @@ class LoginActivity : AppCompatActivity() {
             val lifecycleScopeInstance = this
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 val repeatOnLifecycleInstance = this
-                Log.d("call", "")
-                viewModel.networkResult.collect() { networkResult ->
-                    Log.d("NetworkResult", networkResult.toString())
-                    Log.d("lifecycleScope", lifecycleScopeInstance.toString())
-                    Log.d("repeatOnLifecycle", repeatOnLifecycleInstance.toString())
+                loginViewModel.networkResult.collect() { networkResult ->
                     when (networkResult) {
                         NetworkState.NO_ERROR -> {
                             val intent = Intent(baseContext, HomeActivity::class.java)
@@ -132,27 +114,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginToFireBase(idToken: String?) {
         idToken?.let {
-            viewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
+            loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(this.toString(), "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(this.toString(), "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(this.toString(), "onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(this.toString(), "onDestroy")
     }
 }

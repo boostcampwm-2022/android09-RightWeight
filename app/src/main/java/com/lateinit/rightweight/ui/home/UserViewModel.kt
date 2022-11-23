@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.model.User
@@ -55,6 +56,18 @@ class UserViewModel @Inject constructor(
 
             val routine = routineRepository.getRoutineById(routineId)
             _routine.postValue(routine)
+        }
+    }
+
+    fun setLoginResponse(loginResponse: LoginResponse) {
+        viewModelScope.launch {
+            userRepository.setLoginResponse(loginResponse)
+        }
+    }
+
+    fun setUser(user: User) {
+        viewModelScope.launch {
+            userRepository.setUser(user)
         }
     }
 }
