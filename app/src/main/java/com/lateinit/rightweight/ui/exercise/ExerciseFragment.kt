@@ -24,7 +24,7 @@ class ExerciseFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentExerciseBinding.inflate(layoutInflater, container,false)
         return binding.root
     }
@@ -100,6 +100,7 @@ class ExerciseFragment : Fragment() {
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
         requireActivity().startService(timerService)
+        requireActivity().stopService(timerService)
     }
 
     fun getTimerStatus() {

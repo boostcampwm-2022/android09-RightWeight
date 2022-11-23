@@ -14,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -25,6 +26,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,7 +42,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(this.toString(), "onCreate")
+        Log.d("HomeActivity", "onCreate")
 
         sharedPreferences = baseContext.getSharedPreferences(
             baseContext.getString(R.string.app_name),
@@ -49,8 +51,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
-        setNavController()
         setActionBar()
+        setNavController()
 
 
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
@@ -114,14 +116,17 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setNavController() {
+        //Log.d("HomeActivity", "setNavController")
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.navigation_exercise -> {
+                    //FIXME hide를 했을 때 notification -> homeFragment -> exerciseFragment 넘어올 때 toolbar 사라지지 않음
                     supportActionBar?.hide()
                     binding.bottomNavigation.visibility = View.GONE
                 }
@@ -143,6 +148,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setActionBar() {
+        //Log.d("HomeActivity", "setActionBar")
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
@@ -153,7 +159,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             binding.drawerLayout
         )
         setSupportActionBar(binding.materialToolbar)
-        setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         // disable drawer swipe gesture

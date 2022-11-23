@@ -1,9 +1,6 @@
 package com.lateinit.rightweight.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -11,9 +8,11 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 import java.util.*
 
-class TimerService: Service() {
+
+class TimerService : Service() {
     private var isTimerRunning = false
     private var timeCount = 0
     lateinit var timer: Timer
@@ -22,7 +21,7 @@ class TimerService: Service() {
     lateinit var customNotification: Notification
     lateinit var notificationLayout: RemoteViews
 
-    companion object{
+    companion object {
         const val MANAGE_ACTION_NAME = "timer_manage_action"
         const val MOMENT_ACTION_NAME = "timer_moment_action"
         const val STATUS_ACTION_NAME = "timer_status_action"
@@ -30,10 +29,11 @@ class TimerService: Service() {
         const val CHANNEL_NAME = "Timer"
         const val START = "start"
         const val PAUSE = "pause"
-        const val STATUS = "status"
         const val STOP = "stop"
+        const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
+        const val SCREEN_MOVE_INTENT_EXTRA = "screen_move"
     }
 
 
@@ -41,9 +41,13 @@ class TimerService: Service() {
         return null
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        setNotification()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         createChannel()
-        setNotification()
 
         val action = intent?.getStringExtra(MANAGE_ACTION_NAME)!!
 
@@ -57,9 +61,9 @@ class TimerService: Service() {
             STATUS -> {
                 sendStatus()
             }
-            STOP ->{
+            STOP -> {
                 pauseTimer()
-                stopNotification()
+                foregroundUpdateTimer.cancel()
             }
         }
 
@@ -82,15 +86,24 @@ class TimerService: Service() {
         }
     }
 
-    private fun setNotification(){
+    private fun setNotification() {
         notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
         notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
+
+        val screenMoveIntent = Intent(this, HomeActivity::class.java)
+        screenMoveIntent.putExtra(
+            SCREEN_MOVE_INTENT_EXTRA,
+            R.id.action_navigation_home_to_navigation_exercise
+        )
+        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayout)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
 
         startForeground(1, customNotification)
@@ -100,17 +113,16 @@ class TimerService: Service() {
         foregroundUpdateTimer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 updateNotification()
+                Log.d("timerIsAlive", "foregroundUpdate +${this}")
             }
         }, 0, 1000)
     }
 
-    private fun stopNotification(){
-        foregroundUpdateTimer.cancel()
-        stopForeground(true)
-    }
-
-    private fun updateNotification(){
-        notificationLayout.setTextViewText(R.id.text_view_notification_timer, getTimeString(timeCount))
+    private fun updateNotification() {
+        notificationLayout.setTextViewText(
+            R.id.text_view_notification_timer,
+            getTimeString(timeCount)
+        )
         startForeground(1, customNotification)
     }
 
@@ -126,6 +138,7 @@ class TimerService: Service() {
                 timerIntent.action = MOMENT_ACTION_NAME
                 timerIntent.putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
                 sendBroadcast(timerIntent)
+                Log.d("timerIsAlive", "addTime")
             }
         }, 0, 1000)
     }
@@ -144,7 +157,7 @@ class TimerService: Service() {
         sendBroadcast(statusIntent)
     }
 
-    fun getTimeString(timeCount: Int): String{
+    fun getTimeString(timeCount: Int): String {
         val hours: Int = (timeCount / 60) / 60
         val minutes: Int = timeCount / 60
         val seconds: Int = timeCount % 60
