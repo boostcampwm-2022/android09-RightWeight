@@ -57,6 +57,9 @@ class RoutineExerciseAdapter(
         init {
             binding.textViewExercisePart.setAdapter(exercisePartAdapter)
 
+
+            binding.recyclerViewSet.adapter = routineSetAdapter
+            routineSetAdapter.submitList(exercise.exerciseSets)
             binding.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
                 exerciseEventListener.onExercisePartChange(
                     exercise.dayId,

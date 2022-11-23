@@ -21,6 +21,14 @@
     <string name="search">검색</string>
     <string name="edit">수정</string>
     <string name="more">더보기</string>
+    <string name="start_exercise">운동 시작</string>
+    <string name="submit">확인</string>
+    <string name="cancel">취소</string>
+    <string name="logout_message">로그아웃 하시겠습니까?</string>
+    <string name="withdraw_message">정말 탈퇴하시겠습니까?</string>
+    <string name="home_description">%s\n오늘 수행할 운동은</string>
+    <string name="date_format">yyyy년 MM월 dd일</string>
+    <string name="empty_routine">루틴을 선택해주세요.</string>
     <string name="routine_title">루틴 명</string>
     <string name="routine_description">설명</string>
     <string name="routine_save">루틴 저장하기</string>
@@ -34,4 +42,7 @@
     <string name="forearm">전완근</string>
     <string name="cardio">유산소</string>
     <string name="end_exercise">운동 종료</string>
+    <string name="mock_routine_id">2c96d1cd-16cb-4261-bf2f-52ab8fc35a46</string>
+    <string name="reset">초기화</string>
+    <string name="reset_message">루틴이 Day1부터 시작됩니다. 초기화 하시겠습니까?</string>
 </resources>
