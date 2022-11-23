@@ -36,6 +36,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun resetRoutine() {
+        val routine = routine.value ?: return
+        setUser(routine.routineId)
+    }
+
     fun getUser() {
         viewModelScope.launch {
             val user = userRepository.getUser()
