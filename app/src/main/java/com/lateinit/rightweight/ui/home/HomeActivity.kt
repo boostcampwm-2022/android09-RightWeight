@@ -36,13 +36,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     CommonDialogFragment.NoticeDialogListener {
 
     private var _binding: ActivityHomeBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setNavController()
         setActionBar()
-
 
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
         val loginResponse = Gson().fromJson(
@@ -182,6 +181,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (dialog.tag) {
             LOGOUT_DIALOG_TAG -> {
                 sharedPreferences.edit().putString("loginResponse", null).apply()
+                sharedPreferences.edit().putString("userInfo", null).apply()
                 val intent = Intent(baseContext, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

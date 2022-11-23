@@ -5,6 +5,14 @@
 
     <data>
 
+        <import type="java.time.LocalDateTime" />
+
+        <import type="java.time.format.DateTimeFormatter" />
+
+        <variable
+            name="viewModel"
+            type="com.lateinit.rightweight.ui.home.UserViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,13 +20,50 @@
         android:layout_height="match_parent"
         tools:context=".ui.home.HomeFragment">
 
+        <TextView
+            android:id="@+id/text_view_home_info"
+            style="@style/Text.Medium.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@{String.format(@string/home_description, LocalDateTime.now().format(DateTimeFormatter.ofPattern(@string/date_format)))}"
+            app:layout_constraintBottom_toTopOf="@id/card_view_home_routine_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view_home_routine_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/text_view_home_info"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/text_view_home_info"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_home_info">
+
+            <TextView
+                style="@style/Text.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{viewModel.routineTitle}" />
+        </androidx.cardview.widget.CardView>
+
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_action_button_start_exercise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:contentDescription="@string/start_exercise"
             android:src="@drawable/ic_play_arrow"
-            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
