@@ -14,19 +14,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
-import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
@@ -49,6 +49,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("HomeActivity", "onCreate")
+        Log.d("HomeActivity", this.toString())
 
         sharedPreferences = baseContext.getSharedPreferences(
             baseContext.getString(R.string.app_name),
@@ -187,6 +188,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             LOGOUT_DIALOG_TAG -> {
                 sharedPreferences.edit().putString("loginResponse", null).apply()
                 sharedPreferences.edit().putString("userInfo", null).apply()
+                val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail().build()
+                val client = GoogleSignIn.getClient(applicationContext, options)
+                client.signOut()
                 val intent = Intent(baseContext, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
