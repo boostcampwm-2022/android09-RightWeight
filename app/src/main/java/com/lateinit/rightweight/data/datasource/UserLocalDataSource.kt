@@ -20,6 +20,6 @@ class UserLocalDataSource @Inject constructor(private val appSharedPreferences: 
     }
 
     override fun getLoginResponse(): LoginResponse? {
-        return getLoginResponse()
+        return appSharedPreferences.getLoginResponse()
     }
 }
