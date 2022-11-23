@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -77,7 +76,6 @@ class UserViewModel @Inject constructor(
     fun getLoginResponse() {
         viewModelScope.launch {
             val loginResponse = userRepository.getLoginResponse()
-            Log.d("UserViewModel", "loginResponse $loginResponse")
             loginResponse?.let {
                 _loginResponse.postValue(it)
             }

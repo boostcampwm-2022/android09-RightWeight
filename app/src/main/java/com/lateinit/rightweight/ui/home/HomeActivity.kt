@@ -49,13 +49,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setActionBar()
         setNavController()
-
-        userViewModel.getLoginResponse()
-        userViewModel.loginResponse.observe(this) { loginResponse ->
-            NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0)).also {
-                it.loginResponse = loginResponse
-            }
-        }
     }
 
 
@@ -126,6 +119,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             binding.drawerLayout
         )
         setSupportActionBar(binding.materialToolbar)
+
+        // set drawer header
+        userViewModel.getLoginResponse()
+        userViewModel.loginResponse.observe(this) { loginResponse ->
+            NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0)).also {
+                it.loginResponse = loginResponse
+            }
+        }
+
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         // disable drawer swipe gesture
