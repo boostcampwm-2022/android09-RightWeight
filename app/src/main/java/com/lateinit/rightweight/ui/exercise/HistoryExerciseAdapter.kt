@@ -12,6 +12,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.databinding.ItemHistoryExerciseBinding
+import com.lateinit.rightweight.util.getPartNameRes
 
 class HistoryExerciseAdapter(
     val context: Context,
@@ -20,7 +21,7 @@ class HistoryExerciseAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryExerciseViewHolder {
         val exerciseParts = ExercisePartType.values().map { exercisePart ->
-            context.getString(exercisePart.partName)
+            context.getString(exercisePart.getPartNameRes())
         }
         val exercisePartAdapter =
             ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
@@ -49,7 +50,7 @@ class HistoryExerciseAdapter(
         fun setItem(historyExercise: HistoryExercise) {
             bind.historyExercise = historyExercise
 
-            val exercisePartName = bind.root.context.getString(historyExercise.part.partName)
+            val exercisePartName = bind.root.context.getString(historyExercise.part.getPartNameRes())
             bind.textViewExercisePart.setText(exercisePartName, false)
 
             val historySetAdapter = HistorySetAdapter(context, historyEventListener)

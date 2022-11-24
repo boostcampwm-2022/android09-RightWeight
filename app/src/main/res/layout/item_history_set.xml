@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/text_view_set_order"
-            bind_set_text_number="@{historySet.order}"
+            android:text="@{Integer.toString(historySet.order)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
