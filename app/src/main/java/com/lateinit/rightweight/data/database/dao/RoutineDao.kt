@@ -22,7 +22,7 @@ interface RoutineDao {
         sets: List<ExerciseSet>
     )
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoutineList(routines: List<Routine>)
 
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")

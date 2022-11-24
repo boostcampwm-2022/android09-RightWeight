@@ -53,9 +53,12 @@
         android:name="com.lateinit.rightweight.ui.routine.editor.RoutineEditorFragment"
         android:label="@string/editor"
         tools:layout="@layout/fragment_routine_editor" >
+
         <argument
             android:name="routineId"
+            android:defaultValue=""
             app:argType="string" />
+
     </fragment>
     <fragment
         android:id="@+id/navigation_shared_routine_detail"
@@ -79,9 +82,6 @@
         <action
             android:id="@+id/action_navigation_routine_detail_to_navigation_routine_editor"
             app:destination="@id/navigation_routine_editor" />
-        <argument
-            android:name="routineId"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
