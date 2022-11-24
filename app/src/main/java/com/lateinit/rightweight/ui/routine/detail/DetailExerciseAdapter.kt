@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.ui.routine.detail
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,11 +9,13 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ItemExerciseWithSetsBinding
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 
-class DetailExerciseAdapter :
+class DetailExerciseAdapter(
+    private val onClickExercise: (Int) -> Unit
+) :
     ListAdapter<ExerciseUiModel, DetailExerciseAdapter.DetailExerciseViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailExerciseViewHolder {
-        return DetailExerciseViewHolder(parent)
+        return DetailExerciseViewHolder(parent, onClickExercise)
     }
 
     override fun onBindViewHolder(holder: DetailExerciseViewHolder, position: Int) {
@@ -23,6 +24,7 @@ class DetailExerciseAdapter :
 
     class DetailExerciseViewHolder(
         parent: ViewGroup,
+        onClickExercise: (Int) -> Unit
     ) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise_with_sets, parent, false)
     ) {
@@ -33,13 +35,12 @@ class DetailExerciseAdapter :
 
         init {
             itemView.setOnClickListener {
-                if (binding.layoutExpand.visibility == View.VISIBLE) {
-                    binding.layoutExpand.visibility = View.GONE
-                    binding.imageExpandedState.animate().setDuration(200).rotation(180f)
+                if (exerciseUiModel.expanded) {
+                    binding.imageExpandedState.animate().setDuration(200).rotation(0f)
                 } else {
-                    binding.layoutExpand.visibility = View.VISIBLE
                     binding.imageExpandedState.animate().setDuration(200).rotation(180f)
                 }
+                onClickExercise(layoutPosition)
             }
         }
 
@@ -65,7 +66,8 @@ class DetailExerciseAdapter :
                 oldItem: ExerciseUiModel,
                 newItem: ExerciseUiModel
             ): Boolean {
-                return oldItem == newItem
+                println()
+                return false
             }
         }
     }
