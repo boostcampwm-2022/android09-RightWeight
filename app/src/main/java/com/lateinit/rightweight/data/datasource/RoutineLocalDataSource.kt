@@ -8,8 +8,9 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import javax.inject.Inject
 
-class RoutineLocalDataSource @Inject constructor(private val routineDao: RoutineDao) :
-    RoutineDataSource {
+class RoutineLocalDataSource @Inject constructor(
+    private val routineDao: RoutineDao,
+    ) : RoutineDataSource {
 
     override suspend fun insertRoutine(
         routine: Routine,
@@ -38,6 +39,10 @@ class RoutineLocalDataSource @Inject constructor(private val routineDao: Routine
 
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineDao.getExercisesByDayId(dayId)
+    }
+
+    override suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet> {
+        return routineDao.getSetsByExerciseId(exerciseId)
     }
 
     override suspend fun getRoutines(): List<Routine> {

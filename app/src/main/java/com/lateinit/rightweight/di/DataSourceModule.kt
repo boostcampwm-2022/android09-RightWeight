@@ -2,6 +2,7 @@ package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.RightWeightRetrofitService
 import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.datasource.*
 import dagger.Module
@@ -32,5 +33,11 @@ class DataSourceModule {
     @Singleton
     fun getUserDataSource(appSharedPreferences: AppSharedPreferences): UserDataSource {
         return UserLocalDataSource(appSharedPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun getHistoryLocalDataSource(historyDao: HistoryDao): HistoryLocalDataSource {
+        return HistoryLocalDataSource(historyDao)
     }
 }

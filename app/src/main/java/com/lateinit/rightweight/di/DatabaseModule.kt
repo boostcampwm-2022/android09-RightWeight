@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import dagger.Module
 import dagger.Provides
@@ -26,6 +27,12 @@ class DatabaseModule {
     @Singleton
     fun getRoutineDao(appDatabase: AppDatabase): RoutineDao {
         return appDatabase.routineDao()
+    }
+
+    @Provides
+    @Singleton
+    fun getHistoryDao(appDatabase: AppDatabase): HistoryDao {
+        return appDatabase.historyDao()
     }
 
     @Provides

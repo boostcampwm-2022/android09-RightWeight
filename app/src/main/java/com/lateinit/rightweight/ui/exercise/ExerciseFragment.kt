@@ -10,14 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
+import dagger.hilt.android.AndroidEntryPoint
 
-class ExerciseFragment : Fragment() {
+@AndroidEntryPoint
+class ExerciseFragment : Fragment(), HistoryEventListener {
 
     private lateinit var timerStatusReceiver: BroadcastReceiver
     private lateinit var timerMomentReceiver: BroadcastReceiver
+    private val exerciseViewModel: ExerciseViewModel by viewModels()
 
     lateinit var binding: FragmentExerciseBinding
 
@@ -32,19 +38,19 @@ class ExerciseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        renewTodayHistory()
+
         val timerService = Intent(requireContext(), TimerService::class.java)
         requireActivity().startService(timerService)
 
-        binding.buttonStartAndPauseExercise.setOnClickListener(){
+        binding.buttonExerciseStartAndPause.setOnClickListener(){
             when(binding.isTimerRunning){
                 true -> pauseTimer()
                 false -> startTimer()
                 else -> startTimer()
             }
         }
-        binding.buttonEndExercise.setOnClickListener(){
-            stopTimer()
-        }
+
     }
 
     override fun onStart(){
@@ -126,6 +132,61 @@ class ExerciseFragment : Fragment() {
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
         requireActivity().startService(timerService)
+    }
+
+    override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
+        if(exerciseViewModel.historySets.containsKey(historyExerciseId)) {
+            exerciseViewModel.historySets[historyExerciseId]?.observe(viewLifecycleOwner) { historySets ->
+                adapter.submitList(historySets)
+            }
+        }
+    }
+
+    override fun updateHistorySet(historySet: HistorySet) {
+        exerciseViewModel.updateHistorySet(historySet)
+    }
+
+    override fun updateHistoryExercise(historyExercise: HistoryExercise) {
+        exerciseViewModel.updateHistoryExercise(historyExercise)
+    }
+
+    override fun removeHistorySet(historySetId: String) {
+        exerciseViewModel.removeHistorySet(historySetId)
+    }
+
+    override fun removeHistoryExercise(historyExerciseId: String) {
+        exerciseViewModel.removeHistoryExercise(historyExerciseId)
+    }
+
+    override fun renewTodayHistory() {
+        val historyExerciseAdapter = HistoryExerciseAdapter(requireContext(), this)
+        binding.recyclerViewHistory.adapter = historyExerciseAdapter
+
+        exerciseViewModel.loadTodayHistory()
+
+        exerciseViewModel.history.observe(viewLifecycleOwner){ history ->
+            binding.buttonExerciseAdd.setOnClickListener(){
+                addHistoryExercise(history.historyId)
+                renewTodayHistory()
+            }
+            binding.buttonExerciseEnd.setOnClickListener(){
+                stopTimer()
+                //exerciseViewModel.updateTodayHistory()
+            }
+        }
+
+
+        exerciseViewModel.historyExercises.observe(viewLifecycleOwner){ historyExercises ->
+            historyExerciseAdapter.submitList(historyExercises)
+        }
+    }
+
+    override fun addHistorySet(historyExerciseId: String) {
+        exerciseViewModel.addHistorySet(historyExerciseId)
+    }
+
+    fun addHistoryExercise(historyId:String){
+        exerciseViewModel.addHistoryExercise(historyId)
     }
 
 }
