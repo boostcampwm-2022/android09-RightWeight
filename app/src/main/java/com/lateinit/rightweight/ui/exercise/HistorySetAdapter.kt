@@ -36,15 +36,15 @@ class HistorySetAdapter(
             bind.historySet = historySet
             bind.checkboxSet.setOnCheckedChangeListener { buttonView, isChecked ->
                 historySet.checked = isChecked
-                historyEventListener.saveHistorySet(historySet)
+                historyEventListener.updateHistorySet(historySet)
             }
             bind.editTextSetWeight.doAfterTextChanged {
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
-                historyEventListener.saveHistorySet(historySet)
+                historyEventListener.updateHistorySet(historySet)
             }
             bind.editTextSetCount.doAfterTextChanged {
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
-                historyEventListener.saveHistorySet(historySet)
+                historyEventListener.updateHistorySet(historySet)
             }
             bind.buttonSetRemove.setOnClickListener {
                 historyEventListener.removeHistorySet(historySet.setId)

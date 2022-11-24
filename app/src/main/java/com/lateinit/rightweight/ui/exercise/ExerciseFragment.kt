@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
@@ -42,16 +43,17 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         val timerService = Intent(requireContext(), TimerService::class.java)
         requireActivity().startService(timerService)
 
-        binding.buttonStartAndPauseExercise.setOnClickListener(){
+        binding.buttonExerciseStartAndPause.setOnClickListener(){
             when(binding.isTimerRunning){
                 true -> pauseTimer()
                 false -> startTimer()
                 else -> startTimer()
             }
         }
-        binding.buttonEndExercise.setOnClickListener(){
+        binding.buttonExerciseEnd.setOnClickListener(){
             stopTimer()
         }
+
     }
 
     override fun onStart(){
@@ -143,12 +145,20 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         }
     }
 
-    override fun saveHistorySet(historySet: HistorySet) {
-        exerciseViewModel.saveHistorySet(historySet)
+    override fun updateHistorySet(historySet: HistorySet) {
+        exerciseViewModel.updateHistorySet(historySet)
+    }
+
+    override fun updateHistoryExercise(historyExercise: HistoryExercise) {
+        exerciseViewModel.updateHistoryExercise(historyExercise)
     }
 
     override fun removeHistorySet(historySetId: String) {
         exerciseViewModel.removeHistorySet(historySetId)
+    }
+
+    override fun removeHistoryExercise(historyExerciseId: String) {
+        exerciseViewModel.removeHistoryExercise(historyExerciseId)
     }
 
     override fun renewTodayHistory() {
@@ -156,9 +166,15 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         binding.recyclerViewHistory.adapter = historyExerciseAdapter
 
         exerciseViewModel.loadTodayHistory()
-//        exerciseViewModel.history.observe(viewLifecycleOwner){ history ->
-//
-//        }
+
+        exerciseViewModel.history.observe(viewLifecycleOwner){ history ->
+            binding.buttonExerciseAdd.setOnClickListener(){
+                addHistoryExercise(history.historyId)
+                renewTodayHistory()
+            }
+        }
+
+
         exerciseViewModel.historyExercises.observe(viewLifecycleOwner){ historyExercises ->
             historyExerciseAdapter.submitList(historyExercises)
         }
@@ -166,6 +182,10 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     override fun addHistorySet(historyExerciseId: String) {
         exerciseViewModel.addHistorySet(historyExerciseId)
+    }
+
+    fun addHistoryExercise(historyId:String){
+        exerciseViewModel.addHistoryExercise(historyId)
     }
 
 }

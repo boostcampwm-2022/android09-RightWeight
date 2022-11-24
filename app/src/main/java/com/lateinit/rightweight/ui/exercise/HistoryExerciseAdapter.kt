@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,14 +19,14 @@ class HistoryExerciseAdapter(
 ) : ListAdapter<HistoryExercise, HistoryExerciseAdapter.HistoryExerciseViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryExerciseViewHolder {
-//            val exerciseParts = ExercisePartType.values().map { exercisePart ->
-//                context.getString(exercisePart.partName)
-//            }
-//            val exercisePartAdapter =
-//                ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
+        val exerciseParts = ExercisePartType.values().map { exercisePart ->
+            context.getString(exercisePart.partName)
+        }
+        val exercisePartAdapter =
+            ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
 
         val bind = ItemHistoryExerciseBinding.inflate(LayoutInflater.from(context), parent, false)
-        return HistoryExerciseViewHolder(context, historyEventListener, bind)
+        return HistoryExerciseViewHolder(context, historyEventListener, exercisePartAdapter, bind)
     }
 
     override fun onBindViewHolder(holder: HistoryExerciseViewHolder, position: Int) {
@@ -35,29 +36,14 @@ class HistoryExerciseAdapter(
     class HistoryExerciseViewHolder(
         val context: Context,
         val historyEventListener: HistoryEventListener,
+        val exercisePartAdapter: ArrayAdapter<String>,
         val bind: ItemHistoryExerciseBinding
     ) : RecyclerView.ViewHolder(
         bind.root
     ) {
 
         init {
-//            bind.textViewExercisePart.setAdapter(exercisePartAdapter)
-//
-//            bind.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
-//                routineEventListener.onExercisePartChange(
-//                    exercise.dayId,
-//                    layoutPosition,
-//                    ExercisePartType.values()[position]
-//                )
-//            }
-//
-//            bind.buttonExerciseRemove.setOnClickListener {
-//                routineEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
-//            }
-//
-//            bind.buttonSetAdd.setOnClickListener {
-//                routineEventListener.onSetAdd(exercise.exerciseId)
-//            }
+            bind.textViewExercisePart.setAdapter(exercisePartAdapter)
         }
 
         fun setItem(historyExercise: HistoryExercise) {
@@ -70,10 +56,27 @@ class HistoryExerciseAdapter(
             bind.recyclerViewSet.adapter = historySetAdapter
             historyEventListener.applyHistorySets(historyExercise.exerciseId, historySetAdapter)
 
-            bind.buttonSetAdd.setOnClickListener(){
+            bind.buttonSetAdd.setOnClickListener() {
                 historyEventListener.addHistorySet(historyExercise.exerciseId)
                 historyEventListener.renewTodayHistory()
             }
+
+            bind.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
+                historyExercise.part = ExercisePartType.values()[position]
+                historyEventListener.updateHistoryExercise(historyExercise)
+                historyEventListener.renewTodayHistory()
+            }
+
+            bind.buttonExerciseRemove.setOnClickListener {
+                historyEventListener.removeHistoryExercise(historyExercise.exerciseId)
+                historyEventListener.renewTodayHistory()
+            }
+
+            bind.editTextExerciseTitle.doAfterTextChanged {
+                // two way databinding을 사용했기 때문에 historyExercise가 자동으로 변경됨
+                historyEventListener.updateHistoryExercise(historyExercise)
+            }
+
         }
     }
 

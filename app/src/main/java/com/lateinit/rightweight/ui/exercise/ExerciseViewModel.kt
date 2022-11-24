@@ -49,9 +49,15 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    fun saveHistorySet(historySet: HistorySet){
+    fun updateHistorySet(historySet: HistorySet){
         viewModelScope.launch {
-            historyRepository.saveHistorySet(historySet)
+            historyRepository.updateHistorySet(historySet)
+        }
+    }
+
+    fun updateHistoryExercise(historyExercise: HistoryExercise) {
+        viewModelScope.launch {
+            historyRepository.updateHistoryExercise(historyExercise)
         }
     }
 
@@ -61,9 +67,21 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
+    fun removeHistoryExercise(historyExerciseId: String){
+        viewModelScope.launch {
+            historyRepository.removeHistoryExercise(historyExerciseId)
+        }
+    }
+
     fun addHistorySet(historyExerciseId: String){
         viewModelScope.launch {
             historyRepository.addHistorySet(historyExerciseId)
+        }
+    }
+
+    fun addHistoryExercise(historyId: String){
+        viewModelScope.launch {
+            historyRepository.addHistoryExercise(historyId)
         }
     }
 }

@@ -29,16 +29,28 @@ class HistoryRepositoryImpl @Inject constructor(
         return historyLocalDataSource.getHistorySetsByHistoryExerciseId(exerciseId)
     }
 
-    override suspend fun saveHistorySet(historySet: HistorySet) {
-        historyLocalDataSource.saveHistorySet(historySet)
+    override suspend fun updateHistorySet(historySet: HistorySet) {
+        historyLocalDataSource.updateHistorySet(historySet)
+    }
+
+    override suspend fun updateHistoryExercise(historyExercise: HistoryExercise) {
+        historyLocalDataSource.updateHistoryExercise(historyExercise)
     }
 
     override suspend fun removeHistorySet(historySetId: String) {
         historyLocalDataSource.removeHistorySet(historySetId)
     }
 
+    override suspend fun removeHistoryExercise(historyExerciseId: String) {
+        historyLocalDataSource.removeHistoryExercise(historyExerciseId)
+    }
+
     override suspend fun addHistorySet(historyExerciseId: String) {
         historyLocalDataSource.addHistorySet(historyExerciseId)
+    }
+
+    override suspend fun addHistoryExercise(historyId: String) {
+        historyLocalDataSource.addHistoryExercise(historyId)
     }
 
 }

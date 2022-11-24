@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.data.datasource
 
+import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.entity.*
 import java.time.LocalDate
@@ -7,7 +8,7 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
-class HistoryLocalDataSource@Inject constructor(
+class HistoryLocalDataSource @Inject constructor(
     private val historyDao: HistoryDao
 ): HistoryDataSource {
     override suspend fun loadHistoryByDate(localDate: LocalDate): List<History> {
@@ -47,17 +48,33 @@ class HistoryLocalDataSource@Inject constructor(
         return historyDao.getHistorySetsByHistoryExerciseId(exerciseId)
     }
 
-    override suspend fun saveHistorySet(historySet: HistorySet) {
-        historyDao.insertHistorySet(historySet)
+    override suspend fun updateHistorySet(historySet: HistorySet) {
+        historyDao.updatetHistorySet(historySet)
+    }
+
+    override suspend fun updateHistoryExercise(historyExercise: HistoryExercise) {
+        historyDao.updateHistoryExercise(historyExercise)
     }
 
     override suspend fun removeHistorySet(historySetId: String) {
         historyDao.removeHistorySet(historySetId)
     }
 
+    override suspend fun removeHistoryExercise(historyExerciseId: String) {
+        historyDao.removeHistoryExercise(historyExerciseId)
+    }
+
     override suspend fun addHistorySet(historyExerciseId: String) {
         val historySetId = UUID.randomUUID().toString()
-        val newHistorySet = HistorySet(historySetId, historyExerciseId, "", "", 999, false)
+        val maxHistorySetOrder = historyDao.getMaxHistorySetOrder()
+        val newHistorySet = HistorySet(historySetId, historyExerciseId, "", "", maxHistorySetOrder + 1, false)
         historyDao.insertHistorySet(newHistorySet)
+    }
+
+    override suspend fun addHistoryExercise(historyId: String) {
+        val historyExerciseId = UUID.randomUUID().toString()
+        val maxHistoryExerciseOrder = historyDao.getMaxHistoryExerciseOrder()
+        val newHistoryExercise = HistoryExercise(historyExerciseId, historyId, "", maxHistoryExerciseOrder + 1, ExercisePartType.CHEST)
+        historyDao.insertHistoryExercise(newHistoryExercise)
     }
 }

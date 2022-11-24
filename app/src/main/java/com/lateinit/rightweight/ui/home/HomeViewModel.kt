@@ -41,23 +41,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun checkTodayHistory(){
+    fun checkTodayHistory() {
         viewModelScope.launch {
             val todayHistories = historyRepository.loadHistoryByDate(LocalDate.now())
-            if(todayHistories.isEmpty()){
+            if (todayHistories.isEmpty()) {
                 saveHistory()
             }
         }
     }
 
-    fun saveHistory(){
-        val dayId = day.value?.dayId
-        dayId ?: return
+    fun saveHistory() {
+        val dayId = day.value?.dayId ?: return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)
             val totalExerciseSets = mutableListOf<ExerciseSet>()
-            for(exercise in exercises){
+            for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
             historyRepository.saveHistory(day, exercises, totalExerciseSets)
