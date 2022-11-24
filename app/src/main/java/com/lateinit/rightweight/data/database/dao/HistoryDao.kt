@@ -19,6 +19,22 @@ interface HistoryDao {
         sets: List<HistorySet>
     )
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHistorySet(
+        set: HistorySet
+    )
+
     @Query("SELECT * FROM history WHERE date = :localDate")
     suspend fun loadHistoryByDate(localDate: LocalDate) : List<History>
+
+    @Query("SELECT * FROM history_exercise WHERE history_id = :historyId")
+    suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise>
+
+    @Query("SELECT * FROM history_set WHERE exercise_id = :exerciseId ORDER BY `order`")
+    suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet>
+
+    @Query("DELETE FROM history_set WHERE set_id = :historySetId")
+    suspend fun removeHistorySet(historySetId: String)
+
+
 }

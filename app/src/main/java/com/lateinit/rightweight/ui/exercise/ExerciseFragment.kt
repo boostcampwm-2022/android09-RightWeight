@@ -10,14 +10,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
+import dagger.hilt.android.AndroidEntryPoint
 
-class ExerciseFragment : Fragment() {
+@AndroidEntryPoint
+class ExerciseFragment : Fragment(), HistoryEventListener {
 
     private lateinit var timerStatusReceiver: BroadcastReceiver
     private lateinit var timerMomentReceiver: BroadcastReceiver
+    private val exerciseViewModel: ExerciseViewModel by viewModels()
 
     lateinit var binding: FragmentExerciseBinding
 
@@ -31,6 +36,8 @@ class ExerciseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        renewTodayHistory()
 
         val timerService = Intent(requireContext(), TimerService::class.java)
         requireActivity().startService(timerService)
@@ -126,6 +133,39 @@ class ExerciseFragment : Fragment() {
         val timerService = Intent(requireContext(), TimerService::class.java)
         timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
         requireActivity().startService(timerService)
+    }
+
+    override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
+        if(exerciseViewModel.historySets.containsKey(historyExerciseId)) {
+            exerciseViewModel.historySets[historyExerciseId]?.observe(viewLifecycleOwner) { historySets ->
+                adapter.submitList(historySets)
+            }
+        }
+    }
+
+    override fun saveHistorySet(historySet: HistorySet) {
+        exerciseViewModel.saveHistorySet(historySet)
+    }
+
+    override fun removeHistorySet(historySetId: String) {
+        exerciseViewModel.removeHistorySet(historySetId)
+    }
+
+    override fun renewTodayHistory() {
+        val historyExerciseAdapter = HistoryExerciseAdapter(requireContext(), this)
+        binding.recyclerViewHistory.adapter = historyExerciseAdapter
+
+        exerciseViewModel.loadTodayHistory()
+//        exerciseViewModel.history.observe(viewLifecycleOwner){ history ->
+//
+//        }
+        exerciseViewModel.historyExercises.observe(viewLifecycleOwner){ historyExercises ->
+            historyExerciseAdapter.submitList(historyExercises)
+        }
+    }
+
+    override fun addHistorySet(historyExerciseId: String) {
+        exerciseViewModel.addHistorySet(historyExerciseId)
     }
 
 }

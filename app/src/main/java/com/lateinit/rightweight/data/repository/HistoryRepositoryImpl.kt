@@ -1,9 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.datasource.HistoryLocalDataSource
 import java.time.LocalDate
 import javax.inject.Inject
@@ -22,6 +19,26 @@ class HistoryRepositoryImpl @Inject constructor(
         exerciseSets: List<ExerciseSet>
     ) {
         return  historyLocalDataSource.saveHistory(day, exercises, exerciseSets)
+    }
+
+    override suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise> {
+        return historyLocalDataSource.getHistoryExercisesByHistoryId(historyId)
+    }
+
+    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet> {
+        return historyLocalDataSource.getHistorySetsByHistoryExerciseId(exerciseId)
+    }
+
+    override suspend fun saveHistorySet(historySet: HistorySet) {
+        historyLocalDataSource.saveHistorySet(historySet)
+    }
+
+    override suspend fun removeHistorySet(historySetId: String) {
+        historyLocalDataSource.removeHistorySet(historySetId)
+    }
+
+    override suspend fun addHistorySet(historyExerciseId: String) {
+        historyLocalDataSource.addHistorySet(historyExerciseId)
     }
 
 }

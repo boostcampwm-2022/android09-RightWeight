@@ -38,4 +38,26 @@ class HistoryLocalDataSource@Inject constructor(
 
         historyDao.insertHistory(history, historyExercises, historySets)
     }
+
+    override suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise> {
+        return historyDao.getHistoryExercisesByHistoryId(historyId)
+    }
+
+    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet> {
+        return historyDao.getHistorySetsByHistoryExerciseId(exerciseId)
+    }
+
+    override suspend fun saveHistorySet(historySet: HistorySet) {
+        historyDao.insertHistorySet(historySet)
+    }
+
+    override suspend fun removeHistorySet(historySetId: String) {
+        historyDao.removeHistorySet(historySetId)
+    }
+
+    override suspend fun addHistorySet(historyExerciseId: String) {
+        val historySetId = UUID.randomUUID().toString()
+        val newHistorySet = HistorySet(historySetId, historyExerciseId, "", "", 999, false)
+        historyDao.insertHistorySet(newHistorySet)
+    }
 }

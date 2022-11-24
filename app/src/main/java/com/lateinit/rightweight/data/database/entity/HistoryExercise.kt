@@ -24,9 +24,9 @@ data class HistoryExercise(
     @ColumnInfo(name = "history_id")
     val historyId: String,
     @ColumnInfo(name = "title")
-    val title: String,
+    var title: String,
     @ColumnInfo(name = "order")
     val order: Int,
     @ColumnInfo(name = "part")
-    val part: ExercisePartType
+    var part: ExercisePartType
 )

@@ -1,9 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.*
 import java.time.LocalDate
 
 interface HistoryRepository {
@@ -15,4 +12,11 @@ interface HistoryRepository {
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     )
+
+    suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise>
+    suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet>
+
+    suspend fun saveHistorySet(historySet: HistorySet)
+    suspend fun removeHistorySet(historySetId: String)
+    suspend fun addHistorySet(historyExerciseId: String)
 }

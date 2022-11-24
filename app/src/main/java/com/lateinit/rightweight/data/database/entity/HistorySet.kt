@@ -23,11 +23,11 @@ data class HistorySet(
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,
     @ColumnInfo(name = "weight")
-    val weight: String,
+    var weight: String,
     @ColumnInfo(name = "count")
-    val count: String,
+    var count: String,
     @ColumnInfo(name = "order")
     val order: Int,
     @ColumnInfo(name = "checked")
-    val checked: Boolean
+    var checked: Boolean
 )
