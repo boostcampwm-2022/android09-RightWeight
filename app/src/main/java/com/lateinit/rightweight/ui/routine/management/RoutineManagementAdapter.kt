@@ -28,10 +28,40 @@ class RoutineManagementAdapter :
         }
     }
 
+    private fun moveUp(pos: Int) {
+        if (pos == 0) {
+            return
+        }
+
+        val value = currentList[pos]
+        val list = currentList.toMutableList()
+        list.removeAt(pos)
+        list.add(pos - 1, value)
+        submitList(list)
+    }
+
+    private fun moveDown(pos: Int) {
+        if (pos == itemCount - 1) {
+            return
+        }
+        val value = currentList[pos]
+        val list = currentList.toMutableList()
+        list.removeAt(pos)
+        list.add(pos + 1, value)
+        submitList(list)
+    }
+
     inner class RoutineViewHolder(val binding: ItemRoutineBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(routine: Routine) {
             binding.routine = routine
+
+            binding.imageButtonUp.setOnClickListener {
+                moveUp(layoutPosition)
+            }
+            binding.imageButtonDown.setOnClickListener {
+                moveDown(layoutPosition)
+            }
             binding.cardViewRoutineItemContainer.setOnClickListener { view ->
                 val action =
                     RoutineManagementFragmentDirections.actionNavigationRoutineManagementToNavigationRoutineDetail(
