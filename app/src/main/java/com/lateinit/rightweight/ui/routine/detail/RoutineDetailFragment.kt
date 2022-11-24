@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
@@ -64,7 +65,9 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun setExerciseAdapter() {
-        exerciseAdapter = DetailExerciseAdapter()
+        exerciseAdapter = DetailExerciseAdapter { position ->
+            routineDetailViewModel.clickExercise(position)
+        }
         binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
@@ -78,6 +81,24 @@ class RoutineDetailFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_routine_detail, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_item_edit -> {
+                val routineId = routineDetailViewModel.routine.value?.routineId ?: return false
+                val action =
+                    RoutineDetailFragmentDirections.actionNavigationRoutineDetailToNavigationRoutineEditor(
+                        routineId
+                    )
+                findNavController().navigate(action)
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+
     }
 
     override fun onDestroyView() {
