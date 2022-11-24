@@ -50,9 +50,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                 else -> startTimer()
             }
         }
-        binding.buttonExerciseEnd.setOnClickListener(){
-            stopTimer()
-        }
 
     }
 
@@ -171,6 +168,10 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
             binding.buttonExerciseAdd.setOnClickListener(){
                 addHistoryExercise(history.historyId)
                 renewTodayHistory()
+            }
+            binding.buttonExerciseEnd.setOnClickListener(){
+                stopTimer()
+                //exerciseViewModel.updateTodayHistory()
             }
         }
 

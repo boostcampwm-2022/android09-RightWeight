@@ -32,16 +32,14 @@ class ExerciseViewModel @Inject constructor(
             val todayHistories = historyRepository.loadHistoryByDate(LocalDate.now())
             if (todayHistories.size == 1) {
                 val todayHistory = todayHistories[0]
-                _history.postValue(todayHistory)
+                _history.value = todayHistory
                 val historyExercises =
                     historyRepository.getHistoryExercisesByHistoryId(todayHistory.historyId)
-                _historyExercises.postValue(historyExercises)
+                _historyExercises.value = historyExercises
                 for (historyExercise in historyExercises) {
                     val historySetsInHistoryExercise = MutableLiveData<List<HistorySet>>()
-                    historySetsInHistoryExercise.postValue(
-                        historyRepository.getHistorySetsByHistoryExerciseId(
-                            historyExercise.exerciseId
-                        )
+                    historySetsInHistoryExercise.value = historyRepository.getHistorySetsByHistoryExerciseId(
+                        historyExercise.exerciseId
                     )
                     _historySets.put(historyExercise.exerciseId, historySetsInHistoryExercise)
                 }
