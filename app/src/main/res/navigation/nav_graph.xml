@@ -52,12 +52,10 @@
         android:id="@+id/navigation_routine_editor"
         android:name="com.lateinit.rightweight.ui.routine.editor.RoutineEditorFragment"
         android:label="@string/editor"
-        tools:layout="@layout/fragment_routine_editor">
-
+        tools:layout="@layout/fragment_routine_editor" >
         <argument
             android:name="routineId"
-            app:argType="string"
-            android:defaultValue=""/>
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/navigation_shared_routine_detail"

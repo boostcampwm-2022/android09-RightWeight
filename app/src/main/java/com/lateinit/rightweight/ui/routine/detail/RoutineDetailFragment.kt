@@ -1,14 +1,11 @@
 package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.View
-import android.view.Menu
-import android.view.MenuInflater
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
@@ -28,6 +25,7 @@ class RoutineDetailFragment : Fragment() {
     private val routineDetailViewModel: RoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
+    private lateinit var exerciseAdapter: DetailExerciseAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +42,7 @@ class RoutineDetailFragment : Fragment() {
         setBinding()
         setRoutineDayAdapter()
         setDayUiModelsObserve()
+        setExerciseAdapter()
         setCurrentDayPositionObserve()
     }
 
@@ -54,7 +53,8 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter { position -> routineDetailViewModel.clickDay(position) }
+        routineDayAdapter =
+            RoutineDayAdapter { position -> routineDetailViewModel.clickDay(position) }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 
@@ -64,13 +64,41 @@ class RoutineDetailFragment : Fragment() {
         }
     }
 
+    private fun setExerciseAdapter() {
+        exerciseAdapter = DetailExerciseAdapter { position ->
+            routineDetailViewModel.clickExercise(position)
+        }
+        binding.recyclerViewExercise.adapter = exerciseAdapter
+    }
+
     private fun setCurrentDayPositionObserve() {
         routineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
+            val exercises =
+                routineDetailViewModel.dayUiModels.value?.get(it)?.exercises ?: return@observe
+            exerciseAdapter.submitList(exercises)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_routine_detail, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_item_edit -> {
+                val routineId = routineDetailViewModel.routine.value?.routineId ?: return false
+                val action =
+                    RoutineDetailFragmentDirections.actionNavigationRoutineDetailToNavigationRoutineEditor(
+                        routineId
+                    )
+                findNavController().navigate(action)
+                return true
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
+        }
+
     }
 
     override fun onDestroyView() {

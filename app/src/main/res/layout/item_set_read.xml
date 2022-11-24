@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="exerciseSetUiModel"
+            type="com.lateinit.rightweight.ui.model.ExerciseSetUiModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/text_view_set_order"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:gravity="center_horizontal"
+            android:text="@{String.valueOf(exerciseSetUiModel.order + 1)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/text_view_set_weight"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:maxLength="3"
+            android:text="@={exerciseSetUiModel.weight}"
+            app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
+            app:layout_constraintEnd_toStartOf="@+id/text_view_weight_unit"
+            app:layout_constraintStart_toEndOf="@+id/text_view_set_order"
+            app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
+            tools:text="50" />
+
+        <TextView
+            android:id="@+id/text_view_weight_unit"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_weight_kg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/text_view_set_weight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_set_count"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="3"
+            android:text="@={exerciseSetUiModel.count}"
+            app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
+            app:layout_constraintEnd_toStartOf="@+id/text_view_count_unit"
+            app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
+            tools:text="12" />
+
+        <TextView
+            android:id="@+id/text_view_count_unit"
+            style="@style/Text.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/set_number"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
