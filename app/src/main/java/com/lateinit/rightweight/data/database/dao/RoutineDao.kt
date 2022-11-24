@@ -1,10 +1,15 @@
 package com.lateinit.rightweight.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 
 @Dao
 interface RoutineDao {
@@ -34,4 +39,8 @@ interface RoutineDao {
 
     @Query("SELECT * FROM routine")
     suspend fun getRoutines(): List<Routine>
+
+    @Transaction
+    @Query("SELECT * FROM routine WHERE routine_id = :routineId")
+    suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
 }

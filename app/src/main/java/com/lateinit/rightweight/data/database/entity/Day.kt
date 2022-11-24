@@ -3,7 +3,6 @@ package com.lateinit.rightweight.data.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -16,14 +15,12 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class Day @JvmOverloads constructor(
+data class Day(
     @PrimaryKey
     @ColumnInfo(name = "day_id")
     val dayId: String,
     @ColumnInfo(name = "routine_id")
     val routineId: String,
     @ColumnInfo(name = "order")
-    val order: Int,
-    @Ignore
-    val exercises: List<Exercise> = emptyList()
+    val order: Int
 )

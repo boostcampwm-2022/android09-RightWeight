@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
@@ -20,7 +21,9 @@ class RoutineEditorFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
+    private val args: RoutineEditorFragmentArgs by navArgs()
     private val viewModel: RoutineEditorViewModel by viewModels()
+
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
@@ -34,7 +37,7 @@ class RoutineEditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.init(args.routineId)
         setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()
@@ -48,20 +51,7 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter(object : RoutineDayAdapter.RoutineEventListener {
-
-            override fun onDayMoveUp(position: Int) {
-                viewModel.moveUpDay(position)
-            }
-
-            override fun onDayMoveDown(position: Int) {
-                viewModel.moveDownDay(position)
-            }
-
-            override fun onDayClick(position: Int) {
-                viewModel.clickDay(position)
-            }
-        })
+        routineDayAdapter = RoutineDayAdapter { position -> viewModel.clickDay(position) }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 

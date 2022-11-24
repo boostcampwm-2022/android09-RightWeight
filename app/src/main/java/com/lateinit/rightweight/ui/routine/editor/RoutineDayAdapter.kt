@@ -3,29 +3,16 @@ package com.lateinit.rightweight.ui.routine.editor
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.databinding.ItemDayBinding
+import com.lateinit.rightweight.ui.model.DayUiModel
 
 class RoutineDayAdapter(
-    private val routineEventListener: RoutineEventListener
-) : ListAdapter<Day, RoutineDayAdapter.DayViewHolder>(diffUtil) {
-
-    private var lastPosition = -1
-    private var selectedPosition = 0
-
-    interface RoutineEventListener {
-
-        fun onDayMoveUp(position: Int)
-
-        fun onDayMoveDown(position: Int)
-
-        fun onDayClick(position: Int)
-    }
+    private val onClickDay: (Int) -> Unit
+) : ListAdapter<DayUiModel, RoutineDayAdapter.DayViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,15 +23,6 @@ class RoutineDayAdapter(
 
     override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(getItem(position))
-        if (selectedPosition == position) {
-            holder.itemView.apply {
-                background = getDrawable(context, R.drawable.bg_day_order_seleted)
-            }
-        } else {
-            holder.itemView.apply {
-                background = getDrawable(context, R.drawable.bg_day_order)
-            }
-        }
     }
 
     inner class DayViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
@@ -54,27 +32,23 @@ class RoutineDayAdapter(
 
         init {
             itemView.setOnClickListener {
-                routineEventListener.onDayClick(layoutPosition)
-                lastPosition = selectedPosition
-                selectedPosition = layoutPosition
-                notifyItemChanged(lastPosition)
-                notifyItemChanged(selectedPosition)
+                onClickDay(layoutPosition)
             }
         }
 
-        fun bind(day: Day) {
-            binding.day = day
+        fun bind(dayUiModel: DayUiModel) {
+            binding.dayUiModel = dayUiModel
         }
 
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Day>() {
-            override fun areItemsTheSame(oldItem: Day, newItem: Day): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<DayUiModel>() {
+            override fun areItemsTheSame(oldItem: DayUiModel, newItem: DayUiModel): Boolean {
                 return oldItem.dayId == newItem.dayId
             }
 
-            override fun areContentsTheSame(oldItem: Day, newItem: Day): Boolean {
+            override fun areContentsTheSame(oldItem: DayUiModel, newItem: DayUiModel): Boolean {
                 return oldItem == newItem
             }
 

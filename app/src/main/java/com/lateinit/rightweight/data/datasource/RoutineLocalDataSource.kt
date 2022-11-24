@@ -5,6 +5,7 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import javax.inject.Inject
 
 class RoutineLocalDataSource @Inject constructor(private val routineDao: RoutineDao) :
@@ -41,5 +42,9 @@ class RoutineLocalDataSource @Inject constructor(private val routineDao: Routine
 
     override suspend fun getRoutines(): List<Routine> {
         return routineDao.getRoutines()
+    }
+
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
+        return routineDao.getRoutineWithDaysByRoutineId(routineId)
     }
 }
