@@ -20,6 +20,10 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.insertRoutine(routine, days, exercises, sets)
     }
 
+    override suspend fun insertRoutineList(routines: List<Routine>) {
+        routineLocalDataSource.insertRoutineList(routines)
+    }
+
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineLocalDataSource.getRoutineById(routineId)
     }

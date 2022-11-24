@@ -14,6 +14,7 @@ interface RoutineDataSource {
         sets: List<ExerciseSet>
     )
 
+    suspend fun insertRoutineList(routines: List<Routine>)
     suspend fun getRoutineById(routineId: String): Routine
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day

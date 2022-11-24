@@ -1,9 +1,6 @@
 package com.lateinit.rightweight.data.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
@@ -19,6 +16,9 @@ interface RoutineDao {
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
     )
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineList(routines: List<Routine>)
 
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineById(routineId: String): Routine
