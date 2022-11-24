@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="exercise"
-            type="com.lateinit.rightweight.data.database.entity.Exercise" />
+            name="exerciseUiModel"
+            type="com.lateinit.rightweight.ui.model.ExerciseUiModel" />
 
     </data>
 
@@ -67,7 +67,7 @@
                     android:autofillHints=""
                     android:hint="@string/input_exercise_name"
                     android:inputType="text"
-                    android:text="@={exercise.title}"
+                    android:text="@={exerciseUiModel.title}"
                     app:layout_constraintBottom_toBottomOf="@+id/layout_edit_text_exercise_part"
                     app:layout_constraintStart_toEndOf="@+id/layout_edit_text_exercise_part"
                     app:layout_constraintTop_toTopOf="@id/layout_edit_text_exercise_part" />
