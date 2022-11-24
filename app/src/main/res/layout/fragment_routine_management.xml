@@ -10,6 +10,10 @@
             type="com.lateinit.rightweight.ui.home.UserViewModel" />
 
         <variable
+            name="routineManagementViewModel"
+            type="com.lateinit.rightweight.ui.routine.management.RoutineManagementViewModel" />
+
+        <variable
             name="fragment"
             type="com.lateinit.rightweight.ui.routine.management.RoutineManagementFragment" />
     </data>
@@ -19,8 +23,47 @@
         android:layout_height="match_parent"
         tools:context=".ui.routine.management.RoutineManagementFragment">
 
+        <TextView
+            android:id="@+id/text_view_routine_management_info"
+            style="@style/Text.Medium.Bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/routine_management_info"
+            app:layout_constraintBottom_toTopOf="@id/card_view_home_routine_title_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view_home_routine_title_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:clickable="@{userViewModel.routine == null ? false : true}"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:onClick="@{() -> fragment.navigateTo(userViewModel.routine)}"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintBottom_toTopOf="@id/recycler_view_routine_management"
+            app:layout_constraintEnd_toEndOf="@id/text_view_routine_management_info"
+            app:layout_constraintStart_toStartOf="@id/text_view_routine_management_info"
+            app:layout_constraintTop_toBottomOf="@id/text_view_routine_management_info">
+
+            <TextView
+                style="@style/Text.Medium.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{userViewModel.routine == null ? @string/empty_routine : userViewModel.routine.title}" />
+        </androidx.cardview.widget.CardView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_routine_management"
+            excludeItem="@{userViewModel.routine}"
+            setItems="@{routineManagementViewModel.routines}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingVertical="8dp"
@@ -28,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/card_view_home_routine_title_container" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_action_button_create_routine"
@@ -37,7 +80,7 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/create_routine"
             android:onClick="@{() -> fragment.navigateTo(@id/action_navigation_routine_management_to_navigation_routine_editor)}"
-            android:src="@drawable/ic_play_arrow"
+            android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

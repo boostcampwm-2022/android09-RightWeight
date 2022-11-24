@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
 import com.lateinit.rightweight.ui.home.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,9 +21,6 @@ class RoutineManagementFragment : Fragment() {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
     private val userViewModel: UserViewModel by activityViewModels()
     private val routineManagementViewModel: RoutineManagementViewModel by viewModels()
-    private val routineManagementAdapter: RoutineManagementAdapter by lazy {
-        RoutineManagementAdapter()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,19 +33,14 @@ class RoutineManagementFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setBinding()
-        setAdapter()
-        routineManagementViewModel.routines.observe(viewLifecycleOwner) {
-            routineManagementAdapter.submitList(it)
-        }
     }
 
     override fun onResume() {
         routineManagementViewModel.getRoutineList()
+        userViewModel.getUser()
         super.onResume()
     }
-
 
     override fun onDestroyView() {
         _binding = null
@@ -57,14 +50,19 @@ class RoutineManagementFragment : Fragment() {
     private fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.userViewModel = userViewModel
+        binding.routineManagementViewModel = routineManagementViewModel
         binding.fragment = this
-    }
-
-    private fun setAdapter() {
-        binding.recyclerViewRoutineManagement.adapter = routineManagementAdapter
     }
 
     fun navigateTo(id: Int) {
         findNavController().navigate(id)
+    }
+
+    fun navigateTo(routine: Routine) {
+        val action =
+            RoutineManagementFragmentDirections.actionNavigationRoutineManagementToNavigationRoutineDetail(
+                routine.routineId
+            )
+        findNavController().navigate(action)
     }
 }
