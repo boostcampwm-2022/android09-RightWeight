@@ -1,16 +1,16 @@
 package com.lateinit.rightweight.data.datasource
 
-import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
-import com.lateinit.rightweight.data.database.entity.*
-import java.time.LocalDateTime
-import java.util.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import javax.inject.Inject
 
 class RoutineLocalDataSource @Inject constructor(
     private val routineDao: RoutineDao,
-    ) :
-    RoutineDataSource {
+    ) : RoutineDataSource {
 
     override suspend fun insertRoutine(
         routine: Routine,
@@ -19,6 +19,10 @@ class RoutineLocalDataSource @Inject constructor(
         sets: List<ExerciseSet>
     ) {
         routineDao.insertRoutine(routine, days, exercises, sets)
+    }
+
+    override suspend fun insertRoutineList(routines: List<Routine>) {
+        routineDao.insertRoutineList(routines)
     }
 
     override suspend fun getRoutineById(routineId: String): Routine {
@@ -39,5 +43,13 @@ class RoutineLocalDataSource @Inject constructor(
 
     override suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet> {
         return routineDao.getSetsByExerciseId(exerciseId)
+    }
+
+    override suspend fun getRoutines(): List<Routine> {
+        return routineDao.getRoutines()
+    }
+
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
+        return routineDao.getRoutineWithDaysByRoutineId(routineId)
     }
 }

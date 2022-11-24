@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">RightWeight</string>
+    <string name="app_name">Right Weight</string>
     <string name="home">홈</string>
     <string name="calendar">달력</string>
     <string name="share">공유</string>
     <string name="management">관리</string>
     <string name="day_add">Day 추가</string>
+    <string name="day_remove">Day 삭제</string>
     <string name="exercise_add">운동 추가</string>
     <string name="set_weight_kg">kg</string>
     <string name="set_number">회</string>
@@ -45,4 +46,9 @@
     <string name="mock_routine_id">d987075c-1856-4b2d-8e0f-3f5bc95ba060</string>
     <string name="reset">초기화</string>
     <string name="reset_message">루틴이 Day1부터 시작됩니다. 초기화 하시겠습니까?</string>
+    <string name="create_routine">루틴 생성</string>
+    <string name="routine_management_info">현재 선택된 루틴은</string>
+    <string name="move_up">위로</string>
+    <string name="move_down">아래로</string>
+    <string name="routine_select">루틴 선택 하기</string>
 </resources>

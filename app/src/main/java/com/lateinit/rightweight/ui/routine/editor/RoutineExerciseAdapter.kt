@@ -8,22 +8,28 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
+import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.util.getPartNameRes
 
 class RoutineExerciseAdapter(
-    private val routineEventListener: RoutineDayAdapter.RoutineEventListener
-) : ListAdapter<Exercise, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
+    private val exercisePartAdapter: ArrayAdapter<String>,
+    private val exerciseEventListener: ExerciseEventListener
+) : ListAdapter<ExerciseUiModel, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
+
+    interface ExerciseEventListener {
+
+        fun onExerciseRemove(dayId: String, position: Int)
+
+        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartType)
+
+        fun onSetAdd(exerciseId: String)
+
+        fun onSetRemove(exerciseId: String, position: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
-        return with(parent) {
-            val exerciseParts = ExercisePartType.values().map { exercisePart ->
-                context.getString(exercisePart.partName)
-            }
-            val exercisePartAdapter =
-                ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
-            ExerciseViewHolder(this, exercisePartAdapter, routineEventListener)
-        }
+        return ExerciseViewHolder(parent, exercisePartAdapter, exerciseEventListener)
     }
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
@@ -33,54 +39,54 @@ class RoutineExerciseAdapter(
     class ExerciseViewHolder(
         parent: ViewGroup,
         exercisePartAdapter: ArrayAdapter<String>,
-        routineEventListener: RoutineDayAdapter.RoutineEventListener
+        exerciseEventListener: ExerciseEventListener
     ) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_exercise, parent, false)
     ) {
         private val binding = ItemExerciseBinding.bind(itemView)
-        private val routineSetAdapter = RoutineSetAdapter(routineEventListener)
+        private val routineSetAdapter = RoutineSetAdapter(exerciseEventListener)
 
-        private lateinit var exercise: Exercise
+        private lateinit var exerciseUiModel: ExerciseUiModel
 
         init {
             binding.textViewExercisePart.setAdapter(exercisePartAdapter)
 
             binding.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
-                routineEventListener.onExercisePartChange(
-                    exercise.dayId,
+                exerciseEventListener.onExercisePartChange(
+                    exerciseUiModel.dayId,
                     layoutPosition,
                     ExercisePartType.values()[position]
                 )
             }
 
             binding.buttonExerciseRemove.setOnClickListener {
-                routineEventListener.onExerciseRemove(exercise.dayId, layoutPosition)
+                exerciseEventListener.onExerciseRemove(exerciseUiModel.dayId, layoutPosition)
             }
 
             binding.buttonSetAdd.setOnClickListener {
-                routineEventListener.onSetAdd(exercise.exerciseId)
+                exerciseEventListener.onSetAdd(exerciseUiModel.exerciseId)
             }
         }
 
-        fun bind(exercise: Exercise) {
-            this.exercise = exercise
-            binding.exercise = exercise
+        fun bind(exerciseUiModel: ExerciseUiModel) {
+            this.exerciseUiModel = exerciseUiModel
+            binding.exerciseUiModel = exerciseUiModel
 
-            val exercisePartName = binding.root.context.getString(exercise.part.partName)
+            val exercisePartName = binding.root.context.getString(exerciseUiModel.part.getPartNameRes())
             binding.textViewExercisePart.setText(exercisePartName, false)
 
             binding.recyclerViewSet.adapter = routineSetAdapter
-            routineSetAdapter.submitList(exercise.exerciseSets)
+            routineSetAdapter.submitList(exerciseUiModel.exerciseSets)
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<Exercise>() {
-            override fun areItemsTheSame(oldItem: Exercise, newItem: Exercise): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<ExerciseUiModel>() {
+            override fun areItemsTheSame(oldItem: ExerciseUiModel, newItem: ExerciseUiModel): Boolean {
                 return oldItem.exerciseId == newItem.exerciseId
             }
 
-            override fun areContentsTheSame(oldItem: Exercise, newItem: Exercise): Boolean {
+            override fun areContentsTheSame(oldItem: ExerciseUiModel, newItem: ExerciseUiModel): Boolean {
                 return oldItem == newItem
             }
         }

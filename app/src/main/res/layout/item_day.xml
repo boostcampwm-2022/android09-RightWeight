@@ -6,86 +6,29 @@
     <data>
 
         <variable
-            name="day"
-            type="com.lateinit.rightweight.data.database.entity.Day" />
+            name="dayUiModel"
+            type="com.lateinit.rightweight.ui.model.DayUiModel" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_view_day"
+            style="@style/Text.Medium.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@{dayUiModel.selected ? @drawable/bg_day_order_selected : @drawable/bg_day_order}"
+            android:text="@{@string/day_order(dayUiModel.order + 1)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/bg_day_order"
+            tools:text="Day1" />
 
-            <Button
-                android:id="@+id/button_day_move_up"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_move_up"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/button_day_move_down"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_move_down"
-                app:layout_constraintBottom_toTopOf="@+id/recycler_view_exercise"
-                app:layout_constraintStart_toStartOf="@+id/button_day_move_up"
-                app:layout_constraintTop_toBottomOf="@+id/button_day_move_up" />
-
-            <TextView
-                android:id="@+id/text_view_day_title"
-                style="@style/Text.Small.Bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="@{String.format(@string/day_order,day.order)}"
-                app:layout_constraintBottom_toBottomOf="@+id/button_day_move_down"
-                app:layout_constraintEnd_toStartOf="@+id/button_remove_day"
-                app:layout_constraintStart_toEndOf="@+id/button_day_move_up"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="DAY1" />
-
-            <Button
-                android:id="@+id/button_remove_day"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/ic_remove"
-                app:layout_constraintBottom_toBottomOf="@+id/button_day_move_down"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/text_view_day_title"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_exercise"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_day_move_down"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_exercise" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_exercise_add"
-                style="@style/Text.Small.Bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/secondaryColor"
-                android:padding="16dp"
-                android:text="@string/exercise_add"
-                app:icon="@drawable/ic_add"
-                app:iconGravity="textStart"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recycler_view_exercise" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-

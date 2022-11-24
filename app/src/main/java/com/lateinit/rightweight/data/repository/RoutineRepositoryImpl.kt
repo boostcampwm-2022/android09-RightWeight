@@ -4,6 +4,7 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineDataSource
 import javax.inject.Inject
 
@@ -18,6 +19,10 @@ class RoutineRepositoryImpl @Inject constructor(
         sets: List<ExerciseSet>,
     ) {
         routineLocalDataSource.insertRoutine(routine, days, exercises, sets)
+    }
+
+    override suspend fun insertRoutineList(routines: List<Routine>) {
+        routineLocalDataSource.insertRoutineList(routines)
     }
 
     override suspend fun getRoutineById(routineId: String): Routine {
@@ -39,5 +44,13 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet> {
         return routineLocalDataSource.getSetsByExerciseId(exerciseId)
+    }
+
+    override suspend fun getRoutines(): List<Routine> {
+        return routineLocalDataSource.getRoutines()
+    }
+
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays{
+        return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 }

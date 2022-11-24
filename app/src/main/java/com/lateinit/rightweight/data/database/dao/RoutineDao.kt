@@ -4,10 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 
 @Dao
 interface RoutineDao {
@@ -19,6 +21,9 @@ interface RoutineDao {
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
     )
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineList(routines: List<Routine>)
 
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineById(routineId: String): Routine
@@ -34,4 +39,11 @@ interface RoutineDao {
 
     @Query("SELECT * FROM exercise_set WHERE exercise_id = :exerciseId ORDER BY `order`")
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
+
+    @Query("SELECT * FROM routine")
+    suspend fun getRoutines(): List<Routine>
+
+    @Transaction
+    @Query("SELECT * FROM routine WHERE routine_id = :routineId")
+    suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
 }

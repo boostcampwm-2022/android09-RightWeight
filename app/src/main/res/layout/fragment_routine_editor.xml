@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingHorizontal="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/button_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -93,30 +93,66 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toTopOf="@id/button_day_add"
+                    app:layout_constraintBottom_toTopOf="@id/button_remove_day"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_edit_text_description"
-                    tools:itemCount="2"
                     tools:listitem="@layout/item_day" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_day_add"
+                    android:id="@+id/button_remove_day"
+                    style="@style/Text.Small.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->viewModel.removeDay()}"
+                    android:text="@string/day_remove"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toStartOf="@id/button_add_day"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_add_day"
+                    style="@style/Text.Small.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->viewModel.addDay()}"
+                    android:text="@string/day_add"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/button_remove_day"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_exercise"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button_remove_day"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_exercise" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_exercise_add"
                     style="@style/Text.Small.Bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="50dp"
-                    android:backgroundTint="@color/white"
-                    android:onClick="@{() -> viewModel.addDay()}"
+                    android:backgroundTint="@color/secondaryColor"
+                    android:onClick="@{()->viewModel.addExercise()}"
                     android:padding="16dp"
-                    android:text="@string/day_add"
+                    android:text="@string/exercise_add"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recycler_view_day" />
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_exercise" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
