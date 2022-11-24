@@ -12,7 +12,7 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.databinding.ItemDayBinding
 
 class RoutineDayAdapter(
-    val routineEventListener: RoutineEventListener
+    private val routineEventListener: RoutineEventListener
 ) : ListAdapter<Day, RoutineDayAdapter.DayViewHolder>(diffUtil) {
 
     private var lastPosition = -1
@@ -52,9 +52,7 @@ class RoutineDayAdapter(
     ) {
         private val binding = ItemDayBinding.bind(itemView)
 
-        fun bind(day: Day) {
-            binding.day = day
-
+        init {
             itemView.setOnClickListener {
                 routineEventListener.onDayClick(layoutPosition)
                 lastPosition = selectedPosition
@@ -62,6 +60,10 @@ class RoutineDayAdapter(
                 notifyItemChanged(lastPosition)
                 notifyItemChanged(selectedPosition)
             }
+        }
+
+        fun bind(day: Day) {
+            binding.day = day
         }
 
     }
