@@ -58,6 +58,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         setBinding()
 
         binding.floatingActionButtonStartExercise.setOnClickListener {
+            homeViewModel.checkTodayHistory()
             it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
         }
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {

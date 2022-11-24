@@ -31,4 +31,7 @@ interface RoutineDao {
 
     @Query("SELECT * FROM exercise WHERE day_id = :dayId ORDER BY `order`")
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
+
+    @Query("SELECT * FROM exercise_set WHERE exercise_id = :exerciseId ORDER BY `order`")
+    suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
 }

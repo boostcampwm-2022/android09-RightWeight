@@ -7,7 +7,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "set",
+    tableName = "exercise_set",
     foreignKeys = [
         ForeignKey(
             entity = Exercise::class,

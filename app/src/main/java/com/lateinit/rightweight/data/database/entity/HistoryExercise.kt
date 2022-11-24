@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.lateinit.rightweight.data.ExercisePartType
 
 @Entity(
     tableName = "history_exercise",
@@ -27,5 +28,5 @@ data class HistoryExercise(
     @ColumnInfo(name = "order")
     val order: Int,
     @ColumnInfo(name = "part")
-    val part: String
+    val part: ExercisePartType
 )

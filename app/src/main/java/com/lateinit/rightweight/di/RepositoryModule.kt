@@ -1,8 +1,6 @@
 package com.lateinit.rightweight.di
 
-import com.lateinit.rightweight.data.datasource.LoginDataSource
-import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
-import com.lateinit.rightweight.data.datasource.UserDataSource
+import com.lateinit.rightweight.data.datasource.*
 import com.lateinit.rightweight.data.repository.*
 import dagger.Module
 import dagger.Provides
@@ -36,5 +34,13 @@ class RepositoryModule {
         userDataSource: UserDataSource
     ): UserRepository {
         return UserRepositoryImpl(userDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun getHistoryRepository(
+        historyLocalDataSource: HistoryLocalDataSource
+    ): HistoryRepository {
+        return HistoryRepositoryImpl(historyLocalDataSource)
     }
 }
