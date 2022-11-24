@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.home.UserViewModel
@@ -19,7 +20,9 @@ class RoutineDetailFragment : Fragment() {
     private var _binding: FragmentRoutineDetailBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
-    private val viewModel: UserViewModel by viewModels()
+    private val viewModel: UserViewModel by activityViewModels()
+    private val args: RoutineDetailFragmentArgs by navArgs()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +45,11 @@ class RoutineDetailFragment : Fragment() {
                 .navigate(R.id.action_navigation_routine_detail_to_navigation_routine_editor)
         }
 
+        val routineId = args.routineId
+        binding.select.setText(routineId)
+        binding.select.setOnClickListener {
+            viewModel.setUser(routineId)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

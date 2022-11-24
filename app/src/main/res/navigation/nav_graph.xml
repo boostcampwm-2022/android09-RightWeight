@@ -67,6 +67,10 @@
         android:label="@string/detail"
         tools:layout="@layout/fragment_routine_detail">
 
+        <argument
+            android:name="routineId"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_navigation_routine_detail_to_navigation_routine_editor"
             app:destination="@id/navigation_routine_editor" />
