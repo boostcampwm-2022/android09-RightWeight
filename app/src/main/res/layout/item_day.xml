@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="day"
-            type="com.lateinit.rightweight.data.database.entity.Day" />
+            name="dayUiModel"
+            type="com.lateinit.rightweight.ui.model.DayUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="@{@string/day_order(day.order + 1)}"
+            android:background="@{dayUiModel.selected ? @drawable/bg_day_order_selected : @drawable/bg_day_order}"
+            android:text="@{@string/day_order(dayUiModel.order + 1)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,6 +8,10 @@
         <variable
             name="userViewModel"
             type="com.lateinit.rightweight.ui.home.UserViewModel" />
+
+        <variable
+            name="routineDetailViewModel"
+            type="com.lateinit.rightweight.ui.routine.detail.RoutineDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,25 +19,97 @@
         android:layout_height="match_parent"
         tools:context=".ui.routine.detail.RoutineDetailFragment">
 
-        <Button
-            android:id="@+id/modi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="루틴 수정"
-            app:layout_constraintBottom_toTopOf="@id/select"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintBottom_toTopOf="@id/button_routine_select"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/select"
-            android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/text_view_title_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/routine_title"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_view_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{routineDetailViewModel.routine.title}"
+                    android:textAppearance="@style/Text.Medium"
+                    app:layout_constraintStart_toStartOf="@+id/text_view_title_label"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_title_label"
+                    tools:text="Strength 5x5" />
+
+                <TextView
+                    android:id="@+id/text_view_description_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/routine_description"
+                    android:textAppearance="@style/Text.Medium"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_title" />
+
+                <TextView
+                    android:id="@+id/text_view_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{routineDetailViewModel.routine.description}"
+                    android:textAppearance="@style/Text.Medium"
+                    app:layout_constraintStart_toStartOf="@+id/text_view_description_label"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_description_label"
+                    tools:text="이 훈련법은 스트렝스의 증가에 목적을 두고..." />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_day"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_description"
+                    tools:listitem="@layout/item_day" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_exercise"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_exercise_with_sets" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_routine_select"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="루틴 선택"
-            android:onClick="@{() -> userViewModel.setUser(@string/mock_routine_id)}"
+            android:layout_marginHorizontal="16dp"
+            android:onClick="@{() -> userViewModel.setUser(routineDetailViewModel.routine.routineId)}"
+            android:padding="16dp"
+            android:text="@string/routine_select"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/modi" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

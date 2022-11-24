@@ -48,20 +48,7 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter(object : RoutineDayAdapter.RoutineEventListener {
-
-            override fun onDayMoveUp(position: Int) {
-                viewModel.moveUpDay(position)
-            }
-
-            override fun onDayMoveDown(position: Int) {
-                viewModel.moveDownDay(position)
-            }
-
-            override fun onDayClick(position: Int) {
-                viewModel.clickDay(position)
-            }
-        })
+        routineDayAdapter = RoutineDayAdapter { position -> viewModel.clickDay(position) }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 
