@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.util.getPartNameRes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,6 +22,7 @@ class RoutineEditorFragment : Fragment() {
 
     private val viewModel: RoutineEditorViewModel by viewModels()
     private lateinit var routineDayAdapter: RoutineDayAdapter
+    private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +38,8 @@ class RoutineEditorFragment : Fragment() {
         setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()
+        setExerciseAdapter()
+        setDayExercisesObserve()
     }
 
     private fun setBinding() {
@@ -43,13 +49,6 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setRoutineDayAdapter() {
         routineDayAdapter = RoutineDayAdapter(object : RoutineDayAdapter.RoutineEventListener {
-            override fun onDayAdd() {
-                viewModel.addDay()
-            }
-
-            override fun onDayRemove(position: Int) {
-                viewModel.removeDay(position)
-            }
 
             override fun onDayMoveUp(position: Int) {
                 viewModel.moveUpDay(position)
@@ -59,9 +58,26 @@ class RoutineEditorFragment : Fragment() {
                 viewModel.moveDownDay(position)
             }
 
-            override fun onExerciseAdd(position: Int) {
-                viewModel.addExercise(position)
+            override fun onDayClick(position: Int) {
+                viewModel.clickDay(position)
             }
+        })
+        binding.recyclerViewDay.adapter = routineDayAdapter
+    }
+
+    private fun setRoutineDaysObserve() {
+        viewModel.days.observe(viewLifecycleOwner) {
+            routineDayAdapter.submitList(it)
+        }
+    }
+
+    private fun setExerciseAdapter(){
+        val exerciseParts = ExercisePartType.values().map { exercisePart ->
+            getString(exercisePart.getPartNameRes())
+        }
+        val exercisePartAdapter =
+            ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
+        val exerciseEventListener = object : RoutineExerciseAdapter.ExerciseEventListener{
 
             override fun onExerciseRemove(dayId: String, position: Int) {
                 viewModel.removeExercise(dayId, position)
@@ -83,13 +99,15 @@ class RoutineEditorFragment : Fragment() {
                 viewModel.removeExerciseSet(exerciseId, position)
             }
 
-        })
-        binding.recyclerViewDay.adapter = routineDayAdapter
+        }
+
+        exerciseAdapter = RoutineExerciseAdapter(exercisePartAdapter, exerciseEventListener)
+        binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
-    private fun setRoutineDaysObserve() {
-        viewModel.days.observe(viewLifecycleOwner) {
-            routineDayAdapter.submitList(it)
+    private fun setDayExercisesObserve() {
+        viewModel.dayExercises.observe(viewLifecycleOwner) {
+            exerciseAdapter.submitList(it)
         }
     }
 
