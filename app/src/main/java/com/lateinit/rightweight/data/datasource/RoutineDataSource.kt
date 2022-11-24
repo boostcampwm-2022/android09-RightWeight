@@ -18,4 +18,5 @@ interface RoutineDataSource {
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
+    suspend fun getRoutines(): List<Routine>
 }

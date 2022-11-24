@@ -34,4 +34,8 @@ class RoutineLocalDataSource @Inject constructor(private val routineDao: Routine
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineDao.getExercisesByDayId(dayId)
     }
+
+    override suspend fun getRoutines(): List<Routine> {
+        return routineDao.getRoutines()
+    }
 }
