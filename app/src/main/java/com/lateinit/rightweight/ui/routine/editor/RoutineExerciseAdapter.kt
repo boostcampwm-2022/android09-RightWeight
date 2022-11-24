@@ -13,6 +13,7 @@ import com.lateinit.rightweight.databinding.ItemExerciseBinding
 import com.lateinit.rightweight.util.getPartNameRes
 
 class RoutineExerciseAdapter(
+    private val exercisePartAdapter: ArrayAdapter<String>,
     private val exerciseEventListener: ExerciseEventListener
 ) : ListAdapter<Exercise, RoutineExerciseAdapter.ExerciseViewHolder>(diffUtil) {
 
@@ -28,14 +29,7 @@ class RoutineExerciseAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
-        return with(parent) {
-            val exerciseParts = ExercisePartType.values().map { exercisePart ->
-                context.getString(exercisePart.getPartNameRes())
-            }
-            val exercisePartAdapter =
-                ArrayAdapter(context, R.layout.item_exercise_part, exerciseParts)
-            ExerciseViewHolder(this, exercisePartAdapter, exerciseEventListener)
-        }
+        return ExerciseViewHolder(parent, exercisePartAdapter, exerciseEventListener)
     }
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {

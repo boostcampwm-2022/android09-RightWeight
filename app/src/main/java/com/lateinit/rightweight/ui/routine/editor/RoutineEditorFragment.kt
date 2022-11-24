@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.util.getPartNameRes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -69,7 +72,12 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setExerciseAdapter(){
-        exerciseAdapter = RoutineExerciseAdapter(object : RoutineExerciseAdapter.ExerciseEventListener{
+        val exerciseParts = ExercisePartType.values().map { exercisePart ->
+            getString(exercisePart.getPartNameRes())
+        }
+        val exercisePartAdapter =
+            ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
+        val exerciseEventListener = object : RoutineExerciseAdapter.ExerciseEventListener{
 
             override fun onExerciseRemove(dayId: String, position: Int) {
                 viewModel.removeExercise(dayId, position)
@@ -91,7 +99,9 @@ class RoutineEditorFragment : Fragment() {
                 viewModel.removeExerciseSet(exerciseId, position)
             }
 
-        })
+        }
+
+        exerciseAdapter = RoutineExerciseAdapter(exercisePartAdapter, exerciseEventListener)
         binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
