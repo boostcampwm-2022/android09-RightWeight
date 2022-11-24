@@ -17,11 +17,10 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/black"
-        app:cardCornerRadius="8dp"
         android:layout_marginVertical="4dp"
-        >
+        app:cardCornerRadius="8dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,6 +30,7 @@
                 android:id="@+id/layout_default"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -56,13 +56,13 @@
                     android:gravity="center"
                     android:text="@{exerciseUiModel.title}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/button_open_sets"
+                    app:layout_constraintEnd_toStartOf="@+id/image_expanded_state"
                     app:layout_constraintStart_toEndOf="@id/chip_exercise_part"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="랫풀다운" />
 
-                <Button
-                    android:id="@+id/button_open_sets"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_expanded_state"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="16dp"
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/secondaryColor"
-                android:visibility="@{exerciseUiModel.expanded ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_default">

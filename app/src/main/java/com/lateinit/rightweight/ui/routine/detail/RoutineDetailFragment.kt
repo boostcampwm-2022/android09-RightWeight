@@ -1,11 +1,7 @@
 package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.View
-import android.view.Menu
-import android.view.MenuInflater
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -28,6 +24,7 @@ class RoutineDetailFragment : Fragment() {
     private val routineDetailViewModel: RoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
+    private lateinit var exerciseAdapter: DetailExerciseAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +41,7 @@ class RoutineDetailFragment : Fragment() {
         setBinding()
         setRoutineDayAdapter()
         setDayUiModelsObserve()
+        setExerciseAdapter()
         setCurrentDayPositionObserve()
     }
 
@@ -54,7 +52,8 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter { position -> routineDetailViewModel.clickDay(position) }
+        routineDayAdapter =
+            RoutineDayAdapter { position -> routineDetailViewModel.clickDay(position) }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 
@@ -64,8 +63,16 @@ class RoutineDetailFragment : Fragment() {
         }
     }
 
+    private fun setExerciseAdapter() {
+        exerciseAdapter = DetailExerciseAdapter()
+        binding.recyclerViewExercise.adapter = exerciseAdapter
+    }
+
     private fun setCurrentDayPositionObserve() {
         routineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
+            val exercises =
+                routineDetailViewModel.dayUiModels.value?.get(it)?.exercises ?: return@observe
+            exerciseAdapter.submitList(exercises)
         }
     }
 
