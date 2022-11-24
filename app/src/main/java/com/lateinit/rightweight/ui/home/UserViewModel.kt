@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.model.User
@@ -23,6 +24,8 @@ class UserViewModel @Inject constructor(
     val userInfo: LiveData<User> get() = _userInfo
     private val _routine = MutableLiveData<Routine>()
     val routine: LiveData<Routine> get() = _routine
+    private val _loginResponse = MutableLiveData<LoginResponse>()
+    val loginResponse: LiveData<LoginResponse> get() = _loginResponse
 
     init {
         getUser()
@@ -33,6 +36,12 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val days: List<Day> = routineRepository.getDaysByRoutineId(routineId)
             userRepository.setUser(User(user.userId, routineId, days[0].dayId))
+        }
+    }
+
+    fun setUser(user: User?) {
+        viewModelScope.launch {
+            userRepository.setUser(user)
         }
     }
 
@@ -57,4 +66,20 @@ class UserViewModel @Inject constructor(
             _routine.postValue(routine)
         }
     }
+
+    fun setLoginResponse(loginResponse: LoginResponse?) {
+        viewModelScope.launch {
+            userRepository.setLoginResponse(loginResponse)
+        }
+    }
+
+    fun getLoginResponse() {
+        viewModelScope.launch {
+            val loginResponse = userRepository.getLoginResponse()
+            loginResponse?.let {
+                _loginResponse.postValue(it)
+            }
+        }
+    }
+
 }
