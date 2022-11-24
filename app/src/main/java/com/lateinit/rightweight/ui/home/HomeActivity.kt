@@ -18,6 +18,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
@@ -33,24 +34,29 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     CommonDialogFragment.NoticeDialogListener {
 
-    private var _binding: ActivityHomeBinding? = null
-    val binding get() = _binding!!
+    private lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
     val userViewModel: UserViewModel by viewModels()
+    private val client: GoogleSignInClient by lazy {
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail().build()
+        GoogleSignIn.getClient(applicationContext, options)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
+        binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
 
         setActionBar()
         setNavController()
     }
-
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
@@ -67,14 +73,33 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-                logout()
+                dialog.show(
+                    supportFragmentManager,
+                    LOGOUT_DIALOG_TAG,
+                    R.string.logout_message
+                )
             }
             R.id.withdraw -> {
-                withdraw()
+                dialog.show(
+                    supportFragmentManager,
+                    WITHDRAW_DIALOG_TAG,
+                    R.string.withdraw_message
+                )
             }
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        when (dialog.tag) {
+            LOGOUT_DIALOG_TAG -> {
+                logout()
+            }
+            WITHDRAW_DIALOG_TAG -> {
+                withdraw()
+            }
+        }
     }
 
     private fun setNavController() {
@@ -90,10 +115,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     supportActionBar?.hide()
                     binding.bottomNavigation.visibility = View.GONE
                 }
-                R.id.navigation_routine_detail -> {
-                    supportActionBar?.show()
-                    binding.bottomNavigation.visibility = View.GONE
-                }
+                R.id.navigation_routine_detail,
                 R.id.navigation_shared_routine_detail,
                 R.id.navigation_routine_editor -> {
                     supportActionBar?.show()
@@ -135,38 +157,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        dialog.show(
-            supportFragmentManager,
-            LOGOUT_DIALOG_TAG,
-            R.string.logout_message
-        )
+        userViewModel.setUser(null)
+        userViewModel.setLoginResponse(null)
+        client.signOut()
+        val intent = Intent(baseContext, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     private fun withdraw() {
-        dialog.show(
-            supportFragmentManager,
-            WITHDRAW_DIALOG_TAG,
-            R.string.withdraw_message
-        )
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            LOGOUT_DIALOG_TAG -> {
-                userViewModel.setUser(null)
-                userViewModel.setLoginResponse(null)
-                val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail().build()
-                val client = GoogleSignIn.getClient(applicationContext, options)
-                client.signOut()
-                val intent = Intent(baseContext, LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
-            }
-            WITHDRAW_DIALOG_TAG -> {
-                Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
-            }
-        }
+        Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
     }
 }

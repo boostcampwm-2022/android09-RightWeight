@@ -6,11 +6,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
@@ -27,16 +28,25 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
-    val loginViewModel: LoginViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
 
-    val getGoogleLoginResultText =
+    private val options: GoogleSignInOptions by lazy {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail().build()
+    }
+
+    private val client: GoogleSignInClient by lazy {
+        GoogleSignIn.getClient(applicationContext, options)
+    }
+
+    private val getGoogleLoginResultText =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                var account: GoogleSignInAccount? = null
                 try {
-                    account = task.getResult(ApiException::class.java)
+                    val account = task.getResult(ApiException::class.java)
                     loginToFireBase(account?.idToken)
                 } catch (e: ApiException) {
                     Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
@@ -46,29 +56,42 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail().build()
-        val client = GoogleSignIn.getClient(applicationContext, options)
 
         client.silentSignIn().addOnSuccessListener {
-            val intent = Intent(baseContext, HomeActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+            intentToHomeActivity()
         }
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
 
-        setContentView(binding.root)
-
-        binding.buttonGoogleLogin.setOnClickListener() {
+        binding.buttonGoogleLogin.setOnClickListener {
             login()
         }
-        supportActionBar?.hide()
 
-        lifecycleScope.launch() {
+        observeNetworkResponse()
+    }
+
+
+    fun login() {
+        val signInIntent = client.signInIntent
+        getGoogleLoginResultText.launch(signInIntent)
+    }
+
+    private fun loginToFireBase(idToken: String?) {
+        idToken?.let {
+            loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
+        }
+    }
+
+    private fun intentToHomeActivity() {
+        val intent = Intent(baseContext, HomeActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
+    private fun observeNetworkResponse() {
+        lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                loginViewModel.loginResponse.collect() { loginResponse ->
+                loginViewModel.loginResponse.collect { loginResponse ->
                     if (loginResponse != null) {
                         userViewModel.setLoginResponse(loginResponse)
 
@@ -82,16 +105,12 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch() {
-            val lifecycleScopeInstance = this
+        lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                val repeatOnLifecycleInstance = this
-                loginViewModel.networkResult.collect() { networkResult ->
+                loginViewModel.networkResult.collect { networkResult ->
                     when (networkResult) {
                         NetworkState.NO_ERROR -> {
-                            val intent = Intent(baseContext, HomeActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            startActivity(intent)
+                            intentToHomeActivity()
                         }
                         NetworkState.WRONG_CONNECTION -> {
                             Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG).show()
@@ -100,21 +119,6 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
-    }
-
-    fun login() {
-        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail().build()
-        val signInIntent = GoogleSignIn.getClient(this, options).signInIntent
-
-        getGoogleLoginResultText.launch(signInIntent)
-    }
-
-    fun loginToFireBase(idToken: String?) {
-        idToken?.let {
-            loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
         }
     }
 }
