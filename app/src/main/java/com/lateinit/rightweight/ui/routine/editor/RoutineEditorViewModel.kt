@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineEditorViewModel @Inject constructor(
-    private val routineRepository: RoutineRepository,
+    private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
     private val routineId = createUUID()
@@ -54,7 +54,6 @@ class RoutineEditorViewModel @Inject constructor(
 
     init {
         addDay()
-        currentDay.value = _days.value?.first()
     }
 
     fun addDay() {
