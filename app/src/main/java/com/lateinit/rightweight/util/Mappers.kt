@@ -1,30 +1,30 @@
 package com.lateinit.rightweight.util
 
 import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 
-fun Day.toDayUiModel(): DayUiModel {
+fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
         dayId = dayId,
         routineId = routineId,
         order = order,
-        exercises = exercises.map { it.toExerciseUiModel() },
+        selected = index == FIRST_DAY_POSITION,
+        exercises = exerciseWithSets.map { it.toExerciseUiModel() }
     )
 }
 
-
-fun Exercise.toExerciseUiModel(): ExerciseUiModel {
+fun ExerciseWithSets.toExerciseUiModel(): ExerciseUiModel {
     return ExerciseUiModel(
-        exerciseId = exerciseId,
-        dayId = dayId,
-        title = title,
-        order = order,
-        part = part,
-        exerciseSets = exerciseSets.map{ it.toExerciseSetUiModel() }
+        exerciseId = exercise.exerciseId,
+        dayId = exercise.dayId,
+        title = exercise.title,
+        order = exercise.order,
+        part = exercise.part,
+        exerciseSets = this.sets.map { it.toExerciseSetUiModel() }
     )
 }
 
