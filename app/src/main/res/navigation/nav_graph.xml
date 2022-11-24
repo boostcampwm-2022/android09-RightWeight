@@ -40,6 +40,7 @@
             android:id="@+id/action_navigation_routine_management_to_navigation_routine_editor"
             app:destination="@id/navigation_routine_editor" />
         <action
+
             android:id="@+id/action_navigation_routine_management_to_navigation_routine_detail"
             app:destination="@id/navigation_routine_detail" />
     </fragment>
@@ -70,6 +71,9 @@
         <action
             android:id="@+id/action_navigation_routine_detail_to_navigation_routine_editor"
             app:destination="@id/navigation_routine_editor" />
+        <argument
+            android:name="routineId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/navigation_calendar"
