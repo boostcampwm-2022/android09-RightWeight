@@ -22,6 +22,9 @@ interface RoutineDao {
         sets: List<ExerciseSet>
     )
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutineList(routines: List<Routine>)
+
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineById(routineId: String): Routine
 
@@ -33,6 +36,9 @@ interface RoutineDao {
 
     @Query("SELECT * FROM exercise WHERE day_id = :dayId ORDER BY `order`")
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
+
+    @Query("SELECT * FROM routine")
+    suspend fun getRoutines(): List<Routine>
 
     @Transaction
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")

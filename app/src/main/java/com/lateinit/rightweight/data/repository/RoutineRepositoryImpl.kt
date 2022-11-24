@@ -21,6 +21,10 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.insertRoutine(routine, days, exercises, sets)
     }
 
+    override suspend fun insertRoutineList(routines: List<Routine>) {
+        routineLocalDataSource.insertRoutineList(routines)
+    }
+
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineLocalDataSource.getRoutineById(routineId)
     }
@@ -36,6 +40,10 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineLocalDataSource.getExercisesByDayId(dayId)
+    }
+
+    override suspend fun getRoutines(): List<Routine> {
+        return routineLocalDataSource.getRoutines()
     }
 
     override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays{

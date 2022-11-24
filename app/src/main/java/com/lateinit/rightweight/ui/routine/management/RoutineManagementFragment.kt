@@ -4,33 +4,80 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import com.lateinit.rightweight.R
-import com.lateinit.rightweight.ui.home.HomeActivity
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
+import com.lateinit.rightweight.ui.home.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RoutineManagementFragment : Fragment() {
+
+    private var _binding: FragmentRoutineManagementBinding? = null
+    private val binding
+        get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val routineManagementViewModel: RoutineManagementViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_routine_management, container, false)
+    ): View {
+        _binding = FragmentRoutineManagementBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val createBtn = view.findViewById<Button>(R.id.create)
-        val viewBtn = view.findViewById<Button>(R.id.view)
+        setBinding()
+    }
 
-        createBtn.setOnClickListener {
-            it.findNavController()
-                .navigate(R.id.action_navigation_routine_management_to_navigation_routine_editor)
+    override fun onResume() {
+        routineManagementViewModel.getRoutineList()
+        userViewModel.getUser()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveRoutineList()
+    }
+
+    private fun saveRoutineList() {
+        val routineManagementAdapter =
+            binding.recyclerViewRoutineManagement.adapter as RoutineManagementAdapter
+        val currentList = routineManagementAdapter.currentList.toMutableList()
+        userViewModel.routine.value?.also {
+            currentList.add(0, it)
         }
-        viewBtn.setOnClickListener {
-            it.findNavController()
-                .navigate(R.id.action_navigation_routine_management_to_navigation_routine_detail)
-        }
+        routineManagementViewModel.saveRoutineList(currentList)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+    private fun setBinding() {
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.userViewModel = userViewModel
+        binding.routineManagementViewModel = routineManagementViewModel
+        binding.fragment = this
+    }
+
+    fun navigateTo(id: Int) {
+        findNavController().navigate(id)
+    }
+
+    fun navigateTo(routine: Routine) {
+        val action =
+            RoutineManagementFragmentDirections.actionNavigationRoutineManagementToNavigationRoutineDetail(
+                routine.routineId
+            )
+        findNavController().navigate(action)
     }
 }

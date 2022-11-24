@@ -20,6 +20,10 @@ class RoutineLocalDataSource @Inject constructor(private val routineDao: Routine
         routineDao.insertRoutine(routine, days, exercises, sets)
     }
 
+    override suspend fun insertRoutineList(routines: List<Routine>) {
+        routineDao.insertRoutineList(routines)
+    }
+
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineDao.getRoutineById(routineId)
     }
@@ -34,6 +38,10 @@ class RoutineLocalDataSource @Inject constructor(private val routineDao: Routine
 
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineDao.getExercisesByDayId(dayId)
+    }
+
+    override suspend fun getRoutines(): List<Routine> {
+        return routineDao.getRoutines()
     }
 
     override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {

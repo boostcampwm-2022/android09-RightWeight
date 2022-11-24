@@ -46,5 +46,9 @@
     <string name="mock_routine_id">14a3f0f1-94eb-4d40-a73f-c9483a00ac5d</string>
     <string name="reset">초기화</string>
     <string name="reset_message">루틴이 Day1부터 시작됩니다. 초기화 하시겠습니까?</string>
+    <string name="create_routine">루틴 생성</string>
+    <string name="routine_management_info">현재 선택된 루틴은</string>
+    <string name="move_up">위로</string>
+    <string name="move_down">아래로</string>
     <string name="routine_select">루틴 선택 하기</string>
 </resources>
