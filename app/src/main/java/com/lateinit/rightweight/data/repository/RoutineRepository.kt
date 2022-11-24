@@ -4,6 +4,7 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 
 interface RoutineRepository {
 
@@ -18,4 +19,6 @@ interface RoutineRepository {
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
+
+    suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
 }
