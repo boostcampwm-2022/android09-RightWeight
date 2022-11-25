@@ -59,18 +59,21 @@ class HistoryExerciseAdapter(
 
             bind.buttonSetAdd.setOnClickListener() {
                 historyEventListener.addHistorySet(historyExercise.exerciseId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
             bind.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
                 historyExercise.part = ExercisePartType.values()[position]
                 historyEventListener.updateHistoryExercise(historyExercise)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
             bind.buttonExerciseRemove.setOnClickListener {
                 historyEventListener.removeHistoryExercise(historyExercise.exerciseId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
             bind.editTextExerciseTitle.doAfterTextChanged {

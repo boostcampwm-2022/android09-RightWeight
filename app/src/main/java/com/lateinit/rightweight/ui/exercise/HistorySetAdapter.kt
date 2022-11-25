@@ -48,7 +48,8 @@ class HistorySetAdapter(
             }
             bind.buttonSetRemove.setOnClickListener {
                 historyEventListener.removeHistorySet(historySet.setId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
         }
     }
