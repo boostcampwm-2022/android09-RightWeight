@@ -7,7 +7,7 @@
 
         <variable
             name="exercise"
-            type="com.lateinit.rightweight.data.database.entity.Exercise" />
+            type="com.lateinit.rightweight.ui.model.ExerciseUiModel" />
 
         <import type="com.lateinit.rightweight.util.ExtensionsKt" />
     </data>

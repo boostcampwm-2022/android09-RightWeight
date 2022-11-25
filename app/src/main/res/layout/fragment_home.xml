@@ -87,7 +87,7 @@
             android:id="@+id/card_view_home_routine_list_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="@{homeViewModel.day == null ? View.GONE : View.VISIBLE}"
+            android:visibility="@{homeViewModel.dayUiModel == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/card_view_home_routine_reset_container"
             app:layout_constraintStart_toStartOf="@id/card_view_home_routine_title_container"
@@ -102,7 +102,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{String.format(@string/day_order, homeViewModel.day.order + 1)}"
+                    android:text="@{String.format(@string/day_order, homeViewModel.dayUiModel.order + 1)}"
                     android:layout_marginBottom="8dp"
                     style="@style/Text.Medium.Bold"/>
 

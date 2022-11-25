@@ -26,7 +26,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
     private val userViewModel: UserViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var homeAdapter: HomeAdapter
+    private lateinit var homeExerciseAdapter: HomeExerciseAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
@@ -68,11 +68,12 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)
         }
 
-        homeViewModel.exercises.observe(viewLifecycleOwner) {
-            homeAdapter.submitList(it)
+        homeViewModel.dayUiModel.observe(viewLifecycleOwner) {
+            homeExerciseAdapter.submitList(it.exercises)
         }
+
         userViewModel.userInfo.observe(viewLifecycleOwner) {
-            homeViewModel.getDay(it.dayId)
+            homeViewModel.getDayWithExercisesByDayId(it.dayId)
         }
     }
 
@@ -93,8 +94,8 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     }
 
     private fun setAdapter() {
-        homeAdapter = HomeAdapter()
-        binding.recyclerViewTodayRoutine.adapter = homeAdapter
+        homeExerciseAdapter = HomeExerciseAdapter()
+        binding.recyclerViewTodayRoutine.adapter = homeExerciseAdapter
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
