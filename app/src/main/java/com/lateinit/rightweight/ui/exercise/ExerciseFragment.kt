@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
@@ -160,23 +162,26 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
 
         lifecycleScope.launch {
-            exerciseViewModel.loadTodayHistory().collect() { history ->
-                Log.d("history", history.size.toString())
-                if (history.size == 1) {
-                    val historyId = history[0].historyId
-                    binding.buttonExerciseAdd.setOnClickListener() {
-                        Log.d("buttonExerciseAdd", "")
-                        addHistoryExercise(historyId)
-                        renewTodayHistory()
-                    }
-                    binding.buttonExerciseEnd.setOnClickListener() {
-                        stopTimer()
-                        //exerciseViewModel.updateTodayHistory()
-                    }
-                    // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
-                    exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
-                        Log.d("historyExercises", historyId + " " + historyExercises.toString())
-                        historyExerciseAdapter.submitList(historyExercises)
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                Log.d("CoroutineScope", this.toString())
+                exerciseViewModel.loadTodayHistory().collect() { history ->
+                    Log.d("history", history.size.toString())
+                    if (history.size == 1) {
+                        val historyId = history[0].historyId
+                        binding.buttonExerciseAdd.setOnClickListener() {
+                            Log.d("buttonExerciseAdd", "")
+                            addHistoryExercise(historyId)
+                            renewTodayHistory()
+                        }
+                        binding.buttonExerciseEnd.setOnClickListener() {
+                            stopTimer()
+                            //exerciseViewModel.updateTodayHistory()
+                        }
+                        // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
+                        exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
+                            Log.d("historyExercises", historyId + " " + historyExercises.toString())
+                            historyExerciseAdapter.submitList(historyExercises)
+                        }
                     }
                 }
             }
@@ -193,8 +198,11 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
         lifecycleScope.launch {
-            exerciseViewModel.loadHistorySets(historyExerciseId).collect() { historySets ->
-                adapter.submitList(historySets)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                Log.d("CoroutineScope", this.toString())
+                exerciseViewModel.loadHistorySets(historyExerciseId).collect() { historySets ->
+                    adapter.submitList(historySets)
+                }
             }
         }
     }
