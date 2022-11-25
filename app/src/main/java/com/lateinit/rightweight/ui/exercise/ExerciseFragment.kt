@@ -160,7 +160,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         val historyExerciseAdapter = HistoryExerciseAdapter(requireContext(), this)
         binding.recyclerViewHistory.adapter = historyExerciseAdapter
 
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 Log.d("CoroutineScope", this.toString())
@@ -179,7 +178,7 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                         }
                         // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
                         exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
-                            Log.d("historyExercises", historyId + " " + historyExercises.toString())
+                            Log.d("historyExercisesCollect", "parentHistoryId : $historyId")
                             historyExerciseAdapter.submitList(historyExercises)
                         }
                     }
@@ -199,8 +198,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                Log.d("CoroutineScope", this.toString())
                 exerciseViewModel.loadHistorySets(historyExerciseId).collect() { historySets ->
+                    Log.d("historySetsCollect", "parentExerciseId : $historyExerciseId")
                     adapter.submitList(historySets)
                 }
             }

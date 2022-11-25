@@ -38,11 +38,11 @@ class HistorySetAdapter(
                 historySet.checked = isChecked
                 historyEventListener.updateHistorySet(historySet)
             }
-            bind.editTextSetWeight.doAfterTextChanged {
+            bind.editTextSetWeight.setOnFocusChangeListener{ _, _ ->
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
                 historyEventListener.updateHistorySet(historySet)
             }
-            bind.editTextSetCount.doAfterTextChanged {
+            bind.editTextSetCount.setOnFocusChangeListener{ _, _ ->
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
                 historyEventListener.updateHistorySet(historySet)
             }
