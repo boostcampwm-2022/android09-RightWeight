@@ -1,11 +1,12 @@
 package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.database.entity.*
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface HistoryDataSource {
 
-    suspend fun loadHistoryByDate(localDate: LocalDate): List<History>
+    suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>>
 
     suspend fun saveHistory(
         day: Day,
@@ -13,8 +14,8 @@ interface HistoryDataSource {
         exerciseSets: List<ExerciseSet>
     )
 
-    suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise>
-    suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet>
+    suspend fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>>
+    suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): Flow<List<HistorySet>>
 
     suspend fun updateHistorySet(historySet: HistorySet)
     suspend fun updateHistoryExercise(historyExercise: HistoryExercise)

@@ -44,8 +44,10 @@ class HomeViewModel @Inject constructor(
     fun checkTodayHistory() {
         viewModelScope.launch {
             val todayHistories = historyRepository.loadHistoryByDate(LocalDate.now())
-            if (todayHistories.isEmpty()) {
-                saveHistory()
+            todayHistories.collect(){ todayHistories ->
+                if(todayHistories.isEmpty()){
+                    saveHistory()
+                }
             }
         }
     }

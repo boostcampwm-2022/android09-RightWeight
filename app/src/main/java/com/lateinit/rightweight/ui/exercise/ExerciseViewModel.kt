@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -18,36 +19,26 @@ class ExerciseViewModel @Inject constructor(
     private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-    private val _historyExercises = MutableLiveData<List<HistoryExercise>>()
-    val historyExercises: LiveData<List<HistoryExercise>> get() = _historyExercises
+//    lateinit var historyExercises: Flow<List<HistoryExercise>>
+//
+//    lateinit var history: Flow<List<History>>
+//
+//    private val _historySets = mutableMapOf<String, Flow<List<HistorySet>>>()
+//    val historySets: Map<String, Flow<List<HistorySet>>> get() = _historySets
 
-    private val _history = MutableLiveData<History>()
-    val history: LiveData<History> get() = _history
-
-    private val _historySets = mutableMapOf<String, MutableLiveData<List<HistorySet>>>()
-    val historySets: Map<String, LiveData<List<HistorySet>>> get() = _historySets
-
-    fun loadTodayHistory() {
-        viewModelScope.launch {
-            val todayHistories = historyRepository.loadHistoryByDate(LocalDate.now())
-            if (todayHistories.size == 1) {
-                val todayHistory = todayHistories[0]
-                _history.value = todayHistory
-                val historyExercises =
-                    historyRepository.getHistoryExercisesByHistoryId(todayHistory.historyId)
-                _historyExercises.value = historyExercises
-                for (historyExercise in historyExercises) {
-                    val historySetsInHistoryExercise = MutableLiveData<List<HistorySet>>()
-                    historySetsInHistoryExercise.value = historyRepository.getHistorySetsByHistoryExerciseId(
-                        historyExercise.exerciseId
-                    )
-                    _historySets.put(historyExercise.exerciseId, historySetsInHistoryExercise)
-                }
-            }
-        }
+    suspend fun loadTodayHistory(): Flow<List<History>>{
+        return historyRepository.loadHistoryByDate(LocalDate.now())
     }
 
-    fun updateHistorySet(historySet: HistorySet){
+    suspend fun loadHistoryExercises(historyId: String): Flow<List<HistoryExercise>> {
+        return historyRepository.getHistoryExercisesByHistoryId(historyId)
+    }
+
+    suspend fun loadHistorySets(historyExerciseId: String): Flow<List<HistorySet>> {
+        return historyRepository.getHistorySetsByHistoryExerciseId(historyExerciseId)
+    }
+
+    fun updateHistorySet(historySet: HistorySet) {
         viewModelScope.launch {
             historyRepository.updateHistorySet(historySet)
         }
@@ -59,25 +50,25 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    fun removeHistorySet(historySetId: String){
+    fun removeHistorySet(historySetId: String) {
         viewModelScope.launch {
             historyRepository.removeHistorySet(historySetId)
         }
     }
 
-    fun removeHistoryExercise(historyExerciseId: String){
+    fun removeHistoryExercise(historyExerciseId: String) {
         viewModelScope.launch {
             historyRepository.removeHistoryExercise(historyExerciseId)
         }
     }
 
-    fun addHistorySet(historyExerciseId: String){
+    fun addHistorySet(historyExerciseId: String) {
         viewModelScope.launch {
             historyRepository.addHistorySet(historyExerciseId)
         }
     }
 
-    fun addHistoryExercise(historyId: String){
+    fun addHistoryExercise(historyId: String) {
         viewModelScope.launch {
             historyRepository.addHistoryExercise(historyId)
         }

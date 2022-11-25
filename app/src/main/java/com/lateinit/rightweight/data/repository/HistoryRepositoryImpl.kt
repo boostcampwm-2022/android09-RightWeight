@@ -2,6 +2,7 @@ package com.lateinit.rightweight.data.repository
 
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.datasource.HistoryLocalDataSource
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -9,7 +10,7 @@ class HistoryRepositoryImpl @Inject constructor(
     private val historyLocalDataSource: HistoryLocalDataSource
 ): HistoryRepository {
 
-    override suspend fun loadHistoryByDate(localDate: LocalDate): List<History> {
+    override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
         return  historyLocalDataSource.loadHistoryByDate(localDate)
     }
 
@@ -21,11 +22,11 @@ class HistoryRepositoryImpl @Inject constructor(
         return  historyLocalDataSource.saveHistory(day, exercises, exerciseSets)
     }
 
-    override suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise> {
+    override suspend fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>> {
         return historyLocalDataSource.getHistoryExercisesByHistoryId(historyId)
     }
 
-    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet> {
+    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): Flow<List<HistorySet>> {
         return historyLocalDataSource.getHistorySetsByHistoryExerciseId(exerciseId)
     }
 
