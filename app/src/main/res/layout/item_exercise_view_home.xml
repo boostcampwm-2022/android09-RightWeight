@@ -13,35 +13,49 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_exercise_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_exercise_part"
-            style="@style/Text.Small.Bold"
+        <TextView
+            android:id="@+id/text_view_exercise_part"
+            style="@style/Text.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:clickable="false"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_exercise_part"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
             android:text="@{ExtensionsKt.getPartNameRes(exercise.part)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="등" />
+            tools:text="가슴" />
 
         <TextView
-            android:gravity="center"
             android:id="@+id/text_view_exercise_title"
+            style="@style/Text.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="@{exercise.title}"
-            style="@style/Text.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/chip_exercise_part"
+            app:layout_constraintEnd_toStartOf="@id/image_view_expand"
+            app:layout_constraintStart_toEndOf="@id/text_view_exercise_part"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="랫풀다운" />
+
+        <ImageView
+            android:id="@+id/image_view_expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_up"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/expand" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
