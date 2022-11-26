@@ -96,9 +96,9 @@
             app:layout_constraintTop_toBottomOf="@id/card_view_home_routine_title_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_margin="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_margin="8dp">
 
                 <TextView
                     android:id="@+id/text_view_home_day_title"
@@ -107,20 +107,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@{String.format(@string/day_order, homeViewModel.dayUiModel.order + 1)}"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/recycler_view_today_routine"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/recycler_view_today_routine"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_today_routine"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_home_day_title"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_home_day_title"
                     tools:listitem="@layout/item_exercise_view_home" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

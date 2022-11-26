@@ -1,14 +1,17 @@
 package com.lateinit.rightweight.ui.home
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemExerciseViewHomeBinding
 import com.lateinit.rightweight.databinding.ItemSetReadBinding
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import kotlin.properties.Delegates
 
-class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -42,17 +45,36 @@ class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) : RecyclerView.A
     }
 
     override fun getItemCount(): Int {
-        return exerciseUiModel.exerciseSets.size + 1
+        return if (isExpanded) exerciseUiModel.exerciseSets.size + 1 else 1
     }
 
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) VIEW_TYPE_EXERCISE else VIEW_TYPE_SET
     }
 
+    var isExpanded: Boolean by Delegates.observable(true) { _, _, newExpandedValue: Boolean ->
+        if (newExpandedValue) {
+            notifyItemRangeInserted(1, exerciseUiModel.exerciseSets.size)
+            //To update the header expand icon
+            notifyItemChanged(0)
+        } else {
+            notifyItemRangeRemoved(1, exerciseUiModel.exerciseSets.size)
+            //To update the header expand icon
+            notifyItemChanged(0)
+        }
+    }
+
+    private val onExerciseClickListener = View.OnClickListener {
+        isExpanded = !isExpanded
+    }
+
     inner class ExerciseViewHolder(val binding: ItemExerciseViewHomeBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: ExerciseUiModel) {
             binding.exercise = exercise
+            binding.imageViewExpand.rotation =
+                if (isExpanded) IC_EXPANDED_ROTATION_DEG else IC_COLLAPSED_ROTATION_DEG
+            binding.layoutExerciseItem.setOnClickListener(onExerciseClickListener)
         }
     }
 
@@ -66,6 +88,10 @@ class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) : RecyclerView.A
     companion object {
         private const val VIEW_TYPE_EXERCISE = 0
         private const val VIEW_TYPE_SET = 1
+
+        private const val IC_EXPANDED_ROTATION_DEG = 0F
+        private const val IC_COLLAPSED_ROTATION_DEG = 180F
+
     }
 
 }

@@ -75,6 +75,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
 
             adapter = ConcatAdapter(homeAdapters)
             binding.recyclerViewTodayRoutine.adapter = adapter
+            binding.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
         userViewModel.userInfo.observe(viewLifecycleOwner) {
