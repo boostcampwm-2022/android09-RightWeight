@@ -28,6 +28,8 @@
     <string name="logout_message">로그아웃 하시겠습니까?</string>
     <string name="withdraw_message">정말 탈퇴하시겠습니까?</string>
     <string name="home_description">%s\n오늘 수행할 운동은</string>
+    <string name="home_run_exercise_description">%s\n오늘 운동 진행중입니다</string>
+    <string name="home_end_exercise_description">%s\n오늘 운동을 완료했습니다</string>
     <string name="date_format">yyyy년 MM월 dd일</string>
     <string name="empty_routine">루틴을 선택해주세요.</string>
     <string name="routine_title">루틴 명</string>

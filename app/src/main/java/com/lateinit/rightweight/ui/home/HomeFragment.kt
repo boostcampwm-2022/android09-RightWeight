@@ -21,6 +21,8 @@ import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
@@ -34,12 +36,13 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navigationRouteId = requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if(navigationRouteId != -1){
+        val navigationRouteId =
+            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
+        if (navigationRouteId != -1) {
             findNavController().navigate(navigationRouteId)
         }
     }
@@ -60,25 +63,28 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         setBinding()
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                homeViewModel.loadTodayHistory().collect(){ todayHistories ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.loadTodayHistory().collect() { todayHistories ->
 
-                    if(todayHistories.isEmpty()){
+                    if (todayHistories.isEmpty()) {
+                        setHomeInfoText(getString(R.string.home_description))
                         binding.floatingActionButtonStartExercise.setOnClickListener {
                             homeViewModel.saveHistory()
-                            it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
+                            it.findNavController()
+                                .navigate(R.id.action_navigation_home_to_navigation_exercise)
                         }
-                    }
-                    else{
+                    } else {
                         if (todayHistories.size == 1) {
                             binding.floatingActionButtonStartExercise.setOnClickListener {
-                                it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
+                                it.findNavController()
+                                    .navigate(R.id.action_navigation_home_to_navigation_exercise)
                             }
-                            if(todayHistories[0].completed){
+                            if (todayHistories[0].completed) {
                                 binding.floatingActionButtonStartExercise.hide()
-                            }
-                            else{
+                                setHomeInfoText(getString(R.string.home_end_exercise_description))
+                            } else {
                                 binding.floatingActionButtonStartExercise.show()
+                                setHomeInfoText(getString(R.string.home_run_exercise_description))
                             }
                         }
                     }
@@ -122,6 +128,15 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private fun setAdapter() {
         homeAdapter = HomeAdapter()
         binding.recyclerViewTodayRoutine.adapter = homeAdapter
+    }
+
+    private fun setHomeInfoText(description: String){
+        binding.textViewHomeInfo.text = String.format(
+            description,
+            LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern(getString(R.string.date_format))
+            )
+        )
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {

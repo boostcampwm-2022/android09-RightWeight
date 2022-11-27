@@ -191,13 +191,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
             }
         }
 
-        // 전역으로 historyId 변수를 둘 경우 collect 요청에 반영되지 않는 문제가 있음 (historyId 초기값이 ""이면 ""에 대한 collect 진행)
-//        lifecycleScope.launch {
-//            exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
-//                Log.d("historyExercises", historyId + " " + historyExercises.toString())
-//                historyExerciseAdapter.submitList(historyExercises)
-//            }
-//        }
     }
 
     override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
