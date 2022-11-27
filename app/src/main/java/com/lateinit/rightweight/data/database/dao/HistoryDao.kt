@@ -32,6 +32,11 @@ interface HistoryDao {
     )
 
     @Update
+    suspend fun updateHistory(
+        history: History
+    )
+
+    @Update
     suspend fun updateHistorySet(
         set: HistorySet
     )

@@ -169,12 +169,15 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                         val historyId = history[0].historyId
                         binding.buttonExerciseAdd.setOnClickListener() {
                             Log.d("buttonExerciseAdd", "")
-                            addHistoryExercise(historyId)
+                            exerciseViewModel.addHistoryExercise(historyId)
                             renewTodayHistory()
                         }
                         binding.buttonExerciseEnd.setOnClickListener() {
                             stopTimer()
-                            //exerciseViewModel.updateTodayHistory()
+                            val newHistory = history[0].copy()
+                            newHistory.time = binding.timeString.toString()
+                            newHistory.completed = true
+                            exerciseViewModel.updateHistory(newHistory)
                         }
                         // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
                         exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
@@ -208,10 +211,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     override fun addHistorySet(historyExerciseId: String) {
         exerciseViewModel.addHistorySet(historyExerciseId)
-    }
-
-    fun addHistoryExercise(historyId: String) {
-        exerciseViewModel.addHistoryExercise(historyId)
     }
 
 }

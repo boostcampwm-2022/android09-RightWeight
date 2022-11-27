@@ -49,6 +49,10 @@ class HistoryLocalDataSource @Inject constructor(
         return historyDao.getHistorySetsByHistoryExerciseId(exerciseId)
     }
 
+    override suspend fun updateHistory(history: History) {
+        historyDao.updateHistory(history)
+    }
+
     override suspend fun updateHistorySet(historySet: HistorySet) {
         historyDao.updateHistorySet(historySet)
     }

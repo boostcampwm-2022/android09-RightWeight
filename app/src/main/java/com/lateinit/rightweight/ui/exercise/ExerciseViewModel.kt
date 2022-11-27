@@ -38,6 +38,12 @@ class ExerciseViewModel @Inject constructor(
         return historyRepository.getHistorySetsByHistoryExerciseId(historyExerciseId)
     }
 
+    fun updateHistory(history: History){
+        viewModelScope.launch {
+            historyRepository.updateHistory(history)
+        }
+    }
+
     fun updateHistorySet(historySet: HistorySet) {
         viewModelScope.launch {
             historyRepository.updateHistorySet(historySet)
