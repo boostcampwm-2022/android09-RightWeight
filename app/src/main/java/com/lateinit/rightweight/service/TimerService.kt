@@ -47,6 +47,7 @@ class TimerService : Service() {
         super.onCreate()
         createChannel()
         setNotification()
+        timer = Timer()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
