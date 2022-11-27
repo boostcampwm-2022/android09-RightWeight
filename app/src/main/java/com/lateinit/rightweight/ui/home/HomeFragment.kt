@@ -81,7 +81,10 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
                             }
                             if (todayHistories[0].completed) {
                                 binding.floatingActionButtonStartExercise.hide()
-                                setHomeInfoText(getString(R.string.home_end_exercise_description))
+                                setHomeInfoText(
+                                    getString(R.string.home_end_exercise_description) +
+                                            " (" + todayHistories[0].time + ")"
+                                )
                             } else {
                                 binding.floatingActionButtonStartExercise.show()
                                 setHomeInfoText(getString(R.string.home_run_exercise_description))
@@ -130,7 +133,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         binding.recyclerViewTodayRoutine.adapter = homeAdapter
     }
 
-    private fun setHomeInfoText(description: String){
+    private fun setHomeInfoText(description: String) {
         binding.textViewHomeInfo.text = String.format(
             description,
             LocalDateTime.now().format(
