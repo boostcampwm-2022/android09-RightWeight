@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
@@ -163,10 +164,10 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 Log.d("CoroutineScope", this.toString())
-                exerciseViewModel.loadTodayHistory().collect() { history ->
-                    Log.d("history", history.size.toString())
-                    if (history.size == 1) {
-                        val historyId = history[0].historyId
+                exerciseViewModel.loadTodayHistory().collect() { todayHistories ->
+                    Log.d("history", todayHistories.size.toString())
+                    if (todayHistories.size == 1) {
+                        val historyId = todayHistories[0].historyId
                         binding.buttonExerciseAdd.setOnClickListener() {
                             Log.d("buttonExerciseAdd", "")
                             exerciseViewModel.addHistoryExercise(historyId)
@@ -174,10 +175,11 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                         }
                         binding.buttonExerciseEnd.setOnClickListener() {
                             stopTimer()
-                            val newHistory = history[0].copy()
+                            val newHistory = todayHistories[0].copy()
                             newHistory.time = binding.timeString.toString()
                             newHistory.completed = true
                             exerciseViewModel.updateHistory(newHistory)
+                            findNavController().popBackStack()
                         }
                         // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
                         exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->

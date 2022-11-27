@@ -8,6 +8,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.service.TimerService
@@ -17,6 +20,7 @@ import com.lateinit.rightweight.databinding.FragmentHomeBinding
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
@@ -55,10 +59,33 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         setAdapter()
         setBinding()
 
-        binding.floatingActionButtonStartExercise.setOnClickListener {
-            homeViewModel.checkTodayHistory()
-            it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                homeViewModel.loadTodayHistory().collect(){ todayHistories ->
+
+                    if(todayHistories.isEmpty()){
+                        binding.floatingActionButtonStartExercise.setOnClickListener {
+                            homeViewModel.saveHistory()
+                            it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
+                        }
+                    }
+                    else{
+                        if (todayHistories.size == 1) {
+                            binding.floatingActionButtonStartExercise.setOnClickListener {
+                                it.findNavController().navigate(R.id.action_navigation_home_to_navigation_exercise)
+                            }
+                            if(todayHistories[0].completed){
+                                binding.floatingActionButtonStartExercise.hide()
+                            }
+                            else{
+                                binding.floatingActionButtonStartExercise.show()
+                            }
+                        }
+                    }
+                }
+            }
         }
+
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
             val item =
                 (requireActivity() as HomeActivity).binding.bottomNavigation.menu.findItem(R.id.navigation_routine_management)
