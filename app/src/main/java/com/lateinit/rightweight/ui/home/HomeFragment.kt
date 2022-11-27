@@ -68,6 +68,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
 
                     if (todayHistories.isEmpty()) {
                         setHomeInfoText(getString(R.string.home_description))
+                        binding.floatingActionButtonStartExercise.show()
                         binding.floatingActionButtonStartExercise.setOnClickListener {
                             homeViewModel.saveHistory()
                             it.findNavController()
