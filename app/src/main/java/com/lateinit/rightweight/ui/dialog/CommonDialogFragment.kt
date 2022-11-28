@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.ui.home.dialog
+package com.lateinit.rightweight.ui.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
