@@ -1,9 +1,14 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -167,5 +172,28 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun withdraw() {
         Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                val focusView = currentFocus
+                if (focusView is EditText) {
+                    val outRect = Rect()
+                    focusView.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        focusView.clearFocus()
+                        hideKeyboard(focusView)
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    private fun hideKeyboard(focusView: View) {
+        val inputMethodManager: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(focusView.windowToken, 0)
     }
 }

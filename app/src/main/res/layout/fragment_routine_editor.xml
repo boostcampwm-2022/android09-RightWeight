@@ -143,6 +143,7 @@
                     style="@style/Text.Small.Bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="300dp"
                     android:backgroundTint="@color/secondaryColor"
                     android:onClick="@{()->viewModel.addExercise()}"
                     android:padding="16dp"
