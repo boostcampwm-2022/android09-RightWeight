@@ -6,7 +6,9 @@
     <data>
 
         <import type="java.time.LocalDateTime" />
+
         <import type="android.view.View" />
+
         <import type="java.time.format.DateTimeFormatter" />
 
         <variable
@@ -42,7 +44,6 @@
             android:id="@+id/card_view_home_routine_title_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
             android:clickable="true"
             android:focusable="true"
@@ -69,10 +70,10 @@
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="4dp"
-            app:layout_constraintTop_toTopOf="@id/card_view_home_routine_title_container"
+            app:layout_constraintBottom_toBottomOf="@+id/card_view_home_routine_title_container"
             app:layout_constraintEnd_toEndOf="@+id/text_view_home_info"
             app:layout_constraintStart_toEndOf="@id/card_view_home_routine_title_container"
-            app:layout_constraintBottom_toBottomOf="@+id/card_view_home_routine_title_container">
+            app:layout_constraintTop_toTopOf="@id/card_view_home_routine_title_container">
 
             <TextView
                 style="@style/Text.Medium"
@@ -86,33 +87,42 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view_home_routine_list_container"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:visibility="@{homeViewModel.day == null ? View.GONE : View.VISIBLE}"
+            android:layout_height="0dp"
+            android:layout_marginVertical="16dp"
+            android:visibility="@{homeViewModel.dayUiModel == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/card_view_home_routine_reset_container"
             app:layout_constraintStart_toStartOf="@id/card_view_home_routine_title_container"
             app:layout_constraintTop_toBottomOf="@id/card_view_home_routine_title_container">
 
-            <LinearLayout
-                android:layout_margin="8dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_margin="8dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/text_view_home_day_title"
+                    style="@style/Text.Medium.Bold"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{String.format(@string/day_order, homeViewModel.day.order + 1)}"
                     android:layout_marginBottom="8dp"
-                    style="@style/Text.Medium.Bold"/>
+                    android:text="@{String.format(@string/day_order, homeViewModel.dayUiModel.order + 1)}"
+                    app:layout_constraintBottom_toTopOf="@id/recycler_view_today_routine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_today_routine"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_home_day_title"
                     tools:listitem="@layout/item_exercise_view_home" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 

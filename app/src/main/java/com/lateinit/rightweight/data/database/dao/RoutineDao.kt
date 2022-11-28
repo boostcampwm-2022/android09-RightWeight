@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 
 @Dao
@@ -46,4 +47,8 @@ interface RoutineDao {
     @Transaction
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
+
+    @Transaction
+    @Query("SELECT * FROM day WHERE day_id = :dayId")
+    suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
 }

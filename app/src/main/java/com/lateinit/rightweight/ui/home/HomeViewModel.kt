@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -23,21 +24,21 @@ class HomeViewModel @Inject constructor(
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
 
-    private val _day = MutableLiveData<Day>()
-    val day: LiveData<Day> get() = _day
-
     private val _exerciseSets = MutableLiveData<List<ExerciseSet>>()
     val exerciseSets: LiveData<List<ExerciseSet>> get() = _exerciseSets
 
+    private val _dayUiModel = MutableLiveData<DayUiModel>()
+    val dayUiModel: LiveData<DayUiModel> get() = _dayUiModel
 
-    fun getDay(dayId: String?) {
+    fun getDayWithExercisesByDayId(dayId: String?) {
         dayId ?: return
-
         viewModelScope.launch {
-            val day = routineRepository.getDayById(dayId)
-            _day.postValue(day)
-            val exercises = routineRepository.getExercisesByDayId(dayId)
-            _exercises.postValue(exercises)
+            val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
+            val dayUiModel = dayWithExercises.day.toDayUiModel(
+                dayWithExercises.day.order,
+                dayWithExercises.exercises
+            )
+            _dayUiModel.postValue(dayUiModel)
         }
     }
 
@@ -51,7 +52,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveHistory() {
-        val dayId = day.value?.dayId ?: return
+        val dayId = dayUiModel.value?.dayId ?: return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)

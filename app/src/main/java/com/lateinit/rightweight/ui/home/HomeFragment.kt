@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.service.TimerService
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
@@ -26,7 +27,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
     private val userViewModel: UserViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
-    private lateinit var homeAdapter: HomeAdapter
+    private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment()
     }
@@ -52,7 +53,6 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setAdapter()
         setBinding()
 
         binding.floatingActionButtonStartExercise.setOnClickListener {
@@ -68,11 +68,18 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)
         }
 
-        homeViewModel.exercises.observe(viewLifecycleOwner) {
-            homeAdapter.submitList(it)
+        homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
+            val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
+                HomeAdapter(exerciseUiModel)
+            }
+
+            adapter = ConcatAdapter(homeAdapters)
+            binding.recyclerViewTodayRoutine.adapter = adapter
+            binding.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
+
         userViewModel.userInfo.observe(viewLifecycleOwner) {
-            homeViewModel.getDay(it.dayId)
+            homeViewModel.getDayWithExercisesByDayId(it.dayId)
         }
     }
 
@@ -90,11 +97,6 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.userViewModel = userViewModel
         binding.homeViewModel = homeViewModel
-    }
-
-    private fun setAdapter() {
-        homeAdapter = HomeAdapter()
-        binding.recyclerViewTodayRoutine.adapter = homeAdapter
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
