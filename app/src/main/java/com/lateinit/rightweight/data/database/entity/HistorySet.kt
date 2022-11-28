@@ -27,7 +27,7 @@ data class HistorySet(
     @ColumnInfo(name = "count")
     var count: String,
     @ColumnInfo(name = "order")
-    val order: Int,
+    var order: Int,
     @ColumnInfo(name = "checked")
     var checked: Boolean
 )

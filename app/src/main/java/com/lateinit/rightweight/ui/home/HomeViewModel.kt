@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -42,13 +44,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun checkTodayHistory() {
-        viewModelScope.launch {
-            val todayHistories = historyRepository.loadHistoryByDate(LocalDate.now())
-            if (todayHistories.isEmpty()) {
-                saveHistory()
-            }
-        }
+    suspend fun loadTodayHistory(): Flow<List<History>> {
+        return historyRepository.loadHistoryByDate(LocalDate.now())
     }
 
     fun saveHistory() {

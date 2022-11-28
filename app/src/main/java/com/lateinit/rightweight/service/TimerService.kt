@@ -45,11 +45,12 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        createChannel()
         setNotification()
+        timer = Timer()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createChannel()
 
         val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 

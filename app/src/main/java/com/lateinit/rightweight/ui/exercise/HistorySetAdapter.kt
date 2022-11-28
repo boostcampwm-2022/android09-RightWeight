@@ -38,17 +38,18 @@ class HistorySetAdapter(
                 historySet.checked = isChecked
                 historyEventListener.updateHistorySet(historySet)
             }
-            bind.editTextSetWeight.doAfterTextChanged {
+            bind.editTextSetWeight.setOnFocusChangeListener{ _, _ ->
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
                 historyEventListener.updateHistorySet(historySet)
             }
-            bind.editTextSetCount.doAfterTextChanged {
+            bind.editTextSetCount.setOnFocusChangeListener{ _, _ ->
                 // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
                 historyEventListener.updateHistorySet(historySet)
             }
             bind.buttonSetRemove.setOnClickListener {
                 historyEventListener.removeHistorySet(historySet.setId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
         }
     }

@@ -3,6 +3,7 @@ package com.lateinit.rightweight.data.datasource
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.entity.*
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -11,7 +12,7 @@ import javax.inject.Inject
 class HistoryLocalDataSource @Inject constructor(
     private val historyDao: HistoryDao
 ): HistoryDataSource {
-    override suspend fun loadHistoryByDate(localDate: LocalDate): List<History> {
+    override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
         return historyDao.loadHistoryByDate(localDate)
     }
 
@@ -40,16 +41,20 @@ class HistoryLocalDataSource @Inject constructor(
         historyDao.insertHistory(history, historyExercises, historySets)
     }
 
-    override suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise> {
+    override suspend fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>> {
         return historyDao.getHistoryExercisesByHistoryId(historyId)
     }
 
-    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet> {
+    override suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): Flow<List<HistorySet>> {
         return historyDao.getHistorySetsByHistoryExerciseId(exerciseId)
     }
 
+    override suspend fun updateHistory(history: History) {
+        historyDao.updateHistory(history)
+    }
+
     override suspend fun updateHistorySet(historySet: HistorySet) {
-        historyDao.updatetHistorySet(historySet)
+        historyDao.updateHistorySet(historySet)
     }
 
     override suspend fun updateHistoryExercise(historyExercise: HistoryExercise) {

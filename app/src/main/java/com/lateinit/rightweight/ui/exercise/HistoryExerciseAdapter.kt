@@ -59,21 +59,26 @@ class HistoryExerciseAdapter(
 
             bind.buttonSetAdd.setOnClickListener() {
                 historyEventListener.addHistorySet(historyExercise.exerciseId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
             bind.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
                 historyExercise.part = ExercisePartType.values()[position]
                 historyEventListener.updateHistoryExercise(historyExercise)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
             bind.buttonExerciseRemove.setOnClickListener {
                 historyEventListener.removeHistoryExercise(historyExercise.exerciseId)
-                historyEventListener.renewTodayHistory()
+                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
+                //historyEventListener.renewTodayHistory()
             }
 
-            bind.editTextExerciseTitle.doAfterTextChanged {
+            // doAfterTextChanged 사용시 한 글자 입력 시마다 Flow로 인해 exercise 데이터를 갱신하므로 정상적인 입력을 하기 어렵다.
+            // setOnFocusChangeListener를 사용하여 focus가 해제되었을 때 데이터를 갱신한다.
+            bind.editTextExerciseTitle.setOnFocusChangeListener{ _, _ ->
                 // two way databinding을 사용했기 때문에 historyExercise가 자동으로 변경됨
                 historyEventListener.updateHistoryExercise(historyExercise)
             }

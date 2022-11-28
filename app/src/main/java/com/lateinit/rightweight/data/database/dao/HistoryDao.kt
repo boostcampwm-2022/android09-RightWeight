@@ -8,6 +8,7 @@ import androidx.room.Update
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 @Dao
@@ -31,7 +32,12 @@ interface HistoryDao {
     )
 
     @Update
-    suspend fun updatetHistorySet(
+    suspend fun updateHistory(
+        history: History
+    )
+
+    @Update
+    suspend fun updateHistorySet(
         set: HistorySet
     )
 
@@ -41,13 +47,13 @@ interface HistoryDao {
     )
 
     @Query("SELECT * FROM history WHERE date = :localDate")
-    suspend fun loadHistoryByDate(localDate: LocalDate) : List<History>
+    fun loadHistoryByDate(localDate: LocalDate) : Flow<List<History>>
 
     @Query("SELECT * FROM history_exercise WHERE history_id = :historyId")
-    suspend fun getHistoryExercisesByHistoryId(historyId: String): List<HistoryExercise>
+    fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>>
 
     @Query("SELECT * FROM history_set WHERE exercise_id = :exerciseId ORDER BY `order`")
-    suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): List<HistorySet>
+    fun getHistorySetsByHistoryExerciseId(exerciseId: String): Flow<List<HistorySet>>
 
     @Query("DELETE FROM history_set WHERE set_id = :historySetId")
     suspend fun removeHistorySet(historySetId: String)
