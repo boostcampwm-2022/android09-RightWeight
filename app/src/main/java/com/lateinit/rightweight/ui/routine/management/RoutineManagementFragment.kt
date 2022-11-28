@@ -44,17 +44,20 @@ class RoutineManagementFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        saveRoutineList()
+        updateRoutines()
     }
 
-    private fun saveRoutineList() {
+    private fun updateRoutines() {
         val routineManagementAdapter =
             binding.recyclerViewRoutineManagement.adapter as RoutineManagementAdapter
         val currentList = routineManagementAdapter.currentList.toMutableList()
         userViewModel.routine.value?.also {
             currentList.add(0, it)
         }
-        routineManagementViewModel.saveRoutineList(currentList)
+        currentList.forEachIndexed { index, routine ->
+            routine.order = index
+        }
+        routineManagementViewModel.updateRoutines(currentList)
     }
 
     override fun onDestroyView() {

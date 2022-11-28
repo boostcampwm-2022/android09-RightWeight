@@ -25,9 +25,9 @@ class RoutineManagementViewModel @Inject constructor(
         }
     }
 
-    fun saveRoutineList(routines: List<Routine>) {
+    fun updateRoutines(routines: List<Routine>) {
         viewModelScope.launch {
-            routineRepository.insertRoutineList(routines)
+            routineRepository.updateRoutines(routines)
         }
     }
 }

@@ -197,8 +197,10 @@ class RoutineEditorViewModel @Inject constructor(
                 exercise.exerciseSets
             }
 
+            val higherOrder = routineRepository.getHigherRoutineOrder()
+            val order = if (higherOrder == null) 0 else higherOrder + 1
             routineRepository.insertRoutine(
-                Routine(routineId, title, "author", description, LocalDateTime.now()),
+                Routine(routineId, title, "author", description, LocalDateTime.now(), order),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
