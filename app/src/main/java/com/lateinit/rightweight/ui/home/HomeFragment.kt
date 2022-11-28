@@ -136,12 +136,6 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         binding.homeViewModel = homeViewModel
     }
 
-
-    private fun setAdapter() {
-        homeAdapter = HomeAdapter()
-        binding.recyclerViewTodayRoutine.adapter = homeAdapter
-    }
-
     private fun setHomeInfoText(description: String) {
         binding.textViewHomeInfo.text = String.format(
             description,
