@@ -29,7 +29,9 @@ import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.ui.exercise.ExerciseFragment
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
@@ -103,6 +105,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             WITHDRAW_DIALOG_TAG -> {
                 withdraw()
+            }
+            END_EXERCISE_DIALOG_TAG -> {
+                val exerciseFragment =
+                    supportFragmentManager.fragments[0].childFragmentManager.fragments[0] as ExerciseFragment
+                exerciseFragment.endExercise()
             }
         }
     }

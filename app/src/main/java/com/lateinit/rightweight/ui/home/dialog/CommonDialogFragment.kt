@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -57,5 +58,6 @@ class CommonDialogFragment : DialogFragment() {
         const val LOGOUT_DIALOG_TAG = "LOGOUT"
         const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
         const val RESET_DIALOG_TAG = "RESET"
+        const val END_EXERCISE_DIALOG_TAG = "END_EXERCISE"
     }
 }

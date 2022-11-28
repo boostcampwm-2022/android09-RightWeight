@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,18 +21,23 @@ import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ExerciseFragment : Fragment(), HistoryEventListener {
+class ExerciseFragment : Fragment(), HistoryEventListener{
 
     private lateinit var timerStatusReceiver: BroadcastReceiver
     private lateinit var timerMomentReceiver: BroadcastReceiver
     private val exerciseViewModel: ExerciseViewModel by viewModels()
 
     lateinit var binding: FragmentExerciseBinding
+    private val dialog: CommonDialogFragment by lazy {
+        CommonDialogFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -165,11 +171,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                             renewTodayHistory()
                         }
                         binding.buttonExerciseEnd.setOnClickListener() {
-                            val newHistory = todayHistories[0].copy()
-                            newHistory.time = binding.timeString.toString()
-                            newHistory.completed = true
-                            exerciseViewModel.updateHistory(newHistory)
-                            findNavController().popBackStack()
+                            dialog.show(parentFragmentManager,
+                                END_EXERCISE_DIALOG_TAG, R.string.end_exercise_message)
                         }
                         // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
                         exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
@@ -194,6 +197,22 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     override fun addHistorySet(historyExerciseId: String) {
         exerciseViewModel.addHistorySet(historyExerciseId)
+    }
+
+    fun endExercise(){
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                exerciseViewModel.loadTodayHistory().collect() { todayHistories ->
+                    if (todayHistories.size == 1) {
+                        val newHistory = todayHistories[0].copy()
+                        newHistory.time = binding.timeString.toString()
+                        newHistory.completed = true
+                        exerciseViewModel.updateHistory(newHistory)
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
     }
 
 }
