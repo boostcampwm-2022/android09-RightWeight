@@ -1,6 +1,8 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +63,16 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         super.onViewCreated(view, savedInstanceState)
 
         setBinding()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.loadTodayHistory().collect() { todayHistories ->
+                    if (todayHistories.size == 1 && todayHistories[0].completed) {
+                        stopTimerService()
+                    }
+                }
+            }
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -151,6 +163,11 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
                 userViewModel.resetRoutine()
             }
         }
+    }
+
+    fun stopTimerService() {
+        val timerService = Intent(requireContext(), TimerService::class.java)
+        requireActivity().stopService(timerService)
     }
 
 }
