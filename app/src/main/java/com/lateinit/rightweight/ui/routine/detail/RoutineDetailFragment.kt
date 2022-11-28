@@ -79,6 +79,10 @@ class RoutineDetailFragment : Fragment() {
         }
     }
 
+    private fun routineRemove() {
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_routine_detail, menu)
     }
@@ -92,6 +96,10 @@ class RoutineDetailFragment : Fragment() {
                         routineId
                     )
                 findNavController().navigate(action)
+                return true
+            }
+            R.id.action_item_remove -> {
+                routineRemove()
                 return true
             }
             else -> {
