@@ -2,6 +2,8 @@ package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -31,7 +33,6 @@ class RoutineDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        setHasOptionsMenu(true)
         _binding = FragmentRoutineDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -39,11 +40,40 @@ class RoutineDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         routineDetailViewModel.getRoutine(args.routineId)
+        setMenu()
         setBinding()
         setRoutineDayAdapter()
         setDayUiModelsObserve()
         setExerciseAdapter()
         setCurrentDayPositionObserve()
+    }
+
+    private fun setMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.clear()
+                menuInflater.inflate(R.menu.menu_routine_detail, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.action_item_edit -> {
+                        val routineId =
+                            routineDetailViewModel.routine.value?.routineId ?: return false
+                        val action =
+                            RoutineDetailFragmentDirections.actionNavigationRoutineDetailToNavigationRoutineEditor(
+                                routineId
+                            )
+                        findNavController().navigate(action)
+                        return true
+                    }
+                    else -> {
+                        return false
+                    }
+                }
+            }
+
+        })
     }
 
     private fun setBinding() {
@@ -77,28 +107,6 @@ class RoutineDetailFragment : Fragment() {
                 routineDetailViewModel.dayUiModels.value?.get(it)?.exercises ?: return@observe
             exerciseAdapter.submitList(exercises)
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_routine_detail, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_item_edit -> {
-                val routineId = routineDetailViewModel.routine.value?.routineId ?: return false
-                val action =
-                    RoutineDetailFragmentDirections.actionNavigationRoutineDetailToNavigationRoutineEditor(
-                        routineId
-                    )
-                findNavController().navigate(action)
-                return true
-            }
-            else -> {
-                return super.onOptionsItemSelected(item)
-            }
-        }
-
     }
 
     override fun onDestroyView() {
