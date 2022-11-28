@@ -1,22 +1,11 @@
 <resources>
-    <string name="app_name">RightWeight</string>
+    <string name="app_name">Right Weight</string>
     <string name="home">홈</string>
     <string name="calendar">달력</string>
     <string name="share">공유</string>
     <string name="management">관리</string>
-    <string name="routine_title">루틴 명</string>
-    <string name="routine_description">설명</string>
-    <string name="routine_save">루틴 저장하기</string>
-    <string name="chest">가슴</string>
-    <string name="back">등</string>
-    <string name="leg">하체</string>
-    <string name="shoulder">어깨</string>
-    <string name="biceps">이두</string>
-    <string name="triceps">삼두</string>
-    <string name="core">코어</string>
-    <string name="forearm">전완근</string>
-    <string name="cardio">유산소</string>
     <string name="day_add">Day 추가</string>
+    <string name="day_remove">Day 삭제</string>
     <string name="exercise_add">운동 추가</string>
     <string name="set_weight_kg">kg</string>
     <string name="set_number">회</string>
@@ -33,6 +22,16 @@
     <string name="search">검색</string>
     <string name="edit">수정</string>
     <string name="more">더보기</string>
+    <string name="start_exercise">운동 시작</string>
+    <string name="submit">확인</string>
+    <string name="cancel">취소</string>
+    <string name="logout_message">로그아웃 하시겠습니까?</string>
+    <string name="withdraw_message">정말 탈퇴하시겠습니까?</string>
+    <string name="home_description">%s\n오늘 수행할 운동은</string>
+    <string name="home_run_exercise_description">%s\n오늘 운동 진행중입니다</string>
+    <string name="home_end_exercise_description">%s\n오늘 운동을 완료했습니다</string>
+    <string name="date_format">yyyy년 MM월 dd일</string>
+    <string name="empty_routine">루틴을 선택해주세요.</string>
     <string name="routine_title">루틴 명</string>
     <string name="routine_description">설명</string>
     <string name="routine_save">루틴 저장하기</string>
@@ -45,4 +44,13 @@
     <string name="core">코어</string>
     <string name="forearm">전완근</string>
     <string name="cardio">유산소</string>
+    <string name="end_exercise">운동 종료</string>
+    <string name="reset">초기화</string>
+    <string name="reset_message">루틴이 Day1부터 시작됩니다. 초기화 하시겠습니까?</string>
+    <string name="create_routine">루틴 생성</string>
+    <string name="routine_management_info">현재 선택된 루틴은</string>
+    <string name="move_up">위로</string>
+    <string name="move_down">아래로</string>
+    <string name="routine_select">루틴 선택 하기</string>
+    <string name="expand">확장</string>
 </resources>

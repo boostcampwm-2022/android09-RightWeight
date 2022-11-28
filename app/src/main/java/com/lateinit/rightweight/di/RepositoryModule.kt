@@ -1,11 +1,7 @@
 package com.lateinit.rightweight.di
 
-import com.lateinit.rightweight.data.datasource.LoginDataSource
-import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
-import com.lateinit.rightweight.data.repository.LoginRepository
-import com.lateinit.rightweight.data.repository.LoginRepositoryImpl
-import com.lateinit.rightweight.data.repository.RoutineRepository
-import com.lateinit.rightweight.data.repository.RoutineRepositoryImpl
+import com.lateinit.rightweight.data.datasource.*
+import com.lateinit.rightweight.data.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +26,21 @@ class RepositoryModule {
         routineLocalDataSource: RoutineLocalDataSource
     ): RoutineRepository {
         return RoutineRepositoryImpl(routineLocalDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun getUserRepository(
+        userDataSource: UserDataSource
+    ): UserRepository {
+        return UserRepositoryImpl(userDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun getHistoryRepository(
+        historyLocalDataSource: HistoryLocalDataSource
+    ): HistoryRepository {
+        return HistoryRepositoryImpl(historyLocalDataSource)
     }
 }

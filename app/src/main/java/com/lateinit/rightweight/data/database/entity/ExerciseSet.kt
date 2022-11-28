@@ -7,7 +7,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "set",
+    tableName = "exercise_set",
     foreignKeys = [
         ForeignKey(
             entity = Exercise::class,
@@ -24,9 +24,9 @@ data class ExerciseSet(
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,
     @ColumnInfo(name = "weight")
-    var weight: String = "",
+    val weight: String,
     @ColumnInfo(name = "count")
-    var count: String = "",
+    val count: String,
     @ColumnInfo(name = "order")
     val order: Int
 )

@@ -1,113 +1,147 @@
 package com.lateinit.rightweight.ui.routine.editor
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.util.FIRST_DAY_POSITION
+import com.lateinit.rightweight.util.toDay
+import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toExercise
+import com.lateinit.rightweight.util.toExerciseSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID
+import java.util.LinkedList
 import javax.inject.Inject
 
 @HiltViewModel
 class RoutineEditorViewModel @Inject constructor(
-    private val routineRepository: RoutineRepository,
+    private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val routineId = createUUID()
+    private lateinit var routineId: String
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
 
-    private val _days = MutableLiveData<List<Day>>()
-    val days: LiveData<List<Day>> = _days
+    private val currentDayPosition = MutableLiveData<Int>()
+    private val currentDay = currentDayPosition.map {
+        _days.value?.get(it)
+    }
 
-    private val dayMap = mutableMapOf<String, Day>()
-    private val exerciseMap = mutableMapOf<String, Exercise>()
+    private val _days = MutableLiveData<LinkedList<DayUiModel>>(LinkedList())
+    val days: LiveData<List<DayUiModel>> = _days.map { it.toList() }
 
-    init {
-        addDay()
+    private val dayToExercise =
+        MutableLiveData<MutableMap<String, LinkedList<ExerciseUiModel>>>(mutableMapOf())
+    private val exerciseToSet =
+        MutableLiveData<MutableMap<String, LinkedList<ExerciseSetUiModel>>>(mutableMapOf())
+
+    private val _dayExercises = MediatorLiveData<List<ExerciseUiModel>>().apply {
+        addSource(currentDay) {
+            value = updateDayExercises()
+        }
+        addSource(dayToExercise) {
+            value = updateDayExercises()
+        }
+        addSource(exerciseToSet) {
+            value = updateDayExercises()
+        }
+    }
+    val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
+
+    fun init(routineId: String) {
+        if (routineId.isEmpty()) {
+            this.routineId = createUUID()
+            addDay()
+        } else {
+            this.routineId = routineId
+            getRoutine(routineId)
+        }
     }
 
     fun addDay() {
-        val tempDays = _days.value?.toMutableList() ?: mutableListOf()
-        val day = Day(createUUID(), routineId, tempDays.size)
+        val days = _days.value ?: return
+        val day = DayUiModel(createUUID(), routineId, days.size, true)
 
-        tempDays.add(day)
-        dayMap[day.dayId] = day
-        _days.value = tempDays
+        days.add(day)
+        clickDay(days.lastIndex)
     }
 
-    fun removeDay(dayPosition: Int) {
-        val tempDays = _days.value?.toMutableList() ?: return
+    fun removeDay() {
+        val days = _days.value ?: return
+        val dayPosition = currentDay.value?.order ?: return
 
-        tempDays.removeAt(dayPosition).also { day -> dayMap.remove(day.dayId) }
-        _days.value = tempDays
-    }
-
-    fun moveUpDay(dayPosition: Int) {
-        if (dayPosition == FIRST_DAY_POSITION) return
-
-        val tempDays = _days.value?.toMutableList() ?: return
-        val prevPosition = dayPosition.dec()
-
-        tempDays[dayPosition] = tempDays[prevPosition].also {
-            tempDays[prevPosition] = tempDays[dayPosition]
+        days.removeAt(dayPosition).also { day ->
+            dayToExercise.value?.remove(day.dayId)
+            day.exercises.forEach { exercise ->
+                exerciseToSet.value?.remove(exercise.exerciseId)
+            }
         }
-        _days.value = tempDays
-    }
 
-    fun moveDownDay(dayPosition: Int) {
-        if (dayPosition == _days.value?.lastIndex) return
+        val reorderedDays = LinkedList(days.reordered())
 
-        val tempDays = _days.value?.toMutableList() ?: return
-        val nextPosition = dayPosition.inc()
-
-        tempDays[dayPosition] = tempDays[nextPosition].also {
-            tempDays[nextPosition] = tempDays[dayPosition]
+        currentDayPosition.value = when {
+            reorderedDays.isEmpty() -> null
+            dayPosition == reorderedDays.size -> reorderedDays.lastIndex
+            else -> dayPosition
+        }.also {
+            it ?: return
+            reorderedDays[it] = reorderedDays[it].copy(selected = true)
         }
-        _days.value = tempDays
+        _days.value = reorderedDays
     }
 
-    fun addExercise(dayPosition: Int) {
-        val tempDays = _days.value?.toMutableList() ?: return
-        val tempDay = tempDays[dayPosition]
-        val tempExercises = tempDay.exercises.toMutableList()
-        val exercise = Exercise(
+    fun clickDay(dayPosition: Int) {
+        val currentDayPosition = this.currentDayPosition.value
+
+        if (currentDayPosition == dayPosition) return
+
+        val originDays = _days.value ?: return
+        val day = originDays[dayPosition].copy(selected = true)
+
+        if (currentDayPosition != null) {
+            originDays[currentDayPosition] = originDays[currentDayPosition].copy(selected = false)
+        }
+
+        originDays[dayPosition] = day
+        this.currentDayPosition.value = dayPosition
+        _days.value = originDays
+    }
+
+    fun addExercise() {
+        val dayId = currentDay.value?.dayId ?: return
+        val exercises = dayToExercise.value?.getOrDefault(dayId, LinkedList()) ?: return
+        val exercise = ExerciseUiModel(
             exerciseId = createUUID(),
-            dayId = tempDay.dayId,
+            dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
-            order = tempExercises.size,
+            order = exercises.size,
             part = ExercisePartType.CHEST
         )
 
-        tempExercises.add(exercise)
-        tempDays[dayPosition] = tempDay.copy(exercises = tempExercises).also { day ->
-            dayMap[day.dayId] = day
-        }
-        exerciseMap[exercise.exerciseId] = exercise
-        _days.value = tempDays
+        exercises.add(exercise)
+        dayToExercise.value?.put(dayId, exercises)
+        dayToExercise.value = dayToExercise.value
     }
 
     fun removeExercise(dayId: String, exercisePosition: Int) {
-        val tempDays = _days.value?.toMutableList() ?: return
-        val tempDay = dayMap[dayId] ?: return
-        val tempExercises = tempDay.exercises.toMutableList()
+        val exercises = dayToExercise.value?.get(dayId) ?: return
 
-        tempExercises.removeAt(exercisePosition).also { exercise ->
-            exerciseMap.remove(exercise.exerciseId)
+        exercises.removeAt(exercisePosition).also { exercise ->
+            exerciseToSet.value?.remove(exercise.exerciseId)
         }
-        tempDays[tempDays.indexOf(tempDay)] = tempDay.copy(exercises = tempExercises).also { day ->
-            dayMap[day.dayId] = day
-        }
-        _days.value = tempDays
+        dayToExercise.value = dayToExercise.value
     }
 
     fun changeExercisePart(
@@ -115,86 +149,60 @@ class RoutineEditorViewModel @Inject constructor(
         exercisePosition: Int,
         exercisePartType: ExercisePartType
     ) {
-        val tempDays = _days.value?.toMutableList() ?: return
-        val tempDay = dayMap[dayId] ?: return
-        val tempExercises = tempDay.exercises.toMutableList()
-        val tempExercise = tempExercises[exercisePosition]
+        val exercises = dayToExercise.value?.get(dayId) ?: return
 
-
-        tempExercises[exercisePosition] = tempExercise.copy(part = exercisePartType)
-        tempDays[tempDays.indexOf(tempDay)] = tempDay.copy(exercises = tempExercises).also { day ->
-            dayMap[day.dayId] = day
-        }
-        exerciseMap[tempExercise.exerciseId] = tempExercise
-        _days.value = tempDays
+        exercises[exercisePosition] = exercises[exercisePosition].copy(part = exercisePartType)
+        dayToExercise.value = dayToExercise.value
     }
 
     fun addExerciseSet(exerciseId: String) {
-        val tempDays = _days.value?.toMutableList() ?: return
-        val dayId = exerciseMap[exerciseId]?.dayId ?: return
-        val tempDay = dayMap[dayId] ?: return
-        val tempExercises = tempDay.exercises.toMutableList()
-        val tempExercise = exerciseMap[exerciseId] ?: return
-        val tempExerciseSets = tempExercise.exerciseSets.toMutableList()
-        val exerciseSet = ExerciseSet(
+        val exerciseSets = exerciseToSet.value?.getOrDefault(exerciseId, LinkedList()) ?: return
+        val exerciseSet = ExerciseSetUiModel(
             setId = createUUID(),
-            exerciseId = tempExercise.exerciseId,
-            order = tempExerciseSets.size
+            exerciseId = exerciseId,
+            order = exerciseSets.size
         )
 
-        tempExerciseSets.add(exerciseSet)
-        tempExercises[tempExercises.indexOf(tempExercise)] =
-            tempExercise.copy(exerciseSets = tempExerciseSets).also { exercise ->
-                exerciseMap[exercise.exerciseId] = exercise
-            }
-        tempDays[tempDays.indexOf(tempDay)] = tempDay.copy(exercises = tempExercises).also { day ->
-            dayMap[day.dayId] = day
-        }
-        _days.value = tempDays
+        exerciseSets.add(exerciseSet)
+        exerciseToSet.value?.put(exerciseId, exerciseSets)
+        exerciseToSet.value = exerciseToSet.value
     }
 
     fun removeExerciseSet(exerciseId: String, exerciseSetPosition: Int) {
-        val tempDays = _days.value?.toMutableList() ?: return
-        val dayId = exerciseMap[exerciseId]?.dayId ?: return
-        val tempDay = dayMap[dayId] ?: return
-        val tempExercises = tempDay.exercises.toMutableList()
-        val tempExercise = exerciseMap[exerciseId] ?: return
-        val tempExerciseSets = tempExercise.exerciseSets.toMutableList()
+        val exerciseSets = exerciseToSet.value?.get(exerciseId) ?: return
 
-
-        tempExerciseSets.removeAt(exerciseSetPosition)
-        tempExercises[tempExercises.indexOf(tempExercise)] =
-            tempExercise.copy(exerciseSets = tempExerciseSets).also { exercise ->
-                exerciseMap[exercise.exerciseId] = exercise
-            }
-        tempDays[tempDays.indexOf(tempDay)] = tempDay.copy(exercises = tempExercises).also { day ->
-            dayMap[day.dayId] = day
-        }
-        _days.value = tempDays
+        exerciseSets.removeAt(exerciseSetPosition)
+        exerciseToSet.value = exerciseToSet.value
     }
 
     fun saveRoutine() {
         viewModelScope.launch {
-            _days.value?.let { days ->
-                val title = routineTitle.value
-                val description = routineDescription.value
+            val title = routineTitle.value
+            val description = routineDescription.value
 
-                if (title == null || title.isEmpty()) return@launch
-                if (description == null || description.isEmpty()) return@launch
+            if (title == null || title.isEmpty()) return@launch
+            if (description == null || description.isEmpty()) return@launch
 
-                val exercises = days.flatMap { day -> day.exercises }
-                val exerciseSets = exercises.flatMap { exercise ->
-                    if (exercise.title.isEmpty()) return@launch
-                    exercise.exerciseSets
-                }
+            val days = _days.value ?: return@launch
 
-                routineRepository.insertRoutine(
-                    Routine(routineId, title, "author", description, LocalDateTime.now()),
-                    days.mapIndexed { index, day -> day.copy(order = index) },
-                    exercises.mapIndexed { index, exercise -> exercise.copy(order = index) },
-                    exerciseSets.mapIndexed { index, exerciseSet -> exerciseSet.copy(order = index) }
-                )
+            if (days.isEmpty()) return@launch
+
+            val exercises = dayToExercise.value?.values?.flatMap { exercises ->
+                if (exercises.isEmpty()) return@launch
+                exercises
+            } ?: return@launch
+            val exerciseSets = exercises.flatMap { exercise ->
+                if (exercise.title.isEmpty()) return@launch
+                if (exercise.exerciseSets.isEmpty()) return@launch
+                exercise.exerciseSets
             }
+
+            routineRepository.insertRoutine(
+                Routine(routineId, title, "author", description, LocalDateTime.now()),
+                days.map { it.toDay() },
+                exercises.map { it.toExercise() },
+                exerciseSets.map { it.toExerciseSet() }
+            )
         }
     }
 
@@ -202,8 +210,73 @@ class RoutineEditorViewModel @Inject constructor(
         return UUID.randomUUID().toString()
     }
 
+    private fun getRoutine(routineId: String) {
+        viewModelScope.launch {
+            val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
+            val dayUiModels = routineWithDays.days.mapIndexed { index, routineWithDay ->
+                routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
+            }
+
+            with(routineWithDays.routine) {
+                routineTitle.value = title
+                routineDescription.value = description
+            }
+            mapDayToExercise(dayUiModels)
+            mapExerciseToSet(dayUiModels.flatMap { it.exercises })
+            _days.value = LinkedList(dayUiModels)
+            currentDayPosition.value = FIRST_DAY_POSITION
+        }
+    }
+
+    private fun updateDayExercises(): List<ExerciseUiModel> {
+        val dayId = currentDay.value?.dayId ?: return emptyList()
+        val tempExercises = dayToExercise.value?.get(dayId) ?: return emptyList()
+        val tempDayExercises = tempExercises.mapIndexed { exerciseIndex, exercise ->
+            val exerciseSets =
+                exerciseToSet.value?.get(exercise.exerciseId) ?: emptyList()
+
+            when {
+                exerciseSets != exercise.exerciseSets -> {
+                    val reorderedExerciseSets = exerciseSets.reordered()
+                    exerciseToSet.value?.put(exercise.exerciseId, LinkedList(reorderedExerciseSets))
+                    exercise.copy(exerciseSets = reorderedExerciseSets)
+                }
+                exerciseIndex != exercise.order -> {
+                    exercise.copy(order = exerciseIndex)
+                }
+                else -> exercise
+            }
+        }
+
+        dayToExercise.value?.put(dayId, LinkedList(tempDayExercises))
+        return tempDayExercises
+    }
+
+    private fun mapDayToExercise(dayUiModels: List<DayUiModel>) {
+        dayToExercise.value = dayUiModels.associate {
+            it.dayId to LinkedList(it.exercises)
+        }.toMutableMap()
+    }
+
+    private fun mapExerciseToSet(exerciseUiModels: List<ExerciseUiModel>) {
+        exerciseToSet.value = exerciseUiModels.associate {
+            it.exerciseId to LinkedList(it.exerciseSets)
+        }.toMutableMap()
+    }
+
+    @JvmName("reorderedDays")
+    private fun List<DayUiModel>.reordered(): List<DayUiModel> {
+        return this.mapIndexed { index, day -> day.copy(order = index) }
+    }
+
+    @JvmName("reorderedExerciseSets")
+    private fun List<ExerciseSetUiModel>.reordered(): List<ExerciseSetUiModel> {
+        return this.mapIndexed { index, exerciseSet ->
+            if (exerciseSet.order == index) exerciseSet else exerciseSet.copy(order = index)
+        }
+    }
+
     companion object {
-        private const val FIRST_DAY_POSITION = 0
         private const val DEFAULT_EXERCISE_TITLE = ""
     }
 }
