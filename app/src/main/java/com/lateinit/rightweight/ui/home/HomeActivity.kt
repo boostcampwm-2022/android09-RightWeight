@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -18,10 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -39,7 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     CommonDialogFragment.NoticeDialogListener {
 
-    lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
@@ -195,5 +193,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val inputMethodManager: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(focusView.windowToken, 0)
+    }
+
+    fun navigateBottomNav(@IdRes itemId: Int) {
+        val item = binding.bottomNavigation.menu.findItem(itemId)
+        NavigationUI.onNavDestinationSelected(item, navController)
     }
 }

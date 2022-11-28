@@ -14,7 +14,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.service.TimerService
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
@@ -97,9 +96,7 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         }
 
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
-            val item =
-                (requireActivity() as HomeActivity).binding.bottomNavigation.menu.findItem(R.id.navigation_routine_management)
-            NavigationUI.onNavDestinationSelected(item, findNavController())
+            (requireActivity() as HomeActivity).navigateBottomNav(R.id.navigation_routine_management)
         }
         binding.cardViewHomeRoutineResetContainer.setOnClickListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)
