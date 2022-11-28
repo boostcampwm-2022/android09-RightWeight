@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDay
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExercise
@@ -33,10 +34,13 @@ class RoutineEditorViewModel @Inject constructor(
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
 
-    private val currentDay = MutableLiveData<DayUiModel?>()
+    private val currentDayPosition = MutableLiveData<Int>()
+    private val currentDay = currentDayPosition.map {
+        _days.value?.get(it)
+    }
 
     private val _days = MutableLiveData<LinkedList<DayUiModel>>(LinkedList())
-    val days: LiveData<List<DayUiModel>> = _days.map { days -> days.toList() }
+    val days: LiveData<List<DayUiModel>> = _days.map { it.toList() }
 
     private val dayToExercise =
         MutableLiveData<MutableMap<String, LinkedList<ExerciseUiModel>>>(mutableMapOf())
@@ -87,33 +91,31 @@ class RoutineEditorViewModel @Inject constructor(
 
         val reorderedDays = LinkedList(days.reordered())
 
-        currentDay.value = when {
+        currentDayPosition.value = when {
             reorderedDays.isEmpty() -> null
-            dayPosition == reorderedDays.size -> {
-                reorderedDays.last.copy(selected = true).also {
-                    reorderedDays[reorderedDays.lastIndex] = it
-                }
-            }
-            else -> {
-                reorderedDays[dayPosition].copy(selected = true).also {
-                    reorderedDays[dayPosition] = it
-                }
-            }
+            dayPosition == reorderedDays.size -> reorderedDays.lastIndex
+            else -> dayPosition
+        }.also {
+            it ?: return
+            reorderedDays[it] = reorderedDays[it].copy(selected = true)
         }
         _days.value = reorderedDays
     }
 
     fun clickDay(dayPosition: Int) {
+        val currentDayPosition = this.currentDayPosition.value
+
+        if (currentDayPosition == dayPosition) return
+
         val originDays = _days.value ?: return
         val day = originDays[dayPosition].copy(selected = true)
 
-        currentDay.value?.order?.let {
-            if (it == dayPosition) return
-            originDays[it] = originDays[it].copy(selected = false)
+        if (currentDayPosition != null) {
+            originDays[currentDayPosition] = originDays[currentDayPosition].copy(selected = false)
         }
 
         originDays[dayPosition] = day
-        currentDay.value = day
+        this.currentDayPosition.value = dayPosition
         _days.value = originDays
     }
 
@@ -222,7 +224,7 @@ class RoutineEditorViewModel @Inject constructor(
             mapDayToExercise(dayUiModels)
             mapExerciseToSet(dayUiModels.flatMap { it.exercises })
             _days.value = LinkedList(dayUiModels)
-            currentDay.value = dayUiModels.first()
+            currentDayPosition.value = FIRST_DAY_POSITION
         }
     }
 
@@ -231,12 +233,19 @@ class RoutineEditorViewModel @Inject constructor(
         val tempExercises = dayToExercise.value?.get(dayId) ?: return emptyList()
         val tempDayExercises = tempExercises.mapIndexed { exerciseIndex, exercise ->
             val exerciseSets =
-                exerciseToSet.value?.get(exercise.exerciseId)?.reordered() ?: emptyList()
-            val exerciseTitle =
-                _dayExercises.value?.getOrNull(exerciseIndex)?.title ?: exercise.title
+                exerciseToSet.value?.get(exercise.exerciseId) ?: emptyList()
 
-            exerciseToSet.value?.put(exercise.exerciseId, LinkedList(exerciseSets))
-            exercise.copy(title = exerciseTitle, order = exerciseIndex, exerciseSets = exerciseSets)
+            when {
+                exerciseSets != exercise.exerciseSets -> {
+                    val reorderedExerciseSets = exerciseSets.reordered()
+                    exerciseToSet.value?.put(exercise.exerciseId, LinkedList(reorderedExerciseSets))
+                    exercise.copy(exerciseSets = reorderedExerciseSets)
+                }
+                exerciseIndex != exercise.order -> {
+                    exercise.copy(order = exerciseIndex)
+                }
+                else -> exercise
+            }
         }
 
         dayToExercise.value?.put(dayId, LinkedList(tempDayExercises))
@@ -262,7 +271,9 @@ class RoutineEditorViewModel @Inject constructor(
 
     @JvmName("reorderedExerciseSets")
     private fun List<ExerciseSetUiModel>.reordered(): List<ExerciseSetUiModel> {
-        return this.mapIndexed { index, exerciseSet -> exerciseSet.copy(order = index) }
+        return this.mapIndexed { index, exerciseSet ->
+            if (exerciseSet.order == index) exerciseSet else exerciseSet.copy(order = index)
+        }
     }
 
     companion object {
