@@ -162,7 +162,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        userViewModel.setUser(null)
+        userViewModel.setUser(user = null)
         userViewModel.setLoginResponse(null)
         client.signOut()
         val intent = Intent(baseContext, LoginActivity::class.java)

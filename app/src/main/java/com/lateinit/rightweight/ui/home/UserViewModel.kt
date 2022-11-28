@@ -31,11 +31,15 @@ class UserViewModel @Inject constructor(
         getUser()
     }
 
-    fun setUser(routineId: String) {
+    fun setUser(routineId: String?) {
         val user = userInfo.value ?: return
         viewModelScope.launch {
-            val days: List<Day> = routineRepository.getDaysByRoutineId(routineId)
-            userRepository.setUser(User(user.userId, routineId, days[0].dayId))
+            if(routineId == null){
+                userRepository.setUser(User(user.userId, null, null))
+            } else{
+                val days: List<Day> = routineRepository.getDaysByRoutineId(routineId)
+                userRepository.setUser(User(user.userId, routineId, days[0].dayId))
+            }
         }
     }
 
