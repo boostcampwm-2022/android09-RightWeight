@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -26,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
+class HomeFragment : Fragment(){
 
     private var _binding: FragmentHomeBinding? = null
     private val binding
@@ -35,7 +34,13 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                RESET_DIALOG_TAG -> {
+                    userViewModel.resetRoutine()
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,13 +149,4 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
             )
         )
     }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            RESET_DIALOG_TAG -> {
-                userViewModel.resetRoutine()
-            }
-        }
-    }
-
 }

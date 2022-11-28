@@ -2,7 +2,6 @@ package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -11,13 +10,13 @@ import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.home.UserViewModel
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoutineDetailFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
+class RoutineDetailFragment : Fragment(){
     private var _binding: FragmentRoutineDetailBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
@@ -30,7 +29,15 @@ class RoutineDetailFragment : Fragment(), CommonDialogFragment.NoticeDialogListe
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{
+            when (dialog.tag) {
+                ROUTINE_REMOVE_DIALOG_TAG -> {
+                    routineDetailViewModel.removeRoutine(args.routineId)
+                    userViewModel.setUser(routineId = null)
+                    findNavController().navigateUp()
+                }
+            }
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,13 +130,5 @@ class RoutineDetailFragment : Fragment(), CommonDialogFragment.NoticeDialogListe
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            ROUTINE_REMOVE_DIALOG_TAG -> {
-                userViewModel.setUser(routineId = null)
-            }
-        }
     }
 }

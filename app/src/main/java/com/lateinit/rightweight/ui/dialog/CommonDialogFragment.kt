@@ -2,40 +2,22 @@ package com.lateinit.rightweight.ui.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.lateinit.rightweight.R
 
-class CommonDialogFragment : DialogFragment() {
+class CommonDialogFragment(private val callback: (String?) -> Unit) : DialogFragment() {
 
-    internal lateinit var listener: NoticeDialogListener
     var messageId: Int = R.string.logout_message
-
-    interface NoticeDialogListener {
-        fun onDialogPositiveClick(dialog: DialogFragment)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = context as NoticeDialogListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                (context.toString() +
-                        " must implement NoticeDialogListener")
-            )
-        }
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             builder.setMessage(messageId)
                 .setPositiveButton(R.string.submit) { _, _ ->
-                    listener.onDialogPositiveClick(this)
+                    callback(this.tag)
                 }
                 .setNegativeButton(R.string.cancel) { dialog, _ ->
                     dialog.cancel()
