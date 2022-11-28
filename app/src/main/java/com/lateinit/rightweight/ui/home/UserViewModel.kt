@@ -77,7 +77,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val loginResponse = userRepository.getLoginResponse()
             loginResponse?.let {
-                _loginResponse.postValue(it)
+                _loginResponse.value = it
             }
         }
     }

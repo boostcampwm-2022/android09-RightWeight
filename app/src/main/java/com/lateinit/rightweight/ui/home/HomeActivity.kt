@@ -148,11 +148,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.materialToolbar)
 
         // set drawer header
+        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+
         userViewModel.getLoginResponse()
         userViewModel.loginResponse.observe(this) { loginResponse ->
-            NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0)).also {
-                it.loginResponse = loginResponse
-            }
+            headerBinding.loginResponse = loginResponse
         }
 
         binding.navigationView.setNavigationItemSelectedListener(this)
