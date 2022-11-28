@@ -22,8 +22,8 @@ class UserViewModel @Inject constructor(
 
     private val _userInfo = MutableLiveData<User>()
     val userInfo: LiveData<User> get() = _userInfo
-    private val _routine = MutableLiveData<Routine>()
-    val routine: LiveData<Routine> get() = _routine
+    private val _routine = MutableLiveData<Routine?>()
+    val routine: LiveData<Routine?> get() = _routine
     private val _loginResponse = MutableLiveData<LoginResponse>()
     val loginResponse: LiveData<LoginResponse> get() = _loginResponse
 
@@ -34,12 +34,15 @@ class UserViewModel @Inject constructor(
     fun setUser(routineId: String?) {
         val user = userInfo.value ?: return
         viewModelScope.launch {
+            lateinit var nowUserInfo: User
             if(routineId == null){
-                userRepository.setUser(User(user.userId, null, null))
+                nowUserInfo = User(user.userId, null, null)
+                _routine.postValue(null)
             } else{
                 val days: List<Day> = routineRepository.getDaysByRoutineId(routineId)
-                userRepository.setUser(User(user.userId, routineId, days[0].dayId))
+                nowUserInfo = User(user.userId, routineId, days[0].dayId)
             }
+            userRepository.setUser(nowUserInfo)
         }
     }
 

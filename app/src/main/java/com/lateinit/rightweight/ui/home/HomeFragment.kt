@@ -111,6 +111,7 @@ class HomeFragment : Fragment(){
         }
 
         homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
+            dayUiModel ?: return@observe
             val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
                 HomeAdapter(exerciseUiModel)
             }
