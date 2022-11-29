@@ -29,18 +29,22 @@ class HomeViewModel @Inject constructor(
     private val _exerciseSets = MutableLiveData<List<ExerciseSet>>()
     val exerciseSets: LiveData<List<ExerciseSet>> get() = _exerciseSets
 
-    private val _dayUiModel = MutableLiveData<DayUiModel>()
-    val dayUiModel: LiveData<DayUiModel> get() = _dayUiModel
+    private val _dayUiModel = MutableLiveData<DayUiModel?>()
+    val dayUiModel: LiveData<DayUiModel?> get() = _dayUiModel
 
     fun getDayWithExercisesByDayId(dayId: String?) {
-        dayId ?: return
-        viewModelScope.launch {
-            val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
-            val dayUiModel = dayWithExercises.day.toDayUiModel(
-                dayWithExercises.day.order,
-                dayWithExercises.exercises
-            )
-            _dayUiModel.postValue(dayUiModel)
+        if(dayId == null){
+            _dayUiModel.postValue(null)
+        }
+        else {
+            viewModelScope.launch {
+                val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
+                val dayUiModel = dayWithExercises.day.toDayUiModel(
+                    dayWithExercises.day.order,
+                    dayWithExercises.exercises
+                )
+                _dayUiModel.postValue(dayUiModel)
+            }
         }
     }
 

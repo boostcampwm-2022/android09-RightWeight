@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -120,7 +119,8 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
-            val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
+            val exercises = dayUiModel?.exercises ?: emptyList()
+            val homeAdapters = exercises.map { exerciseUiModel ->
                 HomeAdapter(exerciseUiModel)
             }
 
