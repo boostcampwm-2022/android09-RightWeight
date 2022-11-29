@@ -67,6 +67,7 @@ class TimerService : Service() {
             STOP -> {
                 pauseTimer()
                 foregroundUpdateTimer.cancel()
+                stopForeground(true)
             }
             START_NOTIFICATION ->{
                 setNotification()

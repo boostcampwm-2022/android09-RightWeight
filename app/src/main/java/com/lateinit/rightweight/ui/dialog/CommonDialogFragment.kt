@@ -40,5 +40,6 @@ class CommonDialogFragment(private val callback: (String?) -> Unit) : DialogFrag
         const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
         const val RESET_DIALOG_TAG = "RESET"
         const val ROUTINE_REMOVE_DIALOG_TAG = "ROUTINE_REMOVE"
+        const val END_EXERCISE_DIALOG_TAG = "END_EXERCISE"
     }
 }

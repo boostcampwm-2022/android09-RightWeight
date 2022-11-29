@@ -1,6 +1,8 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +27,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding
@@ -46,11 +48,7 @@ class HomeFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
-        }
+        moveToExerciseFragmentIfNotificationClicked()
     }
 
     override fun onCreateView(
@@ -66,6 +64,16 @@ class HomeFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         setBinding()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.loadTodayHistory().collect() { todayHistories ->
+                    if (todayHistories.size == 1 && todayHistories[0].completed) {
+                        stopTimerService()
+                    }
+                }
+            }
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -127,7 +135,7 @@ class HomeFragment : Fragment(){
     }
 
     override fun onResume() {
-//        userViewModel.getUser()
+        userViewModel.getUser()
         super.onResume()
     }
 
@@ -150,4 +158,19 @@ class HomeFragment : Fragment(){
             )
         )
     }
+
+    private fun moveToExerciseFragmentIfNotificationClicked(){
+        val navigationRouteId =
+            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
+        if (navigationRouteId != -1) {
+            findNavController().navigate(navigationRouteId)
+        }
+    }
+
+    private fun stopTimerService() {
+        val timerServiceIntent = Intent(requireContext(), TimerService::class.java)
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
+        requireActivity().startService(timerServiceIntent)
+    }
+
 }
