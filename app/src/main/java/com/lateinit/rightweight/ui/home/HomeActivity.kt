@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -29,21 +28,29 @@ import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    CommonDialogFragment.NoticeDialogListener {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                LOGOUT_DIALOG_TAG -> {
+                    logout()
+                }
+                WITHDRAW_DIALOG_TAG -> {
+                    withdraw()
+                }
+            }
+        }
     }
     val userViewModel: UserViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
@@ -94,17 +101,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            LOGOUT_DIALOG_TAG -> {
-                logout()
-            }
-            WITHDRAW_DIALOG_TAG -> {
-                withdraw()
-            }
-        }
     }
 
     private fun setNavController() {
@@ -162,7 +158,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        userViewModel.setUser(null)
+        userViewModel.setUser(user = null)
         userViewModel.setLoginResponse(null)
         client.signOut()
         val intent = Intent(baseContext, LoginActivity::class.java)

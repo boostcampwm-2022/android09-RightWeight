@@ -72,5 +72,11 @@ class RoutineDetailViewModel @Inject constructor(
         _dayUiModels.value = originDayUiModels
         _currentDayPosition.value = _currentDayPosition.value
     }
+
+    fun removeRoutine(routineId: String){
+        viewModelScope.launch {
+            routineRepository.removeRoutineById(routineId)
+        }
+    }
 }
 
