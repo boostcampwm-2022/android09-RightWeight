@@ -33,7 +33,7 @@ interface RoutineDao {
     @Query("SELECT (`order`) FROM routine ORDER BY `order` DESC LIMIT 1")
     suspend fun getHigherRoutineOrder(): Int?
 
-    @Query("SELECT * FROM routine NATURAL JOIN day WHERE routine_id = :routineId ORDER BY `order`")
+    @Query("SELECT * FROM day WHERE routine_id = :routineId ORDER BY `order`")
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
 
     @Query("SELECT * FROM day WHERE day_id = :dayId")
