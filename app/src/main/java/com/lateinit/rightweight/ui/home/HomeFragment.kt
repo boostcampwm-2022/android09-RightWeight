@@ -111,8 +111,8 @@ class HomeFragment : Fragment(){
         }
 
         homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
-            dayUiModel ?: return@observe
-            val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
+            val exercises = dayUiModel?.exercises ?: emptyList()
+            val homeAdapters = exercises.map { exerciseUiModel ->
                 HomeAdapter(exerciseUiModel)
             }
 
@@ -127,7 +127,7 @@ class HomeFragment : Fragment(){
     }
 
     override fun onResume() {
-        userViewModel.getUser()
+//        userViewModel.getUser()
         super.onResume()
     }
 
