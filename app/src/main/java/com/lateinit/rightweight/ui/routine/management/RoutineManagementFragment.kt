@@ -54,10 +54,10 @@ class RoutineManagementFragment : Fragment() {
         userViewModel.routine.value?.also {
             currentList.add(0, it)
         }
-        currentList.forEachIndexed { index, routine ->
-            routine.order = index
+        val list = currentList.mapIndexed { index, routine ->
+            routine.copy(order = index)
         }
-        routineManagementViewModel.updateRoutines(currentList)
+        routineManagementViewModel.updateRoutines(list)
     }
 
     override fun onDestroyView() {

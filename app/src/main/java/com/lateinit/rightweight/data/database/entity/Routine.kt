@@ -19,5 +19,5 @@ data class Routine(
     @ColumnInfo(name = "modified_date")
     val modifiedDate: LocalDateTime,
     @ColumnInfo(name = "order")
-    var order: Int
+    val order: Int
 )
