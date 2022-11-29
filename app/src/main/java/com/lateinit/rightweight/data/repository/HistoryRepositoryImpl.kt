@@ -58,4 +58,8 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.addHistoryExercise(historyId)
     }
 
+    override suspend fun verifyAllHistorySets(historyExercises: List<HistoryExercise>): Boolean {
+        return historyLocalDataSource.verifyAllHistorySets(historyExercises)
+    }
+
 }

@@ -20,15 +20,15 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding
@@ -37,17 +37,19 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                RESET_DIALOG_TAG -> {
+                    userViewModel.resetRoutine()
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
-        }
+        moveToExerciseFragmentIfNotificationClicked()
     }
 
     override fun onCreateView(
@@ -157,17 +159,18 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         )
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            RESET_DIALOG_TAG -> {
-                userViewModel.resetRoutine()
-            }
+    private fun moveToExerciseFragmentIfNotificationClicked(){
+        val navigationRouteId =
+            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
+        if (navigationRouteId != -1) {
+            findNavController().navigate(navigationRouteId)
         }
     }
 
-    fun stopTimerService() {
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        requireActivity().stopService(timerService)
+    private fun stopTimerService() {
+        val timerServiceIntent = Intent(requireContext(), TimerService::class.java)
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
+        requireActivity().startService(timerServiceIntent)
     }
 
 }

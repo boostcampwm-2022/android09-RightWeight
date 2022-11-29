@@ -9,8 +9,10 @@ import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -19,12 +21,8 @@ class ExerciseViewModel @Inject constructor(
     private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-//    lateinit var historyExercises: Flow<List<HistoryExercise>>
-//
-//    lateinit var history: Flow<List<History>>
-//
-//    private val _historySets = mutableMapOf<String, Flow<List<HistorySet>>>()
-//    val historySets: Map<String, Flow<List<HistorySet>>> get() = _historySets
+    private val _isAllHistorySetsChecked = MutableLiveData<Boolean>()
+    val isAllHistorySetsChecked: LiveData<Boolean> get() = _isAllHistorySetsChecked
 
     suspend fun loadTodayHistory(): Flow<List<History>>{
         return historyRepository.loadHistoryByDate(LocalDate.now())
@@ -36,6 +34,14 @@ class ExerciseViewModel @Inject constructor(
 
     suspend fun loadHistorySets(historyExerciseId: String): Flow<List<HistorySet>> {
         return historyRepository.getHistorySetsByHistoryExerciseId(historyExerciseId)
+    }
+
+    fun verifyAllHistorySets(historyExercises: List<HistoryExercise>){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                _isAllHistorySetsChecked.postValue(historyRepository.verifyAllHistorySets(historyExercises))
+            }
+        }
     }
 
     fun updateHistory(history: History){

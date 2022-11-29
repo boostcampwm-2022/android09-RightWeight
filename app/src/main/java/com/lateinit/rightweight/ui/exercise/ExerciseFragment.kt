@@ -17,12 +17,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,10 +34,17 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
     private lateinit var timerStatusReceiver: BroadcastReceiver
     private lateinit var timerMomentReceiver: BroadcastReceiver
     private val exerciseViewModel: ExerciseViewModel by viewModels()
+    private lateinit var timerServiceIntent: Intent
 
     lateinit var binding: FragmentExerciseBinding
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                CommonDialogFragment.END_EXERCISE_DIALOG_TAG -> {
+                    endExercise()
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -52,8 +60,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
 
         renewTodayHistory()
 
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        requireActivity().startService(timerService)
+        timerServiceIntent = Intent(requireContext(), TimerService::class.java)
+        requireActivity().startService(timerServiceIntent)
 
         binding.buttonExerciseStartAndPause.setOnClickListener() {
             when (binding.isTimerRunning) {
@@ -68,9 +76,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
     override fun onStart() {
         super.onStart()
 
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP_NOTIFICATION)
-        requireActivity().startService(timerService)
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP_NOTIFICATION)
+        requireActivity().startService(timerServiceIntent)
     }
 
     override fun onResume() {
@@ -107,6 +114,12 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
         requireContext().registerReceiver(timerStatusReceiver, statusFilter)
     }
 
+    override fun onStop() {
+        super.onStop()
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
+        requireActivity().startService(timerServiceIntent)
+    }
+
     fun getTimeString(timeCount: Int): String {
         val hours: Int = (timeCount / 60) / 60
         val minutes: Int = timeCount / 60
@@ -114,32 +127,25 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
         return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
     }
 
-    fun startTimer() {
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START)
-        requireActivity().startService(timerService)
+    private fun startTimer() {
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START)
+        requireActivity().startService(timerServiceIntent)
     }
 
-    fun pauseTimer() {
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.PAUSE)
-        requireActivity().startService(timerService)
+    private fun pauseTimer() {
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.PAUSE)
+        requireActivity().startService(timerServiceIntent)
     }
 
-    fun getTimerStatus() {
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STATUS)
-        requireActivity().startService(timerService)
+    private fun stopTimerService(){
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
+        requireActivity().startService(timerServiceIntent)
     }
 
-    override fun onStop() {
-        super.onStop()
-        val timerService = Intent(requireContext(), TimerService::class.java)
-        timerService.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.START_NOTIFICATION)
-        requireActivity().startService(timerService)
+    private fun getTimerStatus() {
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STATUS)
+        requireActivity().startService(timerServiceIntent)
     }
-
-
 
     override fun updateHistorySet(historySet: HistorySet) {
         exerciseViewModel.updateHistorySet(historySet)
@@ -171,10 +177,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
                             renewTodayHistory()
                         }
                         binding.buttonExerciseEnd.setOnClickListener() {
-                            dialog.show(parentFragmentManager,
-                                END_EXERCISE_DIALOG_TAG, R.string.end_exercise_message)
+                            verifyAllHistorySets(historyExerciseAdapter.currentList)
                         }
-                        // setOnclickListener 가 collect 밑에 있을 경우 반응하지 않음
                         exerciseViewModel.loadHistoryExercises(historyId).collect() { historyExercises ->
                             historyExerciseAdapter.submitList(historyExercises)
                         }
@@ -199,7 +203,25 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
         exerciseViewModel.addHistorySet(historyExerciseId)
     }
 
-    fun endExercise(){
+    private fun verifyAllHistorySets(historyExercises: List<HistoryExercise>){
+        exerciseViewModel.verifyAllHistorySets(historyExercises)
+        exerciseViewModel.isAllHistorySetsChecked.observe(viewLifecycleOwner){ isAllHistorySetsChecked ->
+            Log.d("isAllHistorySetsChecked", isAllHistorySetsChecked.toString())
+            if(isAllHistorySetsChecked.not()){
+                if(!dialog.isAdded){
+                    dialog.show(
+                        parentFragmentManager,
+                        END_EXERCISE_DIALOG_TAG, R.string.end_exercise_message
+                    )
+                }
+            }
+            else{
+                endExercise()
+            }
+        }
+    }
+
+    private fun endExercise(){
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 exerciseViewModel.loadTodayHistory().collect() { todayHistories ->
@@ -208,7 +230,8 @@ class ExerciseFragment : Fragment(), HistoryEventListener{
                         newHistory.time = binding.timeString.toString()
                         newHistory.completed = true
                         exerciseViewModel.updateHistory(newHistory)
-                        findNavController().popBackStack()
+                        stopTimerService()
+                        findNavController().navigateUp()
                     }
                 }
             }
