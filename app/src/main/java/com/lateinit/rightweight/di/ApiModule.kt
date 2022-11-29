@@ -1,7 +1,8 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.BuildConfig
-import com.lateinit.rightweight.data.RightWeightRetrofitService
+import com.lateinit.rightweight.data.AuthService
+import com.lateinit.rightweight.data.DatabaseService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,21 +21,30 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): RightWeightRetrofitService {
-        return retrofit.create(RightWeightRetrofitService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(
+    fun provideAuthService(
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
-    ): Retrofit {
+    ): AuthService {
         return Retrofit.Builder()
             .baseUrl("https://identitytoolkit.googleapis.com/v1/")
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()
+            .create(AuthService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabaseService(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): DatabaseService {
+        return Retrofit.Builder()
+            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)")
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+            .create(DatabaseService::class.java)
     }
 
     @Provides
