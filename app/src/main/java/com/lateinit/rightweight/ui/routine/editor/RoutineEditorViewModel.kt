@@ -33,10 +33,11 @@ class RoutineEditorViewModel @Inject constructor(
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
-    val routineOrder = MutableLiveData<Int>()
+    private val routineOrder = MutableLiveData<Int>()
 
-    private val currentDayPosition = MutableLiveData<Int>()
+    private val currentDayPosition = MutableLiveData<Int?>()
     private val currentDay = currentDayPosition.map {
+        it ?: return@map null
         _days.value?.get(it)
     }
 
@@ -81,7 +82,7 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun removeDay() {
         val days = _days.value ?: return
-        val dayPosition = currentDay.value?.order ?: return
+        val dayPosition = currentDayPosition.value ?: return
 
         days.removeAt(dayPosition).also { day ->
             dayToExercise.value?.remove(day.dayId)
@@ -97,7 +98,7 @@ class RoutineEditorViewModel @Inject constructor(
             dayPosition == reorderedDays.size -> reorderedDays.lastIndex
             else -> dayPosition
         }.also {
-            it ?: return
+            it ?: return@also
             reorderedDays[it] = reorderedDays[it].copy(selected = true)
         }
         _days.value = reorderedDays
@@ -187,7 +188,6 @@ class RoutineEditorViewModel @Inject constructor(
             } else {
                 routineOrder
             }
-
 
             if (title == null || title.isEmpty()) return@launch
             if (description == null || description.isEmpty()) return@launch
