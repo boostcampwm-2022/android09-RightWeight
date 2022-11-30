@@ -1,20 +1,28 @@
 package com.lateinit.rightweight.service
 
-import android.app.*
+import android.app.Service
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
 import android.util.Log
-import android.widget.RemoteViews
-import androidx.core.app.NotificationCompat
-import com.lateinit.rightweight.R
-import com.lateinit.rightweight.ui.home.HomeActivity
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Parcelize
+data class TimeCount(var count: Int = 0) : Parcelable {
+    override fun toString(): String {
+        val hours: Int = (count / 60) / 60
+        val minutes: Int = count / 60
+        val seconds: Int = count % 60
+
+        return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
+    }
+}
 
 class TimerService : Service() {
     private var isTimerRunning = false
-    private var timeCount = 0 // 원자적으로 동작할 지 의문
+//    private var timeCount = 0 // 원자적으로 동작할 지 의문
+    private val timeCount = TimeCount()
     private lateinit var timer: Timer
 //    lateinit var foregroundUpdateTimer: Timer
 //    lateinit var notificationManager: NotificationManager
@@ -144,7 +152,7 @@ class TimerService : Service() {
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                timeCount++
+                timeCount.count++
                 val timerIntent = Intent().apply {
                     action = MOMENT_ACTION_NAME
                     putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
@@ -169,12 +177,4 @@ class TimerService : Service() {
         }
         sendBroadcast(statusIntent)
     }
-
-    fun getTimeString(timeCount: Int): String {
-        val hours: Int = (timeCount / 60) / 60
-        val minutes: Int = timeCount / 60
-        val seconds: Int = timeCount % 60
-        return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
-    }
-
 }
