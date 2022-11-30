@@ -1,7 +1,8 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.BuildConfig
-import com.lateinit.rightweight.data.RightWeightRetrofitService
+import com.lateinit.rightweight.data.AuthService
+import com.lateinit.rightweight.data.DatabaseService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -20,18 +22,39 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): RightWeightRetrofitService {
-        return retrofit.create(RightWeightRetrofitService::class.java)
+    fun provideAuthService(@Named("Auth") retrofit: Retrofit): AuthService {
+        return retrofit.create(AuthService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(
+    fun provideDatabaseService(@Named("Database") retrofit: Retrofit): DatabaseService {
+        return retrofit.create(DatabaseService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @Named("Auth")
+    fun provideAuthRetrofit(
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://identitytoolkit.googleapis.com/v1/")
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("Database")
+    fun provideDatabaseRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/documents/")
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()
