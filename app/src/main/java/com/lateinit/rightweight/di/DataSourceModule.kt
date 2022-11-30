@@ -26,7 +26,13 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun getRoutineLocalDataSource(routineDao: RoutineDao): RoutineLocalDataSource {
-        return RoutineLocalDataSource(routineDao)
+        return RoutineLocalDataSourceImpl(routineDao)
+    }
+
+    @Provides
+    @Singleton
+    fun getRoutineRemoteDataSource(): RoutineRemoteDataSource {
+        return RoutineRemoteDataSourceImpl()
     }
 
     @Provides
