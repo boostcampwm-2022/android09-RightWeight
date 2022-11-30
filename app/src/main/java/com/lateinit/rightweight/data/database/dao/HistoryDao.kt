@@ -8,6 +8,7 @@ import androidx.room.Update
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -49,6 +50,12 @@ interface HistoryDao {
     @Query("SELECT * FROM history WHERE date = :localDate")
     fun loadHistoryByDate(localDate: LocalDate) : Flow<List<History>>
 
+    @Query("SELECT * FROM history WHERE date BETWEEN :startDate AND :endDate")
+    fun getHistoryBetweenDate(
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): Flow<List<HistoryWithHistoryExercises>>
+
     @Query("SELECT * FROM history_exercise WHERE history_id = :historyId")
     fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>>
 
@@ -66,6 +73,4 @@ interface HistoryDao {
 
     @Query("SELECT COALESCE(MAX(`order`), 0) FROM history_set")
     suspend fun getMaxHistorySetOrder(): Int
-
-
 }

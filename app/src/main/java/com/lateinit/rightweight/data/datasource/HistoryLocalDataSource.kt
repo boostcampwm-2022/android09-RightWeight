@@ -2,18 +2,31 @@ package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class HistoryLocalDataSource @Inject constructor(
     private val historyDao: HistoryDao
 ): HistoryDataSource {
+
     override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
         return historyDao.loadHistoryByDate(localDate)
+    }
+
+    override fun getHistoryBetweenDate(
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): Flow<List<HistoryWithHistoryExercises>> {
+        return historyDao.getHistoryBetweenDate(startDate, endDate)
     }
 
     override suspend fun saveHistory(
