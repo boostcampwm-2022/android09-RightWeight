@@ -48,6 +48,9 @@ interface RoutineDao {
     @Query("SELECT * FROM routine ORDER BY `order`")
     suspend fun getRoutines(): List<Routine>
 
+    @Query("DELETE FROM routine WHERE routine_id = :routineId")
+    suspend fun removeRoutineById(routineId: String)
+
     @Transaction
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays

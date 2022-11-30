@@ -27,4 +27,5 @@ interface RoutineDataSource {
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
     suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
     suspend fun getHigherRoutineOrder(): Int?
+    suspend fun removeRoutineById(routineId: String)
 }

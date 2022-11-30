@@ -61,4 +61,8 @@ class RoutineLocalDataSource @Inject constructor(
     override suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises {
         return routineDao.getDayWithExercisesByDayId(dayId)
     }
+
+    override suspend fun removeRoutineById(routineId: String) {
+        return routineDao.removeRoutineById(routineId)
+    }
 }
