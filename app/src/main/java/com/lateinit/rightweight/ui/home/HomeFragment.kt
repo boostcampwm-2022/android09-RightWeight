@@ -1,8 +1,6 @@
 package com.lateinit.rightweight.ui.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,16 +61,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setBinding()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.loadTodayHistory().collect() { todayHistories ->
-                    if (todayHistories.size == 1 && todayHistories[0].completed) {
-                        stopTimerService()
-                    }
-                }
-            }
-        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -163,12 +151,4 @@ class HomeFragment : Fragment() {
             findNavController().navigate(navigationRouteId)
         }
     }
-
-    private fun stopTimerService() {
-        Log.d("TimerService", "HomeFragment stopTimerService")
-        val timerServiceIntent = Intent(requireContext(), TimerService::class.java)
-        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
-        requireActivity().startService(timerServiceIntent)
-    }
-
 }

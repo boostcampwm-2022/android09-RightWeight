@@ -58,8 +58,8 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        setNotification()
-//        timer = Timer() // home fragment에서 stop 하려면 넣어야함
+//        setNotification()
+        timer = Timer() // home fragment에서 stop 하려면 넣어야함, setNoti에서 분기문 처리해줘서 넣었음(fragment onstart에서 stop을 호출하기 때문)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -81,11 +81,19 @@ class TimerService : Service() {
                 stopForeground(true)
             }
             START_NOTIFICATION ->{
+                Log.d("TimerServiceCycle", "cancel timer($timer)")
+
+                timer.cancel()
                 setNotification()
             }
             STOP_NOTIFICATION ->{
+                Log.d("TimerServiceCycle", "cancel timer($timer)")
+
                 timer.cancel()
                 stopForeground(true)
+                if (isTimerRunning) { // 타이머 동작 중에 나갔다 들어오면 onstart에서 stop 호출되기 때문에 넣어줌
+                    startTimer()
+                }
             }
         }
 
@@ -130,14 +138,17 @@ class TimerService : Service() {
 
         startForeground(1, customNotification)
 
-        timer = Timer()
-
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                updateNotification()
-                Log.d("timerIsAlive", "foregroundUpdate +${this}")
-            }
-        }, 0, 1000)
+        if (isTimerRunning) { // 타이머 정지하고 나갔을 때, 실행 안하도록
+            timer = Timer()
+            Log.d("TimerServiceCycle", "start timer($timer) in setNotification")
+            timer.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    timeCount.count++
+                    updateNotification()
+                    Log.d("timerIsAlive", "foregroundUpdate +${this}")
+                }
+            }, 0, 1000)
+        }
     }
 
     private fun updateNotification() {
@@ -149,10 +160,12 @@ class TimerService : Service() {
     }
 
     private fun startTimer() {
+
         isTimerRunning = true
         sendStatus()
 
         timer = Timer()
+        Log.d("TimerServiceCycle", "start timer($timer)")
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 timeCount.count++
@@ -167,6 +180,7 @@ class TimerService : Service() {
     }
 
     private fun pauseTimer() {
+        Log.d("TimerServiceCycle", "cancel timer($timer)")
         timer.cancel()
         isTimerRunning = false
         sendStatus()
