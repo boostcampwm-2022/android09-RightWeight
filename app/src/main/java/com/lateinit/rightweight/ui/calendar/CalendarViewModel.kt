@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.ui.model.ParentDayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toHistoryUiModel
@@ -94,24 +95,34 @@ class CalendarViewModel @Inject constructor(
 
     private fun getSelectedDayInfo(date: LocalDate): ParentDayUiModel? {
         return if (date in dateToExerciseHistories.value) {
-            dateToExerciseHistories.value[date]?.let {
-                _routineTitle.value = it.history.routineTitle
-                _exerciseTime.value = it.history.time
-                it.toHistoryUiModel()
-            }
+            getSelectedHistory(date)
         } else {
-            val today = LocalDate.now()
-            _exerciseTime.value = DEFAULT_EXERCISE_TIME
+            getSelectedRoutineDay(date)
+        }
+    }
 
-            if (date.isBefore(today) || todayRoutineDayPosition == DAY_POSITION_NONE) {
-                _routineTitle.value = DEFAULT_ROUTINE_TITLE
-                null
-            } else {
-                val dayDiff = Period.between(today, date).days
+    private fun getSelectedHistory(date: LocalDate): HistoryUiModel? {
+        return dateToExerciseHistories.value[date]?.let {
+            _routineTitle.value = it.history.routineTitle
+            _exerciseTime.value = it.history.time
+            it.toHistoryUiModel()
+        }
+    }
 
-                _routineTitle.value = currentRoutine?.title ?: DEFAULT_ROUTINE_TITLE
-                currentRoutineDays.value[dayDiff % currentRoutineDays.value.size]
-            }
+    private fun getSelectedRoutineDay(date: LocalDate): DayUiModel? {
+        val today = LocalDate.now()
+        _exerciseTime.value = DEFAULT_EXERCISE_TIME
+
+        return if (date.isBefore(today) || todayRoutineDayPosition == DAY_POSITION_NONE) {
+            _routineTitle.value = DEFAULT_ROUTINE_TITLE
+            null
+        } else {
+            val dayDiff = Period.between(today, date).days
+            val currentRoutineDayPosition =
+                dayDiff % currentRoutineDays.value.size
+
+            _routineTitle.value = currentRoutine?.title ?: DEFAULT_ROUTINE_TITLE
+            currentRoutineDays.value[currentRoutineDayPosition]
         }
     }
 
