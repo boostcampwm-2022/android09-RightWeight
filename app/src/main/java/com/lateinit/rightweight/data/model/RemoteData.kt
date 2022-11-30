@@ -25,4 +25,40 @@ data class SharedRoutineField(
 
     @SerializedName("shared_count")
     val sharedCount: IntValue? = null,
-): RemoteData()
+) : RemoteData()
+
+data class DayField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("routine_id")
+    val routineId: StringValue? = null,
+)
+
+data class ExerciseField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("part_type")
+    val partType: StringValue,
+
+    @SerializedName("title")
+    val title: StringValue?,
+
+    @SerializedName("day_id")
+    val dayId: StringValue? = null,
+)
+
+data class ExerciseSetField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("count")
+    val count: IntValue,
+
+    @SerializedName("weight")
+    val weight: StringValue?,
+
+    @SerializedName("exercise_id")
+    val exerciseId: StringValue? = null,
+)
