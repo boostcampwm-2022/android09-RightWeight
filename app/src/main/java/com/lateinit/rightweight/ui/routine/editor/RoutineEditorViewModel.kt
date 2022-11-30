@@ -3,6 +3,7 @@ package com.lateinit.rightweight.ui.routine.editor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -26,10 +27,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineEditorViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private lateinit var routineId: String
+    private var routineId: String
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
@@ -62,12 +64,13 @@ class RoutineEditorViewModel @Inject constructor(
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
 
-    fun init(routineId: String) {
+    init {
+        this.routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
+
         if (routineId.isEmpty()) {
             this.routineId = createUUID()
             addDay()
         } else {
-            this.routineId = routineId
             getRoutine(routineId)
         }
     }
@@ -288,5 +291,6 @@ class RoutineEditorViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
+        private const val DEFAULT_ROUTINE_ID = ""
     }
 }
