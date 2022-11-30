@@ -1,10 +1,15 @@
 package com.lateinit.rightweight.service
 
-import android.app.Service
+import android.app.*
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
 import android.util.Log
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import com.lateinit.rightweight.R
+import com.lateinit.rightweight.ui.home.HomeActivity
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -24,10 +29,9 @@ class TimerService : Service() {
 //    private var timeCount = 0 // 원자적으로 동작할 지 의문
     private val timeCount = TimeCount()
     private lateinit var timer: Timer
-//    lateinit var foregroundUpdateTimer: Timer
-//    lateinit var notificationManager: NotificationManager
-//    lateinit var customNotification: Notification
-//    lateinit var notificationLayout: RemoteViews
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var customNotification: Notification
+    private lateinit var notificationLayout: RemoteViews
 
     companion object {
         const val MANAGE_ACTION_NAME = "timer_manage_action"
@@ -53,8 +57,8 @@ class TimerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-//        createChannel()
-//        setNotification()
+        createChannel()
+        setNotification()
 //        timer = Timer() // home fragment에서 stop 하려면 넣어야함
     }
 
@@ -74,76 +78,75 @@ class TimerService : Service() {
             }
             STOP -> {
                 pauseTimer()
-//                foregroundUpdateTimer.cancel()
                 stopForeground(true)
             }
-//            START_NOTIFICATION ->{
-//                setNotification()
-//            }
-//            STOP_NOTIFICATION ->{
-//                foregroundUpdateTimer.cancel()
-//                stopForeground(true)
-//            }
+            START_NOTIFICATION ->{
+                setNotification()
+            }
+            STOP_NOTIFICATION ->{
+                timer.cancel()
+                stopForeground(true)
+            }
         }
 
         return super.onStartCommand(intent, flags, startId)
     }
 
 
-//    private fun createChannel() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val notificationChannel = NotificationChannel(
-//                CHANNEL_ID,
-//                CHANNEL_NAME,
-//                NotificationManager.IMPORTANCE_DEFAULT
-//            )
-//            notificationChannel.setSound(null, null)
-//            notificationChannel.setShowBadge(true)
-//
-//            notificationManager = getSystemService(NotificationManager::class.java)
-//            notificationManager.createNotificationChannel(notificationChannel)
-//        }
-//    }
-//
-//    private fun setNotification() {
-//        notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
-//        notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
-//
-//        val screenMoveIntent = Intent(this, HomeActivity::class.java)
-//        screenMoveIntent.putExtra(
-//            SCREEN_MOVE_INTENT_EXTRA,
-//            R.id.action_navigation_home_to_navigation_exercise
-//        )
-//        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
-//
-//        customNotification = NotificationCompat.Builder(this, "timer_notification")
-//            .setSmallIcon(R.drawable.img_right_weight)
-//            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-//            .setCustomContentView(notificationLayout)
-//            .setCustomBigContentView(notificationLayout)
-//            .setContentIntent(pendingIntent)
-//            .setAutoCancel(true)
-//            .build()
-//
-//        startForeground(1, customNotification)
-//
-//        foregroundUpdateTimer = Timer()
-//
-//        foregroundUpdateTimer.scheduleAtFixedRate(object : TimerTask() {
-//            override fun run() {
-//                updateNotification()
-//                Log.d("timerIsAlive", "foregroundUpdate +${this}")
-//            }
-//        }, 0, 1000)
-//    }
-//
-//    private fun updateNotification() {
-//        notificationLayout.setTextViewText(
-//            R.id.text_view_notification_timer,
-//            getTimeString(timeCount)
-//        )
-//        startForeground(1, customNotification)
-//    }
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.setSound(null, null)
+            notificationChannel.setShowBadge(true)
+
+            notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun setNotification() {
+        notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
+        notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
+
+        val screenMoveIntent = Intent(this, HomeActivity::class.java)
+        screenMoveIntent.putExtra(
+            SCREEN_MOVE_INTENT_EXTRA,
+            R.id.action_navigation_home_to_navigation_exercise
+        )
+        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
+        customNotification = NotificationCompat.Builder(this, "timer_notification")
+            .setSmallIcon(R.drawable.img_right_weight)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(notificationLayout)
+            .setCustomBigContentView(notificationLayout)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        startForeground(1, customNotification)
+
+        timer = Timer()
+
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                updateNotification()
+                Log.d("timerIsAlive", "foregroundUpdate +${this}")
+            }
+        }, 0, 1000)
+    }
+
+    private fun updateNotification() {
+        notificationLayout.setTextViewText(
+            R.id.text_view_notification_timer,
+            timeCount.toString()
+        )
+        startForeground(1, customNotification)
+    }
 
     private fun startTimer() {
         isTimerRunning = true
