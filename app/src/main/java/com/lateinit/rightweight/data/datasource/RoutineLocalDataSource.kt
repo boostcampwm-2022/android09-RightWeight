@@ -16,14 +16,15 @@ interface RoutineLocalDataSource {
         sets: List<ExerciseSet>
     )
 
-    suspend fun insertRoutineList(routines: List<Routine>)
+    suspend fun updateRoutines(routines: List<Routine>)
+    suspend fun getHigherRoutineOrder(): Int?
     suspend fun getRoutineById(routineId: String): Routine
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
     suspend fun getRoutines(): List<Routine>
-
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
     suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
+    suspend fun removeRoutineById(routineId: String)
 }

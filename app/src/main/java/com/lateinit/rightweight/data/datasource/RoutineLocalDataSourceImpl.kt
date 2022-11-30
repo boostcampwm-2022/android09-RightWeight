@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class RoutineLocalDataSourceImpl @Inject constructor(
     private val routineDao: RoutineDao,
-    ) : RoutineLocalDataSource {
+) : RoutineLocalDataSource {
 
     override suspend fun insertRoutine(
         routine: Routine,
@@ -22,8 +22,12 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         routineDao.insertRoutine(routine, days, exercises, sets)
     }
 
-    override suspend fun insertRoutineList(routines: List<Routine>) {
-        routineDao.insertRoutineList(routines)
+    override suspend fun updateRoutines(routines: List<Routine>) {
+        routineDao.updateRoutines(routines)
+    }
+
+    override suspend fun getHigherRoutineOrder(): Int? {
+        return routineDao.getHigherRoutineOrder()
     }
 
     override suspend fun getRoutineById(routineId: String): Routine {
@@ -56,5 +60,9 @@ class RoutineLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises {
         return routineDao.getDayWithExercisesByDayId(dayId)
+    }
+
+    override suspend fun removeRoutineById(routineId: String) {
+        return routineDao.removeRoutineById(routineId)
     }
 }
