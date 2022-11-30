@@ -3,7 +3,7 @@ package com.lateinit.rightweight.data
 import com.lateinit.rightweight.data.datasource.LoginRequestBody
 import retrofit2.http.*
 
-interface RightWeightRetrofitService {
+interface AuthApiService {
 
     @POST("./accounts:signInWithIdp")
     suspend fun loginToFirebase(
