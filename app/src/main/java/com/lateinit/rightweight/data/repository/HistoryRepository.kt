@@ -17,11 +17,12 @@ interface HistoryRepository {
     suspend fun getHistoryExercisesByHistoryId(historyId: String): Flow<List<HistoryExercise>>
     suspend fun getHistorySetsByHistoryExerciseId(exerciseId: String): Flow<List<HistorySet>>
 
-    suspend fun updateHistory(history:History)
+    suspend fun updateHistory(history: History)
     suspend fun updateHistorySet(historySet: HistorySet)
     suspend fun updateHistoryExercise(historyExercise: HistoryExercise)
     suspend fun removeHistorySet(historySetId: String)
     suspend fun removeHistoryExercise(historyExerciseId: String)
     suspend fun addHistorySet(historyExerciseId: String)
     suspend fun addHistoryExercise(historyId: String)
+    suspend fun verifyAllHistorySets(historyExercises: List<HistoryExercise>): Boolean
 }

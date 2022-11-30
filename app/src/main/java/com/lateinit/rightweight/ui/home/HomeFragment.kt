@@ -1,10 +1,11 @@
 package com.lateinit.rightweight.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,19 +15,18 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.service.TimerService
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding
@@ -35,17 +35,19 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                RESET_DIALOG_TAG -> {
+                    userViewModel.resetRoutine()
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
-        }
+        moveToExerciseFragmentIfNotificationClicked()
     }
 
     override fun onCreateView(
@@ -61,6 +63,16 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         super.onViewCreated(view, savedInstanceState)
 
         setBinding()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.loadTodayHistory().collect() { todayHistories ->
+                    if (todayHistories.size == 1 && todayHistories[0].completed) {
+                        stopTimerService()
+                    }
+                }
+            }
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -97,16 +109,15 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         }
 
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
-            val item =
-                (requireActivity() as HomeActivity).binding.bottomNavigation.menu.findItem(R.id.navigation_routine_management)
-            NavigationUI.onNavDestinationSelected(item, findNavController())
+            (requireActivity() as HomeActivity).navigateBottomNav(R.id.navigation_routine_management)
         }
         binding.cardViewHomeRoutineResetContainer.setOnClickListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)
         }
 
         homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
-            val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
+            val exercises = dayUiModel?.exercises ?: emptyList()
+            val homeAdapters = exercises.map { exerciseUiModel ->
                 HomeAdapter(exerciseUiModel)
             }
 
@@ -145,12 +156,18 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         )
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            RESET_DIALOG_TAG -> {
-                userViewModel.resetRoutine()
-            }
+    private fun moveToExerciseFragmentIfNotificationClicked(){
+        val navigationRouteId =
+            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
+        if (navigationRouteId != -1) {
+            findNavController().navigate(navigationRouteId)
         }
+    }
+
+    private fun stopTimerService() {
+        val timerServiceIntent = Intent(requireContext(), TimerService::class.java)
+        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
+        requireActivity().startService(timerServiceIntent)
     }
 
 }

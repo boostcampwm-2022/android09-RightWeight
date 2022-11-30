@@ -11,17 +11,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,21 +26,29 @@ import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityHomeBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    CommonDialogFragment.NoticeDialogListener {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
-    lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityHomeBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                LOGOUT_DIALOG_TAG -> {
+                    logout()
+                }
+                WITHDRAW_DIALOG_TAG -> {
+                    withdraw()
+                }
+            }
+        }
     }
     val userViewModel: UserViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
@@ -96,17 +101,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            LOGOUT_DIALOG_TAG -> {
-                logout()
-            }
-            WITHDRAW_DIALOG_TAG -> {
-                withdraw()
-            }
-        }
-    }
-
     private fun setNavController() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view_home) as NavHostFragment
@@ -148,11 +142,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.materialToolbar)
 
         // set drawer header
+        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+
         userViewModel.getLoginResponse()
         userViewModel.loginResponse.observe(this) { loginResponse ->
-            NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0)).also {
-                it.loginResponse = loginResponse
-            }
+            headerBinding.loginResponse = loginResponse
         }
 
         binding.navigationView.setNavigationItemSelectedListener(this)
@@ -162,7 +156,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        userViewModel.setUser(null)
+        userViewModel.setUser(user = null)
         userViewModel.setLoginResponse(null)
         client.signOut()
         val intent = Intent(baseContext, LoginActivity::class.java)
@@ -195,5 +189,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val inputMethodManager: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(focusView.windowToken, 0)
+    }
+
+    fun navigateBottomNav(@IdRes itemId: Int) {
+        val item = binding.bottomNavigation.menu.findItem(itemId)
+        NavigationUI.onNavDestinationSelected(item, navController)
     }
 }
