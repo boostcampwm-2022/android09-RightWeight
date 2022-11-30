@@ -8,6 +8,8 @@ import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
+import com.lateinit.rightweight.data.model.RootField
+import com.lateinit.rightweight.util.toSharedRoutineField
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
@@ -68,5 +70,13 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun removeRoutineById(routineId: String) {
         routineLocalDataSource.removeRoutineById(routineId)
+    }
+
+    override suspend fun shareRoutine(userId: String, routine: Routine) {
+        routineRemoteDataSource.shareRoutine(
+            RootField(
+                routine.toSharedRoutineField(userId)
+            )
+        )
     }
 }
