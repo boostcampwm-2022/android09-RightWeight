@@ -92,3 +92,28 @@ fun SharedRoutineField.toRoutine(): Routine{
         title = author?.value ?: ""
     )
 }
+
+fun DayUiModel.toDayField(): DayField{
+    return DayField(
+        order = IntValue(order.toString()),
+        routineId = StringValue(routineId)
+    )
+}
+
+fun ExerciseUiModel.toExerciseField(): ExerciseField{
+    return ExerciseField(
+        order = IntValue(order.toString()),
+        partType = StringValue(),
+        title = StringValue(title),
+        dayId = StringValue(dayId)
+    )
+}
+
+fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField{
+    return ExerciseSetField(
+        order = IntValue(order.toString()),
+        count = StringValue(count),
+        weight = StringValue(weight),
+        exerciseId = StringValue(exerciseId)
+    )
+}

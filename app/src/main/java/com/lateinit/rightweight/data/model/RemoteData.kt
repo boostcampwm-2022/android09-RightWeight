@@ -54,7 +54,7 @@ data class ExerciseSetField(
     val order: IntValue? = null,
 
     @SerializedName("count")
-    val count: IntValue,
+    val count: StringValue,
 
     @SerializedName("weight")
     val weight: StringValue?,
