@@ -117,7 +117,7 @@ class CalendarViewModel @Inject constructor(
             _routineTitle.value = DEFAULT_ROUTINE_TITLE
             null
         } else {
-            val dayDiff = Period.between(today, date).days
+            val dayDiff = Period.between(today, date).days + todayRoutineDayPosition
             val currentRoutineDayPosition =
                 dayDiff % currentRoutineDays.value.size
 
