@@ -7,6 +7,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
@@ -73,7 +74,7 @@ class RoutineDetailFragment : Fragment() {
                 }
             }
 
-        })
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setBinding() {
