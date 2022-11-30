@@ -1,11 +1,11 @@
 package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.LoginResponse
-import com.lateinit.rightweight.data.AuthService
+import com.lateinit.rightweight.data.AuthApiService
 import javax.inject.Inject
 
 class LoginDataSourceImpl @Inject constructor(
-    val api: AuthService
+    val api: AuthApiService
 ) : LoginDataSource {
 
     override suspend fun loginToFirebase(key: String, token: String): LoginResponse {

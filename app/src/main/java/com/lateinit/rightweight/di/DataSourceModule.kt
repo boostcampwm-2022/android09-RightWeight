@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.di
 
-import com.lateinit.rightweight.data.AuthService
-import com.lateinit.rightweight.data.DatabaseService
+import com.lateinit.rightweight.data.AuthApiService
 import com.lateinit.rightweight.data.database.AppSharedPreferences
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
@@ -19,15 +18,15 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun getLoginDataSource(
-        api: AuthService
+        api: AuthApiService
     ): LoginDataSource {
         return LoginDataSourceImpl(api)
     }
 
     @Provides
     @Singleton
-    fun getRoutineLocalDataSource(routineDao: RoutineDao, databaseApi: DatabaseService): RoutineLocalDataSource {
-        return RoutineLocalDataSource(routineDao, databaseApi)
+    fun getRoutineLocalDataSource(routineDao: RoutineDao): RoutineLocalDataSource {
+        return RoutineLocalDataSource(routineDao)
     }
 
     @Provides

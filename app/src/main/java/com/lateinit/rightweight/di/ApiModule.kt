@@ -69,20 +69,6 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideUserService(
-        okHttpClient: OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
-    ): UserApiService {
-        return Retrofit.Builder()
-            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/documents/")
-            .addConverterFactory(gsonConverterFactory)
-            .client(okHttpClient)
-            .build()
-            .create(UserApiService::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun provideGsonConvertFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
