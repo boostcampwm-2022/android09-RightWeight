@@ -16,7 +16,7 @@ interface RoutineDataSource {
         sets: List<ExerciseSet>
     )
 
-    suspend fun insertRoutineList(routines: List<Routine>)
+    suspend fun updateRoutines(routines: List<Routine>)
     suspend fun getRoutineById(routineId: String): Routine
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day
@@ -26,5 +26,6 @@ interface RoutineDataSource {
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
     suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
+    suspend fun getHigherRoutineOrder(): Int?
     suspend fun removeRoutineById(routineId: String)
 }

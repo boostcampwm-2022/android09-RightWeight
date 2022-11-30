@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
@@ -23,13 +24,16 @@ interface RoutineDao {
         sets: List<ExerciseSet>
     )
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRoutineList(routines: List<Routine>)
+    @Update
+    suspend fun updateRoutines(routines: List<Routine>)
 
     @Query("SELECT * FROM routine WHERE routine_id = :routineId")
     suspend fun getRoutineById(routineId: String): Routine
 
-    @Query("SELECT * FROM routine NATURAL JOIN day WHERE routine_id = :routineId ORDER BY `order`")
+    @Query("SELECT (`order`) FROM routine ORDER BY `order` DESC LIMIT 1")
+    suspend fun getHigherRoutineOrder(): Int?
+
+    @Query("SELECT * FROM day WHERE routine_id = :routineId ORDER BY `order`")
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
 
     @Query("SELECT * FROM day WHERE day_id = :dayId")
@@ -41,7 +45,7 @@ interface RoutineDao {
     @Query("SELECT * FROM exercise_set WHERE exercise_id = :exerciseId ORDER BY `order`")
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
 
-    @Query("SELECT * FROM routine")
+    @Query("SELECT * FROM routine ORDER BY `order`")
     suspend fun getRoutines(): List<Routine>
 
     @Query("DELETE FROM routine WHERE routine_id = :routineId")

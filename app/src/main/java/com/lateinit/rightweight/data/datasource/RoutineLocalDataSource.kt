@@ -22,8 +22,12 @@ class RoutineLocalDataSource @Inject constructor(
         routineDao.insertRoutine(routine, days, exercises, sets)
     }
 
-    override suspend fun insertRoutineList(routines: List<Routine>) {
-        routineDao.insertRoutineList(routines)
+    override suspend fun updateRoutines(routines: List<Routine>) {
+        routineDao.updateRoutines(routines)
+    }
+
+    override suspend fun getHigherRoutineOrder(): Int? {
+        return routineDao.getHigherRoutineOrder()
     }
 
     override suspend fun getRoutineById(routineId: String): Routine {
