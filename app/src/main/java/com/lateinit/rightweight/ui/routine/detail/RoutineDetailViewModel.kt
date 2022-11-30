@@ -82,7 +82,7 @@ class RoutineDetailViewModel @Inject constructor(
     fun shareRoutine(userId: String) {
         val nowRoutine = _routine.value ?: return
         viewModelScope.launch { 
-            routineRepository.shareRoutine(userId,nowRoutine)
+            routineRepository.shareRoutine(userId,nowRoutine.routineId,nowRoutine)
         }
     }
 }

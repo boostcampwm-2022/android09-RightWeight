@@ -60,7 +60,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getRoutines()
     }
 
-    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays{
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 
@@ -72,11 +72,9 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.removeRoutineById(routineId)
     }
 
-    override suspend fun shareRoutine(userId: String, routine: Routine) {
+    override suspend fun shareRoutine(userId: String, routineId: String, routine: Routine) {
         routineRemoteDataSource.shareRoutine(
-            RootField(
-                routine.toSharedRoutineField(userId)
-            )
+            routineId, RootField(routine.toSharedRoutineField(userId))
         )
     }
 }

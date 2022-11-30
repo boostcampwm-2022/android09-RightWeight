@@ -7,7 +7,7 @@ import javax.inject.Inject
 class RoutineRemoteDataSourceImpl @Inject constructor(
     private val routineApiService: RoutineApiService
 ) : RoutineRemoteDataSource {
-    override suspend fun shareRoutine(rootField: RootField) {
-        routineApiService.shareRoutine(rootField)
+    override suspend fun shareRoutine(routineId: String, rootField: RootField) {
+        routineApiService.shareRoutine(routineId, rootField)
     }
 }
