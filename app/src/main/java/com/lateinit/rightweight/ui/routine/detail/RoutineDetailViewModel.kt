@@ -73,9 +73,16 @@ class RoutineDetailViewModel @Inject constructor(
         _currentDayPosition.value = _currentDayPosition.value
     }
 
-    fun removeRoutine(routineId: String){
+    fun removeRoutine(routineId: String) {
         viewModelScope.launch {
             routineRepository.removeRoutineById(routineId)
+        }
+    }
+
+    fun shareRoutine(userId: String) {
+        val nowRoutine = _routine.value ?: return
+        viewModelScope.launch { 
+            routineRepository.shareRoutine(userId,nowRoutine)
         }
     }
 }
