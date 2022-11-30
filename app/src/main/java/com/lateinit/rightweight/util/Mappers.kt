@@ -3,10 +3,14 @@ package com.lateinit.rightweight.util
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
+import com.lateinit.rightweight.data.model.*
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import java.time.LocalDateTime
+import java.util.UUID
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -64,5 +68,27 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
         weight = weight.ifEmpty { DEFAULT_SET_WEIGHT },
         count = count.ifEmpty { DEFAULT_SET_COUNT },
         order = order
+    )
+}
+
+fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
+    return SharedRoutineField(
+        author = StringValue(author),
+        description = StringValue(description),
+        modifiedDate = TimeStampValue(modifiedDate.toString()+"Z"),
+        order = IntValue(order.toString()),
+        title = StringValue(title),
+        userId = StringValue(userId)
+    )
+}
+
+fun SharedRoutineField.toRoutine(): Routine{
+    return Routine(
+        routineId = UUID.randomUUID().toString(),
+        author = author?.value ?: "",
+        description = description?.value ?: "",
+        modifiedDate = (modifiedDate?.value ?: LocalDateTime.now()) as LocalDateTime,
+        order = order?.value?.toInt() ?: Int.MAX_VALUE,
+        title = author?.value ?: ""
     )
 }
