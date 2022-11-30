@@ -4,7 +4,7 @@ import com.lateinit.rightweight.data.model.Documents
 import com.lateinit.rightweight.data.model.RoutineCollection
 import retrofit2.http.GET
 
-interface DatabaseService {
+interface RoutineApiService {
 
     @GET("routine/routineID3")
     suspend fun getRoutineById(): RoutineCollection

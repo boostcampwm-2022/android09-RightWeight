@@ -1,8 +1,9 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.BuildConfig
-import com.lateinit.rightweight.data.AuthService
-import com.lateinit.rightweight.data.DatabaseService
+import com.lateinit.rightweight.data.AuthApiService
+import com.lateinit.rightweight.data.RoutineApiService
+import com.lateinit.rightweight.data.UserApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,14 +23,20 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideAuthService(@Named("Auth") retrofit: Retrofit): AuthService {
-        return retrofit.create(AuthService::class.java)
+    fun provideAuthApiService(@Named("Auth") retrofit: Retrofit): AuthApiService {
+        return retrofit.create(AuthApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideDatabaseService(@Named("Database") retrofit: Retrofit): DatabaseService {
-        return retrofit.create(DatabaseService::class.java)
+    fun provideRoutineApiService(@Named("Store") retrofit: Retrofit): RoutineApiService {
+        return retrofit.create(RoutineApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApiService(@Named("Store") retrofit: Retrofit): UserApiService {
+        return retrofit.create(UserApiService::class.java)
     }
 
     @Provides
@@ -48,8 +55,8 @@ class ApiModule {
 
     @Provides
     @Singleton
-    @Named("Database")
-    fun provideDatabaseRetrofit(
+    @Named("Store")
+    fun provideStoreRetrofit(
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
@@ -58,6 +65,20 @@ class ApiModule {
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserService(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): UserApiService {
+        return Retrofit.Builder()
+            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/documents/")
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+            .create(UserApiService::class.java)
     }
 
     @Provides
@@ -86,8 +107,8 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun customInterceptor(): Interceptor = Interceptor {
-        chain -> chain.run {
+    fun customInterceptor(): Interceptor = Interceptor { chain ->
+        chain.run {
             proceed(
                 request()
                     .newBuilder()
