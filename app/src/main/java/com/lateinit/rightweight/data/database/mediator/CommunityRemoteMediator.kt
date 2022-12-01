@@ -41,8 +41,6 @@ class CommunityRemoteMediator(
 
             val orderJson = Order("modified_date", 0, state.config.pageSize).toString()
 
-            Log.d("orderJsonString", orderJson)
-
             val sharedRoutines = api.getSharedRoutines(
                 orderJson
             ).fields
@@ -74,4 +72,11 @@ data class Order(
     val orderBy : String,
     val startAfter: Int,
     val limit: Int
-)
+){
+    override fun toString(): String {
+        // { "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"},
+        //              "direction": "ASCENDING"  }], "limit": 10  }}
+        return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
+        //return  """{ "structuredQuery": { "limit": $limit, "orderBy": [{"field": {"fieldPath": $orderBy} }], "startAfter": "values": [{"stringValue": $startAfter}] }}"""
+    }
+}

@@ -46,8 +46,6 @@ class SharedRoutineTest {
     @Test
     fun b(){
         runBlocking {
-            val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-            Assert.assertEquals("com.lateinit.rightweight", appContext.packageName)
 
             val orderJson = Order("modified_date", 0, 10).toString()
             val sharedRoutines = routineApiService.getSharedRoutines(
