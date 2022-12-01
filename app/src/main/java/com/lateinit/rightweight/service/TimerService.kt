@@ -9,7 +9,6 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.ui.home.HomeActivity
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -56,7 +55,6 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-
         timer = Timer()
     }
 
@@ -65,7 +63,6 @@ class TimerService : Service() {
 
         when (action) {
             START -> {
-                startTimer()
                 setNotification()
             }
             PAUSE -> {
@@ -105,19 +102,17 @@ class TimerService : Service() {
         notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
         notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
 
-        val screenMoveIntent = Intent(this, HomeActivity::class.java)
-        screenMoveIntent.putExtra(
-            SCREEN_MOVE_INTENT_EXTRA,
-            R.id.action_navigation_home_to_navigation_exercise
-        )
-
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = "app://page/exercise".toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
-        val pendingIntent = PendingIntent.getActivity(this, 2, intent, PendingIntent.FLAG_MUTABLE)
-
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
@@ -130,12 +125,10 @@ class TimerService : Service() {
 
         startForeground(1, customNotification)
 
-        if (isTimerRunning) {
-            timer.cancel()
-            startTimer {
-                timeCount.count++
-                updateNotification()
-            }
+        pauseTimer()
+        startTimer {
+            timeCount.count++
+            updateNotification()
         }
     }
 
@@ -145,24 +138,11 @@ class TimerService : Service() {
             timeCount.toString()
         )
         startForeground(1, customNotification)
-    }
-
-    private fun startTimer() {
-        stopForeground(true)
-
-        changeTimerRunningState(true)
-
-        startTimer {
-            timeCount.count++
-            val timerIntent = Intent().apply {
-                action = MOMENT_ACTION_NAME
-                putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
-            }
-            sendBroadcast(timerIntent)
-        }
+        sendStatus()
     }
 
     private fun startTimer(handler: TimerTask.() -> Unit) {
+        changeTimerRunningState(true)
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
