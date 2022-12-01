@@ -35,4 +35,5 @@ interface HistoryDataSource {
     suspend fun removeHistoryExercise(historyExerciseId: String)
     suspend fun addHistorySet(historyExerciseId: String)
     suspend fun addHistoryExercise(historyId: String)
+    suspend fun verifyAllHistorySets(historyExercises: List<HistoryExercise>): Boolean
 }

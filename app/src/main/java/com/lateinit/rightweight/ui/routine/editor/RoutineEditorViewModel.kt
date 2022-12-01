@@ -33,6 +33,7 @@ class RoutineEditorViewModel @Inject constructor(
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
+    val routineOrder = MutableLiveData<Int>()
 
     private val currentDayPosition = MutableLiveData<Int>()
     private val currentDay = currentDayPosition.map {
@@ -179,6 +180,14 @@ class RoutineEditorViewModel @Inject constructor(
         viewModelScope.launch {
             val title = routineTitle.value
             val description = routineDescription.value
+            val routineOrder = routineOrder.value
+            val order: Int = if (routineOrder == null) {
+                val higherOrder = routineRepository.getHigherRoutineOrder()
+                if (higherOrder == null) 0 else higherOrder + 1
+            } else {
+                routineOrder
+            }
+
 
             if (title == null || title.isEmpty()) return@launch
             if (description == null || description.isEmpty()) return@launch
@@ -198,7 +207,7 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             routineRepository.insertRoutine(
-                Routine(routineId, title, "author", description, LocalDateTime.now()),
+                Routine(routineId, title, "author", description, LocalDateTime.now(), order),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
@@ -220,6 +229,7 @@ class RoutineEditorViewModel @Inject constructor(
             with(routineWithDays.routine) {
                 routineTitle.value = title
                 routineDescription.value = description
+                routineOrder.value = order
             }
             mapDayToExercise(dayUiModels)
             mapExerciseToSet(dayUiModels.flatMap { it.exercises })

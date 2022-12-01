@@ -55,4 +55,6 @@
     <string name="expand">확장</string>
     <string name="exercise_time">운동한 시간: %s</string>
     <string name="history_none">운동기록이 없습니다.</string>
+    <string name="routine_remove_message">"현재 선택된 루틴 입니다. 삭제 하시겠습니까?"</string>
+    <string name="end_exercise_message">달성하지 않은 항목이 있습니다. \n 정말 운동을 종료하시겠습니까?</string>
 </resources>

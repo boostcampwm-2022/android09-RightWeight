@@ -17,5 +17,7 @@ data class Routine(
     @ColumnInfo(name = "description")
     val description: String,
     @ColumnInfo(name = "modified_date")
-    val modifiedDate: LocalDateTime
+    val modifiedDate: LocalDateTime,
+    @ColumnInfo(name = "order")
+    val order: Int
 )

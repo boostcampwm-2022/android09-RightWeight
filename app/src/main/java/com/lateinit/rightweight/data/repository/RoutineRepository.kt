@@ -16,8 +16,9 @@ interface RoutineRepository {
         sets: List<ExerciseSet>
     )
 
-    suspend fun insertRoutineList(routines: List<Routine>)
+    suspend fun updateRoutines(routines: List<Routine>)
     suspend fun getRoutineById(routineId: String): Routine
+    suspend fun getHigherRoutineOrder(): Int?
     suspend fun getDaysByRoutineId(routineId: String): List<Day>
     suspend fun getDayById(dayId: String): Day
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
@@ -26,4 +27,5 @@ interface RoutineRepository {
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
     suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
+    suspend fun removeRoutineById(routineId: String)
 }

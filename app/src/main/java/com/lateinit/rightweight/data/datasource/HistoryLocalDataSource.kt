@@ -1,5 +1,7 @@
 package com.lateinit.rightweight.data.datasource
 
+import android.util.Log
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.entity.Day
@@ -95,4 +97,21 @@ class HistoryLocalDataSource @Inject constructor(
         val newHistoryExercise = HistoryExercise(historyExerciseId, historyId, "", maxHistoryExerciseOrder + 1, ExercisePartType.CHEST)
         historyDao.insertHistoryExercise(newHistoryExercise)
     }
+
+    override suspend fun verifyAllHistorySets(historyExercises: List<HistoryExercise>): Boolean {
+        return historyDao.verifyAllHistorySets(verifyAllHistorySetsQuery(historyExercises))
+    }
+
+    fun verifyAllHistorySetsQuery(historyExercises: List<HistoryExercise>): SimpleSQLiteQuery {
+        val selectQuery = "SELECT COALESCE(MIN(`checked`), 1) FROM history_set"
+
+        val finalQuery =
+            selectQuery + historyExercises.joinToString(prefix = " WHERE (", separator = " OR ") {
+                "exercise_id = '${it.exerciseId}'"
+            } + ")"
+
+        Log.d("finalQuery", finalQuery)
+        return SimpleSQLiteQuery(finalQuery)
+    }
+
 }
