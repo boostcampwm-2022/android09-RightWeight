@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.database.mediator.Order
-import com.lateinit.rightweight.data.model.Documents
+import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.RoutineCollection
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -13,10 +12,10 @@ interface RoutineApiService {
     suspend fun getRoutineById(): RoutineCollection
 
     @GET("routine")
-    suspend fun getRoutines(): Documents<RoutineCollection>
+    suspend fun getRoutines(): List<DocumentResponse<RoutineCollection>>
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
         @Body orderJson: String
-    ): Documents<RoutineCollection>
+    ): List<DocumentResponse<RoutineCollection>>
 }

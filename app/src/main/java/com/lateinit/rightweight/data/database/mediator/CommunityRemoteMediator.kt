@@ -17,7 +17,7 @@ import java.io.IOException
 class CommunityRemoteMediator(
     val db: AppDatabase,
     val api: RoutineApiService
-): RemoteMediator<Int, SharedRoutine>() {
+) : RemoteMediator<Int, SharedRoutine>() {
 
     override suspend fun initialize(): RemoteMediator.InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -41,26 +41,25 @@ class CommunityRemoteMediator(
 
             val orderJson = Order("modified_date", 0, state.config.pageSize).toString()
 
-            val sharedRoutines = api.getSharedRoutines(
+            val documentResponses = api.getSharedRoutines(
                 orderJson
-            ).fields
+            )
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
 
                 }
 
-                sharedRoutines.forEach(){ routineCollection ->
-                    db.sharedRoutineDao().insertSharedRoutine(routineCollection.toSharedRoutine())
+                documentResponses.forEach() { documentResponse ->
+                    db.sharedRoutineDao()
+                        .insertSharedRoutine(documentResponse.fields.toSharedRoutine())
                 }
             }
 
-            return MediatorResult.Success(endOfPaginationReached = sharedRoutines.isEmpty())
-        }
-        catch (e: IOException) {
+            return MediatorResult.Success(endOfPaginationReached = documentResponses.isEmpty())
+        } catch (e: IOException) {
             return MediatorResult.Error(e)
-        }
-        catch (e: HttpException) {
+        } catch (e: HttpException) {
             return MediatorResult.Error(e)
         }
     }
@@ -69,14 +68,17 @@ class CommunityRemoteMediator(
 }
 
 data class Order(
-    val orderBy : String,
+    val orderBy: String,
     val startAfter: Int,
     val limit: Int
-){
+) {
     override fun toString(): String {
-        // { "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"},
-        //              "direction": "ASCENDING"  }], "limit": 10  }}
-        return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
+        return """{ "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"}, "direction": "ASCENDING"  }], "limit": 10,  "startAt": {"values": [
+            {
+                "timestampValue": "2021-11-11T14:56:20.061Z"
+            }
+            ]}}}"""
+        //return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
         //return  """{ "structuredQuery": { "limit": $limit, "orderBy": [{"field": {"fieldPath": $orderBy} }], "startAfter": "values": [{"stringValue": $startAfter}] }}"""
     }
 }

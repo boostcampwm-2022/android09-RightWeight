@@ -48,10 +48,10 @@ class SharedRoutineTest {
         runBlocking {
 
             val orderJson = Order("modified_date", 0, 10).toString()
-            val sharedRoutines = routineApiService.getSharedRoutines(
+            val documentResponses = routineApiService.getSharedRoutines(
                 orderJson
-            ).fields
-            println(sharedRoutines.toString())
+            )
+            println(documentResponses.toString())
         }
     }
 
