@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDayField
-import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -91,22 +91,54 @@ class RoutineDetailViewModel @Inject constructor(
 
     private fun saveDays(routineId: String, dayUiModels: List<DayUiModel>) {
         viewModelScope.launch {
-            dayUiModels.forEach { dayUiMoeld ->
+            dayUiModels.forEach { dayUiModel ->
                 routineRepository.shareDay(
                     routineId,
-                    dayUiMoeld.dayId,
-                    dayUiMoeld.toDayField()
+                    dayUiModel.dayId,
+                    dayUiModel.toDayField()
                 )
+                saveExercise(routineId, dayUiModel.dayId, dayUiModel.exercises)
             }
         }
     }
 
-    private fun saveExercise() {
+    private fun saveExercise(routineId: String, dayId: String, exercises: List<ExerciseUiModel>) {
+        viewModelScope.launch {
+            exercises.forEach { exerciseUiModel ->
+                routineRepository.shareExercise(
+                    routineId,
+                    dayId,
+                    exerciseUiModel.exerciseId,
+                    exerciseUiModel.toExerciseField()
+                )
+                saveExerciseSet(
+                    routineId,
+                    dayId,
+                    exerciseUiModel.exerciseId,
+                    exerciseUiModel.exerciseSets
+                )
+            }
+        }
 
     }
 
-    private fun saveExerciseSet() {
-
+    private fun saveExerciseSet(
+        routineId: String,
+        dayId: String,
+        exerciseId: String,
+        exerciseSets: List<ExerciseSetUiModel>
+    ) {
+        viewModelScope.launch {
+            exerciseSets.forEach { exerciseSetUiModel ->
+                routineRepository.shareExerciseSet(
+                    routineId,
+                    dayId,
+                    exerciseId,
+                    exerciseSetUiModel.setId,
+                    exerciseSetUiModel.toExerciseSetField()
+                )
+            }
+        }
     }
 }
 

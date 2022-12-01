@@ -7,6 +7,8 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.model.DayField
+import com.lateinit.rightweight.data.model.ExerciseField
+import com.lateinit.rightweight.data.model.ExerciseSetField
 
 interface RoutineRepository {
 
@@ -31,4 +33,18 @@ interface RoutineRepository {
     suspend fun removeRoutineById(routineId: String)
     suspend fun shareRoutine(userId: String, routineId: String, routine: Routine)
     suspend fun shareDay(routineId: String, dayId: String, dayField: DayField)
+    suspend fun shareExercise(
+        routineId: String,
+        dayId: String,
+        exerciseId: String,
+        exerciseField: ExerciseField
+    )
+
+    suspend fun shareExerciseSet(
+        routineId: String,
+        dayId: String,
+        exerciseId: String,
+        exerciseSetId: String,
+        exerciseSetField: ExerciseSetField
+    )
 }

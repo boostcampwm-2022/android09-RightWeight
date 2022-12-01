@@ -10,7 +10,7 @@ import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -55,8 +55,8 @@ fun ExerciseUiModel.toExercise(): Exercise {
     return Exercise(
         exerciseId = exerciseId,
         dayId = dayId,
-        title =  title,
-        order =  order,
+        title = title,
+        order = order,
         part = part
     )
 }
@@ -75,14 +75,14 @@ fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
     return SharedRoutineField(
         author = StringValue(author),
         description = StringValue(description),
-        modifiedDate = TimeStampValue(modifiedDate.toString()+"Z"),
+        modifiedDate = TimeStampValue(modifiedDate.toString() + "Z"),
         order = IntValue(order.toString()),
         title = StringValue(title),
         userId = StringValue(userId)
     )
 }
 
-fun SharedRoutineField.toRoutine(): Routine{
+fun SharedRoutineField.toRoutine(): Routine {
     return Routine(
         routineId = UUID.randomUUID().toString(),
         author = author?.value ?: "",
@@ -93,23 +93,23 @@ fun SharedRoutineField.toRoutine(): Routine{
     )
 }
 
-fun DayUiModel.toDayField(): DayField{
+fun DayUiModel.toDayField(): DayField {
     return DayField(
         order = IntValue(order.toString()),
         routineId = StringValue(routineId)
     )
 }
 
-fun ExerciseUiModel.toExerciseField(): ExerciseField{
+fun ExerciseUiModel.toExerciseField(): ExerciseField {
     return ExerciseField(
         order = IntValue(order.toString()),
-        partType = StringValue(),
+        partType = StringValue(""),
         title = StringValue(title),
         dayId = StringValue(dayId)
     )
 }
 
-fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField{
+fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField {
     return ExerciseSetField(
         order = IntValue(order.toString()),
         count = StringValue(count),

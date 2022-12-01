@@ -40,10 +40,10 @@ data class ExerciseField(
     val order: IntValue? = null,
 
     @SerializedName("part_type")
-    val partType: StringValue,
+    val partType: StringValue? = null,
 
     @SerializedName("title")
-    val title: StringValue?,
+    val title: StringValue? = null,
 
     @SerializedName("day_id")
     val dayId: StringValue? = null,
@@ -54,10 +54,10 @@ data class ExerciseSetField(
     val order: IntValue? = null,
 
     @SerializedName("count")
-    val count: StringValue,
+    val count: StringValue? = null,
 
     @SerializedName("weight")
-    val weight: StringValue?,
+    val weight: StringValue? = null,
 
     @SerializedName("exercise_id")
     val exerciseId: StringValue? = null,
