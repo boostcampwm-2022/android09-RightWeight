@@ -6,6 +6,7 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
+import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.RoutineCollection
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.DayUiModel
@@ -74,12 +75,13 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
-fun SharedRoutineField.toSharedRoutine(): SharedRoutine{
+fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine{
+    val splitedName = name.split("/")
     return SharedRoutine(
-        routineId = UUID.randomUUID().toString(),
-        title = title.toString(),
-        author = author.toString(),
-        description = description.toString(),
-        modifiedDate = LocalDateTime.now(),
+        routineId = splitedName[splitedName.size-1],
+        title = fields.title.toString(),
+        author = fields.author.toString(),
+        description = fields.description.toString(),
+        modifiedDate = LocalDateTime.now()
     )
 }

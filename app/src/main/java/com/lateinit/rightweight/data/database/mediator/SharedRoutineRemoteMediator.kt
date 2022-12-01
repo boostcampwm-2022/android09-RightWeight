@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.data.database.mediator
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -8,18 +7,20 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
+import com.lateinit.rightweight.data.database.AppSharedPreferences
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.util.toSharedRoutine
 import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-class CommunityRemoteMediator(
-    val db: AppDatabase,
-    val api: RoutineApiService
+class SharedRoutineRemoteMediator(
+    private val db: AppDatabase,
+    private val api: RoutineApiService,
+    private val appSharedPreferences: AppSharedPreferences
 ) : RemoteMediator<Int, SharedRoutine>() {
 
-    override suspend fun initialize(): RemoteMediator.InitializeAction {
+    override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
@@ -28,45 +29,39 @@ class CommunityRemoteMediator(
         state: PagingState<Int, SharedRoutine>
     ): MediatorResult {
         try {
-//            val loadLastIndex = when (loadType) {
-//                LoadType.REFRESH -> 1
-//                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-//                LoadType.APPEND -> {
-//                    val index = db.withTransaction {
-//                        shopKeyDao.getRemoteKey()
-//                    }.key
-//                    index
-//                }
-//            }
+            var pagingFlag= when (loadType) {
+                LoadType.REFRESH -> ""
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.APPEND -> {
+                    appSharedPreferences.getSharedRoutinePagingFlag()
+                }
+            }
 
-//            val orderJson = Order("modified_date", 0, state.config.pageSize).toString()
-//
-//            val documentResponses = api.getSharedRoutines(
-//                orderJson
-//            )
-
-            val newOrder = NewOrder(
+            val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData(""),
                     OrderByData(FieldData("modified_date"), "ASCENDING"),
                     10,
-                    StartAtData(ValuesData("2021-11-11T14:56:20.061Z"))
+                    StartAtData(ValuesData(pagingFlag))
                 )
             )
 
             val documentResponses = api.getSharedRoutines(
-                newOrder
+                sharedRoutineRequestBody
             )
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-
+                    appSharedPreferences.setSharedRoutinePagingFlag("")
+                    db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
                 documentResponses.forEach() { documentResponse ->
                     db.sharedRoutineDao()
-                        .insertSharedRoutine(documentResponse.document.fields.toSharedRoutine())
+                        .insertSharedRoutine(documentResponse.document.toSharedRoutine())
+                    pagingFlag = documentResponse.document.fields.modifiedDate.toString()
                 }
+                appSharedPreferences.setSharedRoutinePagingFlag(pagingFlag)
             }
 
             return MediatorResult.Success(endOfPaginationReached = documentResponses.isEmpty())
@@ -77,22 +72,9 @@ class CommunityRemoteMediator(
         }
     }
 
-
 }
 
-//data class Order(
-//    val orderBy: String,
-//    val startAfter: Int,
-//    val limit: Int
-//) {
-//    override fun toString(): String {
-//        return """{ "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"}, "direction": "ASCENDING"  }], "limit": 10,  "startAt": {"values": [{"timestampValue": "2021-11-11T14:56:20.061Z"}]}}}"""
-//        //return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
-//        //return  """{ "structuredQuery": { "limit": $limit, "orderBy": [{"field": {"fieldPath": $orderBy} }], "startAfter": "values": [{"stringValue": $startAfter}] }}"""
-//    }
-//}
-
-data class NewOrder(
+data class SharedRoutineRequestBody(
     val structuredQuery: StructuredQueryData
 )
 

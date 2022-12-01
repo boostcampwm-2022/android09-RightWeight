@@ -1,28 +1,21 @@
 package com.lateinit.rightweight
 
 import androidx.room.Room
-import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.gson.JsonObject
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.mediator.*
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
-import com.lateinit.rightweight.ui.home.HomeActivity
 import com.lateinit.rightweight.util.toSharedRoutine
-import dagger.hilt.android.HiltAndroidApp
-import dagger.hilt.android.testing.CustomTestApplication
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 import javax.inject.Inject
 
 
@@ -55,19 +48,9 @@ class SharedRoutineTest {
     }
 
     @Test
-    fun a() {
-        routineRemoteDataSourceImpl.getAllSharedRoutines()
-    }
-
-    @Test
-    fun b() {
+    fun sharedRoutineRequestAndReceive() {
         runBlocking {
-
-//            val orderJson = Order("modified_date", 0, 10).toString()
-//            val documentResponses = routineApiService.getSharedRoutines(
-//                orderJson
-//            )
-            val newOrder = NewOrder(
+            val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData("shared_routine"),
                     OrderByData(FieldData("modified_date"), "ASCENDING"),
@@ -76,18 +59,18 @@ class SharedRoutineTest {
                 )
             )
             val documentResponses = routineApiService.getSharedRoutines(
-                newOrder
+                sharedRoutineRequestBody
             )
             println(documentResponses.toString())
 
             documentResponses.forEach() { documentResponse ->
                 db.sharedRoutineDao()
-                    .insertSharedRoutine(documentResponse.document.fields.toSharedRoutine())
+                    .insertSharedRoutine(documentResponse.document.toSharedRoutine())
             }
 
             println(db.sharedRoutineDao().getAllSharedRoutines())
 
-            assertEquals("DB_COMPLETE", documentResponses, db.sharedRoutineDao().getAllSharedRoutines())
+            //assertEquals("DB_COMPLETE", documentResponses, db.sharedRoutineDao().getAllSharedRoutines())
         }
     }
 

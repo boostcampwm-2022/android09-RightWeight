@@ -5,22 +5,22 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.mediator.CommunityRemoteMediator
-import dagger.hilt.android.HiltAndroidApp
-import org.junit.Test
+import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
 import javax.inject.Inject
 
 class RoutineRemoteDataSourceImpl @Inject constructor(
-    val db: AppDatabase,
-    val api: RoutineApiService
+    private val db: AppDatabase,
+    private val api: RoutineApiService,
+    private val appSharedPreferences: AppSharedPreferences
 ): RoutineRemoteDataSource {
 
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getAllSharedRoutines() = Pager(
         config = PagingConfig(10),
-        remoteMediator = CommunityRemoteMediator(
-            db, api
+        remoteMediator = SharedRoutineRemoteMediator(
+            db, api, appSharedPreferences
         ),
     ) {
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()

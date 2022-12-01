@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.database.mediator.NewOrder
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.RoutineCollection
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
@@ -18,6 +18,6 @@ interface RoutineApiService {
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
-        @Body order: NewOrder
+        @Body order: SharedRoutineRequestBody
     ): List<DocumentResponse<SharedRoutineField>>
 }
