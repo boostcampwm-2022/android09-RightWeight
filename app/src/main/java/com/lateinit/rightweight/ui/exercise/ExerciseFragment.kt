@@ -25,11 +25,9 @@ import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAM
 import com.lateinit.rightweight.service.TimerService.Companion.MOMENT_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.PAUSE
 import com.lateinit.rightweight.service.TimerService.Companion.START
-import com.lateinit.rightweight.service.TimerService.Companion.START_NOTIFICATION
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.STOP
-import com.lateinit.rightweight.service.TimerService.Companion.STOP_NOTIFICATION
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
@@ -85,7 +83,7 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         super.onStart()
 
         // 2. 운동화면에선 알림 없음
-        startTimerServiceWithMode(STOP_NOTIFICATION)
+//        startTimerServiceWithMode(STOP_NOTIFICATION)
     }
 
     override fun onResume() {
@@ -100,9 +98,9 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     override fun onStop() {
         super.onStop()
         // 4. 운동화면 나갈때 알림 표시
-        if (isCompleted.not()) {
-            startTimerServiceWithMode(START_NOTIFICATION)
-        }
+//        if (isCompleted.not()) {
+//            startTimerServiceWithMode(START_NOTIFICATION)
+//        }
     }
 
     private fun startTimerServiceWithMode(mode: String) {

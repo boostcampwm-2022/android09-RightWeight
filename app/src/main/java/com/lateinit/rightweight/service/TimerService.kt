@@ -7,6 +7,7 @@ import android.os.IBinder
 import android.os.Parcelable
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.ui.home.HomeActivity
 import kotlinx.parcelize.Parcelize
@@ -91,6 +92,7 @@ class TimerService : Service() {
         when (action) {
             START -> {
                 startTimer()
+                setNotification()
             }
             PAUSE -> {
                 pauseTimer()
@@ -102,17 +104,17 @@ class TimerService : Service() {
                 pauseTimer()
                 stopForeground(true)
             }
-            START_NOTIFICATION -> {
-                setNotification()
-            }
-            STOP_NOTIFICATION -> {
-                stopForeground(true)
-                if (isTimerRunning) { // 타이머 동작 중에 나갔다 들어오면 onstart에서 stop 호출되기 때문에 넣어줌
-                    // 기존 타이머 취소하고 재실행
-                    timer.cancel()
-                    startTimer()
-                }
-            }
+//            START_NOTIFICATION -> {
+//                setNotification()
+//            }
+//            STOP_NOTIFICATION -> {
+//                stopForeground(true)
+//                if (isTimerRunning) { // 타이머 동작 중에 나갔다 들어오면 onstart에서 stop 호출되기 때문에 넣어줌
+//                    // 기존 타이머 취소하고 재실행
+//                    timer.cancel()
+//                    startTimer()
+//                }
+//            }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -146,12 +148,26 @@ class TimerService : Service() {
             R.id.action_navigation_home_to_navigation_exercise
         )
 
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            screenMoveIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
+//        val pendingIntent = PendingIntent.getActivity(
+//            this,
+//            0,
+//            screenMoveIntent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+//        )
+//
+//        val pendingIntent = NavDeepLinkBuilder(this)
+//            .setGraph(R.navigation.nav_graph)
+//            .setDestination(R.id.navigation_exercise)
+//            .setArguments(HomeFragmentDirections.actionNavigationHomeToNavigationExercise().arguments)
+//            .createPendingIntent()
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = "app://page/exercise".toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+
+        val pendingIntent = PendingIntent.getActivity(this, 2, intent, PendingIntent.FLAG_MUTABLE)
+
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
@@ -183,6 +199,7 @@ class TimerService : Service() {
     }
 
     private fun startTimer() {
+        stopForeground(true)
 
         changeTimerRunningState(true)
 
