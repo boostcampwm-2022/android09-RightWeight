@@ -5,5 +5,5 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import kotlinx.coroutines.flow.Flow
 
 interface RoutineRemoteDataSource {
-    fun getAllSharedRoutines(): Flow<PagingData<SharedRoutine>>
+    fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
 }
