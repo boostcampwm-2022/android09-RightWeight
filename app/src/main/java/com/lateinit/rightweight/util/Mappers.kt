@@ -1,12 +1,19 @@
 package com.lateinit.rightweight.util
 
+import androidx.room.ColumnInfo
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
+import com.lateinit.rightweight.data.model.Documents
+import com.lateinit.rightweight.data.model.RoutineCollection
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -64,5 +71,15 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
         weight = weight.ifEmpty { DEFAULT_SET_WEIGHT },
         count = count.ifEmpty { DEFAULT_SET_COUNT },
         order = order
+    )
+}
+
+fun RoutineCollection.toSharedRoutine(): SharedRoutine{
+    return SharedRoutine(
+        routineId = UUID.randomUUID().toString(),
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = LocalDateTime.now(),
     )
 }
