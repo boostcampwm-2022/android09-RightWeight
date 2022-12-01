@@ -125,12 +125,14 @@ class TimerService : Service() {
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationChannel.setSound(null, null)
-            notificationChannel.setShowBadge(true)
+            ).apply {
+                setSound(null, null)
+                setShowBadge(true)
+            }
 
-            notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(notificationChannel)
+            notificationManager = getSystemService(NotificationManager::class.java).also {
+                it.createNotificationChannel(notificationChannel)
+            }
         }
     }
 

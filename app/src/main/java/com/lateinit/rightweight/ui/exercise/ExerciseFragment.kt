@@ -41,6 +41,7 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     private val exerciseViewModel: ExerciseViewModel by viewModels()
     private lateinit var timerServiceIntent: Intent
+    private var isCompleted = false
 
     lateinit var binding: FragmentExerciseBinding
     private val dialog: CommonDialogFragment by lazy {
@@ -99,7 +100,9 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     override fun onStop() {
         super.onStop()
         // 4. 운동화면 나갈때 알림 표시
-        startTimerServiceWithMode(START_NOTIFICATION)
+        if (isCompleted.not()) {
+            startTimerServiceWithMode(START_NOTIFICATION)
+        }
     }
 
     private fun startTimerServiceWithMode(mode: String) {
@@ -219,11 +222,12 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     private fun endExercise() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                exerciseViewModel.loadTodayHistory().collect() { todayHistories ->
+                exerciseViewModel.loadTodayHistory().collect { todayHistories ->
                     if (todayHistories.size == 1) {
                         val newHistory = todayHistories[0].copy()
                         newHistory.time = binding.timeString.toString()
                         newHistory.completed = true
+                        isCompleted = true
                         exerciseViewModel.updateHistory(newHistory)
                         startTimerServiceWithMode(STOP)
                         findNavController().navigateUp()
