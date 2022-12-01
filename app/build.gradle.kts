@@ -97,4 +97,7 @@ dependencies {
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.11.0")
+
+    // material-calendarview
+    implementation("com.github.goemic:material-calendarview:3.0.0")
 }

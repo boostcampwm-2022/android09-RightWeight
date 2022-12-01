@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemExerciseViewHomeBinding
 import com.lateinit.rightweight.databinding.ItemSetReadBinding
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.ParentExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.ParentExerciseUiModel
 import kotlin.properties.Delegates
 
-class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) :
+class HomeAdapter(private val exerciseUiModel: ParentExerciseUiModel) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -70,7 +70,7 @@ class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) :
 
     inner class ExerciseViewHolder(val binding: ItemExerciseViewHomeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(exercise: ExerciseUiModel) {
+        fun bind(exercise: ParentExerciseUiModel) {
             binding.exercise = exercise
             binding.imageViewExpand.rotation =
                 if (isExpanded) IC_EXPANDED_ROTATION_DEG else IC_COLLAPSED_ROTATION_DEG
@@ -80,7 +80,7 @@ class HomeAdapter(private val exerciseUiModel: ExerciseUiModel) :
 
     inner class SetViewHolder(val binding: ItemSetReadBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(exerciseSetUiModel: ExerciseSetUiModel) {
+        fun bind(exerciseSetUiModel: ParentExerciseSetUiModel) {
             binding.exerciseSetUiModel = exerciseSetUiModel
         }
     }

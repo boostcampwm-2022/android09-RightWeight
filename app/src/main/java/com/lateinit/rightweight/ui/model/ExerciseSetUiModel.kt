@@ -3,7 +3,7 @@ package com.lateinit.rightweight.ui.model
 data class ExerciseSetUiModel(
     val setId: String,
     val exerciseId: String,
-    var weight: String = "",
-    var count: String = "",
-    val order: Int
-)
+    override var weight: String = "",
+    override var count: String = "",
+    override val order: Int
+) : ParentExerciseSetUiModel(weight, count, order)
