@@ -39,10 +39,23 @@ class CommunityRemoteMediator(
 //                }
 //            }
 
-            val orderJson = Order("modified_date", 0, state.config.pageSize).toString()
+//            val orderJson = Order("modified_date", 0, state.config.pageSize).toString()
+//
+//            val documentResponses = api.getSharedRoutines(
+//                orderJson
+//            )
+
+            val newOrder = NewOrder(
+                StructuredQueryData(
+                    FromData(""),
+                    OrderByData(FieldData("modified_date"), "ASCENDING"),
+                    10,
+                    StartAtData(ValuesData("2021-11-11T14:56:20.061Z"))
+                )
+            )
 
             val documentResponses = api.getSharedRoutines(
-                orderJson
+                newOrder
             )
 
             db.withTransaction {
@@ -52,7 +65,7 @@ class CommunityRemoteMediator(
 
                 documentResponses.forEach() { documentResponse ->
                     db.sharedRoutineDao()
-                        .insertSharedRoutine(documentResponse.fields.toSharedRoutine())
+                        .insertSharedRoutine(documentResponse.document.fields.toSharedRoutine())
                 }
             }
 
@@ -67,18 +80,46 @@ class CommunityRemoteMediator(
 
 }
 
-data class Order(
-    val orderBy: String,
-    val startAfter: Int,
-    val limit: Int
-) {
-    override fun toString(): String {
-        return """{ "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"}, "direction": "ASCENDING"  }], "limit": 10,  "startAt": {"values": [
-            {
-                "timestampValue": "2021-11-11T14:56:20.061Z"
-            }
-            ]}}}"""
-        //return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
-        //return  """{ "structuredQuery": { "limit": $limit, "orderBy": [{"field": {"fieldPath": $orderBy} }], "startAfter": "values": [{"stringValue": $startAfter}] }}"""
-    }
-}
+//data class Order(
+//    val orderBy: String,
+//    val startAfter: Int,
+//    val limit: Int
+//) {
+//    override fun toString(): String {
+//        return """{ "structuredQuery": {  "from": [ { "collectionId": "shared_routine" }], "orderBy": [{"field": {"fieldPath": "modified_date"}, "direction": "ASCENDING"  }], "limit": 10,  "startAt": {"values": [{"timestampValue": "2021-11-11T14:56:20.061Z"}]}}}"""
+//        //return """ "structuredQuery": { "from": [ { "collectionId": "shared_routine" }] } """
+//        //return  """{ "structuredQuery": { "limit": $limit, "orderBy": [{"field": {"fieldPath": $orderBy} }], "startAfter": "values": [{"stringValue": $startAfter}] }}"""
+//    }
+//}
+
+data class NewOrder(
+    val structuredQuery: StructuredQueryData
+)
+
+data class StructuredQueryData(
+    val from: FromData,
+    val orderBy: OrderByData,
+    val limit: Int,
+    val startAt: StartAtData
+)
+
+data class FromData(
+    val collectionId: String,
+)
+
+data class OrderByData(
+    val field: FieldData,
+    val direction: String
+)
+
+data class FieldData(
+    val fieldPath: String
+)
+
+data class StartAtData(
+    val values: ValuesData
+)
+
+data class ValuesData(
+    val timestampValue: String
+)

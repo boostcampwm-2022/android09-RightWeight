@@ -3,8 +3,9 @@ package com.lateinit.rightweight
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.gson.JsonObject
 import com.lateinit.rightweight.data.RoutineApiService
-import com.lateinit.rightweight.data.database.mediator.Order
+import com.lateinit.rightweight.data.database.mediator.*
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
 import com.lateinit.rightweight.ui.home.HomeActivity
 import dagger.hilt.android.HiltAndroidApp
@@ -30,6 +31,7 @@ class SharedRoutineTest {
 
     @Inject
     lateinit var routineRemoteDataSourceImpl: RoutineRemoteDataSourceImpl
+
     @Inject
     lateinit var routineApiService: RoutineApiService
 
@@ -44,12 +46,23 @@ class SharedRoutineTest {
     }
 
     @Test
-    fun b(){
+    fun b() {
         runBlocking {
 
-            val orderJson = Order("modified_date", 0, 10).toString()
+//            val orderJson = Order("modified_date", 0, 10).toString()
+//            val documentResponses = routineApiService.getSharedRoutines(
+//                orderJson
+//            )
+            val newOrder = NewOrder(
+                StructuredQueryData(
+                    FromData("shared_routine"),
+                    OrderByData(FieldData("modified_date"), "ASCENDING"),
+                    10,
+                    StartAtData(ValuesData("2021-11-11T14:56:20.061Z"))
+                )
+            )
             val documentResponses = routineApiService.getSharedRoutines(
-                orderJson
+                newOrder
             )
             println(documentResponses.toString())
         }

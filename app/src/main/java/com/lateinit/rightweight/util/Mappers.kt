@@ -6,7 +6,6 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
-import com.lateinit.rightweight.data.model.Documents
 import com.lateinit.rightweight.data.model.RoutineCollection
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
