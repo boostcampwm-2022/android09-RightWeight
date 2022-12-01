@@ -39,7 +39,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     private val exerciseViewModel: ExerciseViewModel by viewModels()
     private lateinit var timerServiceIntent: Intent
-    private var isCompleted = false
 
     lateinit var binding: FragmentExerciseBinding
     private val dialog: CommonDialogFragment by lazy {
@@ -65,11 +64,9 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
         renewTodayHistory()
 
-        // 1. Intent 생성
         timerServiceIntent = Intent(requireContext(), TimerService::class.java)
         requireActivity().startService(timerServiceIntent)
 
-        // 시작, 정지 버튼 동작
         binding.buttonExerciseStartAndPause.setOnClickListener {
             when (binding.isTimerRunning) {
                 true -> startTimerServiceWithMode(PAUSE)
@@ -79,28 +76,12 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        // 2. 운동화면에선 알림 없음
-//        startTimerServiceWithMode(STOP_NOTIFICATION)
-    }
 
     override fun onResume() {
         super.onResume()
 
-        // 3. 현재 상태 받아오기, 시간 표시하기 위해 필요함
-        startTimerServiceWithMode(STATUS) // 초기값이 있기 때문에 굳이 안받아와도 된다고 생각, 정지하고 나갔다 들어왔을 때 시간표시하려면 있어야한다.
-
+        startTimerServiceWithMode(STATUS)
         setBroadcastReceiver()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // 4. 운동화면 나갈때 알림 표시
-//        if (isCompleted.not()) {
-//            startTimerServiceWithMode(START_NOTIFICATION)
-//        }
     }
 
     private fun startTimerServiceWithMode(mode: String) {
@@ -225,7 +206,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
                         val newHistory = todayHistories[0].copy()
                         newHistory.time = binding.timeString.toString()
                         newHistory.completed = true
-                        isCompleted = true
                         exerciseViewModel.updateHistory(newHistory)
                         startTimerServiceWithMode(STOP)
                         findNavController().navigateUp()

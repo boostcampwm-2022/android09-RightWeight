@@ -13,11 +13,6 @@ import com.lateinit.rightweight.ui.home.HomeActivity
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
-
-/**
- * getTimerString() -> TimerCount class로 변경
- * 똑같은 getTimerString()이 exerciseFragment와 TimerService에 존재
- */
 @Parcelize
 data class TimeCount(var count: Int = 0) : Parcelable {
     override fun toString(): String {
@@ -29,25 +24,9 @@ data class TimeCount(var count: Int = 0) : Parcelable {
     }
 }
 
-/**
- * 고민
- * 1. viewModel 사용
- *      지금은 변화를 관찰하는게 아니고, fragment에서 쓰기 전에 요청
- * 2. Timer 대신
- *      kotlin timer
- *      kotlin coroutine
- * 3. AIDL
- * 4. 운동시간 저장
- *
- * 이슈
- * 1. 종료 시에 알림 유지됨
- * 2. 알림 누르면 계속 쌓임
- */
-
 class TimerService : Service() {
     private var isTimerRunning = false
 
-    //    private var timeCount = 0 // 원자적으로 동작할 지 의문
     private val timeCount = TimeCount()
     private lateinit var timer: Timer
     private lateinit var notificationManager: NotificationManager
@@ -63,8 +42,6 @@ class TimerService : Service() {
         const val START = "start"
         const val PAUSE = "pause"
         const val STOP = "stop"
-        const val START_NOTIFICATION = "start_notification"
-        const val STOP_NOTIFICATION = "stop_notification"
         const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
@@ -79,13 +56,10 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-//        setNotification()
 
-        // setNoti에서 분기문 처리해줘서 넣었음(fragment onstart에서 stop을 호출하기 때문)
         timer = Timer()
     }
 
-    // startService 마다 호출되는 함수
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 
@@ -104,17 +78,6 @@ class TimerService : Service() {
                 pauseTimer()
                 stopForeground(true)
             }
-//            START_NOTIFICATION -> {
-//                setNotification()
-//            }
-//            STOP_NOTIFICATION -> {
-//                stopForeground(true)
-//                if (isTimerRunning) { // 타이머 동작 중에 나갔다 들어오면 onstart에서 stop 호출되기 때문에 넣어줌
-//                    // 기존 타이머 취소하고 재실행
-//                    timer.cancel()
-//                    startTimer()
-//                }
-//            }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -148,19 +111,6 @@ class TimerService : Service() {
             R.id.action_navigation_home_to_navigation_exercise
         )
 
-//        val pendingIntent = PendingIntent.getActivity(
-//            this,
-//            0,
-//            screenMoveIntent,
-//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-//        )
-//
-//        val pendingIntent = NavDeepLinkBuilder(this)
-//            .setGraph(R.navigation.nav_graph)
-//            .setDestination(R.id.navigation_exercise)
-//            .setArguments(HomeFragmentDirections.actionNavigationHomeToNavigationExercise().arguments)
-//            .createPendingIntent()
-
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = "app://page/exercise".toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -180,8 +130,7 @@ class TimerService : Service() {
 
         startForeground(1, customNotification)
 
-        if (isTimerRunning) { // 타이머 정지하고 나갔을 때, 실행 안하도록
-            // 원래 타이머 취소하고 재실행 -> run()안의 로직이 바뀌기 때문
+        if (isTimerRunning) {
             timer.cancel()
             startTimer {
                 timeCount.count++
