@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.model.RoutineCollection
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -73,12 +74,12 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
-fun RoutineCollection.toSharedRoutine(): SharedRoutine{
+fun SharedRoutineField.toSharedRoutine(): SharedRoutine{
     return SharedRoutine(
         routineId = UUID.randomUUID().toString(),
-        title = title,
-        author = author,
-        description = description,
+        title = title.toString(),
+        author = author.toString(),
+        description = description.toString(),
         modifiedDate = LocalDateTime.now(),
     )
 }
