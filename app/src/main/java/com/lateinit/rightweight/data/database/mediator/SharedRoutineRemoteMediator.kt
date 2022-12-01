@@ -21,7 +21,7 @@ class SharedRoutineRemoteMediator(
 ) : RemoteMediator<Int, SharedRoutine>() {
 
     override suspend fun initialize(): InitializeAction {
-        return InitializeAction.LAUNCH_INITIAL_REFRESH
+        return InitializeAction.SKIP_INITIAL_REFRESH
     }
 
     override suspend fun load(
@@ -30,16 +30,18 @@ class SharedRoutineRemoteMediator(
     ): MediatorResult {
         try {
             var pagingFlag= when (loadType) {
-                LoadType.REFRESH -> ""
+                LoadType.REFRESH -> "1-1-1T1:1:1.1Z"
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    appSharedPreferences.getSharedRoutinePagingFlag()
+                    val flag = appSharedPreferences.getSharedRoutinePagingFlag()
+                    if(flag == null) "1-1-1T1:1:1.1Z"
+                    else flag
                 }
             }
 
             val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
-                    FromData(""),
+                    FromData("shared_routine"),
                     OrderByData(FieldData("modified_date"), "ASCENDING"),
                     10,
                     StartAtData(ValuesData(pagingFlag))

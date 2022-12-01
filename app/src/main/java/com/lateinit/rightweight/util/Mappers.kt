@@ -79,9 +79,9 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine{
     val splitedName = name.split("/")
     return SharedRoutine(
         routineId = splitedName[splitedName.size-1],
-        title = fields.title.toString(),
-        author = fields.author.toString(),
-        description = fields.description.toString(),
+        title = fields.title?.value.toString(),
+        author = fields.author?.value.toString(),
+        description = fields.description?.value.toString(),
         modifiedDate = LocalDateTime.now()
     )
 }
