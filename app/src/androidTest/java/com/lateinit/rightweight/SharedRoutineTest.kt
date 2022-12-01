@@ -1,17 +1,21 @@
 package com.lateinit.rightweight
 
+import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.lateinit.rightweight.data.RoutineApiService
+import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.mediator.*
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
 import com.lateinit.rightweight.ui.home.HomeActivity
+import com.lateinit.rightweight.util.toSharedRoutine
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.testing.CustomTestApplication
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -35,9 +39,19 @@ class SharedRoutineTest {
     @Inject
     lateinit var routineApiService: RoutineApiService
 
+//    @Inject
+//    lateinit var db: AppDatabase
+    lateinit var db: AppDatabase
+
     @Before
     fun init() {
         hiltRule.inject()
+    }
+
+    @Before
+    fun initDb() {
+        db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().context,
+            AppDatabase::class.java).build()
     }
 
     @Test
@@ -65,6 +79,15 @@ class SharedRoutineTest {
                 newOrder
             )
             println(documentResponses.toString())
+
+            documentResponses.forEach() { documentResponse ->
+                db.sharedRoutineDao()
+                    .insertSharedRoutine(documentResponse.document.fields.toSharedRoutine())
+            }
+
+            println(db.sharedRoutineDao().getAllSharedRoutines())
+
+            assertEquals("DB_COMPLETE", documentResponses, db.sharedRoutineDao().getAllSharedRoutines())
         }
     }
 

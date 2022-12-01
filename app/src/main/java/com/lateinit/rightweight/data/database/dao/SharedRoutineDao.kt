@@ -20,6 +20,12 @@ interface SharedRoutineDao {
 //        sets: List<SharedExerciseSet>
     )
 
+    @Query("DELETE FROM shared_routine")
+    fun removeAllSharedRoutines()
+
     @Query("SELECT * FROM shared_routine")
-    fun getAllSharedRoutines(): PagingSource<Int, SharedRoutine>
+    fun getAllSharedRoutinesByPaging(): PagingSource<Int, SharedRoutine>
+
+    @Query("SELECT * FROM shared_routine")
+    fun getAllSharedRoutines(): List<SharedRoutine>
 }

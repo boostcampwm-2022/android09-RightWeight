@@ -23,6 +23,6 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
             db, api
         ),
     ) {
-        db.sharedRoutineDao().getAllSharedRoutines()
+        db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
 }
