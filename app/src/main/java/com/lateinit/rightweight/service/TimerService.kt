@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.lateinit.rightweight.R
@@ -13,6 +12,11 @@ import com.lateinit.rightweight.ui.home.HomeActivity
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
+
+/**
+ * getTimerString() -> TimerCount class로 변경
+ * 똑같은 getTimerString()이 exerciseFragment와 TimerService에 존재
+ */
 @Parcelize
 data class TimeCount(var count: Int = 0) : Parcelable {
     override fun toString(): String {
@@ -24,9 +28,25 @@ data class TimeCount(var count: Int = 0) : Parcelable {
     }
 }
 
+/**
+ * 고민
+ * 1. viewModel 사용
+ *      지금은 변화를 관찰하는게 아니고, fragment에서 쓰기 전에 요청
+ * 2. Timer 대신
+ *      kotlin timer
+ *      kotlin coroutine
+ * 3. AIDL
+ * 4. 운동시간 저장
+ *
+ * 이슈
+ * 1. 종료 시에 알림 유지됨
+ * 2. 알림 누르면 계속 쌓임
+ */
+
 class TimerService : Service() {
     private var isTimerRunning = false
-//    private var timeCount = 0 // 원자적으로 동작할 지 의문
+
+    //    private var timeCount = 0 // 원자적으로 동작할 지 의문
     private val timeCount = TimeCount()
     private lateinit var timer: Timer
     private lateinit var notificationManager: NotificationManager
@@ -59,11 +79,13 @@ class TimerService : Service() {
         super.onCreate()
         createChannel()
 //        setNotification()
-        timer = Timer() // home fragment에서 stop 하려면 넣어야함, setNoti에서 분기문 처리해줘서 넣었음(fragment onstart에서 stop을 호출하기 때문)
+
+        // setNoti에서 분기문 처리해줘서 넣었음(fragment onstart에서 stop을 호출하기 때문)
+        timer = Timer()
     }
 
+    // startService 마다 호출되는 함수
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("TimerService", "$this")
         val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 
         when (action) {
@@ -80,18 +102,14 @@ class TimerService : Service() {
                 pauseTimer()
                 stopForeground(true)
             }
-            START_NOTIFICATION ->{
-                Log.d("TimerServiceCycle", "cancel timer($timer)")
-
-                timer.cancel()
+            START_NOTIFICATION -> {
                 setNotification()
             }
-            STOP_NOTIFICATION ->{
-                Log.d("TimerServiceCycle", "cancel timer($timer)")
-
-                timer.cancel()
+            STOP_NOTIFICATION -> {
                 stopForeground(true)
                 if (isTimerRunning) { // 타이머 동작 중에 나갔다 들어오면 onstart에서 stop 호출되기 때문에 넣어줌
+                    // 기존 타이머 취소하고 재실행
+                    timer.cancel()
                     startTimer()
                 }
             }
@@ -125,7 +143,13 @@ class TimerService : Service() {
             SCREEN_MOVE_INTENT_EXTRA,
             R.id.action_navigation_home_to_navigation_exercise
         )
-        val pendingIntent = PendingIntent.getActivity(this, 0, screenMoveIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            screenMoveIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
@@ -139,15 +163,12 @@ class TimerService : Service() {
         startForeground(1, customNotification)
 
         if (isTimerRunning) { // 타이머 정지하고 나갔을 때, 실행 안하도록
-            timer = Timer()
-            Log.d("TimerServiceCycle", "start timer($timer) in setNotification")
-            timer.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    timeCount.count++
-                    updateNotification()
-                    Log.d("timerIsAlive", "foregroundUpdate +${this}")
-                }
-            }, 0, 1000)
+            // 원래 타이머 취소하고 재실행 -> run()안의 로직이 바뀌기 때문
+            timer.cancel()
+            startTimer {
+                timeCount.count++
+                updateNotification()
+            }
         }
     }
 
@@ -161,28 +182,34 @@ class TimerService : Service() {
 
     private fun startTimer() {
 
-        isTimerRunning = true
-        sendStatus()
+        changeTimerRunningState(true)
 
+        startTimer {
+            timeCount.count++
+            val timerIntent = Intent().apply {
+                action = MOMENT_ACTION_NAME
+                putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
+            }
+            sendBroadcast(timerIntent)
+        }
+    }
+
+    private fun startTimer(handler: TimerTask.() -> Unit) {
         timer = Timer()
-        Log.d("TimerServiceCycle", "start timer($timer)")
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                timeCount.count++
-                val timerIntent = Intent().apply {
-                    action = MOMENT_ACTION_NAME
-                    putExtra(TIME_COUNT_INTENT_EXTRA, timeCount)
-                }
-                sendBroadcast(timerIntent)
-                Log.d("TimerService", "timeCount++ $timeCount")
+                handler()
             }
         }, 0, 1000)
     }
 
     private fun pauseTimer() {
-        Log.d("TimerServiceCycle", "cancel timer($timer)")
         timer.cancel()
-        isTimerRunning = false
+        changeTimerRunningState(false)
+    }
+
+    private fun changeTimerRunningState(isTimerRunning: Boolean) {
+        this.isTimerRunning = isTimerRunning
         sendStatus()
     }
 

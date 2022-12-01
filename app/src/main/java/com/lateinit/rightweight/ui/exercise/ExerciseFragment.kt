@@ -66,12 +66,12 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
         renewTodayHistory()
 
-        Log.d("TimerService", "ExerciseFragment onViewCreated")
+        // 1. Intent 생성
         timerServiceIntent = Intent(requireContext(), TimerService::class.java)
         requireActivity().startService(timerServiceIntent)
 
+        // 시작, 정지 버튼 동작
         binding.buttonExerciseStartAndPause.setOnClickListener {
-            Log.d("TimerService", "${binding.isTimerRunning}")
             when (binding.isTimerRunning) {
                 true -> startTimerServiceWithMode(PAUSE)
                 else -> startTimerServiceWithMode(START)
@@ -83,35 +83,28 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     override fun onStart() {
         super.onStart()
 
-        Log.d("TimerService", "ExerciseFragment onStart")
+        // 2. 운동화면에선 알림 없음
         startTimerServiceWithMode(STOP_NOTIFICATION)
     }
 
     override fun onResume() {
         super.onResume()
+
+        // 3. 현재 상태 받아오기, 시간 표시하기 위해 필요함
         startTimerServiceWithMode(STATUS) // 초기값이 있기 때문에 굳이 안받아와도 된다고 생각, 정지하고 나갔다 들어왔을 때 시간표시하려면 있어야한다.
+
         setBroadcastReceiver()
     }
 
     override fun onStop() {
         super.onStop()
+        // 4. 운동화면 나갈때 알림 표시
         startTimerServiceWithMode(START_NOTIFICATION)
     }
 
-    private fun registerReceiver(
-        action: String,
-        handler: BroadcastReceiver.(Context?, Intent?) -> Unit
-    ) {
-        val intentFilter = IntentFilter().apply {
-            addAction(action)
-        }
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                handler(context, intent)
-            }
-        }
-
-        requireActivity().registerReceiver(receiver, intentFilter)
+    private fun startTimerServiceWithMode(mode: String) {
+        timerServiceIntent.putExtra(MANAGE_ACTION_NAME, mode)
+        requireActivity().startService(timerServiceIntent)
     }
 
     private fun setBroadcastReceiver() {
@@ -133,9 +126,20 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
     }
 
-    private fun startTimerServiceWithMode(mode: String) {
-        timerServiceIntent.putExtra(MANAGE_ACTION_NAME, mode)
-        requireActivity().startService(timerServiceIntent)
+    private fun registerReceiver(
+        action: String,
+        handler: BroadcastReceiver.(Context?, Intent?) -> Unit
+    ) {
+        val intentFilter = IntentFilter().apply {
+            addAction(action)
+        }
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                handler(context, intent)
+            }
+        }
+
+        requireActivity().registerReceiver(receiver, intentFilter)
     }
 
     override fun updateHistorySet(historySet: HistorySet) {
