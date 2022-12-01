@@ -10,4 +10,8 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     override suspend fun shareRoutine(routineId: String, rootField: RootField) {
         routineApiService.shareRoutine(routineId, rootField)
     }
+
+    override suspend fun shareDay(routineId: String, dayId: String, rootField: RootField) {
+        routineApiService.shareRoutineDay(routineId, dayId, rootField)
+    }
 }

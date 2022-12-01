@@ -1,13 +1,11 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.model.Documents
-import com.lateinit.rightweight.data.model.RootField
-import com.lateinit.rightweight.data.model.RoutineCollection
-import com.lateinit.rightweight.data.model.SharedRoutineField
+import com.lateinit.rightweight.data.model.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RoutineApiService {
@@ -22,5 +20,28 @@ interface RoutineApiService {
     suspend fun shareRoutine(
         @Query("documentId") routineId: String,
         @Body rootField: RootField
-    ): Response<Documents<SharedRoutineField>>
+    ): Documents<SharedRoutineField>
+
+    @POST("shared_routine/{routineId}/day")
+    suspend fun shareRoutineDay(
+        @Path("routineId") routineId: String,
+        @Query("documentId") dayId: String,
+        @Body rootField: RootField
+    ): Response<Documents<DayField>>
+
+    @POST("shared_routine/{routineId}/{dayId}")
+    suspend fun shareRoutineExercise(
+        @Path("routineId") routineId: String,
+        @Query("documentId") dayId: String,
+        @Body rootField: RootField
+    ): Response<Documents<DayField>>
+
+    @POST("shared_routine/{routineId}/{dayId}/{exerciseId}")
+    suspend fun shareRoutineExerciseSet(
+        @Path("routineId") routineId: String,
+        @Path("dayId") dayId: String,
+        @Path("exerciseId") exerciseId: String,
+        @Body rootField: RootField
+    ): Response<Documents<ExerciseField>>
+
 }

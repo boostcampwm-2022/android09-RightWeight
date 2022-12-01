@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
+import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -81,9 +82,31 @@ class RoutineDetailViewModel @Inject constructor(
 
     fun shareRoutine(userId: String) {
         val nowRoutine = _routine.value ?: return
-        viewModelScope.launch { 
-            routineRepository.shareRoutine(userId,nowRoutine.routineId,nowRoutine)
+        val days = _dayUiModels.value ?: return
+        viewModelScope.launch {
+            routineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
+            saveDays(nowRoutine.routineId, days)
         }
+    }
+
+    private fun saveDays(routineId: String, dayUiModels: List<DayUiModel>) {
+        viewModelScope.launch {
+            dayUiModels.forEach { dayUiMoeld ->
+                routineRepository.shareDay(
+                    routineId,
+                    dayUiMoeld.dayId,
+                    dayUiMoeld.toDayField()
+                )
+            }
+        }
+    }
+
+    private fun saveExercise() {
+
+    }
+
+    private fun saveExerciseSet() {
+
     }
 }
 

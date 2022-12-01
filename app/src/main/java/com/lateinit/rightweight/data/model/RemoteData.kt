@@ -33,7 +33,7 @@ data class DayField(
 
     @SerializedName("routine_id")
     val routineId: StringValue? = null,
-)
+) : RemoteData()
 
 data class ExerciseField(
     @SerializedName("order")
@@ -47,7 +47,7 @@ data class ExerciseField(
 
     @SerializedName("day_id")
     val dayId: StringValue? = null,
-)
+) : RemoteData()
 
 data class ExerciseSetField(
     @SerializedName("order")
@@ -61,4 +61,4 @@ data class ExerciseSetField(
 
     @SerializedName("exercise_id")
     val exerciseId: StringValue? = null,
-)
+) : RemoteData()

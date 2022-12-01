@@ -6,5 +6,5 @@ data class Documents<T>(
     @SerializedName("name")
     val name: String,
     @SerializedName("fields")
-    val fields: List<T>
+    val fields: T
 )
