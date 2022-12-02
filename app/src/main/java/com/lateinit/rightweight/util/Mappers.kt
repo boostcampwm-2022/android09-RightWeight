@@ -118,7 +118,7 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
-        routineId = splitedName[splitedName.size - 1],
+        routineId = splitedName.last(),
         title = fields.title?.value.toString(),
         author = fields.author?.value.toString(),
         description = fields.description?.value.toString(),
