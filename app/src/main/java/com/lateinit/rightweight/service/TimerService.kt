@@ -29,11 +29,7 @@ class TimerService : LifecycleService() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
     private lateinit var notificationLayout: RemoteViews
-
-    override fun onCreate() {
-        super.onCreate()
-        createNotification()
-    }
+    private lateinit var pendingIntent: PendingIntent
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         setNotificationDeepLink(intent)
@@ -43,8 +39,9 @@ class TimerService : LifecycleService() {
     }
 
     private fun setNotificationDeepLink(intent: Intent?) {
-        intent?.getParcelableExtra<PendingIntent>(PENDING_INTENT_TAG)?.let {
-            customNotification.contentIntent = it
+        intent?.getParcelableExtra<PendingIntent>(PENDING_INTENT_TAG)?.let { pendingIntent ->
+            this.pendingIntent = pendingIntent
+            createNotification()
         }
     }
 
@@ -65,6 +62,43 @@ class TimerService : LifecycleService() {
         }
     }
 
+    private fun createNotification() {
+        notificationManager =
+            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel()
+        }
+
+        notificationLayout = RemoteViews(packageName, R.layout.notification_foreground).apply {
+            setTextViewText(
+                R.id.text_view_notification_timer,
+                convertTimeStamp(timeCount)
+            )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            customNotification = NotificationCompat.Builder(this, "timer_notification")
+                .setSmallIcon(R.drawable.img_right_weight)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
+                .setCustomBigContentView(notificationLayout)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+        } else {
+            customNotification = NotificationCompat.Builder(this, "timer_notification")
+                .setSmallIcon(R.drawable.img_right_weight)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(convertTimeStamp(timeCount))
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannel() {
         val notificationChannel = NotificationChannel(
@@ -78,41 +112,6 @@ class TimerService : LifecycleService() {
 
         notificationManager.createNotificationChannel(notificationChannel)
     }
-
-    private fun createNotification() {
-        notificationManager =
-            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel()
-        }
-
-        notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
-        notificationLayout.setTextViewText(
-            R.id.text_view_notification_timer,
-            convertTimeStamp(timeCount)
-        )
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            customNotification = NotificationCompat.Builder(this, "timer_notification")
-                .setSmallIcon(R.drawable.img_right_weight)
-                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(notificationLayout)
-                .setCustomBigContentView(notificationLayout)
-                .setAutoCancel(true)
-                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .build()
-        } else {
-            customNotification = NotificationCompat.Builder(this, "timer_notification")
-                .setSmallIcon(R.drawable.img_right_weight)
-                .setContentTitle(getText(R.string.app_name))
-                .setContentText(convertTimeStamp(timeCount))
-                .setAutoCancel(true)
-                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-                .build()
-        }
-
-    }
-
 
     private fun startTimer() {
         startForeground(NOTIFICATION_ID, customNotification)
@@ -141,9 +140,11 @@ class TimerService : LifecycleService() {
                 .setContentTitle(getText(R.string.app_name))
                 .setContentText(convertTimeStamp(timeCount))
                 .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .build()
         }
+
         notificationManager.notify(NOTIFICATION_ID, customNotification)
         sendStatus()
     }
