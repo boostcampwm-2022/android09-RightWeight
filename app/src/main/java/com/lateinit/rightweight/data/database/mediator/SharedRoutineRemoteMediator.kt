@@ -34,7 +34,7 @@ class SharedRoutineRemoteMediator(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val flag = appSharedPreferences.getSharedRoutinePagingFlag()
-                    if(flag == null) "1-1-1T1:1:1.1Z"
+                    if(flag == null || flag == "") "1-1-1T1:1:1.1Z"
                     else flag
                 }
             }
