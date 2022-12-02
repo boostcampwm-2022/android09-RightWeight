@@ -2,12 +2,12 @@ package com.lateinit.rightweight.ui.model
 
 import com.lateinit.rightweight.data.ExercisePartType
 
-data class ExerciseUiModel(
+data class HistoryExerciseUiModel(
     val exerciseId: String,
-    val dayId: String,
-    override var title: String,
+    val historyId: String,
+    override val title: String,
     val order: Int,
     override val part: ExercisePartType,
     override val expanded: Boolean = true,
-    override val exerciseSets: List<ExerciseSetUiModel> = emptyList()
+    override val exerciseSets: List<HistoryExerciseSetUiModel>
 ) : ParentExerciseUiModel(title, part, expanded, exerciseSets)

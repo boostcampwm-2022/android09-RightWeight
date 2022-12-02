@@ -1,20 +1,22 @@
 package com.lateinit.rightweight.util
 
-import androidx.room.ColumnInfo
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
+import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
+import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.model.RoutineCollection
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import java.time.LocalDate
+import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.HistoryUiModel
 import java.time.LocalDateTime
-import java.util.UUID
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -44,6 +46,40 @@ fun ExerciseSet.toExerciseSetUiModel(): ExerciseSetUiModel {
         weight = weight,
         count = count,
         order = order
+    )
+}
+
+fun HistoryWithHistoryExercises.toHistoryUiModel(): HistoryUiModel {
+    return HistoryUiModel(
+        historyId = history.historyId,
+        date = history.date,
+        time = history.time,
+        routineTitle = history.routineTitle,
+        order = history.dayOrder,
+        completed = history.completed,
+        exercises = historyExercises.map { it.toHistoryExerciseUiModel() }
+    )
+}
+
+fun HistoryExerciseWithHistorySets.toHistoryExerciseUiModel(): HistoryExerciseUiModel {
+    return HistoryExerciseUiModel(
+       exerciseId = historyExercise.exerciseId,
+       historyId = historyExercise.historyId,
+       title = historyExercise.title,
+       order = historyExercise.order,
+       part = historyExercise.part,
+       exerciseSets = historySets.map { it.toHistoryExerciseSetUiModel() }
+    )
+}
+
+fun HistorySet.toHistoryExerciseSetUiModel(): HistoryExerciseSetUiModel {
+    return HistoryExerciseSetUiModel(
+        setId = setId,
+        exerciseId = exerciseId,
+        weight = weight,
+        count = count,
+        order = order,
+        checked = checked
     )
 }
 
@@ -79,9 +115,9 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine{
     val splitedName = name.split("/")
     return SharedRoutine(
         routineId = splitedName[splitedName.size-1],
-        title = fields.title.toString(),
-        author = fields.author.toString(),
-        description = fields.description.toString(),
+        title = fields.title?.value.toString(),
+        author = fields.author?.value.toString(),
+        description = fields.description?.value.toString(),
         modifiedDate = LocalDateTime.now()
     )
 }
