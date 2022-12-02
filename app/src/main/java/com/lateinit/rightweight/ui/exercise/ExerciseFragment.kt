@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
@@ -22,6 +22,7 @@ import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.PAUSE
+import com.lateinit.rightweight.service.TimerService.Companion.PENDING_INTENT_TAG
 import com.lateinit.rightweight.service.TimerService.Companion.START
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
@@ -50,6 +51,11 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startServiceWithDeeplink()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,8 +69,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
         renewTodayHistory()
 
-        timerServiceIntent = Intent(requireContext(), TimerService::class.java)
-        requireActivity().startService(timerServiceIntent)
 
         binding.buttonExerciseStartAndPause.setOnClickListener {
             when (binding.isTimerRunning) {
@@ -81,6 +85,18 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
         startTimerServiceWithMode(STATUS)
         setBroadcastReceiver()
+    }
+
+    private fun startServiceWithDeeplink() {
+        val pendingIntent = NavDeepLinkBuilder(requireActivity())
+            .setGraph(R.navigation.nav_graph)
+            .setDestination(R.id.navigation_exercise)
+            .createPendingIntent()
+
+        timerServiceIntent = Intent(requireContext(), TimerService::class.java)
+        timerServiceIntent.putExtra(PENDING_INTENT_TAG, pendingIntent)
+        requireActivity().startService(timerServiceIntent)
+        timerServiceIntent.removeExtra(PENDING_INTENT_TAG)
     }
 
     private fun startTimerServiceWithMode(mode: String) {
@@ -102,11 +118,13 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
                     binding.timeString = convertTimeStamp(timeCount)
                     binding.isTimerRunning = isTimerRunning
-                }            }
+                }
+            }
         }
 
         requireActivity().registerReceiver(receiver, intentFilter)
     }
+
     override fun updateHistorySet(historySet: HistorySet) {
         exerciseViewModel.updateHistorySet(historySet)
     }
@@ -167,7 +185,6 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     private fun verifyAllHistorySets(historyExercises: List<HistoryExercise>) {
         exerciseViewModel.verifyAllHistorySets(historyExercises)
         exerciseViewModel.isAllHistorySetsChecked.observe(viewLifecycleOwner) { isAllHistorySetsChecked ->
-            Log.d("isAllHistorySetsChecked", isAllHistorySetsChecked.toString())
             if (isAllHistorySetsChecked.not()) {
                 if (!dialog.isAdded) {
                     dialog.show(
