@@ -2,7 +2,6 @@ package com.lateinit.rightweight.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -122,8 +121,8 @@ class HomeFragment : Fragment() {
             }
 
             adapter = ConcatAdapter(homeAdapters)
-            binding.recyclerViewTodayRoutine.adapter = adapter
-            binding.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+            binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
+            binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
         userViewModel.userInfo.observe(viewLifecycleOwner) {
