@@ -45,4 +45,12 @@ class RepositoryModule {
     ): HistoryRepository {
         return HistoryRepositoryImpl(historyLocalDataSource)
     }
+
+    @Provides
+    @Singleton
+    fun getSharedRoutineRepository(
+        routineRemoteDataSource: RoutineRemoteDataSource
+    ): SharedRoutineRepository {
+        return SharedRoutineRepositoryImpl(routineRemoteDataSource)
+    }
 }

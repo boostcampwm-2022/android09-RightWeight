@@ -5,12 +5,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
+import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
 import com.lateinit.rightweight.data.database.entity.*
 
 @Database(
     entities = [
         Routine::class, Day::class, Exercise::class, ExerciseSet::class,
-        History::class, HistoryExercise::class, HistorySet::class
+        History::class, HistoryExercise::class, HistorySet::class,
+        SharedRoutine::class
     ],
     version = 1,
     exportSchema = false
@@ -19,4 +21,5 @@ import com.lateinit.rightweight.data.database.entity.*
 abstract class AppDatabase : RoomDatabase() {
     abstract fun routineDao(): RoutineDao
     abstract fun historyDao(): HistoryDao
+    abstract fun sharedRoutineDao(): SharedRoutineDao
 }
