@@ -25,7 +25,6 @@ data class TimeCount(var count: Int = 0) : Parcelable {
 
 class TimerService : Service() {
     private var isTimerRunning = false
-
     private val timeCount = TimeCount()
     private lateinit var timer: Timer
     private lateinit var notificationManager: NotificationManager
@@ -44,7 +43,7 @@ class TimerService : Service() {
         const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
-        const val SCREEN_MOVE_INTENT_EXTRA = "screen_move"
+        const val NOTIFICATION_ID = 1
     }
 
 
@@ -55,7 +54,7 @@ class TimerService : Service() {
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        timer = Timer()
+        createNotification()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,17 +62,16 @@ class TimerService : Service() {
 
         when (action) {
             START -> {
-                setNotification()
+                startTimer()
             }
             PAUSE -> {
                 pauseTimer()
             }
+            STOP -> {
+                stopTimer()
+            }
             STATUS -> {
                 sendStatus()
-            }
-            STOP -> {
-                pauseTimer()
-                stopForeground(true)
             }
         }
 
@@ -98,38 +96,47 @@ class TimerService : Service() {
         }
     }
 
-    private fun setNotification() {
+    private fun createNotification() {
         notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
         notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
-
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = "app://page/exercise".toUri()
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
 
         customNotification = NotificationCompat.Builder(this, "timer_notification")
             .setSmallIcon(R.drawable.img_right_weight)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
             .setCustomBigContentView(notificationLayout)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(createDeepLink())
             .setAutoCancel(true)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
+    }
 
-        startForeground(1, customNotification)
-
-        pauseTimer()
-        startTimer {
-            timeCount.count++
-            updateNotification()
+    private fun createDeepLink(): PendingIntent {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = "app://page/exercise".toUri()
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
+
+        return PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+    }
+
+
+    private fun startTimer() {
+        startForeground(NOTIFICATION_ID, customNotification)
+        timer = Timer().apply {
+            scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    timeCount.count++
+                    updateNotification()
+                }
+            }, 0, 1000)
+        }
+        changeTimerRunningState(true)
     }
 
     private fun updateNotification() {
@@ -137,21 +144,17 @@ class TimerService : Service() {
             R.id.text_view_notification_timer,
             timeCount.toString()
         )
-        startForeground(1, customNotification)
+        notificationManager.notify(NOTIFICATION_ID, customNotification)
         sendStatus()
     }
 
-    private fun startTimer(handler: TimerTask.() -> Unit) {
-        changeTimerRunningState(true)
-        timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                handler()
-            }
-        }, 0, 1000)
+    private fun pauseTimer() {
+        timer.cancel()
+        changeTimerRunningState(false)
     }
 
-    private fun pauseTimer() {
+    private fun stopTimer() {
+        stopForeground(true)
         timer.cancel()
         changeTimerRunningState(false)
     }
