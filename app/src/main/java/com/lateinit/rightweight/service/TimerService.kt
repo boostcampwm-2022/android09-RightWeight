@@ -3,10 +3,10 @@ package com.lateinit.rightweight.service
 import android.app.*
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.LifecycleService
 import com.lateinit.rightweight.R
 import java.util.*
 
@@ -18,7 +18,7 @@ fun convertTimeStamp(count: Int): String {
     return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
 }
 
-class TimerService : Service() {
+class TimerService : LifecycleService() {
     private var isTimerRunning = false
     private var timeCount = 0
     private lateinit var timer: Timer
@@ -40,10 +40,6 @@ class TimerService : Service() {
         const val NOTIFICATION_ID = 1
     }
 
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -105,17 +101,28 @@ class TimerService : Service() {
     }
 
     private fun createDeepLink(): PendingIntent {
+
         val intent = Intent(Intent.ACTION_VIEW).apply {
             data = "app://page/exercise".toUri()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
-        return PendingIntent.getActivity(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-        )
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getActivity(
+                this,
+                NOTIFICATION_ID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            PendingIntent.getActivity(
+                this,
+                NOTIFICATION_ID,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+        return pendingIntent
     }
 
 
