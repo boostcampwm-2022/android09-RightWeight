@@ -20,6 +20,8 @@ class SharedRoutineRemoteMediator(
     private val appSharedPreferences: AppSharedPreferences
 ) : RemoteMediator<Int, SharedRoutine>() {
 
+    private val initModifiedDateFlag = "1-1-1T1:1:1.1Z"
+
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.SKIP_INITIAL_REFRESH
     }
@@ -30,11 +32,11 @@ class SharedRoutineRemoteMediator(
     ): MediatorResult {
         try {
             var pagingFlag= when (loadType) {
-                LoadType.REFRESH -> "1-1-1T1:1:1.1Z"
+                LoadType.REFRESH -> initModifiedDateFlag
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val flag = appSharedPreferences.getSharedRoutinePagingFlag()
-                    if(flag == null || flag == "") "1-1-1T1:1:1.1Z"
+                    if(flag.isNullOrEmpty()) initModifiedDateFlag
                     else flag
                 }
             }
