@@ -7,7 +7,7 @@
 
         <variable
             name="exercise"
-            type="com.lateinit.rightweight.ui.model.ExerciseUiModel" />
+            type="com.lateinit.rightweight.ui.model.ParentExerciseUiModel" />
 
         <import type="com.lateinit.rightweight.util.ExtensionsKt" />
     </data>
@@ -21,14 +21,18 @@
         <TextView
             android:id="@+id/text_view_exercise_part"
             style="@style/Text.Small"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="@drawable/bg_exercise_part"
+            android:gravity="center"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:text="@{ExtensionsKt.getPartNameRes(exercise.part)}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text_view_exercise_title"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="가슴" />
@@ -36,12 +40,13 @@
         <TextView
             android:id="@+id/text_view_exercise_title"
             style="@style/Text.Medium"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@{exercise.title}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/image_view_expand"
+            app:layout_constraintHorizontal_weight="3.5"
             app:layout_constraintStart_toEndOf="@id/text_view_exercise_part"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="랫풀다운" />
@@ -50,12 +55,13 @@
             android:id="@+id/image_view_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/expand"
             android:padding="8dp"
             android:src="@drawable/ic_arrow_up"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/expand" />
+            app:layout_constraintStart_toEndOf="@id/text_view_exercise_title"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
