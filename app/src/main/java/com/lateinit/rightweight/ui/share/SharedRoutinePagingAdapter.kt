@@ -13,7 +13,7 @@ class SharedRoutinePagingAdapter(
     private val context: Context,
     val sharedRoutineClickHandler: SharedRoutineClickHandler
 ) : PagingDataAdapter<SharedRoutine, SharedRoutinePagingAdapter.SharedRoutineViewHolder>(
-    SharedRoutineDiffCallback()
+    diffUtil
 ) {
 
     override fun onCreateViewHolder(
@@ -38,20 +38,23 @@ class SharedRoutinePagingAdapter(
         }
     }
 
-    class SharedRoutineDiffCallback : DiffUtil.ItemCallback<SharedRoutine>() {
-        override fun areItemsTheSame(
-            oldItem: SharedRoutine,
-            newItem: SharedRoutine
-        ): Boolean {
-            return oldItem.routineId == newItem.routineId
-        }
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<SharedRoutine>() {
+            override fun areItemsTheSame(
+                oldItem: SharedRoutine,
+                newItem: SharedRoutine
+            ): Boolean {
+                return oldItem.routineId == newItem.routineId
+            }
 
-        override fun areContentsTheSame(
-            oldItem: SharedRoutine,
-            newItem: SharedRoutine
-        ): Boolean {
-            return oldItem == newItem
-        }
+            override fun areContentsTheSame(
+                oldItem: SharedRoutine,
+                newItem: SharedRoutine
+            ): Boolean {
+                return oldItem == newItem
+            }
 
+        }
     }
+
 }
