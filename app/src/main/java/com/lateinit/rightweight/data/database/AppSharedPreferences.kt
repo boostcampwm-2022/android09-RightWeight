@@ -44,4 +44,5 @@ class AppSharedPreferences(context: Context) {
     fun getSharedRoutinePagingFlag(): String? {
         return sharedPreferences.getString(sharedRoutinePagingFlagKey, "")
     }
+    
 }
