@@ -11,10 +11,10 @@ import retrofit2.http.POST
 interface RoutineApiService {
 
     @GET("routine/routineID3")
-    suspend fun getRoutineById(): RoutineCollection
+    suspend fun getRoutineById(): DocumentResponse<SharedRoutineField>
 
     @GET("routine")
-    suspend fun getRoutines(): List<DocumentResponse<RoutineCollection>>
+    suspend fun getRoutines(): List<DocumentResponse<SharedRoutineField>>
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
