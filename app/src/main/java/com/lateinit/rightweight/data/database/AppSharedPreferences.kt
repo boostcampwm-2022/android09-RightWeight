@@ -41,10 +41,8 @@ class AppSharedPreferences(context: Context) {
         sharedPreferences.edit().putString(sharedRoutinePagingFlagKey, flag).apply()
     }
 
-    fun getSharedRoutinePagingFlag(): String{
-        return Gson().fromJson(
-            sharedPreferences.getString(sharedRoutinePagingFlagKey, ""),
-            String::class.java
-        )
+    fun getSharedRoutinePagingFlag(): String? {
+        return sharedPreferences.getString(sharedRoutinePagingFlagKey, "")
     }
+    
 }
