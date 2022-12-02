@@ -10,8 +10,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.databinding.ItemSharedRoutineBinding
 
 class SharedRoutinePagingAdapter(
-    private val context: Context,
-    val sharedRoutineClickHandler: SharedRoutineClickHandler
+    private val sharedRoutineClickHandler: SharedRoutineClickHandler
 ) : PagingDataAdapter<SharedRoutine, SharedRoutinePagingAdapter.SharedRoutineViewHolder>(
     diffUtil
 ) {
@@ -20,7 +19,7 @@ class SharedRoutinePagingAdapter(
         parent: ViewGroup,
         viewType: Int
     ): SharedRoutineViewHolder {
-        val bind = ItemSharedRoutineBinding.inflate(LayoutInflater.from(context), parent, false)
+        val bind = ItemSharedRoutineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SharedRoutineViewHolder(bind)
     }
 

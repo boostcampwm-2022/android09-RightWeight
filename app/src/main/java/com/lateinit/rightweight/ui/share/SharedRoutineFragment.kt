@@ -40,7 +40,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
         setMenu()
 
-        val sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(requireContext(), this)
+        val sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
         lifecycleScope.launch {
