@@ -24,7 +24,7 @@ fun convertTimeStamp(count: Int): String {
 
 class TimerService : LifecycleService() {
     private var isTimerRunning = false
-    private var timeCount = 10000
+    private var timeCount = 0
     private lateinit var timer: Timer
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
@@ -80,22 +80,37 @@ class TimerService : LifecycleService() {
     }
 
     private fun createNotification() {
-        notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager =
+            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel()
         }
 
         notificationLayout = RemoteViews(packageName, R.layout.notification_foreground)
-        notificationLayout.setTextViewText(R.id.text_view_notification_timer, timeCount.toString())
+        notificationLayout.setTextViewText(
+            R.id.text_view_notification_timer,
+            convertTimeStamp(timeCount)
+        )
 
-        customNotification = NotificationCompat.Builder(this, "timer_notification")
-            .setSmallIcon(R.drawable.img_right_weight)
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .setCustomContentView(notificationLayout)
-            .setCustomBigContentView(notificationLayout)
-            .setAutoCancel(true)
-            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            customNotification = NotificationCompat.Builder(this, "timer_notification")
+                .setSmallIcon(R.drawable.img_right_weight)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(notificationLayout)
+                .setCustomBigContentView(notificationLayout)
+                .setAutoCancel(true)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+        } else {
+            customNotification = NotificationCompat.Builder(this, "timer_notification")
+                .setSmallIcon(R.drawable.img_right_weight)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(convertTimeStamp(timeCount))
+                .setAutoCancel(true)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+        }
+
     }
 
 
@@ -113,10 +128,22 @@ class TimerService : LifecycleService() {
     }
 
     private fun updateNotification() {
-        notificationLayout.setTextViewText(
-            R.id.text_view_notification_timer,
-            convertTimeStamp(timeCount)
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            notificationLayout.setTextViewText(
+                R.id.text_view_notification_timer,
+                convertTimeStamp(timeCount)
+            )
+            notificationManager.notify(NOTIFICATION_ID, customNotification)
+        } else {
+            customNotification = NotificationCompat.Builder(this, "timer_notification")
+                .setSmallIcon(R.drawable.img_right_weight)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(convertTimeStamp(timeCount))
+                .setAutoCancel(true)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .build()
+        }
         notificationManager.notify(NOTIFICATION_ID, customNotification)
         sendStatus()
     }
