@@ -4,28 +4,23 @@ import android.app.*
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.os.Parcelable
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.lateinit.rightweight.R
-import kotlinx.parcelize.Parcelize
 import java.util.*
 
-@Parcelize
-data class TimeCount(var count: Int = 0) : Parcelable {
-    override fun toString(): String {
-        val hours: Int = (count / 60) / 60
-        val minutes: Int = count / 60
-        val seconds: Int = count % 60
+fun convertTimeStamp(count: Int): String {
+    val hours: Int = (count / 60) / 60
+    val minutes: Int = count / 60
+    val seconds: Int = count % 60
 
-        return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
-    }
+    return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
 }
 
 class TimerService : Service() {
     private var isTimerRunning = false
-    private val timeCount = TimeCount()
+    private var timeCount = 0
     private lateinit var timer: Timer
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
@@ -33,7 +28,6 @@ class TimerService : Service() {
 
     companion object {
         const val MANAGE_ACTION_NAME = "timer_manage_action"
-        const val MOMENT_ACTION_NAME = "timer_moment_action"
         const val STATUS_ACTION_NAME = "timer_status_action"
         const val CHANNEL_ID = "timer_notification"
         const val CHANNEL_NAME = "Timer"
@@ -58,9 +52,8 @@ class TimerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val action = intent?.getStringExtra(MANAGE_ACTION_NAME)
 
-        when (action) {
+        when (intent?.getStringExtra(MANAGE_ACTION_NAME)) {
             START -> {
                 startTimer()
             }
@@ -131,7 +124,7 @@ class TimerService : Service() {
         timer = Timer().apply {
             scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
-                    timeCount.count++
+                    timeCount++
                     updateNotification()
                 }
             }, 0, 1000)
@@ -142,7 +135,7 @@ class TimerService : Service() {
     private fun updateNotification() {
         notificationLayout.setTextViewText(
             R.id.text_view_notification_timer,
-            timeCount.toString()
+            convertTimeStamp(timeCount)
         )
         notificationManager.notify(NOTIFICATION_ID, customNotification)
         sendStatus()

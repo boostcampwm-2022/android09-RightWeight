@@ -19,16 +19,15 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.database.entity.HistoryExercise
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
-import com.lateinit.rightweight.service.TimeCount
 import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAME
-import com.lateinit.rightweight.service.TimerService.Companion.MOMENT_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.PAUSE
 import com.lateinit.rightweight.service.TimerService.Companion.START
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.STOP
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
+import com.lateinit.rightweight.service.convertTimeStamp
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,40 +89,24 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     }
 
     private fun setBroadcastReceiver() {
-        registerReceiver(MOMENT_ACTION_NAME) { _, intent ->
-            val timeCount = intent?.getParcelableExtra<TimeCount>(TIME_COUNT_INTENT_EXTRA)
-            binding.timeString = timeCount.toString()
-        }
-
-        registerReceiver(STATUS_ACTION_NAME) { _, intent ->
-            intent?.let {
-                val isTimerRunning =
-                    intent.getBooleanExtra(TimerService.IS_TIMER_RUNNING_INTENT_EXTRA, false)
-                val timeCount = intent.getParcelableExtra<TimeCount>(TIME_COUNT_INTENT_EXTRA)
-
-                binding.timeString = timeCount.toString()
-                binding.isTimerRunning = isTimerRunning
-            }
-        }
-
-    }
-
-    private fun registerReceiver(
-        action: String,
-        handler: BroadcastReceiver.(Context?, Intent?) -> Unit
-    ) {
         val intentFilter = IntentFilter().apply {
-            addAction(action)
+            addAction(STATUS_ACTION_NAME)
         }
+
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                handler(context, intent)
-            }
+                intent?.let {
+                    val isTimerRunning =
+                        intent.getBooleanExtra(TimerService.IS_TIMER_RUNNING_INTENT_EXTRA, false)
+                    val timeCount = intent.getIntExtra(TIME_COUNT_INTENT_EXTRA, 0)
+
+                    binding.timeString = convertTimeStamp(timeCount)
+                    binding.isTimerRunning = isTimerRunning
+                }            }
         }
 
         requireActivity().registerReceiver(receiver, intentFilter)
     }
-
     override fun updateHistorySet(historySet: HistorySet) {
         exerciseViewModel.updateHistorySet(historySet)
     }
@@ -146,18 +129,18 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                exerciseViewModel.loadTodayHistory().collect() { todayHistories ->
+                exerciseViewModel.loadTodayHistory().collect { todayHistories ->
                     if (todayHistories.size == 1) {
                         val historyId = todayHistories[0].historyId
-                        binding.buttonExerciseAdd.setOnClickListener() {
+                        binding.buttonExerciseAdd.setOnClickListener {
                             exerciseViewModel.addHistoryExercise(historyId)
                             renewTodayHistory()
                         }
-                        binding.buttonExerciseEnd.setOnClickListener() {
+                        binding.buttonExerciseEnd.setOnClickListener {
                             verifyAllHistorySets(historyExerciseAdapter.currentList)
                         }
                         exerciseViewModel.loadHistoryExercises(historyId)
-                            .collect() { historyExercises ->
+                            .collect { historyExercises ->
                                 historyExerciseAdapter.submitList(historyExercises)
                             }
                     }
@@ -170,7 +153,7 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
     override fun applyHistorySets(historyExerciseId: String, adapter: HistorySetAdapter) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                exerciseViewModel.loadHistorySets(historyExerciseId).collect() { historySets ->
+                exerciseViewModel.loadHistorySets(historyExerciseId).collect { historySets ->
                     adapter.submitList(historySets)
                 }
             }
