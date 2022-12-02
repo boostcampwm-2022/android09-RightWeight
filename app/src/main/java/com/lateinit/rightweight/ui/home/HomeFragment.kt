@@ -11,8 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.lateinit.rightweight.service.TimerService
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
@@ -40,12 +38,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        moveToExerciseFragmentIfNotificationClicked()
     }
 
     override fun onCreateView(
@@ -142,13 +134,5 @@ class HomeFragment : Fragment() {
                 DateTimeFormatter.ofPattern(getString(R.string.date_format))
             )
         )
-    }
-
-    private fun moveToExerciseFragmentIfNotificationClicked(){
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
-        }
     }
 }
