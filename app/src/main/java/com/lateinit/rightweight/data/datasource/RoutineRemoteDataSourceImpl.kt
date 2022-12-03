@@ -6,7 +6,15 @@ import androidx.paging.PagingConfig
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
+import com.lateinit.rightweight.util.toSharedRoutineDay
+import com.lateinit.rightweight.util.toSharedRoutineExercise
+import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class RoutineRemoteDataSourceImpl @Inject constructor(
@@ -25,4 +33,41 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     ) {
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
+
+    override suspend fun getSharedRoutineDays(routineId: String): Flow<List<SharedRoutineDay>> {
+        return flow{
+            val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
+            api.getSharedRoutineDays(routineId)?.documents?.forEach(){
+                sharedRoutineDays.add(it.toSharedRoutineDay())
+            }
+            emit(sharedRoutineDays.toList())
+        }
+    }
+
+    override suspend fun getSharedRoutineExercises(
+        routineId: String,
+        dayId: String
+    ): Flow<List<SharedRoutineExercise>> {
+        return flow{
+            val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
+            api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach(){
+                sharedRoutineExercises.add(it.toSharedRoutineExercise())
+            }
+            emit(sharedRoutineExercises.toList())
+        }
+    }
+
+    override suspend fun getSharedRoutineExerciseSets(
+        routineId: String,
+        dayId: String,
+        exerciseId: String
+    ): Flow<List<SharedRoutineExerciseSet>> {
+        return flow{
+            val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
+            api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach(){
+                sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
+            }
+            emit(sharedRoutineExerciseSets.toList())
+        }
+    }
 }
