@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayUiModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineDetailViewModel @Inject constructor(
-    private val routineRepository: RoutineRepository
+    private val routineRepository: RoutineRepository,
+    private val sharedRoutineRepository: SharedRoutineRepository
 ) : ViewModel() {
 
     private val _routine = MutableLiveData<Routine>()
@@ -78,5 +80,34 @@ class RoutineDetailViewModel @Inject constructor(
             routineRepository.removeRoutineById(routineId)
         }
     }
+
+    fun getDaysDocumentName(){
+        viewModelScope.launch {
+            val routineId = _routine.value?.routineId ?: return@launch
+            val path = "${routineId}/day"
+            val dayDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            dayDocuments.forEach { dayId ->
+                getExerciseDocumentName(routineId, dayId)
+            }
+        }
+    }
+
+    private fun getExerciseDocumentName(routineId: String, dayId: String) {
+        viewModelScope.launch {
+            val path = "${routineId}/day/${dayId}/exercise"
+            val exerciseDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            exerciseDocuments.forEach { exerciseId ->
+                getExerciseSetDocumentName(routineId, dayId,exerciseId)
+            }
+        }
+    }
+
+    private fun getExerciseSetDocumentName(routineId: String, dayId: String, exerciseId: String) {
+        viewModelScope.launch {
+            val path = "${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set"
+            val exerciseSetDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+        }
+    }
+
 }
 

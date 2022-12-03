@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface SharedRoutineRepository {
     suspend fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
+    suspend fun getChildrenDocumentName(path: String): List<String>
 }

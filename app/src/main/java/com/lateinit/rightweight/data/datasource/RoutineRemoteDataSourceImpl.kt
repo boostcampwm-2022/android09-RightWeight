@@ -13,7 +13,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     private val db: AppDatabase,
     private val api: RoutineApiService,
     private val appSharedPreferences: AppSharedPreferences
-): RoutineRemoteDataSource {
+) : RoutineRemoteDataSource {
 
 
     @OptIn(ExperimentalPagingApi::class)
@@ -25,4 +25,14 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     ) {
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        val a = api.getChildrenDocumentName(path)
+        val documentName = a.documents.map {
+            it.name.split("/").last()
+        }
+
+
+        return documentName
+    }
 }

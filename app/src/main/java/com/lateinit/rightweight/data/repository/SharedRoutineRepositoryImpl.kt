@@ -12,4 +12,8 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     override suspend fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>> {
         return routineRemoteDataSource.getSharedRoutinesByPaging()
     }
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        return routineRemoteDataSource.getChildrenDocumentName(path)
+    }
 }
