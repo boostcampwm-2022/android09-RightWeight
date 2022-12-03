@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineDetailViewModel @Inject constructor(
-    private val routineRepository: RoutineRepository
+    private val routineRepository: RoutineRepository,
+    private val sharedRoutineRepository: SharedRoutineRepository
 ) : ViewModel() {
 
     private val _routine = MutableLiveData<Routine>()
@@ -84,7 +86,7 @@ class RoutineDetailViewModel @Inject constructor(
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
         viewModelScope.launch {
-            routineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
+            sharedRoutineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
             saveDays(nowRoutine.routineId, days)
         }
     }
@@ -92,7 +94,7 @@ class RoutineDetailViewModel @Inject constructor(
     private fun saveDays(routineId: String, dayUiModels: List<DayUiModel>) {
         viewModelScope.launch {
             dayUiModels.forEach { dayUiModel ->
-                routineRepository.shareDay(
+                sharedRoutineRepository.shareDay(
                     routineId,
                     dayUiModel.dayId,
                     dayUiModel.toDayField()
@@ -105,7 +107,7 @@ class RoutineDetailViewModel @Inject constructor(
     private fun saveExercise(routineId: String, dayId: String, exercises: List<ExerciseUiModel>) {
         viewModelScope.launch {
             exercises.forEach { exerciseUiModel ->
-                routineRepository.shareExercise(
+                sharedRoutineRepository.shareExercise(
                     routineId,
                     dayId,
                     exerciseUiModel.exerciseId,
@@ -130,7 +132,7 @@ class RoutineDetailViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             exerciseSets.forEach { exerciseSetUiModel ->
-                routineRepository.shareExerciseSet(
+                sharedRoutineRepository.shareExerciseSet(
                     routineId,
                     dayId,
                     exerciseId,
