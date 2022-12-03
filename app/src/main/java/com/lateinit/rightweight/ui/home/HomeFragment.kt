@@ -1,8 +1,6 @@
 package com.lateinit.rightweight.ui.home
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.lateinit.rightweight.service.TimerService
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
@@ -44,12 +40,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        moveToExerciseFragmentIfNotificationClicked()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,16 +53,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setBinding()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.loadTodayHistory().collect() { todayHistories ->
-                    if (todayHistories.size == 1 && todayHistories[0].completed) {
-                        stopTimerService()
-                    }
-                }
-            }
-        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -122,8 +102,8 @@ class HomeFragment : Fragment() {
             }
 
             adapter = ConcatAdapter(homeAdapters)
-            binding.recyclerViewTodayRoutine.adapter = adapter
-            binding.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+            binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
+            binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
         userViewModel.userInfo.observe(viewLifecycleOwner) {
@@ -155,19 +135,4 @@ class HomeFragment : Fragment() {
             )
         )
     }
-
-    private fun moveToExerciseFragmentIfNotificationClicked(){
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
-        }
-    }
-
-    private fun stopTimerService() {
-        val timerServiceIntent = Intent(requireContext(), TimerService::class.java)
-        timerServiceIntent.putExtra(TimerService.MANAGE_ACTION_NAME, TimerService.STOP)
-        requireActivity().startService(timerServiceIntent)
-    }
-
 }

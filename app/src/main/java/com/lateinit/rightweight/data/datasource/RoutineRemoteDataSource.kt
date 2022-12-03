@@ -1,5 +1,9 @@
 package com.lateinit.rightweight.data.datasource
 
+import androidx.paging.PagingData
+import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import kotlinx.coroutines.flow.Flow
+
 import com.lateinit.rightweight.data.model.RootField
 
 interface RoutineRemoteDataSource {
@@ -19,4 +23,5 @@ interface RoutineRemoteDataSource {
         exerciseSetId: String,
         rootField: RootField
     )
+    fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
 }

@@ -1,10 +1,5 @@
 package com.lateinit.rightweight.data.model
 
-import com.google.gson.annotations.SerializedName
+data class DocumentResponse<T>(val document: DetailResponse<T>)
 
-data class Documents<T>(
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("fields")
-    val fields: T
-)
+data class DetailResponse<T> (val name: String, val fields: T)

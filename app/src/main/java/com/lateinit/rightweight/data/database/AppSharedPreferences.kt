@@ -11,6 +11,7 @@ class AppSharedPreferences(context: Context) {
 
     private val userKey = "userInfo"
     private val loginResponseKey = "loginResponse"
+    private val sharedRoutinePagingFlagKey = "sharedRoutinePagingFlag"
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
 
@@ -35,4 +36,13 @@ class AppSharedPreferences(context: Context) {
             LoginResponse::class.java
         )
     }
+
+    fun setSharedRoutinePagingFlag(flag: String){
+        sharedPreferences.edit().putString(sharedRoutinePagingFlagKey, flag).apply()
+    }
+
+    fun getSharedRoutinePagingFlag(): String? {
+        return sharedPreferences.getString(sharedRoutinePagingFlagKey, "")
+    }
+    
 }

@@ -7,7 +7,7 @@
 
         <variable
             name="exerciseSetUiModel"
-            type="com.lateinit.rightweight.ui.model.ExerciseSetUiModel" />
+            type="com.lateinit.rightweight.ui.model.ParentExerciseSetUiModel" />
 
     </data>
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:maxLength="3"
-            android:text="@={exerciseSetUiModel.weight}"
+            android:text="@{exerciseSetUiModel.weight}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_weight_unit"
             app:layout_constraintStart_toEndOf="@+id/text_view_set_order"
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLength="3"
-            android:text="@={exerciseSetUiModel.count}"
+            android:text="@{exerciseSetUiModel.count}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_count_unit"
             app:layout_constraintTop_toTopOf="@+id/text_view_set_order"

@@ -24,6 +24,7 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+            <nav-graph android:value="@navigation/nav_graph" />
         </activity>
         <activity
             android:name=".ui.login.LoginActivity"

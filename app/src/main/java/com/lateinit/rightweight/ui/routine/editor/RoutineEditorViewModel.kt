@@ -3,6 +3,7 @@ package com.lateinit.rightweight.ui.routine.editor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -26,17 +27,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineEditorViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private lateinit var routineId: String
+    private var routineId: String
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
-    val routineOrder = MutableLiveData<Int>()
+    private val routineOrder = MutableLiveData<Int>()
 
-    private val currentDayPosition = MutableLiveData<Int>()
+    private val currentDayPosition = MutableLiveData<Int?>()
     private val currentDay = currentDayPosition.map {
+        it ?: return@map null
         _days.value?.get(it)
     }
 
@@ -61,12 +64,13 @@ class RoutineEditorViewModel @Inject constructor(
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
 
-    fun init(routineId: String) {
+    init {
+        this.routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
+
         if (routineId.isEmpty()) {
             this.routineId = createUUID()
             addDay()
         } else {
-            this.routineId = routineId
             getRoutine(routineId)
         }
     }
@@ -81,7 +85,7 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun removeDay() {
         val days = _days.value ?: return
-        val dayPosition = currentDay.value?.order ?: return
+        val dayPosition = currentDayPosition.value ?: return
 
         days.removeAt(dayPosition).also { day ->
             dayToExercise.value?.remove(day.dayId)
@@ -97,7 +101,7 @@ class RoutineEditorViewModel @Inject constructor(
             dayPosition == reorderedDays.size -> reorderedDays.lastIndex
             else -> dayPosition
         }.also {
-            it ?: return
+            it ?: return@also
             reorderedDays[it] = reorderedDays[it].copy(selected = true)
         }
         _days.value = reorderedDays
@@ -187,7 +191,6 @@ class RoutineEditorViewModel @Inject constructor(
             } else {
                 routineOrder
             }
-
 
             if (title == null || title.isEmpty()) return@launch
             if (description == null || description.isEmpty()) return@launch
@@ -288,5 +291,6 @@ class RoutineEditorViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
+        private const val DEFAULT_ROUTINE_ID = ""
     }
 }

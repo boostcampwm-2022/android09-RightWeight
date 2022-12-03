@@ -61,7 +61,7 @@ class ApiModule {
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/documents/")
+            .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/")
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()
