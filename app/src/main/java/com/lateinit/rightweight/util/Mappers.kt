@@ -1,14 +1,16 @@
 package com.lateinit.rightweight.util
 
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.HistorySet
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
+import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.model.DetailResponse
+import com.lateinit.rightweight.data.remote.model.SharedRoutineDayField
+import com.lateinit.rightweight.data.remote.model.SharedRoutineExerciseField
+import com.lateinit.rightweight.data.remote.model.SharedRoutineExerciseSetField
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
@@ -115,7 +117,7 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     val splitedName = name.split("/")
     val refinedModifiedDateString = fields.modifiedDate?.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
         routineId = splitedName.last(),
@@ -123,5 +125,37 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
         author = fields.author?.value.toString(),
         description = fields.description?.value.toString(),
         modifiedDate = modifiedDate
+    )
+}
+
+fun DetailResponse<SharedRoutineDayField>.toSharedRoutineDay(): SharedRoutineDay {
+    val splitedName = name.split("/")
+    return SharedRoutineDay(
+        routineId = fields.routine_id?.value.toString(),
+        dayId = splitedName.last(),
+        order = fields.order?.value.toString().toInt()
+    )
+}
+
+fun DetailResponse<SharedRoutineExerciseField>.toSharedRoutineExercise(): SharedRoutineExercise {
+    val splitedName = name.split("/")
+    return SharedRoutineExercise(
+        dayId = fields.dayId?.value.toString(),
+        exerciseId = splitedName.last(),
+        title = fields.title?.value.toString(),
+        order = fields.order?.value.toString().toInt(),
+        part = ExercisePartType.CHEST
+        //part =  ExercisePartType.valueOf(fields.partType?.value.toString())
+    )
+}
+
+fun DetailResponse<SharedRoutineExerciseSetField>.toSharedRoutineExerciseSet(): SharedRoutineExerciseSet {
+    val splitedName = name.split("/")
+    return SharedRoutineExerciseSet(
+        exerciseId = fields.exerciseId?.value.toString(),
+        setId = splitedName.last(),
+        weight = fields.weight?.value.toString(),
+        count = fields.count?.value.toString(),
+        order = fields.order?.value.toString().toInt()
     )
 }
