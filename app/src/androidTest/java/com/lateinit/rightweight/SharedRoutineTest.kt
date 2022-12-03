@@ -64,7 +64,7 @@ class SharedRoutineTest {
             )
             println(documentResponses.toString())
 
-            documentResponses.forEach() { documentResponse ->
+            documentResponses?.forEach() { documentResponse ->
                 db.sharedRoutineDao()
                     .insertSharedRoutine(documentResponse.document.toSharedRoutine())
             }
@@ -81,7 +81,7 @@ class SharedRoutineTest {
             val sharedRoutineDaysResponse = routineApiService.getSharedRoutineDays(
                 "07fd07ab-45c6-4479-881a-abe151a82456"
             )
-            sharedRoutineDaysResponse.documents.forEach(){
+            sharedRoutineDaysResponse?.documents?.forEach(){
                 val sharedRoutineDay = it.toSharedRoutineDay()
                 println(sharedRoutineDay.toString())
                 val sharedRoutineExercisesResponse= routineApiService.getSharedRoutineExercises(
@@ -89,7 +89,7 @@ class SharedRoutineTest {
                     sharedRoutineDay.dayId
                 )
                 println(sharedRoutineExercisesResponse.toString())
-                sharedRoutineExercisesResponse.documents.forEach(){
+                sharedRoutineExercisesResponse?.documents?.forEach(){
                     val sharedRoutineExercise = it.toSharedRoutineExercise()
                     println(sharedRoutineExercise.toString())
                     val sharedRoutineExerciseSetsResponse = routineApiService.getSharedRoutineExerciseSets(
@@ -97,7 +97,7 @@ class SharedRoutineTest {
                         sharedRoutineExercise.dayId,
                         sharedRoutineExercise.exerciseId
                     )
-                   sharedRoutineExerciseSetsResponse.documents.forEach(){
+                   sharedRoutineExerciseSetsResponse?.documents?.forEach(){
                        val sharedRoutineExerciseSet = it.toSharedRoutineExerciseSet()
                        println(sharedRoutineExerciseSet.toString())
                    }
