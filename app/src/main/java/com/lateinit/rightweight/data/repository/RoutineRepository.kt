@@ -6,9 +6,9 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.model.DayField
-import com.lateinit.rightweight.data.model.ExerciseField
-import com.lateinit.rightweight.data.model.ExerciseSetField
+import com.lateinit.rightweight.data.remote.model.DayField
+import com.lateinit.rightweight.data.remote.model.ExerciseField
+import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 
 interface RoutineRepository {
 

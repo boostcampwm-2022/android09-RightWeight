@@ -10,7 +10,7 @@ import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.remote.model.SharedRoutineField
+import com.lateinit.rightweight.data.remote.model.*
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -19,6 +19,7 @@ import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -135,17 +136,6 @@ fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
         order = IntValue(order.toString()),
         title = StringValue(title),
         userId = StringValue(userId)
-    )
-}
-
-fun SharedRoutineField.toRoutine(): Routine {
-    return Routine(
-        routineId = UUID.randomUUID().toString(),
-        author = author?.value ?: "",
-        description = description?.value ?: "",
-        modifiedDate = (modifiedDate?.value ?: LocalDateTime.now()) as LocalDateTime,
-        order = order?.value?.toInt() ?: Int.MAX_VALUE,
-        title = author?.value ?: ""
     )
 }
 

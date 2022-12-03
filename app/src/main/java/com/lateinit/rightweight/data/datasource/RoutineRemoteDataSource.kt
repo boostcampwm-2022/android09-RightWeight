@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import kotlinx.coroutines.flow.Flow
 
-import com.lateinit.rightweight.data.model.RootField
+import com.lateinit.rightweight.data.remote.model.RootField
 
 interface RoutineRemoteDataSource {
     suspend fun shareRoutine(routineId: String, rootField: RootField)
