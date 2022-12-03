@@ -19,7 +19,6 @@ import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayUiModel {
     return DayUiModel(
@@ -135,7 +134,14 @@ fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
         modifiedDate = TimeStampValue(modifiedDate.toString() + "Z"),
         order = IntValue(order.toString()),
         title = StringValue(title),
-        userId = StringValue(userId)
+        userId = StringValue(userId),
+        sharedCount = MapValue(
+            RootField(
+                SharedCount(
+                time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
+                count = IntValue("0")
+            ))
+        )
     )
 }
 

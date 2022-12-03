@@ -24,7 +24,15 @@ data class SharedRoutineField(
     val userId: StringValue? = null,
 
     @field:SerializedName("shared_count")
-    val sharedCount: IntValue? = null,
+    val sharedCount: MapValue? = null,
+): RemoteData()
+
+data class SharedCount(
+    @field:SerializedName("time")
+    val time: TimeStampValue? = null,
+
+    @field:SerializedName("count")
+    val count: IntValue? = null,
 ): RemoteData()
 
 data class DayField(
