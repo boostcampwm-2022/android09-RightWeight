@@ -37,6 +37,11 @@ class SharedRoutineDetailViewModel @Inject constructor(
         viewModelScope.launch {
             sharedRoutineRepository.getSharedRoutineDetail(routineId)
                 .collect() { sharedRoutineWithDays ->
+
+                    if(sharedRoutineWithDays.days.isEmpty()){
+                        sharedRoutineRepository.requestSharedRoutineDetail(routineId)
+                    }
+
                     _uiState.value = LatestSharedRoutineDetailUiState.Success(
                         sharedRoutineWithDays.routine,
                         sharedRoutineWithDays.days.mapIndexed { index, sharedRoutineWithDay ->

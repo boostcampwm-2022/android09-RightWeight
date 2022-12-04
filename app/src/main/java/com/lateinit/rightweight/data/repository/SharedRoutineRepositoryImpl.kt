@@ -1,11 +1,13 @@
 package com.lateinit.rightweight.data.repository
 
+import android.util.Log
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class SharedRoutineRepositoryImpl @Inject constructor(
@@ -17,9 +19,10 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays> {
-        if(routineLocalDataSource.getDaysByRoutineId(routineId).isEmpty()){
-            return routineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
-        }
+        return routineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
+    }
+
+    override suspend fun requestSharedRoutineDetail(routineId: String) {
         routineRemoteDataSource.getSharedRoutineDays(routineId).collect() { sharedRoutineDays ->
             sharedRoutineDays.forEach() { sharedRoutineDay ->
                 routineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
@@ -36,7 +39,6 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                     }
             }
         }
-        return routineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
     }
 
 }
