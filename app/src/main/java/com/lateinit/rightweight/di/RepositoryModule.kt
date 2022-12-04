@@ -23,11 +23,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun getRoutineRepository(
-        routineLocalDataSource: RoutineLocalDataSource,
-        routineRemoteDataSource: RoutineRemoteDataSource
+        routineLocalDataSource: RoutineLocalDataSource
 
     ): RoutineRepository {
-        return RoutineRepositoryImpl(routineLocalDataSource, routineRemoteDataSource)
+        return RoutineRepositoryImpl(routineLocalDataSource)
     }
 
     @Provides
