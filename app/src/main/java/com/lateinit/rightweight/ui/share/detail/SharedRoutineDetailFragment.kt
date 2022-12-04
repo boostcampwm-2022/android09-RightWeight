@@ -42,11 +42,14 @@ class SharedRoutineDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedRoutineDetailViewModel.getSharedRoutineDetail("07fd07ab-45c6-4479-881a-abe151a82456")
+        val routineId = arguments?.getString("routineId")
+        routineId?.let{
+            sharedRoutineDetailViewModel.getSharedRoutineDetail(routineId)
+        }
 
         setRoutineDayAdapter()
         setExerciseAdapter()
-        setDayUiModelsCollect()
+        setSharedRoutineDetailCollect()
     }
 
     private fun setRoutineDayAdapter() {
@@ -64,12 +67,13 @@ class SharedRoutineDetailFragment : Fragment() {
         binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
-    private fun setDayUiModelsCollect() {
+    private fun setSharedRoutineDetailCollect() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedRoutineDetailViewModel.uiState.collect() { uiState ->
                     when (uiState) {
                         is LatestSharedRoutineDetailUiState.Success -> {
+                            binding.sharedRoutine = uiState.sharedRoutine
                             routineDayAdapter.submitList(uiState.dayUiModels)
                             setCurrentDayPositionObserve(uiState.dayUiModels)
                         }

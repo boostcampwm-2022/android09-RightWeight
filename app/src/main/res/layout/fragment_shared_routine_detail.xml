@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="sharedRoutine"
+            type="com.lateinit.rightweight.data.database.entity.SharedRoutine" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +42,7 @@
                     android:id="@+id/text_view_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="@{sharedRoutine.title}"
                     android:textAppearance="@style/Text.Medium"
                     app:layout_constraintStart_toStartOf="@+id/text_view_title_label"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_title_label"
@@ -59,7 +62,7 @@
                     android:id="@+id/text_view_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="@{sharedRoutine.description}"
                     android:textAppearance="@style/Text.Medium"
                     app:layout_constraintStart_toStartOf="@+id/text_view_description_label"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_description_label"
