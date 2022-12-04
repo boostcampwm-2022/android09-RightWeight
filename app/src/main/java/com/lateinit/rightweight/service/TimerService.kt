@@ -11,8 +11,11 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.lateinit.rightweight.R
-import java.util.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 fun convertTimeStamp(count: Int): String {
     val hours: Int = (count / 60) / 60
@@ -25,7 +28,7 @@ fun convertTimeStamp(count: Int): String {
 class TimerService : LifecycleService() {
     private var isTimerRunning = false
     private var timeCount = 0
-    private lateinit var timer: Timer
+    private lateinit var timer: Job
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
     private lateinit var notificationLayout: RemoteViews
@@ -115,13 +118,12 @@ class TimerService : LifecycleService() {
 
     private fun startTimer() {
         startForeground(NOTIFICATION_ID, customNotification)
-        timer = Timer().apply {
-            scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    timeCount++
-                    updateNotification()
-                }
-            }, 0, 1000)
+        timer = lifecycleScope.launch {
+            while (true) {
+                timeCount++
+                updateNotification()
+                delay(1_000L)
+            }
         }
         changeTimerRunningState(true)
     }
@@ -133,7 +135,6 @@ class TimerService : LifecycleService() {
                 R.id.text_view_notification_timer,
                 convertTimeStamp(timeCount)
             )
-            notificationManager.notify(NOTIFICATION_ID, customNotification)
         } else {
             customNotification = NotificationCompat.Builder(this, "timer_notification")
                 .setSmallIcon(R.drawable.img_right_weight)
