@@ -52,6 +52,7 @@
     <string name="move_up">위로</string>
     <string name="move_down">아래로</string>
     <string name="routine_select">루틴 선택 하기</string>
+    <string name="routine_copy">복사하여 내 루틴목록으로 가져오기</string>
     <string name="expand">확장</string>
     <string name="exercise_time">운동한 시간: %s</string>
     <string name="history_none">운동기록이 없습니다.</string>

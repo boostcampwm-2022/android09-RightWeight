@@ -12,6 +12,7 @@ import androidx.room.PrimaryKey
             entity = SharedRoutine::class,
             parentColumns = ["routine_id"],
             childColumns = ["routine_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )

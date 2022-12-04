@@ -4,9 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.*
-import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
-import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
-import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
+import com.lateinit.rightweight.data.database.intermediate.*
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.remote.model.SharedRoutineDayField
 import com.lateinit.rightweight.data.remote.model.SharedRoutineExerciseField
@@ -157,5 +155,36 @@ fun DetailResponse<SharedRoutineExerciseSetField>.toSharedRoutineExerciseSet(): 
         weight = fields.weight?.value.toString(),
         count = fields.count?.value.toString(),
         order = fields.order?.value.toString().toInt()
+    )
+}
+
+fun SharedRoutineDay.toDayUiModel(index: Int, exercises: List<SharedRoutineExerciseWithExerciseSets>):DayUiModel{
+    return DayUiModel(
+        dayId = dayId,
+        routineId = routineId,
+        order = order,
+        selected = index == FIRST_DAY_POSITION,
+        exercises = exercises.map { it.toExerciseUiModel() }
+    )
+}
+
+fun SharedRoutineExerciseWithExerciseSets.toExerciseUiModel():ExerciseUiModel{
+    return ExerciseUiModel(
+        exerciseId = exercise.exerciseId,
+        dayId = exercise.dayId,
+        title = exercise.title,
+        order = exercise.order,
+        part = exercise.part,
+        exerciseSets = sets.map { it.toExerciseSetUiModel() }
+    )
+}
+
+fun SharedRoutineExerciseSet.toExerciseSetUiModel(): ExerciseSetUiModel {
+    return ExerciseSetUiModel(
+        setId = setId,
+        exerciseId = exerciseId,
+        weight = weight,
+        count = count,
+        order = order
     )
 }

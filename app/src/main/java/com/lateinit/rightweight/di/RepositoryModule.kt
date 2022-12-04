@@ -49,8 +49,9 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun getSharedRoutineRepository(
-        routineRemoteDataSource: RoutineRemoteDataSource
+        routineRemoteDataSource: RoutineRemoteDataSource,
+        routineLocalDataSource: RoutineLocalDataSource
     ): SharedRoutineRepository {
-        return SharedRoutineRepositoryImpl(routineRemoteDataSource)
+        return SharedRoutineRepositoryImpl(routineRemoteDataSource, routineLocalDataSource)
     }
 }
