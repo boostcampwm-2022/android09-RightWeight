@@ -83,6 +83,11 @@ class RoutineDetailFragment : Fragment(){
                         removeRoutine(args.routineId)
                         return true
                     }
+                    R.id.action_item_share -> {
+
+                        routineDetailViewModel.deleteSharedRoutineAndDays()
+                        return true
+                    }
                     else -> {
                         return false
                     }

@@ -75,37 +75,43 @@ class RoutineDetailViewModel @Inject constructor(
         _currentDayPosition.value = _currentDayPosition.value
     }
 
-    fun removeRoutine(routineId: String){
+    fun removeRoutine(routineId: String) {
         viewModelScope.launch {
             routineRepository.removeRoutineById(routineId)
         }
     }
 
-    fun getDaysDocumentName(){
+    fun deleteSharedRoutineAndDays() {
         viewModelScope.launch {
             val routineId = _routine.value?.routineId ?: return@launch
+            sharedRoutineRepository.deleteDocument(routineId)
             val path = "${routineId}/day"
             val dayDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
             dayDocuments.forEach { dayId ->
-                getExerciseDocumentName(routineId, dayId)
+                deleteSharedExercise(routineId, dayId)
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}")
             }
         }
     }
 
-    private fun getExerciseDocumentName(routineId: String, dayId: String) {
+    private fun deleteSharedExercise(routineId: String, dayId: String) {
         viewModelScope.launch {
             val path = "${routineId}/day/${dayId}/exercise"
             val exerciseDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
             exerciseDocuments.forEach { exerciseId ->
-                getExerciseSetDocumentName(routineId, dayId,exerciseId)
+                deleteSharedExerciseSet(routineId, dayId, exerciseId)
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}")
             }
         }
     }
 
-    private fun getExerciseSetDocumentName(routineId: String, dayId: String, exerciseId: String) {
+    private fun deleteSharedExerciseSet(routineId: String, dayId: String, exerciseId: String) {
         viewModelScope.launch {
             val path = "${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set"
             val exerciseSetDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            exerciseSetDocuments.forEach { exerciseSetId ->
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set/${exerciseSetId}")
+            }
         }
     }
 
