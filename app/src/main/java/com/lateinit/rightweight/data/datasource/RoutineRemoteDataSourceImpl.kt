@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
+import com.lateinit.rightweight.data.remote.model.RootField
 import javax.inject.Inject
 
 class RoutineRemoteDataSourceImpl @Inject constructor(
