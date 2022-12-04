@@ -34,40 +34,34 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
 
-    override suspend fun getSharedRoutineDays(routineId: String): Flow<List<SharedRoutineDay>> {
-        return flow{
-            val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
-            api.getSharedRoutineDays(routineId)?.documents?.forEach(){
-                sharedRoutineDays.add(it.toSharedRoutineDay())
-            }
-            emit(sharedRoutineDays.toList())
+    override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {
+        val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
+        api.getSharedRoutineDays(routineId)?.documents?.forEach(){
+            sharedRoutineDays.add(it.toSharedRoutineDay())
         }
+        return sharedRoutineDays.toList()
     }
 
     override suspend fun getSharedRoutineExercises(
         routineId: String,
         dayId: String
-    ): Flow<List<SharedRoutineExercise>> {
-        return flow{
-            val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
-            api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach(){
-                sharedRoutineExercises.add(it.toSharedRoutineExercise())
-            }
-            emit(sharedRoutineExercises.toList())
+    ): List<SharedRoutineExercise> {
+        val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
+        api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach(){
+            sharedRoutineExercises.add(it.toSharedRoutineExercise())
         }
+        return sharedRoutineExercises.toList()
     }
 
     override suspend fun getSharedRoutineExerciseSets(
         routineId: String,
         dayId: String,
         exerciseId: String
-    ): Flow<List<SharedRoutineExerciseSet>> {
-        return flow{
-            val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
-            api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach(){
-                sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
-            }
-            emit(sharedRoutineExerciseSets.toList())
+    ): List<SharedRoutineExerciseSet> {
+        val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
+        api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach(){
+            sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
         }
+        return sharedRoutineExerciseSets.toList()
     }
 }

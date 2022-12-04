@@ -3,6 +3,9 @@ package com.lateinit.rightweight.data.repository
 import android.util.Log
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
@@ -23,22 +26,24 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun requestSharedRoutineDetail(routineId: String) {
-        routineRemoteDataSource.getSharedRoutineDays(routineId).collect() { sharedRoutineDays ->
-            sharedRoutineDays.forEach() { sharedRoutineDay ->
-                routineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
-                    .collect() { sharedRoutineExercises ->
-                        sharedRoutineExercises.forEach() { sharedRoutineExercise ->
-                            routineRemoteDataSource.getSharedRoutineExerciseSets(
-                                routineId,
-                                sharedRoutineExercise.dayId,
-                                sharedRoutineExercise.exerciseId
-                            ).collect() { sharedRoutineExerciseSets ->
-                                routineLocalDataSource.insertSharedRoutineDetail(sharedRoutineDays, sharedRoutineExercises, sharedRoutineExerciseSets)
-                            }
-                        }
+        val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
+        val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
+        val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
+        routineRemoteDataSource.getSharedRoutineDays(routineId).forEach() { sharedRoutineDay ->
+            sharedRoutineDays.add(sharedRoutineDay)
+            routineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
+                .forEach() { sharedRoutineExercise ->
+                    sharedRoutineExercises.add(sharedRoutineExercise)
+                    routineRemoteDataSource.getSharedRoutineExerciseSets(
+                        routineId,
+                        sharedRoutineExercise.dayId,
+                        sharedRoutineExercise.exerciseId
+                    ).forEach(){ sharedRoutineExerciseSet ->
+                        sharedRoutineExerciseSets.add(sharedRoutineExerciseSet)
                     }
-            }
+                }
         }
+        routineLocalDataSource.insertSharedRoutineDetail(sharedRoutineDays, sharedRoutineExercises, sharedRoutineExerciseSets)
     }
 
 }
