@@ -27,12 +27,14 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     }.flow
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
-        val a = api.getChildrenDocumentName(path)
-        val documentName = a.documents.map {
+        val documentNameList = api.getChildrenDocumentName(path)
+        val documentIdList = documentNameList.documents.map {
             it.name.split("/").last()
         }
+        return documentIdList
+    }
 
-
-        return documentName
+    override suspend fun deleteDocument(path: String) {
+        api.deleteDocument(path)
     }
 }

@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface RoutineRemoteDataSource {
     fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
     suspend fun getChildrenDocumentName(path: String):List<String>
+    suspend fun deleteDocument(path: String)
 }
