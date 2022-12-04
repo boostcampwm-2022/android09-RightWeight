@@ -70,7 +70,7 @@ class ExerciseFragment : Fragment(), HistoryEventListener {
         renewTodayHistory()
 
         binding.buttonExerciseStartAndPause.setOnClickListener {
-            if (binding.isTimerRunning) {
+            if (binding.isTimerRunning == true) {
                 startTimerServiceWithMode(PAUSE)
             } else {
                 startTimerServiceWithMode(START)

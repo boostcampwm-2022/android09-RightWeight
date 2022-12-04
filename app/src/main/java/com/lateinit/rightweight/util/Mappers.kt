@@ -5,11 +5,12 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.remote.model.SharedRoutineField
+import com.lateinit.rightweight.data.remote.model.*
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -123,5 +124,48 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
         author = fields.author?.value.toString(),
         description = fields.description?.value.toString(),
         modifiedDate = modifiedDate
+    )
+}
+
+fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
+    return SharedRoutineField(
+        author = StringValue(author),
+        description = StringValue(description),
+        modifiedDate = TimeStampValue(modifiedDate.toString() + "Z"),
+        order = IntValue(order.toString()),
+        title = StringValue(title),
+        userId = StringValue(userId),
+        sharedCount = MapValue(
+            RootField(
+                SharedCount(
+                time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
+                count = IntValue("0")
+            ))
+        )
+    )
+}
+
+fun DayUiModel.toDayField(): DayField {
+    return DayField(
+        order = IntValue(order.toString()),
+        routineId = StringValue(routineId)
+    )
+}
+
+fun ExerciseUiModel.toExerciseField(): ExerciseField {
+    return ExerciseField(
+        order = IntValue(order.toString()),
+        partType = StringValue(""),
+        title = StringValue(title),
+        dayId = StringValue(dayId)
+    )
+}
+
+fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField {
+    return ExerciseSetField(
+        order = IntValue(order.toString()),
+        count = StringValue(count),
+        weight = StringValue(weight),
+        exerciseId = StringValue(exerciseId)
     )
 }

@@ -84,8 +84,7 @@ class RoutineDetailFragment : Fragment(){
                         return true
                     }
                     R.id.action_item_share -> {
-
-                        routineDetailViewModel.deleteSharedRoutineAndDays()
+                        shareRoutine()
                         return true
                     }
                     else -> {
@@ -139,7 +138,12 @@ class RoutineDetailFragment : Fragment(){
             dialog.show(parentFragmentManager, ROUTINE_REMOVE_DIALOG_TAG, R.string.routine_remove_message)
         }
     }
-    
+
+    private fun shareRoutine() {
+        val userId = userViewModel.userInfo.value?.userId ?: return
+        routineDetailViewModel.shareRoutine(userId)
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

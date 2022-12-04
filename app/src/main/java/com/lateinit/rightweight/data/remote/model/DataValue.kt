@@ -19,3 +19,8 @@ data class TimeStampValue(
     @field:SerializedName("timestampValue")
     val value: String? = null
 )
+
+data class MapValue(
+    @field:SerializedName("mapValue")
+    val value: RootField? = null
+)
