@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="java.time.format.DateTimeFormatter" />
         <variable
             name="sharedRoutine"
             type="com.lateinit.rightweight.data.database.entity.SharedRoutine" />
@@ -29,6 +29,50 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/text_view_author_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/shared_routine_author"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_view_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@{sharedRoutine.author}"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toEndOf = "@id/text_view_author_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="author"/>
+
+                <TextView
+                    android:id="@+id/text_view_modified_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/shared_routine_modified_date"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_author_label" />
+
+                <TextView
+                    android:id="@+id/text_view_modified_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@{sharedRoutine.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toEndOf = "@id/text_view_modified_date_label"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_author_label"
+                    tools:text="2022-12-01"/>
+
+                <TextView
                     android:id="@+id/text_view_title_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -36,7 +80,7 @@
                     android:text="@string/routine_title"
                     android:textAppearance="@style/Text.Medium.Bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/text_view_modified_date_label" />
 
                 <TextView
                     android:id="@+id/text_view_title"
