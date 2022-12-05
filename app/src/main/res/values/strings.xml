@@ -37,7 +37,7 @@
     <string name="routine_save">루틴 저장하기</string>
     <string name="shared_routine_author">작성자</string>
     <string name="shared_routine_modified_date">작성일</string>
-    <string name="shared_routine_download_count">다운로드 수</string>
+    <string name="shared_routine_shared_count">공유된 횟수</string>
     <string name="chest">가슴</string>
     <string name="back">등</string>
     <string name="leg">하체</string>

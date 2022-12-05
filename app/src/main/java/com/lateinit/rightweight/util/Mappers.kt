@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.util
 
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
@@ -113,14 +112,15 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     val splitedName = name.split("/")
     val refinedModifiedDateString = fields.modifiedDate?.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
         routineId = splitedName.last(),
         title = fields.title?.value.toString(),
         author = fields.author?.value.toString(),
         description = fields.description?.value.toString(),
-        modifiedDate = modifiedDate
+        modifiedDate = modifiedDate,
+        sharedCount = fields.sharedCount?.value?.remoteData?.count?.value.toString()
     )
 }
 

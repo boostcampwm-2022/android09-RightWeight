@@ -73,6 +73,28 @@
                     tools:text="2022-12-01"/>
 
                 <TextView
+                    android:id="@+id/text_view_shared_count_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/shared_routine_shared_count"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_modified_date_label" />
+
+                <TextView
+                    android:id="@+id/text_view_shared_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@{sharedRoutine.sharedCount}"
+                    android:textAppearance="@style/Text.Medium.Bold"
+                    app:layout_constraintStart_toEndOf = "@id/text_view_shared_count_label"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_modified_date_label"
+                    tools:text="0"/>
+
+                <TextView
                     android:id="@+id/text_view_title_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +102,7 @@
                     android:text="@string/routine_title"
                     android:textAppearance="@style/Text.Medium.Bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_modified_date_label" />
+                    app:layout_constraintTop_toBottomOf="@id/text_view_shared_count_label" />
 
                 <TextView
                     android:id="@+id/text_view_title"
@@ -88,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{sharedRoutine.title}"
                     android:textAppearance="@style/Text.Medium"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_title_label"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_title_label"
                     tools:text="Strength 5x5" />
 
