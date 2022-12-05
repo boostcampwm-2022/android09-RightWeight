@@ -14,15 +14,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Status
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
-import com.lateinit.rightweight.ui.home.HomeActivity
-import com.lateinit.rightweight.ui.home.UserViewModel
+import com.lateinit.rightweight.ui.UserViewModel
+import com.lateinit.rightweight.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -47,7 +46,9 @@ class LoginActivity : AppCompatActivity() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
                     val account = task.getResult(ApiException::class.java)
-                    loginToFireBase(account?.idToken)
+                    val idToken =
+                        account.idToken ?: throw ApiException(Status.RESULT_INTERNAL_ERROR)
+                    loginToFireBase(idToken)
                 } catch (e: ApiException) {
                     Toast.makeText(this, "Failed Google Login", Toast.LENGTH_SHORT).show()
                 }
@@ -56,66 +57,60 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        client.silentSignIn().addOnSuccessListener {
-            intentToHomeActivity()
-        }
-
         binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
+        setLoginButtonListener()
+        checkLoginBefore()
+        collectNetworkResponse()
+    }
 
+    private fun checkLoginBefore() {
+        client.silentSignIn().addOnSuccessListener {
+            moveToHomeActivity()
+        }
+    }
+
+    private fun setLoginButtonListener() {
         binding.buttonGoogleLogin.setOnClickListener {
             login()
         }
-
-        observeNetworkResponse()
     }
 
-
-    fun login() {
+    private fun login() {
         val signInIntent = client.signInIntent
         getGoogleLoginResultText.launch(signInIntent)
     }
 
-    private fun loginToFireBase(idToken: String?) {
-        idToken?.let {
-            loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
-        }
+    private fun loginToFireBase(idToken: String) {
+        loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
     }
 
-    private fun intentToHomeActivity() {
-        val intent = Intent(baseContext, HomeActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    private fun moveToHomeActivity() {
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
-    private fun observeNetworkResponse() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                loginViewModel.loginResponse.collect { loginResponse ->
-                    if (loginResponse != null) {
-                        userViewModel.setLoginResponse(loginResponse)
-
-                        userViewModel.userInfo.value ?: run {
-                            loginResponse.localId?.let { localId ->
-                                userViewModel.setUser(User(localId, null, null))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+    private fun collectNetworkResponse() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 loginViewModel.networkResult.collect { networkResult ->
                     when (networkResult) {
-                        NetworkState.NO_ERROR -> {
-                            intentToHomeActivity()
+                        NetworkState.NO_ERROR -> {}
+                        NetworkState.BAD_INTERNET -> {
+                            Snackbar.make(binding.root, "인터넷 상태 나쁨", Snackbar.LENGTH_LONG).show()
+                        }
+                        NetworkState.PARSE_ERROR -> {
+                            Snackbar.make(binding.root, "파싱 오류", Snackbar.LENGTH_LONG).show()
                         }
                         NetworkState.WRONG_CONNECTION -> {
                             Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG).show()
                         }
-                        else -> {}
+                        NetworkState.OTHER_ERROR -> {
+                            Snackbar.make(binding.root, "예상치 못한 오류", Snackbar.LENGTH_LONG).show()
+                        }
+                        NetworkState.SUCCESS -> {
+                            moveToHomeActivity()
+                        }
                     }
                 }
             }
