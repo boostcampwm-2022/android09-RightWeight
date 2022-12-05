@@ -7,7 +7,7 @@
 
         <variable
             name="userViewModel"
-            type="com.lateinit.rightweight.ui.home.UserViewModel" />
+            type="com.lateinit.rightweight.ui.UserViewModel" />
 
         <variable
             name="routineDetailViewModel"

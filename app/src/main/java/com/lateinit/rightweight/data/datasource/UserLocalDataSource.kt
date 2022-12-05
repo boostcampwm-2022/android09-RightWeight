@@ -5,14 +5,12 @@ import com.lateinit.rightweight.data.model.User
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserLocalDataSource @Inject constructor(private val appSharedPreferences: AppSharedPreferences) :
-    UserDataSource {
-    override suspend fun setUser(user: User?) {
-        appSharedPreferences.setUser(user)
-    }
+class UserLocalDataSource @Inject constructor(
+    private val appPreferencesDataStore: AppPreferencesDataStore
+) : UserDataSource {
 
-    override suspend fun getUser(): User {
-        return appSharedPreferences.getUser()
+    override suspend fun saveUser(user: User) {
+        appPreferencesDataStore.saveUser(user)
     }
 
     override fun getUser(): Flow<User?> {

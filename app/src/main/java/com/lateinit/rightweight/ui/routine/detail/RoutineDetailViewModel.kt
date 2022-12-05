@@ -3,11 +3,12 @@ package com.lateinit.rightweight.ui.routine.detail
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
+import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class RoutineDetailViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
     private val sharedRoutineRepository: SharedRoutineRepository
-) : ViewModel() {
+) : UserViewModel() {
 
     private val _routine = MutableLiveData<Routine>()
     val routine: LiveData<Routine> = _routine
@@ -30,6 +31,23 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
+
+    fun selectRoutine(routineId: String, dayId: String) {
+        viewModelScope.launch {
+            val user = userInfo.value ?: return@launch
+
+            userRepository.saveUser(
+                User(
+                    userId = user.userId,
+                    routineId = routineId,
+                    dayId = dayId,
+                    email = user.email,
+                    displayName = user.displayName,
+                    photoUrl = user.photoUrl
+                )
+            )
+        }
+    }
 
     fun getRoutine(routineId: String) {
         viewModelScope.launch {
