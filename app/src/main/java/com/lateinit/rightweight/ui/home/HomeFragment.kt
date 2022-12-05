@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
 import com.lateinit.rightweight.ui.MainActivity
-import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,14 +27,13 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
-    private val userViewModel: UserViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment{ tag ->
             when (tag) {
                 RESET_DIALOG_TAG -> {
-                    userViewModel.resetRoutine()
+//                    userViewModel.resetRoutine()
                 }
             }
         }
@@ -108,14 +105,17 @@ class HomeFragment : Fragment() {
             binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
-        userViewModel.userInfo.observe(viewLifecycleOwner) {
-            homeViewModel.getDayWithExercisesByDayId(it.dayId)
-        }
-    }
 
-    override fun onResume() {
-        userViewModel.getUser()
-        super.onResume()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                homeViewModel.userInfo.collect {
+                    it?.let {
+                        homeViewModel.loadSelectedRoutine(it.routineId)
+                        homeViewModel.getDayWithExercisesByDayId(it.dayId)
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -125,7 +125,6 @@ class HomeFragment : Fragment() {
 
     private fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.userViewModel = userViewModel
         binding.homeViewModel = homeViewModel
     }
 

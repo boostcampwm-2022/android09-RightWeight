@@ -2,13 +2,14 @@ package com.lateinit.rightweight.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
     private val historyRepository: HistoryRepository
-) : ViewModel() {
+) : UserViewModel() {
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
@@ -32,9 +33,13 @@ class HomeViewModel @Inject constructor(
     private val _dayUiModel = MutableLiveData<DayUiModel?>()
     val dayUiModel: LiveData<DayUiModel?> get() = _dayUiModel
 
+    private val _selectedRoutine = MutableLiveData<Routine>()
+    val selectedRoutine: LiveData<Routine> get() = _selectedRoutine
+
     fun getDayWithExercisesByDayId(dayId: String?) {
+
         if(dayId == null){
-            _dayUiModel.postValue(null)
+            _dayUiModel.value = null
         }
         else {
             viewModelScope.launch {
@@ -43,7 +48,7 @@ class HomeViewModel @Inject constructor(
                     dayWithExercises.day.order,
                     dayWithExercises.exercises
                 )
-                _dayUiModel.postValue(dayUiModel)
+                _dayUiModel.value = dayUiModel
             }
         }
     }
@@ -62,6 +67,14 @@ class HomeViewModel @Inject constructor(
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
             historyRepository.saveHistory(day, exercises, totalExerciseSets)
+        }
+    }
+
+    fun loadSelectedRoutine(routineId: String?) {
+        routineId ?: return
+        viewModelScope.launch {
+            val routine = routineRepository.getRoutineById(routineId)
+            _selectedRoutine.value = routine
         }
     }
 
