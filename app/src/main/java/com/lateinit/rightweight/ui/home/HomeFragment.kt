@@ -14,6 +14,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
+import com.lateinit.rightweight.ui.MainActivity
+import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,7 +91,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
-            (requireActivity() as HomeActivity).navigateBottomNav(R.id.navigation_routine_management)
+            (requireActivity() as MainActivity).navigateBottomNav(R.id.navigation_routine_management)
         }
         binding.cardViewHomeRoutineResetContainer.setOnClickListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)

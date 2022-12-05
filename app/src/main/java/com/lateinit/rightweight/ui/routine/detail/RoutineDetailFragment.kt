@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
-import com.lateinit.rightweight.ui.home.UserViewModel
+import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter

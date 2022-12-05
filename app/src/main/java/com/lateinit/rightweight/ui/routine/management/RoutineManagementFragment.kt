@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
-import com.lateinit.rightweight.ui.home.UserViewModel
+import com.lateinit.rightweight.ui.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
