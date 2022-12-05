@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="userViewModel"
-            type="com.lateinit.rightweight.ui.UserViewModel" />
-
-        <variable
             name="routineManagementViewModel"
             type="com.lateinit.rightweight.ui.routine.management.RoutineManagementViewModel" />
 
@@ -42,10 +38,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:clickable="@{userViewModel.routine == null ? false : true}"
+            android:clickable="@{routineManagementViewModel.selectedRoutine == null ? false : true}"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            android:onClick="@{() -> fragment.navigateTo(userViewModel.routine)}"
+            android:onClick="@{() -> fragment.navigateTo(routineManagementViewModel.selectedRoutine)}"
             app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toTopOf="@id/recycler_view_routine_management"
             app:layout_constraintEnd_toEndOf="@id/text_view_routine_management_info"
@@ -57,12 +53,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@{userViewModel.routine == null ? @string/empty_routine : userViewModel.routine.title}" />
+                android:text="@{routineManagementViewModel.selectedRoutine == null ? @string/empty_routine : routineManagementViewModel.selectedRoutine.title}" />
         </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_routine_management"
-            excludeItem="@{userViewModel.routine}"
+            excludeItem="@{routineManagementViewModel.selectedRoutine}"
             setItems="@{routineManagementViewModel.routines}"
             android:layout_width="0dp"
             android:layout_height="0dp"

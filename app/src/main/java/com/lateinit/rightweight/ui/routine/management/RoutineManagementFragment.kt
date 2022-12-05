@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
-import com.lateinit.rightweight.ui.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +17,6 @@ class RoutineManagementFragment : Fragment() {
     private var _binding: FragmentRoutineManagementBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
-    private val userViewModel: UserViewModel by activityViewModels()
     private val routineManagementViewModel: RoutineManagementViewModel by viewModels()
 
     override fun onCreateView(
@@ -38,7 +35,6 @@ class RoutineManagementFragment : Fragment() {
 
     override fun onResume() {
         routineManagementViewModel.getRoutineList()
-        userViewModel.getUser()
         super.onResume()
     }
 
@@ -51,7 +47,7 @@ class RoutineManagementFragment : Fragment() {
         val routineManagementAdapter =
             binding.recyclerViewRoutineManagement.adapter as RoutineManagementAdapter
         val currentList = routineManagementAdapter.currentList.toMutableList()
-        userViewModel.routine.value?.also {
+        routineManagementViewModel.selectedRoutine.value?.let {
             currentList.add(0, it)
         }
         val list = currentList.mapIndexed { index, routine ->
@@ -67,7 +63,6 @@ class RoutineManagementFragment : Fragment() {
 
     private fun setBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.userViewModel = userViewModel
         binding.routineManagementViewModel = routineManagementViewModel
         binding.fragment = this
     }
