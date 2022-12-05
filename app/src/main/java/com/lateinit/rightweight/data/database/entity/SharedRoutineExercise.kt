@@ -7,17 +7,17 @@ import androidx.room.PrimaryKey
 import com.lateinit.rightweight.data.ExercisePartType
 
 @Entity(
-    tableName = "shared_exercise",
+    tableName = "shared_routine_exercise",
     foreignKeys = [
         ForeignKey(
-            entity = SharedDay::class,
+            entity = SharedRoutineDay::class,
             parentColumns = ["day_id"],
             childColumns = ["day_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SharedExercise(
+data class SharedRoutineExercise(
     @PrimaryKey
     @ColumnInfo(name = "exercise_id")
     val exerciseId: String,

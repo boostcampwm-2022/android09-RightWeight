@@ -6,6 +6,7 @@ import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
+import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +34,12 @@ class DatabaseModule {
     @Singleton
     fun getHistoryDao(appDatabase: AppDatabase): HistoryDao {
         return appDatabase.historyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun getSharedRoutineDao(appDatabase: AppDatabase): SharedRoutineDao {
+        return appDatabase.sharedRoutineDao()
     }
 
     @Provides

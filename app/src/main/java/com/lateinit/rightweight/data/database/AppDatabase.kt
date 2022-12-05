@@ -12,7 +12,7 @@ import com.lateinit.rightweight.data.database.entity.*
     entities = [
         Routine::class, Day::class, Exercise::class, ExerciseSet::class,
         History::class, HistoryExercise::class, HistorySet::class,
-        SharedRoutine::class
+        SharedRoutine::class, SharedRoutineDay::class, SharedRoutineExercise::class, SharedRoutineExerciseSet::class
     ],
     version = 1,
     exportSchema = false

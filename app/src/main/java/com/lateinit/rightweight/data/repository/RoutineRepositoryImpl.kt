@@ -7,12 +7,10 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
-import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
-    private val routineLocalDataSource: RoutineLocalDataSource,
-    private val routineRemoteDataSource: RoutineRemoteDataSource
+    private val routineLocalDataSource: RoutineLocalDataSource
 ) : RoutineRepository {
 
     override suspend fun insertRoutine(
@@ -58,7 +56,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getRoutines()
     }
 
-    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays{
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 
@@ -69,4 +67,6 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun removeRoutineById(routineId: String) {
         routineLocalDataSource.removeRoutineById(routineId)
     }
+
+
 }
