@@ -1,14 +1,10 @@
 package com.lateinit.rightweight.ui.share.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
-import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
-import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
-import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
@@ -16,7 +12,6 @@ import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,7 +44,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                                 index,
                                 sharedRoutineWithDay.exercises
                             )
-                        }
+                        }.sortedBy { it.order }
                     )
                     _currentDayPosition.value = FIRST_DAY_POSITION
                 }
