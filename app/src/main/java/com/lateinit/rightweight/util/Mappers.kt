@@ -133,7 +133,7 @@ fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
         title = StringValue(title),
         userId = StringValue(userId),
         sharedCount = MapValue(
-            RootField(
+            MapValueRootField(
                 SharedCount(
                 time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
                 count = IntValue("0")
