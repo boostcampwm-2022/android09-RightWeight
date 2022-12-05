@@ -142,5 +142,40 @@ class RoutineDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteSharedRoutineAndDays() {
+        viewModelScope.launch {
+            val routineId = _routine.value?.routineId ?: return@launch
+            sharedRoutineRepository.deleteDocument(routineId)
+            val path = "${routineId}/day"
+            val dayDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            dayDocuments.forEach { dayId ->
+                deleteSharedExercise(routineId, dayId)
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}")
+            }
+        }
+    }
+
+    private fun deleteSharedExercise(routineId: String, dayId: String) {
+        viewModelScope.launch {
+            val path = "${routineId}/day/${dayId}/exercise"
+            val exerciseDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            exerciseDocuments.forEach { exerciseId ->
+                deleteSharedExerciseSet(routineId, dayId, exerciseId)
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}")
+            }
+        }
+    }
+
+    private fun deleteSharedExerciseSet(routineId: String, dayId: String, exerciseId: String) {
+        viewModelScope.launch {
+            val path = "${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set"
+            val exerciseSetDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
+            exerciseSetDocuments.forEach { exerciseSetId ->
+                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set/${exerciseSetId}")
+            }
+        }
+    }
+
 }
 

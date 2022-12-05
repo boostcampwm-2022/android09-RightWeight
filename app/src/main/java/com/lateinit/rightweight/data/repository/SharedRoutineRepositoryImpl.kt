@@ -53,4 +53,12 @@ class SharedRoutineRepositoryImpl @Inject constructor(
             routineId, dayId, exerciseId, exerciseSetId, RootField(exerciseSetField)
         )
     }
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        return routineRemoteDataSource.getChildrenDocumentName(path)
+    }
+
+    override suspend fun deleteDocument(path: String) {
+        routineRemoteDataSource.deleteDocument(path)
+    }
 }

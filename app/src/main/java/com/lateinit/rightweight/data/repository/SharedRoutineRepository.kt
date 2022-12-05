@@ -26,4 +26,6 @@ interface SharedRoutineRepository {
         exerciseSetId: String,
         exerciseSetField: ExerciseSetField
     )
+    suspend fun getChildrenDocumentName(path: String): List<String>
+    suspend fun deleteDocument(path: String)
 }

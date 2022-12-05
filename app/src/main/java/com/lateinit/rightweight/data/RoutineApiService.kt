@@ -1,13 +1,18 @@
 package com.lateinit.rightweight.data
 
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
+import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.remote.model.*
+import com.lateinit.rightweight.data.model.DocumentsListResponse
+import com.lateinit.rightweight.data.remote.model.RemoteData
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.DELETE
 
 interface RoutineApiService {
 
@@ -52,4 +57,16 @@ interface RoutineApiService {
         @Body rootField: RootField
     ): DocumentResponse<ExerciseSetField>
 
+
+    @GET("documents/shared_routine/{path}")
+    suspend fun getChildrenDocumentName(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsListResponse<DetailResponse<RemoteData>>
+
+    @DELETE("documents/shared_routine/{path}")
+    suspend fun deleteDocument(
+        @Path(value = "path", encoded = true)
+        path: String
+    )
 }
