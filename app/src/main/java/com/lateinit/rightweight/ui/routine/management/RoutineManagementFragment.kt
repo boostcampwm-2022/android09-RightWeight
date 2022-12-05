@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RoutineManagementFragment : Fragment() {
@@ -31,6 +35,16 @@ class RoutineManagementFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                routineManagementViewModel.userInfo.collect {
+                    it?.let {
+                        routineManagementViewModel.loadSelectedRoutine(it.routineId)
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
