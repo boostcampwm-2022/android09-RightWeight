@@ -107,4 +107,7 @@ dependencies {
 
     // material-calendarview
     implementation("com.github.goemic:material-calendarview:3.0.0")
+
+    // Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

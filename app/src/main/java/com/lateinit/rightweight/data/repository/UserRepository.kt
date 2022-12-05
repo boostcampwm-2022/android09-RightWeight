@@ -1,11 +1,11 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.data.model.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    suspend fun setUser(user: User?)
-    suspend fun getUser(): User
-    suspend fun setLoginResponse(loginResponse: LoginResponse?)
-    suspend fun getLoginResponse(): LoginResponse?
+
+    suspend fun saveUser(user: User)
+
+    fun getUserFlow(): Flow<User?>
 }
