@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="historySet"
-            type="com.lateinit.rightweight.data.database.entity.HistorySet" />
+            name="historyExerciseSetUiModel"
+            type="com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel" />
 
     </data>
 
@@ -17,16 +17,16 @@
 
         <TextView
             android:id="@+id/text_view_set_order"
-            android:text="@{Integer.toString(historySet.order)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:gravity="center_horizontal"
+            android:text="@{Integer.toString(historyExerciseSetUiModel.order)}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="1"
-            android:visibility="gone"/>
+            tools:text="1" />
 
         <EditText
             android:id="@+id/edit_text_set_weight"
@@ -35,7 +35,7 @@
             android:layout_marginStart="12dp"
             android:inputType="number"
             android:maxLength="3"
-            android:text="@={historySet.weight}"
+            android:text="@={historyExerciseSetUiModel.weight}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_weight_unit"
             app:layout_constraintStart_toEndOf="@+id/text_view_set_order"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLength="3"
-            android:text="@={historySet.count}"
+            android:text="@={historyExerciseSetUiModel.count}"
             app:layout_constraintBottom_toBottomOf="@+id/text_view_set_order"
             app:layout_constraintEnd_toStartOf="@+id/text_view_count_unit"
             app:layout_constraintTop_toTopOf="@+id/text_view_set_order"
@@ -78,10 +78,10 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginEnd="16dp"
-            android:checked="@{historySet.checked}"
+            android:checked="@{historyExerciseSetUiModel.checked}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_set_remove"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/button_set_remove"
@@ -92,8 +92,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
