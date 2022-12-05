@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -29,11 +32,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityMainBinding
+import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
@@ -146,12 +151,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.materialToolbar)
 
         // set drawer header
-//        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
 
 //        userViewModel.getLoginResponse()
 //        userViewModel.loginResponse.observe(this) { loginResponse ->
 //            headerBinding.loginResponse = loginResponse
 //        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                userViewModel.userInfo.collect {
+                    it?.let {
+                        headerBinding.user = it
+                    }
+                }
+            }
+        }
 
         binding.navigationView.setNavigationItemSelectedListener(this)
 
@@ -163,8 +177,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // 유저 정보 삭제
         client.signOut()
         val intent = Intent(baseContext, LoginActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+        finish()
     }
 
     private fun withdraw() {
