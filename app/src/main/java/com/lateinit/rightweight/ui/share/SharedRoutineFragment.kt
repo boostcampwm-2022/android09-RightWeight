@@ -3,6 +3,7 @@ package com.lateinit.rightweight.ui.share
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -77,6 +78,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     }
 
     override fun gotoSharedRoutineDetailFragment(routineId: String) {
-        findNavController(this).navigate(R.id.action_navigation_shared_routine_to_navigation_shared_routine_detail)
+        val bundle = bundleOf("routineId" to routineId)
+        findNavController(this).navigate(R.id.action_navigation_shared_routine_to_navigation_shared_routine_detail, bundle)
     }
 }

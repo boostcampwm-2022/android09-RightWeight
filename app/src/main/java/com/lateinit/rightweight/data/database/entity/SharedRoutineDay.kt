@@ -6,16 +6,17 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "shared_day",
+    tableName = "shared_routine_day",
     foreignKeys = [
         ForeignKey(
             entity = SharedRoutine::class,
             parentColumns = ["routine_id"],
             childColumns = ["routine_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SharedDay(
+data class SharedRoutineDay(
     @PrimaryKey
     @ColumnInfo(name = "day_id")
     val dayId: String,

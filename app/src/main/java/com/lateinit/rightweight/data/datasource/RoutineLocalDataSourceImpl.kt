@@ -1,16 +1,17 @@
 package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.database.dao.RoutineDao
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
+import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoutineLocalDataSourceImpl @Inject constructor(
     private val routineDao: RoutineDao,
+    private val sharedRoutineDao: SharedRoutineDao
 ) : RoutineLocalDataSource {
 
     override suspend fun insertRoutine(
@@ -64,5 +65,17 @@ class RoutineLocalDataSourceImpl @Inject constructor(
 
     override suspend fun removeRoutineById(routineId: String) {
         return routineDao.removeRoutineById(routineId)
+    }
+
+    override suspend fun insertSharedRoutineDetail(
+        days: List<SharedRoutineDay>,
+        exercises: List<SharedRoutineExercise>,
+        sets: List<SharedRoutineExerciseSet>
+    ) {
+       sharedRoutineDao.insertSharedRoutineDetail(days, exercises, sets)
+    }
+
+    override fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays> {
+        return sharedRoutineDao.getSharedRoutineWithDaysByRoutineId(routineId)
     }
 }

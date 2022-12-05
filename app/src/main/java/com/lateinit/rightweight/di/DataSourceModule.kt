@@ -6,6 +6,7 @@ import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
+import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
 import com.lateinit.rightweight.data.datasource.*
 import dagger.Module
 import dagger.Provides
@@ -27,8 +28,11 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getRoutineLocalDataSource(routineDao: RoutineDao): RoutineLocalDataSource {
-        return RoutineLocalDataSourceImpl(routineDao)
+    fun getRoutineLocalDataSource(
+        routineDao: RoutineDao,
+        sharedRoutineDao: SharedRoutineDao
+    ): RoutineLocalDataSource {
+        return RoutineLocalDataSourceImpl(routineDao, sharedRoutineDao)
     }
 
     @Provides

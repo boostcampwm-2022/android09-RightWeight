@@ -6,17 +6,17 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "shared_exercise_set",
+    tableName = "shared_routine_exercise_set",
     foreignKeys = [
         ForeignKey(
-            entity = SharedExercise::class,
+            entity = SharedRoutineExercise::class,
             parentColumns = ["exercise_id"],
             childColumns = ["exercise_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SharedExerciseSet(
+data class SharedRoutineExerciseSet(
     @PrimaryKey
     @ColumnInfo(name = "set_id")
     val setId: String,

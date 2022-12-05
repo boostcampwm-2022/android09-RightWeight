@@ -35,6 +35,9 @@
     <string name="routine_title">루틴 명</string>
     <string name="routine_description">설명</string>
     <string name="routine_save">루틴 저장하기</string>
+    <string name="shared_routine_author">작성자</string>
+    <string name="shared_routine_modified_date">작성일</string>
+    <string name="shared_routine_download_count">다운로드 수</string>
     <string name="chest">가슴</string>
     <string name="back">등</string>
     <string name="leg">하체</string>
@@ -52,6 +55,7 @@
     <string name="move_up">위로</string>
     <string name="move_down">아래로</string>
     <string name="routine_select">루틴 선택 하기</string>
+    <string name="routine_copy">복사하여 내 루틴목록으로 가져오기</string>
     <string name="expand">확장</string>
     <string name="exercise_time">운동한 시간: %s</string>
     <string name="history_none">운동기록이 없습니다.</string>
