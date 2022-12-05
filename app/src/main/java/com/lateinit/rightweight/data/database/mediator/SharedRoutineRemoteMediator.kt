@@ -31,12 +31,17 @@ class SharedRoutineRemoteMediator(
         state: PagingState<Int, SharedRoutine>
     ): MediatorResult {
         try {
-            var pagingFlag= when (loadType) {
+            var endOfPaginationReached = false
+
+            var pagingFlag = when (loadType) {
                 LoadType.REFRESH -> initModifiedDateFlag
-                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND -> {
+                    endOfPaginationReached = true
+                    return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                }
                 LoadType.APPEND -> {
                     val flag = appSharedPreferences.getSharedRoutinePagingFlag()
-                    if(flag.isNullOrEmpty()) initModifiedDateFlag
+                    if (flag.isNullOrEmpty()) initModifiedDateFlag
                     else flag
                 }
             }
@@ -60,19 +65,23 @@ class SharedRoutineRemoteMediator(
                     db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
-                documentResponses?.forEach() { documentResponse ->
-                    db.sharedRoutineDao()
-                        .insertSharedRoutine(documentResponse.document.toSharedRoutine())
-                    pagingFlag = documentResponse.document.fields.modifiedDate.toString()
+                documentResponses?.forEach { documentResponse ->
+                    if (documentResponse.document != null) {
+                        db.sharedRoutineDao()
+                            .insertSharedRoutine(documentResponse.document.toSharedRoutine())
+                        pagingFlag = documentResponse.document.fields.modifiedDate?.value.toString()
+                    } else {
+                        endOfPaginationReached = true
+                    }
                 }
                 appSharedPreferences.setSharedRoutinePagingFlag(pagingFlag)
             }
 
-            if (documentResponses != null) {
-                return MediatorResult.Success(endOfPaginationReached = documentResponses.isEmpty())
-            }
-            else{
-                return MediatorResult.Success(endOfPaginationReached = true)
+            return if (documentResponses != null) {
+                MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+            } else {
+                endOfPaginationReached = true
+                MediatorResult.Success(endOfPaginationReached = true)
             }
         } catch (e: IOException) {
             return MediatorResult.Error(e)
