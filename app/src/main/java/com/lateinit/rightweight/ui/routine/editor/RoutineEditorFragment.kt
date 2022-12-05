@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
@@ -21,7 +20,6 @@ class RoutineEditorFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    private val args: RoutineEditorFragmentArgs by navArgs()
     private val viewModel: RoutineEditorViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
@@ -37,7 +35,6 @@ class RoutineEditorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.init(args.routineId)
         setBinding()
         setRoutineDayAdapter()
         setRoutineDaysObserve()

@@ -24,6 +24,7 @@ class RepositoryModule {
     @Singleton
     fun getRoutineRepository(
         routineLocalDataSource: RoutineLocalDataSource
+
     ): RoutineRepository {
         return RoutineRepositoryImpl(routineLocalDataSource)
     }
@@ -42,5 +43,14 @@ class RepositoryModule {
         historyLocalDataSource: HistoryLocalDataSource
     ): HistoryRepository {
         return HistoryRepositoryImpl(historyLocalDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun getSharedRoutineRepository(
+        routineRemoteDataSource: RoutineRemoteDataSource,
+        routineLocalDataSource: RoutineLocalDataSource
+    ): SharedRoutineRepository {
+        return SharedRoutineRepositoryImpl(routineRemoteDataSource, routineLocalDataSource)
     }
 }

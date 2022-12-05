@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -12,21 +11,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.lateinit.rightweight.service.TimerService
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentHomeBinding
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment
-import com.lateinit.rightweight.ui.home.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding
@@ -35,16 +31,12 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val navigationRouteId =
-            requireActivity().intent.getIntExtra(TimerService.SCREEN_MOVE_INTENT_EXTRA, -1)
-        if (navigationRouteId != -1) {
-            findNavController().navigate(navigationRouteId)
+        CommonDialogFragment{ tag ->
+            when (tag) {
+                RESET_DIALOG_TAG -> {
+                    userViewModel.resetRoutine()
+                }
+            }
         }
     }
 
@@ -97,22 +89,21 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
         }
 
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
-            val item =
-                (requireActivity() as HomeActivity).binding.bottomNavigation.menu.findItem(R.id.navigation_routine_management)
-            NavigationUI.onNavDestinationSelected(item, findNavController())
+            (requireActivity() as HomeActivity).navigateBottomNav(R.id.navigation_routine_management)
         }
         binding.cardViewHomeRoutineResetContainer.setOnClickListener {
             dialog.show(parentFragmentManager, RESET_DIALOG_TAG, R.string.reset_message)
         }
 
         homeViewModel.dayUiModel.observe(viewLifecycleOwner) { dayUiModel ->
-            val homeAdapters = dayUiModel.exercises.map { exerciseUiModel ->
+            val exercises = dayUiModel?.exercises ?: emptyList()
+            val homeAdapters = exercises.map { exerciseUiModel ->
                 HomeAdapter(exerciseUiModel)
             }
 
             adapter = ConcatAdapter(homeAdapters)
-            binding.recyclerViewTodayRoutine.adapter = adapter
-            binding.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+            binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
+            binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
         userViewModel.userInfo.observe(viewLifecycleOwner) {
@@ -144,13 +135,4 @@ class HomeFragment : Fragment(), CommonDialogFragment.NoticeDialogListener {
             )
         )
     }
-
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        when (dialog.tag) {
-            RESET_DIALOG_TAG -> {
-                userViewModel.resetRoutine()
-            }
-        }
-    }
-
 }

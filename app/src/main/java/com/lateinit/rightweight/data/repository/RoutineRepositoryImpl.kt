@@ -6,11 +6,11 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.datasource.RoutineDataSource
+import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
-    private val routineLocalDataSource: RoutineDataSource
+    private val routineLocalDataSource: RoutineLocalDataSource
 ) : RoutineRepository {
 
     override suspend fun insertRoutine(
@@ -22,9 +22,14 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.insertRoutine(routine, days, exercises, sets)
     }
 
-    override suspend fun insertRoutineList(routines: List<Routine>) {
-        routineLocalDataSource.insertRoutineList(routines)
+    override suspend fun updateRoutines(routines: List<Routine>) {
+        routineLocalDataSource.updateRoutines(routines)
     }
+
+    override suspend fun getHigherRoutineOrder(): Int? {
+        return routineLocalDataSource.getHigherRoutineOrder()
+    }
+
 
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineLocalDataSource.getRoutineById(routineId)
@@ -51,11 +56,17 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getRoutines()
     }
 
-    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays{
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 
     override suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises {
         return routineLocalDataSource.getDayWithExercisesByDayId(dayId)
     }
+
+    override suspend fun removeRoutineById(routineId: String) {
+        routineLocalDataSource.removeRoutineById(routineId)
+    }
+
+
 }

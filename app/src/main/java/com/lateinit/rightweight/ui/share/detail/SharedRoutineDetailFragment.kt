@@ -1,31 +1,98 @@
 package com.lateinit.rightweight.ui.share.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.*
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import com.lateinit.rightweight.R
-import com.lateinit.rightweight.ui.home.HomeActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
+import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
+import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
+import com.lateinit.rightweight.ui.share.LatestSharedRoutineUiState
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SharedRoutineDetailFragment : Fragment() {
+
+    private var _binding: FragmentSharedRoutineDetailBinding? = null
+    private val binding
+        get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
+
+    val sharedRoutineDetailViewModel :SharedRoutineDetailViewModel by viewModels()
+
+    private lateinit var routineDayAdapter: RoutineDayAdapter
+    private lateinit var exerciseAdapter: DetailExerciseAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shared_routine_detail, container, false)
+        _binding = FragmentSharedRoutineDetailBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val copyBtn = view.findViewById<Button>(R.id.copy)
 
-        copyBtn.setOnClickListener {
-            it.findNavController()
-                .navigate(R.id.action_navigation_shared_routine_detail_to_navigation_routine_management)
+        val routineId = arguments?.getString("routineId")
+        routineId?.let{
+            sharedRoutineDetailViewModel.getSharedRoutineDetail(routineId)
+        }
+
+        setRoutineDayAdapter()
+        setExerciseAdapter()
+        setSharedRoutineDetailCollect()
+    }
+
+    private fun setRoutineDayAdapter() {
+        routineDayAdapter =
+            RoutineDayAdapter { position ->
+                sharedRoutineDetailViewModel.clickDay(position)
+            }
+        binding.recyclerViewDay.adapter = routineDayAdapter
+    }
+
+    private fun setExerciseAdapter() {
+        exerciseAdapter = DetailExerciseAdapter { position ->
+            sharedRoutineDetailViewModel.clickExercise(position)
+        }
+        binding.recyclerViewExercise.adapter = exerciseAdapter
+    }
+
+    private fun setSharedRoutineDetailCollect() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sharedRoutineDetailViewModel.uiState.collect() { uiState ->
+                    when (uiState) {
+                        is LatestSharedRoutineDetailUiState.Success -> {
+                            binding.sharedRoutine = uiState.sharedRoutine
+                            routineDayAdapter.submitList(uiState.dayUiModels)
+                            setCurrentDayPositionObserve(uiState.dayUiModels)
+                        }
+                        is LatestSharedRoutineDetailUiState.Error -> Exception()
+                    }
+                }
+            }
         }
     }
+
+    private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
+        sharedRoutineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
+            Log.d("dayUiModels", dayUiModels.toString())
+            if(dayUiModels.size > it){
+                val exercises = dayUiModels.get(it).exercises
+                exerciseAdapter.submitList(exercises)
+            }
+        }
+    }
+
+
 }

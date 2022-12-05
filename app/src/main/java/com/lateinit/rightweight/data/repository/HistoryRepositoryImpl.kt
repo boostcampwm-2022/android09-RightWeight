@@ -1,6 +1,12 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.datasource.HistoryLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -12,6 +18,13 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
         return  historyLocalDataSource.loadHistoryByDate(localDate)
+    }
+
+    override fun getHistoryBetweenDate(
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): Flow<List<HistoryWithHistoryExercises>> {
+        return historyLocalDataSource.getHistoryBetweenDate(startDate, endDate)
     }
 
     override suspend fun saveHistory(
@@ -58,4 +71,7 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.addHistoryExercise(historyId)
     }
 
+    override suspend fun verifyAllHistorySets(historyExercises: List<HistoryExercise>): Boolean {
+        return historyLocalDataSource.verifyAllHistorySets(historyExercises)
+    }
 }
