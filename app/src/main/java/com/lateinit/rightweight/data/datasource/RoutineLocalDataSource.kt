@@ -33,5 +33,5 @@ interface RoutineLocalDataSource {
         exercises: List<SharedRoutineExercise>,
         sets: List<SharedRoutineExerciseSet>
     )
-    suspend fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays>
+    fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays>
 }

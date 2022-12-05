@@ -3,9 +3,8 @@ package com.lateinit.rightweight.data
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.DocumentResponse
-import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.model.DocumentsResponse
-import com.lateinit.rightweight.data.remote.model.SharedRoutineField
+import com.lateinit.rightweight.data.remote.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

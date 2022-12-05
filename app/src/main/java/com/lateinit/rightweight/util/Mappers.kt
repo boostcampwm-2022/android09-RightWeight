@@ -1,27 +1,19 @@
 package com.lateinit.rightweight.util
 
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.HistorySet
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
 import com.lateinit.rightweight.data.model.DetailResponse
+import com.lateinit.rightweight.data.remote.model.*
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
-import com.lateinit.rightweight.data.remote.model.SharedRoutineDayField
-import com.lateinit.rightweight.data.remote.model.SharedRoutineExerciseField
-import com.lateinit.rightweight.data.remote.model.SharedRoutineExerciseSetField
-import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -175,16 +167,16 @@ fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField {
     )
 }
 
-fun DetailResponse<SharedRoutineDayField>.toSharedRoutineDay(): SharedRoutineDay {
+fun DetailResponse<DayField>.toSharedRoutineDay(): SharedRoutineDay {
     val splitedName = name.split("/")
     return SharedRoutineDay(
-        routineId = fields.routine_id?.value.toString(),
+        routineId = fields.routineId?.value.toString(),
         dayId = splitedName.last(),
         order = fields.order?.value.toString().toInt()
     )
 }
 
-fun DetailResponse<SharedRoutineExerciseField>.toSharedRoutineExercise(): SharedRoutineExercise {
+fun DetailResponse<ExerciseField>.toSharedRoutineExercise(): SharedRoutineExercise {
     val splitedName = name.split("/")
     return SharedRoutineExercise(
         dayId = fields.dayId?.value.toString(),
@@ -196,7 +188,7 @@ fun DetailResponse<SharedRoutineExerciseField>.toSharedRoutineExercise(): Shared
     )
 }
 
-fun DetailResponse<SharedRoutineExerciseSetField>.toSharedRoutineExerciseSet(): SharedRoutineExerciseSet {
+fun DetailResponse<ExerciseSetField>.toSharedRoutineExerciseSet(): SharedRoutineExerciseSet {
     val splitedName = name.split("/")
     return SharedRoutineExerciseSet(
         exerciseId = fields.exerciseId?.value.toString(),

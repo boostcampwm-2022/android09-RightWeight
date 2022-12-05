@@ -10,7 +10,7 @@ import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import kotlinx.coroutines.flow.Flow
 
 interface SharedRoutineRepository {
-    suspend fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
+    fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
     suspend fun shareRoutine(userId: String, routineId: String, routine: Routine)
     suspend fun shareDay(routineId: String, dayId: String, dayField: DayField)
     suspend fun shareExercise(

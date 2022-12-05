@@ -75,7 +75,7 @@ class RoutineLocalDataSourceImpl @Inject constructor(
        sharedRoutineDao.insertSharedRoutineDetail(days, exercises, sets)
     }
 
-    override suspend fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays> {
+    override fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays> {
         return sharedRoutineDao.getSharedRoutineWithDaysByRoutineId(routineId)
     }
 }
