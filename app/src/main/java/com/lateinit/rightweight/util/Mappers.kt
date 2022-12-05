@@ -152,7 +152,7 @@ fun DayUiModel.toDayField(): DayField {
 fun ExerciseUiModel.toExerciseField(): ExerciseField {
     return ExerciseField(
         order = IntValue(order.toString()),
-        partType = StringValue(""),
+        partType = StringValue(part.toString()),
         title = StringValue(title),
         dayId = StringValue(dayId)
     )
@@ -183,8 +183,7 @@ fun DetailResponse<ExerciseField>.toSharedRoutineExercise(): SharedRoutineExerci
         exerciseId = splitedName.last(),
         title = fields.title?.value.toString(),
         order = fields.order?.value.toString().toInt(),
-        part = ExercisePartType.CHEST
-        //part =  ExercisePartType.valueOf(fields.partType?.value.toString())
+        part = enumValueOf(fields.partType?.value.toString())
     )
 }
 
