@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.ui.home
+package com.lateinit.rightweight.ui
 
 import android.content.Context
 import android.content.Intent
@@ -18,14 +18,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.databinding.ActivityHomeBinding
-import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.databinding.ActivityMainBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
@@ -33,9 +36,9 @@ import com.lateinit.rightweight.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
@@ -62,7 +65,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this@HomeActivity, R.layout.activity_home)
+        binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
 
         setActionBar()
         setNavController()
@@ -70,6 +73,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
+
     }
 
     override fun onBackPressed() {
@@ -142,12 +146,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.materialToolbar)
 
         // set drawer header
-        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
+//        val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
 
-        userViewModel.getLoginResponse()
-        userViewModel.loginResponse.observe(this) { loginResponse ->
-            headerBinding.loginResponse = loginResponse
-        }
+//        userViewModel.getLoginResponse()
+//        userViewModel.loginResponse.observe(this) { loginResponse ->
+//            headerBinding.loginResponse = loginResponse
+//        }
 
         binding.navigationView.setNavigationItemSelectedListener(this)
 
@@ -156,8 +160,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        userViewModel.setUser(user = null)
-        userViewModel.setLoginResponse(null)
+        // 유저 정보 삭제
         client.signOut()
         val intent = Intent(baseContext, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
