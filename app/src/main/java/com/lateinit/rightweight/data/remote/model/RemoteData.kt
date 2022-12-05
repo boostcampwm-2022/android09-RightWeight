@@ -24,34 +24,49 @@ data class SharedRoutineField(
     val userId: StringValue? = null,
 
     @field:SerializedName("shared_count")
-    val sharedCount: IntValue? = null,
+    val sharedCount: MapValue? = null,
 ): RemoteData()
 
-data class SharedRoutineDayField(
-    @field:SerializedName("routine_id")
-    val routine_id: StringValue? = null,
-    @field:SerializedName("order")
-    val order: IntValue? = null,
-): RemoteData()
+data class SharedCount(
+    @field:SerializedName("time")
+    val time: TimeStampValue? = null,
 
-data class SharedRoutineExerciseField(
-    @field:SerializedName("part_type")
-    val partType: StringValue? = null,
-    @field:SerializedName("day_id")
-    val dayId: StringValue? = null,
-    @field:SerializedName("order")
-    val order: IntValue? = null,
-    @field:SerializedName("title")
-    val title: StringValue? = null,
-): RemoteData()
-
-data class SharedRoutineExerciseSetField(
-    @field:SerializedName("exercise_id")
-    val exerciseId: StringValue? = null,
-    @field:SerializedName("order")
-    val order: IntValue? = null,
-    @field:SerializedName("weight")
-    val weight: StringValue? = null,
     @field:SerializedName("count")
-    val count: StringValue? = null,
+    val count: IntValue? = null,
 ): RemoteData()
+
+data class DayField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("routine_id")
+    val routineId: StringValue? = null,
+) : RemoteData()
+
+data class ExerciseField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("part_type")
+    val partType: StringValue? = null,
+
+    @SerializedName("title")
+    val title: StringValue? = null,
+
+    @SerializedName("day_id")
+    val dayId: StringValue? = null,
+) : RemoteData()
+
+data class ExerciseSetField(
+    @SerializedName("order")
+    val order: IntValue? = null,
+
+    @SerializedName("count")
+    val count: StringValue? = null,
+
+    @SerializedName("weight")
+    val weight: StringValue? = null,
+
+    @SerializedName("exercise_id")
+    val exerciseId: StringValue? = null,
+) : RemoteData()

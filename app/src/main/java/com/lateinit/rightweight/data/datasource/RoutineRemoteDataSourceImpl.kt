@@ -10,19 +10,17 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
+import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class RoutineRemoteDataSourceImpl @Inject constructor(
     private val db: AppDatabase,
     private val api: RoutineApiService,
     private val appSharedPreferences: AppSharedPreferences
-): RoutineRemoteDataSource {
-
+) : RoutineRemoteDataSource {
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getSharedRoutinesByPaging() = Pager(
@@ -34,12 +32,56 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
 
+    override suspend fun shareRoutine(routineId: String, rootField: RootField) {
+        api.shareRoutine(routineId, rootField)
+    }
+
+    override suspend fun shareDay(routineId: String, dayId: String, rootField: RootField) {
+        api.shareRoutineDay(routineId, dayId, rootField)
+    }
+
+    override suspend fun shareExercise(
+        routineId: String,
+        dayId: String,
+        exerciseId: String,
+        rootField: RootField
+    ) {
+        api.shareRoutineExercise(routineId, dayId, exerciseId, rootField)
+    }
+
+    override suspend fun shareExerciseSet(
+        routineId: String,
+        dayId: String,
+        exerciseId: String,
+        exerciseSetId: String,
+        rootField: RootField
+    ) {
+        api.shareRoutineExerciseSet(
+            routineId,
+            dayId,
+            exerciseId,
+            exerciseSetId,
+            rootField
+        )
+    }
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        val documentNameList = api.getChildrenDocumentName(path)
+        return documentNameList.documents?.map {
+            it.name.split("/").last()
+        } ?: emptyList()
+    }
+
+    override suspend fun deleteDocument(path: String) {
+        api.deleteDocument(path)
+    }
+
     override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {
         val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
         api.getSharedRoutineDays(routineId)?.documents?.forEach(){
             sharedRoutineDays.add(it.toSharedRoutineDay())
         }
-        return sharedRoutineDays.toList()
+        return sharedRoutineDays
     }
 
     override suspend fun getSharedRoutineExercises(
@@ -50,7 +92,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach(){
             sharedRoutineExercises.add(it.toSharedRoutineExercise())
         }
-        return sharedRoutineExercises.toList()
+        return sharedRoutineExercises
     }
 
     override suspend fun getSharedRoutineExerciseSets(
@@ -62,6 +104,6 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach(){
             sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
         }
-        return sharedRoutineExerciseSets.toList()
+        return sharedRoutineExerciseSets
     }
 }
