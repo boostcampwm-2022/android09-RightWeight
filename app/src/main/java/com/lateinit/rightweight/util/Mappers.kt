@@ -17,8 +17,25 @@ import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHi
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.remote.model.*
-import com.lateinit.rightweight.ui.model.*
+import com.lateinit.rightweight.data.remote.model.DayField
+import com.lateinit.rightweight.data.remote.model.ExerciseField
+import com.lateinit.rightweight.data.remote.model.ExerciseSetField
+import com.lateinit.rightweight.data.remote.model.IntValue
+import com.lateinit.rightweight.data.remote.model.MapValue
+import com.lateinit.rightweight.data.remote.model.MapValueRootField
+import com.lateinit.rightweight.data.remote.model.SharedCount
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
+import com.lateinit.rightweight.data.remote.model.StringValue
+import com.lateinit.rightweight.data.remote.model.TimeStampValue
+import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -38,7 +55,7 @@ fun ExerciseWithSets.toExerciseUiModel(): ExerciseUiModel {
         dayId = exercise.dayId,
         title = exercise.title,
         order = exercise.order,
-        part = exercise.part,
+        part = exercise.part.toExercisePartTypeUiModel(),
         exerciseSets = sets.map { it.toExerciseSetUiModel() }
     )
 }
@@ -71,7 +88,7 @@ fun HistoryExerciseWithHistorySets.toHistoryExerciseUiModel(): HistoryExerciseUi
         historyId = historyExercise.historyId,
         title = historyExercise.title,
         order = historyExercise.order,
-        part = historyExercise.part,
+        part = historyExercise.part.toExercisePartTypeUiModel(),
         exerciseSets = historySets.map { it.toHistoryExerciseSetUiModel() }
     )
 }
@@ -101,7 +118,7 @@ fun ExerciseUiModel.toExercise(): Exercise {
         dayId = dayId,
         title = title,
         order = order,
-        part = part
+        part = part.toExercisePartType()
     )
 }
 
@@ -222,7 +239,7 @@ fun SharedRoutineExerciseWithExerciseSets.toExerciseUiModel(): ExerciseUiModel {
         dayId = exercise.dayId,
         title = exercise.title,
         order = exercise.order,
-        part = exercise.part,
+        part = exercise.part.toExercisePartTypeUiModel(),
         exerciseSets = sets.map { it.toExerciseSetUiModel() }
     )
 }
@@ -254,7 +271,7 @@ fun HistoryExerciseUiModel.toHistoryExercise(): HistoryExercise {
         historyId = historyId,
         title = title,
         order = order,
-        part = part
+        part = part.toExercisePartType()
     )
 }
 
@@ -280,7 +297,7 @@ fun SharedRoutine.toSharedRoutineUiModel(): SharedRoutineUiModel {
     )
 }
 
-fun Routine.toRoutineUiModel():RoutineUiModel{
+fun Routine.toRoutineUiModel(): RoutineUiModel {
     return RoutineUiModel(
         routineId = routineId,
         title = title,
@@ -289,4 +306,32 @@ fun Routine.toRoutineUiModel():RoutineUiModel{
         modifiedDate = modifiedDate,
         order = order
     )
+}
+
+fun ExercisePartType.toExercisePartTypeUiModel(): ExercisePartTypeUiModel {
+    return when (this) {
+        ExercisePartType.CHEST -> ExercisePartTypeUiModel.CHEST
+        ExercisePartType.BACK -> ExercisePartTypeUiModel.BACK
+        ExercisePartType.LEG -> ExercisePartTypeUiModel.LEG
+        ExercisePartType.SHOULDER -> ExercisePartTypeUiModel.SHOULDER
+        ExercisePartType.BICEPS -> ExercisePartTypeUiModel.BICEPS
+        ExercisePartType.TRICEPS -> ExercisePartTypeUiModel.TRICEPS
+        ExercisePartType.CORE -> ExercisePartTypeUiModel.CORE
+        ExercisePartType.FOREARM -> ExercisePartTypeUiModel.FOREARM
+        ExercisePartType.CARDIO -> ExercisePartTypeUiModel.CARDIO
+    }
+}
+
+fun ExercisePartTypeUiModel.toExercisePartType(): ExercisePartType {
+    return when (this) {
+        ExercisePartTypeUiModel.CHEST -> ExercisePartType.CHEST
+        ExercisePartTypeUiModel.BACK -> ExercisePartType.BACK
+        ExercisePartTypeUiModel.LEG -> ExercisePartType.LEG
+        ExercisePartTypeUiModel.SHOULDER -> ExercisePartType.SHOULDER
+        ExercisePartTypeUiModel.BICEPS -> ExercisePartType.BICEPS
+        ExercisePartTypeUiModel.TRICEPS -> ExercisePartType.TRICEPS
+        ExercisePartTypeUiModel.CORE -> ExercisePartType.CORE
+        ExercisePartTypeUiModel.FOREARM -> ExercisePartType.FOREARM
+        ExercisePartTypeUiModel.CARDIO -> ExercisePartType.CARDIO
+    }
 }
