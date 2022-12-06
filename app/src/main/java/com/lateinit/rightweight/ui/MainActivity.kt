@@ -153,10 +153,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // set drawer header
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
 
-//        userViewModel.getLoginResponse()
-//        userViewModel.loginResponse.observe(this) { loginResponse ->
-//            headerBinding.loginResponse = loginResponse
-//        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 userViewModel.userInfo.collect {

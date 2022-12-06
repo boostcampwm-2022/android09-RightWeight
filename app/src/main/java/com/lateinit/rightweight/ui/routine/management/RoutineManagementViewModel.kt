@@ -34,11 +34,13 @@ class RoutineManagementViewModel @Inject constructor(
         }
     }
 
-    fun loadSelectedRoutine(routineId: String?) {
-        routineId ?: return
+    fun loadSelectedRoutine() {
         viewModelScope.launch {
-            val routine = routineRepository.getRoutineById(routineId)
-            _selectedRoutine.value = routine
+            userInfo.collect {
+                val routineId = it?.routineId ?: return@collect
+                val routine = routineRepository.getRoutineById(routineId)
+                _selectedRoutine.value = routine
+            }
         }
     }
 }
