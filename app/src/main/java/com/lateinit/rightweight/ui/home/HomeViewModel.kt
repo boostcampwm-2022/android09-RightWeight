@@ -36,13 +36,15 @@ class HomeViewModel @Inject constructor(
     private val _selectedRoutine = MutableLiveData<Routine>()
     val selectedRoutine: LiveData<Routine> get() = _selectedRoutine
 
-    fun getDayWithExercisesByDayId(dayId: String?) {
+    fun loadDayWithExercises() {
 
-        if(dayId == null){
-            _dayUiModel.value = null
-        }
-        else {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            userInfo.collect {
+                val dayId = it?.dayId ?: run {
+                    _dayUiModel.value = null
+                    return@collect
+                }
+
                 val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
                 val dayUiModel = dayWithExercises.day.toDayUiModel(
                     dayWithExercises.day.order,
@@ -70,11 +72,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadSelectedRoutine(routineId: String?) {
-        routineId ?: return
+    fun loadSelectedRoutine() {
         viewModelScope.launch {
-            val routine = routineRepository.getRoutineById(routineId)
-            _selectedRoutine.value = routine
+            userInfo.collect {
+                val routineId = it?.routineId ?: return@collect
+                val routine = routineRepository.getRoutineById(routineId)
+                _selectedRoutine.value = routine
+            }
         }
     }
 

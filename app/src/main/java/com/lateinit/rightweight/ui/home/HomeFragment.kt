@@ -105,17 +105,8 @@ class HomeFragment : Fragment() {
             binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
         }
 
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                homeViewModel.userInfo.collect {
-                    it?.let {
-                        homeViewModel.loadSelectedRoutine(it.routineId)
-                        homeViewModel.getDayWithExercisesByDayId(it.dayId)
-                    }
-                }
-            }
-        }
+        homeViewModel.loadDayWithExercises()
+        homeViewModel.loadSelectedRoutine()
     }
 
     override fun onDestroyView() {
