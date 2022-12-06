@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.ui.share.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
-import com.lateinit.rightweight.ui.share.LatestSharedRoutineUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -73,7 +71,7 @@ class SharedRoutineDetailFragment : Fragment() {
                 sharedRoutineDetailViewModel.uiState.collect() { uiState ->
                     when (uiState) {
                         is LatestSharedRoutineDetailUiState.Success -> {
-                            binding.sharedRoutine = uiState.sharedRoutine
+                            binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
                             routineDayAdapter.submitList(uiState.dayUiModels)
                             setCurrentDayPositionObserve(uiState.dayUiModels)
                         }
@@ -86,7 +84,6 @@ class SharedRoutineDetailFragment : Fragment() {
 
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         sharedRoutineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
-            Log.d("dayUiModels", dayUiModels.toString())
             if(dayUiModels.size > it){
                 val exercises = dayUiModels.get(it).exercises
                 exerciseAdapter.submitList(exercises)
