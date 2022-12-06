@@ -1,11 +1,9 @@
 package com.lateinit.rightweight.ui.share.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
@@ -58,7 +56,6 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
     fun initClickedDay(){
         val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
-        Log.d("dayUiModels",  originDayUiModels.toString())
         originDayUiModels[FIRST_DAY_POSITION] = originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
         _currentDayPosition.value = FIRST_DAY_POSITION
         _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
