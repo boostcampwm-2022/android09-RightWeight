@@ -236,3 +236,14 @@ fun SharedRoutine.toSharedRoutineUiModel():SharedRoutineUiModel{
         sharedCount = sharedCount
     )
 }
+
+fun Routine.toRoutineUiModel():RoutineUiModel{
+    return RoutineUiModel(
+        routineId = routineId,
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = modifiedDate,
+        order = order
+    )
+}
