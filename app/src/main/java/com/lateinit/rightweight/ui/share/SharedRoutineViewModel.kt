@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.ui.share
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -12,8 +11,6 @@ import com.lateinit.rightweight.util.toSharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,12 +23,11 @@ class SharedRoutineViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            sharedRoutineRepository.getSharedRoutinesByPaging().map { sharedRoutinePagingData ->
-               sharedRoutinePagingData.map { sharedRoutine ->
+            sharedRoutineRepository.getSharedRoutinesByPaging().cachedIn(this).collect{ sharedRoutinePagingData ->
+                val sharedRoutines = sharedRoutinePagingData.map { sharedRoutine ->
                     sharedRoutine.toSharedRoutineUiModel()
                 }
-            }.cachedIn(this).collect{
-                _uiState.value = LatestSharedRoutineUiState.Success(it)
+                _uiState.value = LatestSharedRoutineUiState.Success(sharedRoutines)
             }
         }
     }
