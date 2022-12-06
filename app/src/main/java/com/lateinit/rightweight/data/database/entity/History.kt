@@ -13,11 +13,11 @@ data class History(
     @ColumnInfo(name = "date")
     val date: LocalDate,
     @ColumnInfo(name = "time")
-    var time: String,
+    val time: String,
     @ColumnInfo(name = "routine_title")
     val routineTitle: String,
     @ColumnInfo(name = "day_order")
     val dayOrder: Int,
     @ColumnInfo(name = "completed")
-    var completed: Boolean
+    val completed: Boolean
 )

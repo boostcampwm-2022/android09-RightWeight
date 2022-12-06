@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
@@ -66,6 +67,10 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun removeRoutineById(routineId: String) {
         routineLocalDataSource.removeRoutineById(routineId)
+    }
+
+    override fun getSelectedRoutine(routineId: String?): Flow<Routine> {
+        return routineLocalDataSource.getSelectedRoutine(routineId)
     }
 
 

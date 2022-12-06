@@ -13,8 +13,6 @@ import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -65,9 +63,11 @@ class SharedRoutineTest {
             )
             println(documentResponses.toString())
 
-            documentResponses?.forEach() { documentResponse ->
-                db.sharedRoutineDao()
-                    .insertSharedRoutine(documentResponse.document.toSharedRoutine())
+            documentResponses.forEach() { documentResponse ->
+                documentResponse.document?.let {
+                    db.sharedRoutineDao()
+                        .insertSharedRoutine(it.toSharedRoutine())
+                }
             }
 
             println(db.sharedRoutineDao().getAllSharedRoutines())
@@ -105,15 +105,6 @@ class SharedRoutineTest {
                 }
             }
 
-        }
-    }
-
-    @Test
-    fun flowTest(){
-        runBlocking {
-            routineRemoteDataSourceImpl.getSharedRoutineDays("07fd07ab-45c6-4479-881a-abe151a82456").collect(){
-                println(it.toString())
-            }
         }
     }
 

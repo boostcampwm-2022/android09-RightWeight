@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 class RoutineLocalDataSourceImpl @Inject constructor(
@@ -77,5 +78,13 @@ class RoutineLocalDataSourceImpl @Inject constructor(
 
     override fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays> {
         return sharedRoutineDao.getSharedRoutineWithDaysByRoutineId(routineId)
+    }
+
+    override fun getSelectedRoutine(routineId: String?): Flow<Routine> {
+        return if (routineId == null) {
+            emptyFlow()
+        } else {
+            routineDao.getSelectedRoutine(routineId)
+        }
     }
 }
