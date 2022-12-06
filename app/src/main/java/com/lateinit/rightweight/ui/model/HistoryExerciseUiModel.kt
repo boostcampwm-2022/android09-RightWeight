@@ -5,7 +5,7 @@ import com.lateinit.rightweight.data.ExercisePartType
 data class HistoryExerciseUiModel(
     val exerciseId: String,
     val historyId: String,
-    override val title: String,
+    override var title: String,
     val order: Int,
     override val part: ExercisePartType,
     override val expanded: Boolean = true,

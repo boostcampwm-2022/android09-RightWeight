@@ -3,7 +3,7 @@ package com.lateinit.rightweight.di
 import android.content.Context
 import androidx.room.Room
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
@@ -44,8 +44,8 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun getAppSharedPreferences(@ApplicationContext context: Context): AppSharedPreferences {
-        return AppSharedPreferences(context)
+    fun getAppPreferencesDataStore(@ApplicationContext context: Context): AppPreferencesDataStore {
+        return AppPreferencesDataStore(context)
     }
 
     companion object {

@@ -3,7 +3,6 @@ package com.lateinit.rightweight.data.datasource
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.database.intermediate.SharedRoutineDayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import kotlinx.coroutines.flow.Flow
 
@@ -34,4 +33,5 @@ interface RoutineLocalDataSource {
         sets: List<SharedRoutineExerciseSet>
     )
     fun getSharedRoutineWithDaysByRoutineId(routineId: String): Flow<SharedRoutineWithDays>
+    fun getSelectedRoutine(routineId: String?): Flow<Routine>
 }
