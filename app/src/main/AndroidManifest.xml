@@ -17,7 +17,7 @@
         android:theme="@style/Theme.RightWeight"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
 

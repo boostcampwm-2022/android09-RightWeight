@@ -12,10 +12,6 @@
         <import type="java.time.format.DateTimeFormatter" />
 
         <variable
-            name="userViewModel"
-            type="com.lateinit.rightweight.ui.home.UserViewModel" />
-
-        <variable
             name="homeViewModel"
             type="com.lateinit.rightweight.ui.home.HomeViewModel" />
 
@@ -58,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@{userViewModel.routine == null ? @string/empty_routine : userViewModel.routine.title}" />
+                android:text="@{homeViewModel.selectedRoutine == null ? @string/empty_routine : homeViewModel.selectedRoutine.title}" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView

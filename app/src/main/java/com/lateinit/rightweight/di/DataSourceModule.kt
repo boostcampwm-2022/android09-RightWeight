@@ -3,7 +3,7 @@ package com.lateinit.rightweight.di
 import com.lateinit.rightweight.data.AuthApiService
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
@@ -40,15 +40,15 @@ class DataSourceModule {
     fun getRoutineRemoteDataSource(
         db: AppDatabase,
         api: RoutineApiService,
-        appSharedPreferences: AppSharedPreferences
+        appPreferencesDataStore: AppPreferencesDataStore
     ): RoutineRemoteDataSource {
-        return RoutineRemoteDataSourceImpl(db, api, appSharedPreferences)
+        return RoutineRemoteDataSourceImpl(db, api, appPreferencesDataStore)
     }
 
     @Provides
     @Singleton
-    fun getUserDataSource(appSharedPreferences: AppSharedPreferences): UserDataSource {
-        return UserLocalDataSource(appSharedPreferences)
+    fun getUserDataSource(appPreferencesDataStore: AppPreferencesDataStore): UserDataSource {
+        return UserLocalDataSource(appPreferencesDataStore)
     }
 
     @Provides

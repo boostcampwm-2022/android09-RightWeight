@@ -11,7 +11,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.home.HomeActivity">
+            tools:context=".ui.MainActivity">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/material_toolbar"

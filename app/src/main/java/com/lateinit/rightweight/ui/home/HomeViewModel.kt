@@ -9,10 +9,14 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -20,8 +24,17 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
+    userRepository: UserRepository
 ) : ViewModel() {
+
+    private val userInfo =
+        userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+     val selectedRoutine = userInfo.map {
+         it?.routineId ?: return@map null
+         routineRepository.getRoutineById(it.routineId)
+     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
@@ -32,19 +45,19 @@ class HomeViewModel @Inject constructor(
     private val _dayUiModel = MutableLiveData<DayUiModel?>()
     val dayUiModel: LiveData<DayUiModel?> get() = _dayUiModel
 
-    fun getDayWithExercisesByDayId(dayId: String?) {
-        if(dayId == null){
-            _dayUiModel.postValue(null)
-        }
-        else {
-            viewModelScope.launch {
-                val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
-                val dayUiModel = dayWithExercises.day.toDayUiModel(
-                    dayWithExercises.day.order,
-                    dayWithExercises.exercises
-                )
-                _dayUiModel.postValue(dayUiModel)
+    fun loadDayWithExercises() {
+        viewModelScope.launch {
+            val dayId = userInfo.value?.dayId ?: run {
+                _dayUiModel.value = null
+                return@launch
             }
+
+            val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
+            val dayUiModel = dayWithExercises.day.toDayUiModel(
+                dayWithExercises.day.order,
+                dayWithExercises.exercises
+            )
+            _dayUiModel.value = dayUiModel
         }
     }
 

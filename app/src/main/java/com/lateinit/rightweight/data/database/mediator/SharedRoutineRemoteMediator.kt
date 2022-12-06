@@ -7,9 +7,10 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.util.toSharedRoutine
+import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -17,7 +18,7 @@ import java.io.IOException
 class SharedRoutineRemoteMediator(
     private val db: AppDatabase,
     private val api: RoutineApiService,
-    private val appSharedPreferences: AppSharedPreferences
+    private val appPreferencesDataStore: AppPreferencesDataStore
 ) : RemoteMediator<Int, SharedRoutine>() {
 
     private val initModifiedDateFlag = "1-1-1T1:1:1.1Z"
@@ -40,9 +41,8 @@ class SharedRoutineRemoteMediator(
                     return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }
                 LoadType.APPEND -> {
-                    val flag = appSharedPreferences.getSharedRoutinePagingFlag()
-                    if (flag.isNullOrEmpty()) initModifiedDateFlag
-                    else flag
+                    val flag = appPreferencesDataStore.sharedRoutinePagingFlag.first()
+                    flag.ifEmpty { initModifiedDateFlag }
                 }
             }
 
@@ -61,7 +61,7 @@ class SharedRoutineRemoteMediator(
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    appSharedPreferences.setSharedRoutinePagingFlag("")
+                    appPreferencesDataStore.saveSharedRoutinePagingFlag("")
                     db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
@@ -74,7 +74,7 @@ class SharedRoutineRemoteMediator(
                         endOfPaginationReached = true
                     }
                 }
-                appSharedPreferences.setSharedRoutinePagingFlag(pagingFlag)
+                appPreferencesDataStore.saveSharedRoutinePagingFlag(pagingFlag)
             }
 
             return if (documentResponses != null) {

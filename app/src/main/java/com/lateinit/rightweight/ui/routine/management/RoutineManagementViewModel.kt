@@ -6,14 +6,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RoutineManagementViewModel @Inject constructor(
-    private val routineRepository: RoutineRepository
+    private val routineRepository: RoutineRepository,
+    userRepository: UserRepository
 ) : ViewModel() {
+
+    private val userInfo =
+        userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val selectedRoutine = userInfo.map {
+        it?.routineId ?: return@map null
+        routineRepository.getRoutineById(it.routineId)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _routines = MutableLiveData(listOf<Routine>())
     val routines: LiveData<List<Routine>> get() = _routines
@@ -21,7 +34,7 @@ class RoutineManagementViewModel @Inject constructor(
     fun getRoutineList() {
         viewModelScope.launch {
             val routines = routineRepository.getRoutines()
-            _routines.postValue(routines)
+            _routines.value = routines
         }
     }
 
