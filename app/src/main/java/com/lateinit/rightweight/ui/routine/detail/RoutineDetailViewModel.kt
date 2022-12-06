@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.model.CommitType
 import com.lateinit.rightweight.data.model.UpdateData
 import com.lateinit.rightweight.data.model.WriteModelData
-import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -116,49 +114,62 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateSharedRoutine() {
+    fun shareRoutine(){
+
+//        deleteSharedRoutine()
+        updateSharedRoutine()
+    }
+
+    private fun updateSharedRoutine() {
         commitItems.clear()
-        val updateType = CommitType.UPDATE
-        val userId = userInfo.value?.userId ?: return
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
         val path = "${WriteModelData.defaultPath}/shared_routine/${nowRoutine.routineId}"
-        addCommitData(path, nowRoutine.toSharedRoutineField(userId), updateType)
-        updateDays(path, days, updateType)
+        commitItems.add(
+            WriteModelData(
+                update = UpdateData(path, nowRoutine.toSharedRoutineField(nowRoutine.routineId))
+            ))
+        updateDays(path, days)
     }
 
     private fun updateDays(
         lastPath: String,
-        dayUiModels: List<DayUiModel>,
-        commitType: CommitType
+        dayUiModels: List<DayUiModel>
     ) {
         dayUiModels.forEach { dayUiModel ->
             val path = "${lastPath}/day/${dayUiModel.dayId}"
-            addCommitData(path, dayUiModel.toDayField(), commitType)
-            updateExercises(path, dayUiModel.exercises, commitType)
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, dayUiModel.toDayField())
+                ))
+            updateExercises(path, dayUiModel.exercises)
         }
     }
 
     private fun updateExercises(
         lastPath: String,
-        exerciseUiModels: List<ExerciseUiModel>,
-        commitType: CommitType
+        exerciseUiModels: List<ExerciseUiModel>
     ) {
         exerciseUiModels.forEach { exerciseUiModel ->
             val path = "${lastPath}/exercise/${exerciseUiModel.exerciseId}"
-            addCommitData(path, exerciseUiModel.toExerciseField(), commitType)
-            updateExerciseSets(path, exerciseUiModel.exerciseSets, commitType)
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseUiModel.toExerciseField())
+                ))
+            updateExerciseSets(path, exerciseUiModel.exerciseSets)
         }
     }
 
     private fun updateExerciseSets(
         lastPath: String,
-        exerciseSets: List<ExerciseSetUiModel>,
-        commitType: CommitType
+        exerciseSets: List<ExerciseSetUiModel>
     ) {
         exerciseSets.forEach { exerciseSetUiModel ->
             val path = "${lastPath}/exercise_set/${exerciseSetUiModel.setId} "
-            addCommitData(path, exerciseSetUiModel.toExerciseSetField(), commitType)
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
+                ))
         }
         viewModelScope.launch {
             sharedRoutineRepository.commitTransaction(commitItems)
@@ -166,7 +177,7 @@ class RoutineDetailViewModel @Inject constructor(
     }
 
 
-    fun deleteSharedRoutine() {
+    private fun deleteSharedRoutine() {
         commitItems.clear()
         val routineId = _routine.value?.routineId ?: return
         commitItems.add(
@@ -220,16 +231,5 @@ class RoutineDetailViewModel @Inject constructor(
         sharedRoutineRepository.commitTransaction(commitItems)
     }
 
-
-    private fun addCommitData(path: String, remoteData: RemoteData, commitType: CommitType) {
-        commitItems.add(
-            when (commitType) {
-                CommitType.UPDATE -> WriteModelData(
-                    update = UpdateData(path, remoteData)
-                )
-                CommitType.DELETE -> WriteModelData(delete = path)
-            }
-        )
-    }
 }
 

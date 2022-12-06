@@ -87,7 +87,7 @@ class RoutineDetailFragment : Fragment(){
                         return true
                     }
                     R.id.action_item_share -> {
-                        viewModel.deleteSharedRoutine()
+                        viewModel.shareRoutine()
                         return true
                     }
                     else -> {
