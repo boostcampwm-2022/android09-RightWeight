@@ -7,5 +7,5 @@ interface UserRepository {
 
     suspend fun saveUser(user: User)
 
-    fun getUserFlow(): Flow<User?>
+    fun getUser(): Flow<User?>
 }

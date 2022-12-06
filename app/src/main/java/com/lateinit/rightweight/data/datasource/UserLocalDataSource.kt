@@ -14,6 +14,6 @@ class UserLocalDataSource @Inject constructor(
     }
 
     override fun getUser(): Flow<User?> {
-        return appPreferencesDataStore.userInfoFlow
+        return appPreferencesDataStore.userInfo
     }
 }

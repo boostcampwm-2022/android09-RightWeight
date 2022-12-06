@@ -16,7 +16,7 @@ class AppPreferencesDataStore @Inject constructor(private val context: Context) 
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "RightWeight")
 
-    val userInfoFlow: Flow<User?> = context.dataStore.data
+    val userInfo: Flow<User?> = context.dataStore.data
         .map { preferences ->
             Gson().fromJson(preferences[USER_INFO], User::class.java) ?: null
         }

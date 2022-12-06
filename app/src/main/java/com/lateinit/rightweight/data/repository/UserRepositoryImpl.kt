@@ -12,7 +12,7 @@ class UserRepositoryImpl @Inject constructor(
         userDataSource.saveUser(user)
     }
 
-    override fun getUserFlow(): Flow<User?> {
+    override fun getUser(): Flow<User?> {
         return userDataSource.getUser()
     }
 }
