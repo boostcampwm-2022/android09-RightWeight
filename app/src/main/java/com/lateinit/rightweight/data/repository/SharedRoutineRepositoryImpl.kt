@@ -1,11 +1,7 @@
 package com.lateinit.rightweight.data.repository
 
 import androidx.paging.PagingData
-import com.lateinit.rightweight.data.database.entity.Routine
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
-import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
-import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
-import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
@@ -32,32 +28,29 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun shareDay(routineId: String, dayId: String, dayField: DayField) {
+    override suspend fun shareDay(path: String, dayId: String, dayField: DayField) {
         routineRemoteDataSource.shareDay(
-            routineId, dayId, RootField(dayField)
+            path, dayId, RootField(dayField)
         )
     }
 
     override suspend fun shareExercise(
-        routineId: String,
-        dayId: String,
+        path: String,
         exerciseId: String,
         exerciseField: ExerciseField
     ) {
         routineRemoteDataSource.shareExercise(
-            routineId, dayId, exerciseId, RootField(exerciseField)
+            path, exerciseId, RootField(exerciseField)
         )
     }
 
     override suspend fun shareExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
+        path: String,
         exerciseSetId: String,
         exerciseSetField: ExerciseSetField
     ) {
         routineRemoteDataSource.shareExerciseSet(
-            routineId, dayId, exerciseId, exerciseSetId, RootField(exerciseSetField)
+            path, exerciseSetId, RootField(exerciseSetField)
         )
     }
 
@@ -86,12 +79,16 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                         routineId,
                         sharedRoutineExercise.dayId,
                         sharedRoutineExercise.exerciseId
-                    ).forEach(){ sharedRoutineExerciseSet ->
+                    ).forEach() { sharedRoutineExerciseSet ->
                         sharedRoutineExerciseSets.add(sharedRoutineExerciseSet)
                     }
                 }
         }
-        routineLocalDataSource.insertSharedRoutineDetail(sharedRoutineDays, sharedRoutineExercises, sharedRoutineExerciseSets)
+        routineLocalDataSource.insertSharedRoutineDetail(
+            sharedRoutineDays,
+            sharedRoutineExercises,
+            sharedRoutineExerciseSets
+        )
     }
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {

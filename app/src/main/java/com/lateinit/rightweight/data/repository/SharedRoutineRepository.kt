@@ -13,18 +13,15 @@ import kotlinx.coroutines.flow.Flow
 interface SharedRoutineRepository {
     fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
     suspend fun shareRoutine(userId: String, routineId: String, routine: Routine)
-    suspend fun shareDay(routineId: String, dayId: String, dayField: DayField)
+    suspend fun shareDay(path: String, dayId: String, dayField: DayField)
     suspend fun shareExercise(
-        routineId: String,
-        dayId: String,
+        path: String,
         exerciseId: String,
         exerciseField: ExerciseField
     )
 
     suspend fun shareExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
+        path: String,
         exerciseSetId: String,
         exerciseSetField: ExerciseSetField
     )

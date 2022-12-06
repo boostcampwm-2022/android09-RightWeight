@@ -12,18 +12,15 @@ import com.lateinit.rightweight.data.remote.model.RootField
 
 interface RoutineRemoteDataSource {
     suspend fun shareRoutine(routineId: String, rootField: RootField)
-    suspend fun shareDay(routineId: String, dayId: String, rootField: RootField)
+    suspend fun shareDay(path: String, dayId: String, rootField: RootField)
     suspend fun shareExercise(
-        routineId: String,
-        dayId: String,
+        path: String,
         exerciseId: String,
         rootField: RootField
     )
 
     suspend fun shareExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
+        path: String,
         exerciseSetId: String,
         rootField: RootField
     )

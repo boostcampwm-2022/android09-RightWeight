@@ -15,4 +15,8 @@ data class WriteModelData(
 data class UpdateData(
     val name: String,
     val fields: RemoteData
-)
+){
+    companion object{
+        const val defaultPath = "projects/right-weight/databases/(default)/documents"
+    }
+}

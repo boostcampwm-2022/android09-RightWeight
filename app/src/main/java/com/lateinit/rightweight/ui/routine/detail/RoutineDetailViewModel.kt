@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.model.UpdateData
+import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
@@ -30,6 +32,8 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
+
+    private var commitItems = mutableListOf<WriteModelData>()
 
     fun getRoutine(routineId: String) {
         viewModelScope.launch {
@@ -83,63 +87,56 @@ class RoutineDetailViewModel @Inject constructor(
     }
 
     fun shareRoutine(userId: String) {
+        commitItems.clear()
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
-        viewModelScope.launch {
-            sharedRoutineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
-            saveDays(nowRoutine.routineId, days)
+        val path = "${UpdateData.defaultPath}/shared_routine/${nowRoutine.routineId}"
+        commitItems.add(
+            WriteModelData(
+                update = UpdateData(path, nowRoutine.toSharedRoutineField(userId))
+            )
+        )
+        saveDays(path, days)
+    }
+
+    private fun saveDays(lastPath: String, dayUiModels: List<DayUiModel>) {
+        dayUiModels.forEach { dayUiModel ->
+            val path = "${lastPath}/day/${dayUiModel.dayId}"
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, dayUiModel.toDayField())
+                )
+            )
+            saveExercise(path, dayUiModel.exercises)
         }
     }
 
-    private fun saveDays(routineId: String, dayUiModels: List<DayUiModel>) {
-        viewModelScope.launch {
-            dayUiModels.forEach { dayUiModel ->
-                sharedRoutineRepository.shareDay(
-                    routineId,
-                    dayUiModel.dayId,
-                    dayUiModel.toDayField()
+    private fun saveExercise(lastPath: String, exerciseUiModels: List<ExerciseUiModel>) {
+        exerciseUiModels.forEach { exerciseUiModel ->
+            val path = "${lastPath}/exercise/${exerciseUiModel.exerciseId}"
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseUiModel.toExerciseField())
                 )
-                saveExercise(routineId, dayUiModel.dayId, dayUiModel.exercises)
-            }
-        }
-    }
-
-    private fun saveExercise(routineId: String, dayId: String, exercises: List<ExerciseUiModel>) {
-        viewModelScope.launch {
-            exercises.forEach { exerciseUiModel ->
-                sharedRoutineRepository.shareExercise(
-                    routineId,
-                    dayId,
-                    exerciseUiModel.exerciseId,
-                    exerciseUiModel.toExerciseField()
-                )
-                saveExerciseSet(
-                    routineId,
-                    dayId,
-                    exerciseUiModel.exerciseId,
-                    exerciseUiModel.exerciseSets
-                )
-            }
+            )
+            saveExerciseSet(path, exerciseUiModel.exerciseSets)
         }
 
     }
 
     private fun saveExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
-        exerciseSets: List<ExerciseSetUiModel>
+        lastPath: String, exerciseSets: List<ExerciseSetUiModel>
     ) {
-        viewModelScope.launch {
-            exerciseSets.forEach { exerciseSetUiModel ->
-                sharedRoutineRepository.shareExerciseSet(
-                    routineId,
-                    dayId,
-                    exerciseId,
-                    exerciseSetUiModel.setId,
-                    exerciseSetUiModel.toExerciseSetField()
+        exerciseSets.forEach { exerciseSetUiModel ->
+            val path = "${lastPath}/exercise_set/${exerciseSetUiModel.setId} "
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
                 )
-            }
+            )
+        }
+        viewModelScope.launch {
+            sharedRoutineRepository.commitTransaction(commitItems)
         }
     }
 

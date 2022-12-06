@@ -38,33 +38,28 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         api.shareRoutine(routineId, rootField)
     }
 
-    override suspend fun shareDay(routineId: String, dayId: String, rootField: RootField) {
-        api.shareRoutineDay(routineId, dayId, rootField)
+    override suspend fun shareDay(path: String, dayId: String, rootField: RootField) {
+        api.shareRoutineDay(path, dayId, rootField)
     }
 
     override suspend fun shareExercise(
-        routineId: String,
-        dayId: String,
+        path: String,
         exerciseId: String,
         rootField: RootField
     ) {
-        api.shareRoutineExercise(routineId, dayId, exerciseId, rootField)
+//        api.shareRoutineExercise(path, exerciseId, rootField)
     }
 
     override suspend fun shareExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
+        path: String,
         exerciseSetId: String,
         rootField: RootField
     ) {
-        api.shareRoutineExerciseSet(
-            routineId,
-            dayId,
-            exerciseId,
-            exerciseSetId,
-            rootField
-        )
+//        api.shareRoutineExerciseSet(
+//            path,
+//            exerciseSetId,
+//            rootField
+//        )
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
