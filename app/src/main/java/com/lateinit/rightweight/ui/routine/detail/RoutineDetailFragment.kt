@@ -88,7 +88,7 @@ class RoutineDetailFragment : Fragment(){
                         return true
                     }
                     R.id.action_item_share -> {
-                        viewModel.shareRoutine()
+                        viewModel.commitRoutine(CommitType.UPDATE)
                         return true
                     }
                     else -> {
@@ -140,11 +140,6 @@ class RoutineDetailFragment : Fragment(){
         } else {
             dialog.show(parentFragmentManager, ROUTINE_REMOVE_DIALOG_TAG, R.string.routine_remove_message)
         }
-    }
-
-    private fun shareRoutine() {
-        val userId = viewModel.userInfo.value?.userId ?: return
-        viewModel.commitRoutine(userId,CommitType.UPDATE)
     }
 
     override fun onDestroyView() {

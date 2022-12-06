@@ -17,8 +17,9 @@ import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayField
-import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
+import com.lateinit.rightweight.util.toSharedRoutineField
+import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseSetField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -120,8 +121,9 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun commitRoutine(userId: String, commitType: CommitType) {
+    fun commitRoutine(commitType: CommitType) {
         commitItems.clear()
+        val userId = userInfo.value?.userId ?: return
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
         val path = "${UpdateData.defaultPath}/shared_routine/${nowRoutine.routineId}"
