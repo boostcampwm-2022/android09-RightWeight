@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
+import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,11 @@ class SharedRoutineViewModel @Inject constructor(
         viewModelScope.launch {
             sharedRoutineRepository.getSharedRoutinesByPaging().cachedIn(viewModelScope)
                 .collect { sharedRoutinePagingData ->
+                    val newPagingData: PagingData<SharedRoutineUiModel> = PagingData.empty()
+//                    newPagingData.insertFooterItem
+////                    sharedRoutinePagingData.flatMap {
+////                        newPagingData.
+////                    }
                     _uiState.value = LatestSharedRoutineUiState.Success(sharedRoutinePagingData)
                 }
         }

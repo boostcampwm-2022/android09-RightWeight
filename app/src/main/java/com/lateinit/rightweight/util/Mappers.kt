@@ -7,12 +7,7 @@ import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExe
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.remote.model.*
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.ui.model.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -199,14 +194,13 @@ fun DetailResponse<ExerciseSetField>.toSharedRoutineExerciseSet(): SharedRoutine
 }
 
 fun SharedRoutineDay.toDayUiModel(
-    index: Int,
     exercises: List<SharedRoutineExerciseWithExerciseSets>
 ): DayUiModel {
     return DayUiModel(
         dayId = dayId,
         routineId = routineId,
         order = order,
-        selected = index == FIRST_DAY_POSITION,
+        selected = false,
         exercises = exercises.map { it.toExerciseUiModel() }
     )
 }
@@ -229,5 +223,16 @@ fun SharedRoutineExerciseSet.toExerciseSetUiModel(): ExerciseSetUiModel {
         weight = weight,
         count = count,
         order = order
+    )
+}
+
+fun SharedRoutine.toSharedRoutineUiModel():SharedRoutineUiModel{
+    return SharedRoutineUiModel(
+        routineId = routineId,
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = modifiedDate,
+        sharedCount = sharedCount
     )
 }
