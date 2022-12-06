@@ -20,9 +20,9 @@ class AppPreferencesDataStore @Inject constructor(private val context: Context) 
         .map { preferences ->
             Gson().fromJson(preferences[USER_INFO], User::class.java) ?: null
         }
-    
-    val sharedRoutinePagingFlag: Flow<String?> = context.dataStore.data
-        .map { preferences -> 
+
+    val sharedRoutinePagingFlag: Flow<String> = context.dataStore.data
+        .map { preferences ->
             preferences[PAGING_FLAG] ?: ""
         }
 
