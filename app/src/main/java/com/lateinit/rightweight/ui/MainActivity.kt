@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var idToken: String
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment{ tag ->
             when (tag) {
@@ -158,6 +159,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mainViewModel.userInfo.collect {
                     it?.let {
                         headerBinding.user = it
+                        idToken = it.idToken
+
+                        Log.d("delete", "${getString(R.string.google_api_key)}, $idToken")
                     }
                 }
             }
@@ -170,15 +174,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        // 유저 정보 삭제
         client.signOut()
-        val intent = Intent(baseContext, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        moveToLoginActivity()
     }
 
     private fun withdraw() {
-        Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+        client.signOut()
+        mainViewModel.deleteAccount(getString(R.string.google_api_key), idToken)
+        moveToLoginActivity()
+    }
+
+    private fun moveToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {

@@ -6,5 +6,6 @@ data class User(
     val dayId: String?,
     val email: String,
     val displayName: String,
-    val photoUrl: String
+    val photoUrl: String,
+    val idToken: String
 )

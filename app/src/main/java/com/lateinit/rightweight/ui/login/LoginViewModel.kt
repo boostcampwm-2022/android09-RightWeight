@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
     private suspend fun saveUser(loginResponse: LoginResponse) {
         with(loginResponse) {
             userRepository.saveUser(
-                User(localId, null, null, email, displayName, photoUrl)
+                User(localId, null, null, email, displayName, photoUrl, idToken)
             )
         }
     }
