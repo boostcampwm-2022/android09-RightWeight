@@ -2,13 +2,13 @@ package com.lateinit.rightweight.ui.routine.management
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.ui.model.RoutineUiModel
 
 @BindingAdapter(value = [
     "setItems",
     "excludeItem"
 ])
-fun setItems(recyclerView: RecyclerView, items: List<Routine>, excludeItem: Routine?) {
+fun setItems(recyclerView: RecyclerView, items: List<RoutineUiModel>, excludeItem: RoutineUiModel?) {
     if (recyclerView.adapter == null) {
         recyclerView.adapter = RoutineManagementAdapter()
     }

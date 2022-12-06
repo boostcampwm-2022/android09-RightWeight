@@ -4,18 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.RoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -31,8 +32,8 @@ class RoutineDetailViewModel @Inject constructor(
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val _routine = MutableLiveData<Routine>()
-    val routine: LiveData<Routine> = _routine
+    private val _routineUiModel = MutableLiveData<RoutineUiModel>()
+    val routineUiModel: LiveData<RoutineUiModel> = _routineUiModel
 
     private val _dayUiModels = MutableLiveData<List<DayUiModel>>()
     val dayUiModels: LiveData<List<DayUiModel>> = _dayUiModels
@@ -46,7 +47,7 @@ class RoutineDetailViewModel @Inject constructor(
 
             userRepository.saveUser(
                 user.copy(
-                    routineId = _routine.value?.routineId,
+                    routineId = _routineUiModel.value?.routineId,
                     dayId = _dayUiModels.value?.first()?.dayId
                 )
             )
@@ -70,7 +71,7 @@ class RoutineDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
 
-            _routine.value = routineWithDays.routine
+            _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
             _dayUiModels.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
             }
@@ -116,7 +117,7 @@ class RoutineDetailViewModel @Inject constructor(
 
     fun shareRoutine() {
         val userId = userInfo.value?.userId ?: return
-        val nowRoutine = _routine.value ?: return
+        val nowRoutine = _routineUiModel.value ?: return
         val days = _dayUiModels.value ?: return
         viewModelScope.launch {
             sharedRoutineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
@@ -178,7 +179,7 @@ class RoutineDetailViewModel @Inject constructor(
 
     fun deleteSharedRoutineAndDays() {
         viewModelScope.launch {
-            val routineId = _routine.value?.routineId ?: return@launch
+            val routineId = _routineUiModel.value?.routineId ?: return@launch
             sharedRoutineRepository.deleteDocument(routineId)
             val path = "${routineId}/day"
             val dayDocuments = sharedRoutineRepository.getChildrenDocumentName(path)

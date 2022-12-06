@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
      val selectedRoutine = userInfo.map {
          it?.routineId ?: return@map null
-         routineRepository.getRoutineById(it.routineId)
+         routineRepository.getRoutineById(it.routineId).toRoutineUiModel()
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _exercises = MutableLiveData<List<Exercise>>()
