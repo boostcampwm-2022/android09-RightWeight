@@ -19,9 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -37,9 +37,10 @@ class CalendarViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    private val userInfo =
+        userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val selectedDay = MutableStateFlow(LocalDate.MIN)
+    private val selectedDay = MutableStateFlow(LocalDate.now())
     private val currentMonth = MutableStateFlow(YearMonth.now())
 
     private val _routineTitle = MutableStateFlow(DEFAULT_ROUTINE_TITLE)
@@ -49,14 +50,13 @@ class CalendarViewModel @Inject constructor(
     val exerciseTime: StateFlow<String> = _exerciseTime.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val selectedDayInfo = selectedDay.mapLatest {
-        getSelectedDayInfo(it)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val dateToExerciseHistories = currentMonth.flatMapLatest {
         getHistoryBetweenDate(it)
     }.stateIn(viewModelScope, SharingStarted.Lazily, mapOf())
+
+    val selectedDayInfo = selectedDay.combine(dateToExerciseHistories) { date, _ ->
+        getSelectedDayInfo(date)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private var currentRoutine: Routine? = null
     private val currentRoutineDays = MutableStateFlow<List<DayUiModel>>(emptyList())
@@ -78,7 +78,6 @@ class CalendarViewModel @Inject constructor(
                 if (routineWithDay.day.dayId == user.dayId) todayRoutineDayPosition = index
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
             }
-            selectDay(LocalDate.now())
         }
     }
 
@@ -124,7 +123,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getHistoryBetweenDate(
-        month: YearMonth,
+        month: YearMonth
     ): Flow<Map<LocalDate, HistoryWithHistoryExercises>> {
         val startDay = month.atDay(START_DAY_OF_MONTH)
         val endDay = month.atEndOfMonth()
