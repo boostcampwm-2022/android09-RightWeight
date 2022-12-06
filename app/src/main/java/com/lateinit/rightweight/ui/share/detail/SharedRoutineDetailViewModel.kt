@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toSharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +41,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                     }
 
                     _uiState.value = LatestSharedRoutineDetailUiState.Success(
-                        sharedRoutineWithDays.routine,
+                        sharedRoutineWithDays.routine.toSharedRoutineUiModel(),
                         sharedRoutineWithDays.days.mapIndexed { index, sharedRoutineWithDay ->
                             sharedRoutineWithDay.day.toDayUiModel(
                                 sharedRoutineWithDay.exercises
@@ -59,7 +61,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
         Log.d("dayUiModels",  originDayUiModels.toString())
         originDayUiModels[FIRST_DAY_POSITION] = originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
         _currentDayPosition.value = FIRST_DAY_POSITION
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutine, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
     }
 
     fun clickDay(dayPosition: Int) {
@@ -73,7 +75,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
         originDayUiModels[dayPosition] = originDayUiModels[dayPosition].copy(selected = true)
 
         _currentDayPosition.value = dayPosition
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutine, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
     }
 
     fun clickExercise(exercisePosition: Int) {
@@ -90,14 +92,14 @@ class SharedRoutineDetailViewModel @Inject constructor(
             originDayUiModels[nowDayPosition].copy(exercises = originExerciseUiModels)
 
         _currentDayPosition.value = _currentDayPosition.value
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutine, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
     }
 
 }
 
 sealed class LatestSharedRoutineDetailUiState {
     data class Success(
-        val sharedRoutine: SharedRoutine?,
+        val sharedRoutineUiModel: SharedRoutineUiModel?,
         val dayUiModels: List<DayUiModel>
     ) : LatestSharedRoutineDetailUiState()
 

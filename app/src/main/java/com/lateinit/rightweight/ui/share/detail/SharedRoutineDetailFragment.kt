@@ -71,7 +71,7 @@ class SharedRoutineDetailFragment : Fragment() {
                 sharedRoutineDetailViewModel.uiState.collect() { uiState ->
                     when (uiState) {
                         is LatestSharedRoutineDetailUiState.Success -> {
-                            binding.sharedRoutine = uiState.sharedRoutine
+                            binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
                             routineDayAdapter.submitList(uiState.dayUiModels)
                             setCurrentDayPositionObserve(uiState.dayUiModels)
                         }

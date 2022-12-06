@@ -1,15 +1,19 @@
 package com.lateinit.rightweight.ui.share
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import androidx.paging.map
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
+import com.lateinit.rightweight.util.toSharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,21 +26,21 @@ class SharedRoutineViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            sharedRoutineRepository.getSharedRoutinesByPaging().cachedIn(viewModelScope)
-                .collect { sharedRoutinePagingData ->
-                    val newPagingData: PagingData<SharedRoutineUiModel> = PagingData.empty()
-//                    newPagingData.insertFooterItem
-////                    sharedRoutinePagingData.flatMap {
-////                        newPagingData.
-////                    }
-                    _uiState.value = LatestSharedRoutineUiState.Success(sharedRoutinePagingData)
+            sharedRoutineRepository.getSharedRoutinesByPaging().map { sharedRoutinePagingData ->
+               sharedRoutinePagingData.map { sharedRoutine ->
+                    sharedRoutine.toSharedRoutineUiModel()
                 }
+            }.cachedIn(this).collect{
+                _uiState.value = LatestSharedRoutineUiState.Success(it)
+            }
         }
     }
 
 }
 
 sealed class LatestSharedRoutineUiState {
-    data class Success(val sharedRoutines: PagingData<SharedRoutine>) : LatestSharedRoutineUiState()
+    data class Success(val sharedRoutines: PagingData<SharedRoutineUiModel>) :
+        LatestSharedRoutineUiState()
+
     data class Error(val exception: Throwable) : LatestSharedRoutineUiState()
 }
