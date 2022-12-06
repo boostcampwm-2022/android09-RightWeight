@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.util
 
+import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
@@ -178,7 +179,7 @@ fun DetailResponse<ExerciseField>.toSharedRoutineExercise(): SharedRoutineExerci
         exerciseId = splitedName.last(),
         title = fields.title?.value.toString(),
         order = fields.order?.value.toString().toInt(),
-        part = enumValueOf(fields.partType?.value.toString())
+        part = ExercisePartType.valueOf(fields.partType?.value.toString())
     )
 }
 
