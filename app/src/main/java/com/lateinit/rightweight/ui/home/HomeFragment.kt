@@ -106,7 +106,6 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.loadDayWithExercises()
-        homeViewModel.loadSelectedRoutine()
     }
 
     override fun onDestroyView() {

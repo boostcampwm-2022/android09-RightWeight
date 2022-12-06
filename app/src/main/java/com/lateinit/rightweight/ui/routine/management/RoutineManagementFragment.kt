@@ -35,7 +35,6 @@ class RoutineManagementFragment : Fragment() {
 
     override fun onResume() {
         routineManagementViewModel.getRoutineList()
-        routineManagementViewModel.loadSelectedRoutine()
         super.onResume()
     }
 

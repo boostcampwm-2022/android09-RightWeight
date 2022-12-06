@@ -2,18 +2,20 @@ package com.lateinit.rightweight.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
-import com.lateinit.rightweight.ui.UserViewModel
+import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -21,8 +23,16 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
-    private val historyRepository: HistoryRepository
-) : UserViewModel() {
+    private val historyRepository: HistoryRepository,
+    userRepository: UserRepository
+) : ViewModel() {
+
+    private val userInfo =
+        userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+     val selectedRoutine =
+        routineRepository.getSelectedRoutine(userInfo.value?.routineId)
+            .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
@@ -33,25 +43,19 @@ class HomeViewModel @Inject constructor(
     private val _dayUiModel = MutableLiveData<DayUiModel?>()
     val dayUiModel: LiveData<DayUiModel?> get() = _dayUiModel
 
-    private val _selectedRoutine = MutableLiveData<Routine>()
-    val selectedRoutine: LiveData<Routine> get() = _selectedRoutine
-
     fun loadDayWithExercises() {
-
         viewModelScope.launch {
-            userInfo.collect {
-                val dayId = it?.dayId ?: run {
-                    _dayUiModel.value = null
-                    return@collect
-                }
-
-                val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
-                val dayUiModel = dayWithExercises.day.toDayUiModel(
-                    dayWithExercises.day.order,
-                    dayWithExercises.exercises
-                )
-                _dayUiModel.value = dayUiModel
+            val dayId = userInfo.value?.dayId ?: run {
+                _dayUiModel.value = null
+                return@launch
             }
+
+            val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
+            val dayUiModel = dayWithExercises.day.toDayUiModel(
+                dayWithExercises.day.order,
+                dayWithExercises.exercises
+            )
+            _dayUiModel.value = dayUiModel
         }
     }
 
@@ -69,16 +73,6 @@ class HomeViewModel @Inject constructor(
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
             historyRepository.saveHistory(day, exercises, totalExerciseSets)
-        }
-    }
-
-    fun loadSelectedRoutine() {
-        viewModelScope.launch {
-            userInfo.collect {
-                val routineId = it?.routineId ?: return@collect
-                val routine = routineRepository.getRoutineById(routineId)
-                _selectedRoutine.value = routine
-            }
         }
     }
 

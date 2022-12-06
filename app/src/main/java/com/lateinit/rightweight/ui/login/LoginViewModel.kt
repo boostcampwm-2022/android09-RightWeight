@@ -1,10 +1,11 @@
 package com.lateinit.rightweight.ui.login
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.LoginResponse
 import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.repository.LoginRepository
-import com.lateinit.rightweight.ui.UserViewModel
+import com.lateinit.rightweight.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
-) : UserViewModel() {
+    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _networkResult = MutableStateFlow(NetworkState.NO_ERROR)
     val networkResult = _networkResult.asStateFlow()

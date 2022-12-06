@@ -1,11 +1,12 @@
 package com.lateinit.rightweight.ui.calendar
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
-import com.lateinit.rightweight.ui.UserViewModel
+import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.ui.model.ParentDayUiModel
@@ -31,9 +32,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
+    userRepository: UserRepository,
     private val historyRepository: HistoryRepository,
     private val routineRepository: RoutineRepository
-) : UserViewModel() {
+) : ViewModel() {
+
+    private val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val selectedDay = MutableStateFlow(LocalDate.MIN)
     private val currentMonth = MutableStateFlow(YearMonth.now())

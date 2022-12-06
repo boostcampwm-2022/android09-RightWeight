@@ -2,11 +2,12 @@ package com.lateinit.rightweight.ui.routine.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
-import com.lateinit.rightweight.ui.UserViewModel
+import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -16,14 +17,19 @@ import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RoutineDetailViewModel @Inject constructor(
     private val routineRepository: RoutineRepository,
-    private val sharedRoutineRepository: SharedRoutineRepository
-) : UserViewModel() {
+    private val sharedRoutineRepository: SharedRoutineRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
+
+    val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _routine = MutableLiveData<Routine>()
     val routine: LiveData<Routine> = _routine

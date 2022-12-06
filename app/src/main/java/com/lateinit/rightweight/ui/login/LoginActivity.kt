@@ -18,7 +18,6 @@ import com.google.android.gms.common.api.Status
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
-import com.lateinit.rightweight.ui.UserViewModel
 import com.lateinit.rightweight.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,7 +27,6 @@ class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
-    val userViewModel: UserViewModel by viewModels()
 
     private val options: GoogleSignInOptions by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
