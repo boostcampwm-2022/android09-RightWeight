@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.model.CommitType
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.home.UserViewModel
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
@@ -141,7 +142,7 @@ class RoutineDetailFragment : Fragment(){
 
     private fun shareRoutine() {
         val userId = userViewModel.userInfo.value?.userId ?: return
-        routineDetailViewModel.shareRoutine(userId)
+        routineDetailViewModel.commitRoutine(userId,CommitType.UPDATE)
     }
 
     override fun onDestroyView() {

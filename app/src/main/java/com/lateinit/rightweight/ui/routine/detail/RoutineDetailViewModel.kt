@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.model.CommitType
 import com.lateinit.rightweight.data.model.UpdateData
 import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
@@ -86,54 +88,48 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun shareRoutine(userId: String) {
+    fun commitRoutine(userId: String, commitType: CommitType) {
         commitItems.clear()
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
         val path = "${UpdateData.defaultPath}/shared_routine/${nowRoutine.routineId}"
-        commitItems.add(
-            WriteModelData(
-                update = UpdateData(path, nowRoutine.toSharedRoutineField(userId))
-            )
-        )
-        saveDays(path, days)
+        addCommitData(path, nowRoutine.toSharedRoutineField(userId), commitType)
+        commitDays(path, days, commitType)
     }
 
-    private fun saveDays(lastPath: String, dayUiModels: List<DayUiModel>) {
+    private fun commitDays(
+        lastPath: String,
+        dayUiModels: List<DayUiModel>,
+        commitType: CommitType
+    ) {
         dayUiModels.forEach { dayUiModel ->
             val path = "${lastPath}/day/${dayUiModel.dayId}"
-            commitItems.add(
-                WriteModelData(
-                    update = UpdateData(path, dayUiModel.toDayField())
-                )
-            )
-            saveExercise(path, dayUiModel.exercises)
+            addCommitData(path, dayUiModel.toDayField(), commitType)
+            commitExercises(path, dayUiModel.exercises, commitType)
         }
     }
 
-    private fun saveExercise(lastPath: String, exerciseUiModels: List<ExerciseUiModel>) {
+    private fun commitExercises(
+        lastPath: String,
+        exerciseUiModels: List<ExerciseUiModel>,
+        commitType: CommitType
+    ) {
         exerciseUiModels.forEach { exerciseUiModel ->
             val path = "${lastPath}/exercise/${exerciseUiModel.exerciseId}"
-            commitItems.add(
-                WriteModelData(
-                    update = UpdateData(path, exerciseUiModel.toExerciseField())
-                )
-            )
-            saveExerciseSet(path, exerciseUiModel.exerciseSets)
+            addCommitData(path, exerciseUiModel.toExerciseField(), commitType)
+            commitExerciseSets(path, exerciseUiModel.exerciseSets, commitType)
         }
 
     }
 
-    private fun saveExerciseSet(
-        lastPath: String, exerciseSets: List<ExerciseSetUiModel>
+    private fun commitExerciseSets(
+        lastPath: String,
+        exerciseSets: List<ExerciseSetUiModel>,
+        commitType: CommitType
     ) {
         exerciseSets.forEach { exerciseSetUiModel ->
             val path = "${lastPath}/exercise_set/${exerciseSetUiModel.setId} "
-            commitItems.add(
-                WriteModelData(
-                    update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
-                )
-            )
+            addCommitData(path, exerciseSetUiModel.toExerciseSetField(), commitType)
         }
         viewModelScope.launch {
             sharedRoutineRepository.commitTransaction(commitItems)
@@ -174,5 +170,15 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
+    private fun addCommitData(path: String, remoteData: RemoteData, commitType: CommitType) {
+        commitItems.add(
+            when (commitType) {
+                CommitType.UPDATE -> WriteModelData(
+                    update = UpdateData(path, remoteData)
+                )
+                CommitType.DELETE -> WriteModelData(delete = path)
+            }
+        )
+    }
 }
 
