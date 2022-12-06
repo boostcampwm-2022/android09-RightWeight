@@ -65,7 +65,7 @@ class SharedRoutineRemoteMediator(
                     db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
-                documentResponses?.forEach { documentResponse ->
+                documentResponses.forEach { documentResponse ->
                     if (documentResponse.document != null) {
                         db.sharedRoutineDao()
                             .insertSharedRoutine(documentResponse.document.toSharedRoutine())
@@ -77,12 +77,7 @@ class SharedRoutineRemoteMediator(
                 appPreferencesDataStore.saveSharedRoutinePagingFlag(pagingFlag)
             }
 
-            return if (documentResponses != null) {
-                MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
-            } else {
-                endOfPaginationReached = true
-                MediatorResult.Success(endOfPaginationReached = true)
-            }
+            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: IOException) {
             return MediatorResult.Error(e)
         } catch (e: HttpException) {
