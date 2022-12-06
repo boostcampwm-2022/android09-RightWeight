@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
-    val userViewModel: UserViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                userViewModel.userInfo.collect {
+                mainViewModel.userInfo.collect {
                     it?.let {
                         headerBinding.user = it
                     }

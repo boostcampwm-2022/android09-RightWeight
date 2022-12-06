@@ -9,11 +9,9 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-open class UserViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    userRepository: UserRepository
+) : ViewModel() {
 
-    @Inject
-    lateinit var userRepository: UserRepository
-
-    val userInfo
-        get() = userRepository.getUserFlow().stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }
