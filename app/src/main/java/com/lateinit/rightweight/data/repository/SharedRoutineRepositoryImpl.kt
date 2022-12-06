@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
 import androidx.paging.PagingData
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
@@ -13,6 +12,8 @@ import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
 import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.remote.model.RootField
+import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.util.toRoutine
 import com.lateinit.rightweight.util.toSharedRoutineField
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -25,9 +26,9 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         return routineRemoteDataSource.getSharedRoutinesByPaging()
     }
 
-    override suspend fun shareRoutine(userId: String, routineId: String, routine: Routine) {
+    override suspend fun shareRoutine(userId: String, routineId: String, routine: RoutineUiModel) {
         routineRemoteDataSource.shareRoutine(
-            routineId, RootField(routine.toSharedRoutineField(userId))
+            routineId, RootField(routine.toRoutine().toSharedRoutineField(userId))
         )
     }
 

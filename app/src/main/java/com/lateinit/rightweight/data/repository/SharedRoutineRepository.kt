@@ -1,17 +1,17 @@
 package com.lateinit.rightweight.data.repository
 
 import androidx.paging.PagingData
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
 import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import com.lateinit.rightweight.ui.model.RoutineUiModel
 import kotlinx.coroutines.flow.Flow
 
 interface SharedRoutineRepository {
     fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
-    suspend fun shareRoutine(userId: String, routineId: String, routine: Routine)
+    suspend fun shareRoutine(userId: String, routineId: String, routine: RoutineUiModel)
     suspend fun shareDay(routineId: String, dayId: String, dayField: DayField)
     suspend fun shareExercise(
         routineId: String,
