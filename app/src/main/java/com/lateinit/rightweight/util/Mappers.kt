@@ -148,7 +148,7 @@ fun DayUiModel.toDayField(): DayField {
 fun ExerciseUiModel.toExerciseField(): ExerciseField {
     return ExerciseField(
         order = IntValue(order.toString()),
-        partType = StringValue(part.toString()),
+        partType = StringValue(part.name),
         title = StringValue(title),
         dayId = StringValue(dayId)
     )
