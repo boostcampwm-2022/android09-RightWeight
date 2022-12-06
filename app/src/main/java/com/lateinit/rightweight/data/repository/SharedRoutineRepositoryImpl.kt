@@ -24,10 +24,6 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         return routineRemoteDataSource.getChildrenDocumentName(path)
     }
 
-    override suspend fun deleteDocument(path: String) {
-        routineRemoteDataSource.deleteDocument(path)
-    }
-
     override fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays> {
         return routineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
     }

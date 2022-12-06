@@ -40,9 +40,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         } ?: emptyList()
     }
 
-    override suspend fun deleteDocument(path: String) {
-        api.deleteDocument(path)
-    }
+
 
     override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {
         val sharedRoutineDays = mutableListOf<SharedRoutineDay>()

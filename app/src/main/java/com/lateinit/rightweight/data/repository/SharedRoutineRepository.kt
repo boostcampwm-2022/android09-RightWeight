@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface SharedRoutineRepository {
     fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
     suspend fun getChildrenDocumentName(path: String): List<String>
-    suspend fun deleteDocument(path: String)
     fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays>
     suspend fun requestSharedRoutineDetail(routineId: String)
     suspend fun commitTransaction(writes: List<WriteModelData>)

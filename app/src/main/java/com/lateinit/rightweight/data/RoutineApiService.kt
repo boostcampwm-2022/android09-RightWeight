@@ -7,15 +7,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.DELETE
 
 interface RoutineApiService {
-
-    @GET("routine/routineID3")
-    suspend fun getRoutineById(): DocumentResponse<SharedRoutineField>
-
-    @GET("routine")
-    suspend fun getRoutines(): List<DocumentResponse<SharedRoutineField>>
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
@@ -28,11 +21,6 @@ interface RoutineApiService {
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
 
-    @DELETE("documents/shared_routine/{path}")
-    suspend fun deleteDocument(
-        @Path(value = "path", encoded = true)
-        path: String
-    ): List<DocumentResponse<SharedRoutineField>>?
 
     @GET("documents/shared_routine/{routineId}/day")
     suspend fun getSharedRoutineDays(
