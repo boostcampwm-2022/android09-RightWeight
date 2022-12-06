@@ -3,6 +3,7 @@ package com.lateinit.rightweight.data
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
 import com.lateinit.rightweight.data.model.*
 import com.lateinit.rightweight.data.remote.model.*
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -21,6 +22,10 @@ interface RoutineApiService {
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
 
+    @GET("documents/shared_routine/{routineId}")
+    suspend fun getSharedRoutine(
+        @Path("routineId") routineId: String
+    ): Response<DocumentsResponse<SharedRoutineField>>
 
     @GET("documents/shared_routine/{routineId}/day")
     suspend fun getSharedRoutineDays(

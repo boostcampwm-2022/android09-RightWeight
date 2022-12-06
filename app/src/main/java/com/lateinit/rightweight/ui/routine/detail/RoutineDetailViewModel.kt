@@ -114,10 +114,14 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun shareRoutine(){
-
-//        deleteSharedRoutine()
-        updateSharedRoutine()
+    fun shareRoutine() {
+        val routineId = _routine.value?.routineId ?: return
+        viewModelScope.launch {
+            if (sharedRoutineRepository.checkRoutineInRemote(routineId)) {
+                deleteSharedRoutine()
+            }
+            updateSharedRoutine()
+        }
     }
 
     private fun updateSharedRoutine() {
@@ -128,7 +132,8 @@ class RoutineDetailViewModel @Inject constructor(
         commitItems.add(
             WriteModelData(
                 update = UpdateData(path, nowRoutine.toSharedRoutineField(nowRoutine.routineId))
-            ))
+            )
+        )
         updateDays(path, days)
     }
 
@@ -141,7 +146,8 @@ class RoutineDetailViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(
                     update = UpdateData(path, dayUiModel.toDayField())
-                ))
+                )
+            )
             updateExercises(path, dayUiModel.exercises)
         }
     }
@@ -155,7 +161,8 @@ class RoutineDetailViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(
                     update = UpdateData(path, exerciseUiModel.toExerciseField())
-                ))
+                )
+            )
             updateExerciseSets(path, exerciseUiModel.exerciseSets)
         }
     }
@@ -169,7 +176,8 @@ class RoutineDetailViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(
                     update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
-                ))
+                )
+            )
         }
         viewModelScope.launch {
             sharedRoutineRepository.commitTransaction(commitItems)

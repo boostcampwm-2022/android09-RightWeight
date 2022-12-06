@@ -40,7 +40,9 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         } ?: emptyList()
     }
 
-
+    override suspend fun getSharedRoutine(routineId: String): Boolean {
+        return api.getSharedRoutine(routineId).isSuccessful
+    }
 
     override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {
         val sharedRoutineDays = mutableListOf<SharedRoutineDay>()

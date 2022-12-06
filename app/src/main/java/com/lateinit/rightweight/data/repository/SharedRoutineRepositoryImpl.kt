@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
+import android.util.Log
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
@@ -55,6 +56,12 @@ class SharedRoutineRepositoryImpl @Inject constructor(
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         routineRemoteDataSource.commitTransaction(writes)
+    }
+
+    override suspend fun checkRoutineInRemote(routineId: String): Boolean {
+        val a = routineRemoteDataSource.getSharedRoutine(routineId)
+        Log.d("routindExsit",a.toString())
+        return a
     }
 
 }
