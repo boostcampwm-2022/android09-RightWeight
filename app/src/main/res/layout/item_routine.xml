@@ -8,8 +8,8 @@
         <import type="java.time.format.DateTimeFormatter" />
 
         <variable
-            name="routine"
-            type="com.lateinit.rightweight.data.database.entity.Routine" />
+            name="routineUiModel"
+            type="com.lateinit.rightweight.ui.model.RoutineUiModel" />
 
     </data>
 
@@ -70,7 +70,7 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{routine.author}"
+                    android:text="@{routineUiModel.author}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/image_button_up"
@@ -83,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
-                    android:text="@{routine.title}"
+                    android:text="@{routineUiModel.title}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_description"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_author"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_author"
@@ -94,7 +94,7 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{routine.description}"
+                    android:text="@{routineUiModel.description}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_modified_time"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_title"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_title"
@@ -105,7 +105,7 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{routine.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
+                    android:text="@{routineUiModel.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_description"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
