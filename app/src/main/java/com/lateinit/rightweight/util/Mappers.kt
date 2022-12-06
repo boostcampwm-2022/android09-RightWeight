@@ -1,13 +1,32 @@
 package com.lateinit.rightweight.util
 
 import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.remote.model.*
+import com.lateinit.rightweight.data.remote.model.DayField
+import com.lateinit.rightweight.data.remote.model.ExerciseField
+import com.lateinit.rightweight.data.remote.model.ExerciseSetField
+import com.lateinit.rightweight.data.remote.model.IntValue
+import com.lateinit.rightweight.data.remote.model.MapValue
+import com.lateinit.rightweight.data.remote.model.RootField
+import com.lateinit.rightweight.data.remote.model.SharedCount
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
+import com.lateinit.rightweight.data.remote.model.StringValue
+import com.lateinit.rightweight.data.remote.model.TimeStampValue
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -113,7 +132,7 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     val splitedName = name.split("/")
     val refinedModifiedDateString = fields.modifiedDate?.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
         routineId = splitedName.last(),
@@ -230,5 +249,37 @@ fun SharedRoutineExerciseSet.toExerciseSetUiModel(): ExerciseSetUiModel {
         weight = weight,
         count = count,
         order = order
+    )
+}
+
+fun HistoryUiModel.toHistory(): History {
+    return History(
+        historyId = historyId,
+        date = date,
+        time = time,
+        routineTitle = routineTitle,
+        dayOrder = order,
+        completed = completed
+    )
+}
+
+fun HistoryExerciseUiModel.toHistoryExercise(): HistoryExercise {
+    return HistoryExercise(
+        exerciseId = exerciseId,
+        historyId = historyId,
+        title = title,
+        order = order,
+        part = part
+    )
+}
+
+fun HistoryExerciseSetUiModel.toHistorySet(): HistorySet {
+    return HistorySet(
+        setId = setId,
+        exerciseId = exerciseId,
+        weight = weight.ifEmpty { DEFAULT_SET_WEIGHT },
+        count = count.ifEmpty { DEFAULT_SET_COUNT },
+        order = order,
+        checked = checked
     )
 }
