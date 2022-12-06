@@ -1,28 +1,17 @@
 package com.lateinit.rightweight.ui.routine.editor
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDay
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExercise
-import com.lateinit.rightweight.util.toExerciseSet
+import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.UUID
-import java.util.LinkedList
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -180,11 +169,12 @@ class RoutineEditorViewModel @Inject constructor(
         exerciseToSet.value = exerciseToSet.value
     }
 
-    fun saveRoutine() {
+    fun saveRoutine(successAction: () -> Unit, failAction: () -> Unit) {
         viewModelScope.launch {
             val title = routineTitle.value
             val description = routineDescription.value
             val routineOrder = routineOrder.value
+            val days = days.value
             val order: Int = if (routineOrder == null) {
                 val higherOrder = routineRepository.getHigherRoutineOrder()
                 if (higherOrder == null) 0 else higherOrder + 1
@@ -192,20 +182,38 @@ class RoutineEditorViewModel @Inject constructor(
                 routineOrder
             }
 
-            if (title == null || title.isEmpty()) return@launch
-            if (description == null || description.isEmpty()) return@launch
-
-            val days = _days.value ?: return@launch
-
-            if (days.isEmpty()) return@launch
+            if (title.isNullOrEmpty()) {
+                failAction()
+                return@launch
+            }
+            if (description.isNullOrEmpty()) {
+                failAction()
+                return@launch
+            }
+            if (days.isNullOrEmpty()) {
+                failAction()
+                return@launch
+            }
 
             val exercises = dayToExercise.value?.values?.flatMap { exercises ->
-                if (exercises.isEmpty()) return@launch
+                if (exercises.isEmpty()) {
+                    failAction()
+                    return@launch
+                }
                 exercises
-            } ?: return@launch
+            } ?: run {
+                failAction()
+                return@launch
+            }
             val exerciseSets = exercises.flatMap { exercise ->
-                if (exercise.title.isEmpty()) return@launch
-                if (exercise.exerciseSets.isEmpty()) return@launch
+                if (exercise.title.isEmpty()) {
+                    failAction()
+                    return@launch
+                }
+                if (exercise.exerciseSets.isEmpty()) {
+                    failAction()
+                    return@launch
+                }
                 exercise.exerciseSets
             }
 
@@ -215,6 +223,7 @@ class RoutineEditorViewModel @Inject constructor(
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
             )
+            successAction()
         }
     }
 
