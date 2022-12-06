@@ -1,12 +1,10 @@
 package com.lateinit.rightweight.ui.share
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.databinding.ItemSharedRoutineBinding
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 
@@ -20,21 +18,24 @@ class SharedRoutinePagingAdapter(
         parent: ViewGroup,
         viewType: Int
     ): SharedRoutineViewHolder {
-        val bind = ItemSharedRoutineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SharedRoutineViewHolder(bind)
+        val binding =
+            ItemSharedRoutineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SharedRoutineViewHolder(binding, sharedRoutineClickHandler)
     }
 
     override fun onBindViewHolder(holder: SharedRoutineViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.setItem(getItem(position), sharedRoutineClickHandler)
+            holder.setItem(getItem(position))
         }
     }
 
-    class SharedRoutineViewHolder(val bind: ItemSharedRoutineBinding) :
-        RecyclerView.ViewHolder(bind.root) {
-        fun setItem(item: SharedRoutineUiModel?, sharedRoutineClickHandler: SharedRoutineClickHandler) {
-            bind.sharedRoutineUiModel = item
-            bind.sharedRoutineClickHandler = sharedRoutineClickHandler
+    class SharedRoutineViewHolder(
+        val binding: ItemSharedRoutineBinding,
+        private val sharedRoutineClickHandler: SharedRoutineClickHandler
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun setItem(item: SharedRoutineUiModel?) {
+            binding.sharedRoutineUiModel = item
+            binding.sharedRoutineClickHandler = sharedRoutineClickHandler
         }
     }
 
