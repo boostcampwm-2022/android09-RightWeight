@@ -308,6 +308,17 @@ fun Routine.toRoutineUiModel(): RoutineUiModel {
     )
 }
 
+fun RoutineUiModel.toRoutine(): Routine {
+    return Routine(
+        routineId = routineId,
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = modifiedDate,
+        order = order
+    )
+}
+
 fun ExercisePartType.toExercisePartTypeUiModel(): ExercisePartTypeUiModel {
     return when (this) {
         ExercisePartType.CHEST -> ExercisePartTypeUiModel.CHEST
