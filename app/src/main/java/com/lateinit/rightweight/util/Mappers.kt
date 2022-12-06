@@ -17,21 +17,8 @@ import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHi
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
 import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.remote.model.DayField
-import com.lateinit.rightweight.data.remote.model.ExerciseField
-import com.lateinit.rightweight.data.remote.model.ExerciseSetField
-import com.lateinit.rightweight.data.remote.model.IntValue
-import com.lateinit.rightweight.data.remote.model.MapValue
-import com.lateinit.rightweight.data.remote.model.SharedCount
-import com.lateinit.rightweight.data.remote.model.SharedRoutineField
-import com.lateinit.rightweight.data.remote.model.StringValue
-import com.lateinit.rightweight.data.remote.model.TimeStampValue
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.data.remote.model.*
+import com.lateinit.rightweight.ui.model.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -131,14 +118,15 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     val splitedName = name.split("/")
     val refinedModifiedDateString = fields.modifiedDate?.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
         routineId = splitedName.last(),
         title = fields.title?.value.toString(),
         author = fields.author?.value.toString(),
         description = fields.description?.value.toString(),
-        modifiedDate = modifiedDate
+        modifiedDate = modifiedDate,
+        sharedCount = fields.sharedCount?.value?.remoteData?.count?.value.toString()
     )
 }
 
@@ -170,7 +158,7 @@ fun DayUiModel.toDayField(): DayField {
 fun ExerciseUiModel.toExerciseField(): ExerciseField {
     return ExerciseField(
         order = IntValue(order.toString()),
-        partType = StringValue(""),
+        partType = StringValue(part.name),
         title = StringValue(title),
         dayId = StringValue(dayId)
     )
@@ -201,8 +189,7 @@ fun DetailResponse<ExerciseField>.toSharedRoutineExercise(): SharedRoutineExerci
         exerciseId = splitedName.last(),
         title = fields.title?.value.toString(),
         order = fields.order?.value.toString().toInt(),
-        part = ExercisePartType.CHEST
-        //part =  ExercisePartType.valueOf(fields.partType?.value.toString())
+        part = ExercisePartType.valueOf(fields.partType?.value.toString())
     )
 }
 
@@ -218,14 +205,13 @@ fun DetailResponse<ExerciseSetField>.toSharedRoutineExerciseSet(): SharedRoutine
 }
 
 fun SharedRoutineDay.toDayUiModel(
-    index: Int,
     exercises: List<SharedRoutineExerciseWithExerciseSets>
 ): DayUiModel {
     return DayUiModel(
         dayId = dayId,
         routineId = routineId,
         order = order,
-        selected = index == FIRST_DAY_POSITION,
+        selected = false,
         exercises = exercises.map { it.toExerciseUiModel() }
     )
 }
@@ -283,7 +269,7 @@ fun HistoryExerciseSetUiModel.toHistorySet(): HistorySet {
     )
 }
 
-fun SharedRoutine.toSharedRoutineUiModel():SharedRoutineUiModel{
+fun SharedRoutine.toSharedRoutineUiModel(): SharedRoutineUiModel {
     return SharedRoutineUiModel(
         routineId = routineId,
         title = title,
