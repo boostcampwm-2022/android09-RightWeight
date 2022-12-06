@@ -1,7 +1,8 @@
 package com.lateinit.rightweight.data.datasource
 
-import android.util.Log
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppSharedPreferences
@@ -10,12 +11,9 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.remote.model.RootField
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
-import com.lateinit.rightweight.util.toSharedRoutineUiModel
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RoutineRemoteDataSourceImpl @Inject constructor(
