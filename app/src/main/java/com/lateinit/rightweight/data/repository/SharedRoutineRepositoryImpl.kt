@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
+import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
 import com.lateinit.rightweight.data.remote.model.ExerciseSetField
@@ -91,6 +92,10 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                 }
         }
         routineLocalDataSource.insertSharedRoutineDetail(sharedRoutineDays, sharedRoutineExercises, sharedRoutineExerciseSets)
+    }
+
+    override suspend fun commitTransaction(writes: List<WriteModelData>) {
+        routineRemoteDataSource.commitTransaction(writes)
     }
 
 }

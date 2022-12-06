@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
 import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import com.lateinit.rightweight.data.model.WriteModelData
 import kotlinx.coroutines.flow.Flow
 
 interface SharedRoutineRepository {
@@ -31,4 +32,5 @@ interface SharedRoutineRepository {
     suspend fun deleteDocument(path: String)
     fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays>
     suspend fun requestSharedRoutineDetail(routineId: String)
+    suspend fun commitTransaction(writes: List<WriteModelData>)
 }

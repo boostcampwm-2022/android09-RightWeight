@@ -10,6 +10,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
+import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise
@@ -105,5 +107,9 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
             sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
         }
         return sharedRoutineExerciseSets
+    }
+
+    override suspend fun commitTransaction(writes: List<WriteModelData>) {
+        api.commitTransaction(WriteRequestBody(writes))
     }
 }
