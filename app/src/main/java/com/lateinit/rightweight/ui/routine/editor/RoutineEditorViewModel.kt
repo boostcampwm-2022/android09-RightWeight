@@ -7,10 +7,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
@@ -131,8 +131,7 @@ class RoutineEditorViewModel @Inject constructor(
             exerciseId = createUUID(),
             dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
-            order = exercises.size,
-            part = ExercisePartType.CHEST
+            order = exercises.size
         )
 
         exercises.add(exercise)
@@ -152,7 +151,7 @@ class RoutineEditorViewModel @Inject constructor(
     fun changeExercisePart(
         dayId: String,
         exercisePosition: Int,
-        exercisePartType: ExercisePartType
+        exercisePartType: ExercisePartTypeUiModel
     ) {
         val exercises = dayToExercise.value?.get(dayId) ?: return
 
