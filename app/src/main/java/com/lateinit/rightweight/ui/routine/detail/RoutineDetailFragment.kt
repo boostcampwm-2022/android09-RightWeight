@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.model.CommitType
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
@@ -88,7 +87,7 @@ class RoutineDetailFragment : Fragment(){
                         return true
                     }
                     R.id.action_item_share -> {
-                        viewModel.commitRoutine(CommitType.UPDATE)
+                        viewModel.deleteSharedRoutine()
                         return true
                     }
                     else -> {
