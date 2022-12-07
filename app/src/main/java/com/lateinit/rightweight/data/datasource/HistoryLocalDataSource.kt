@@ -2,12 +2,7 @@ package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
-import com.lateinit.rightweight.data.database.entity.Day
-import com.lateinit.rightweight.data.database.entity.Exercise
-import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.History
-import com.lateinit.rightweight.data.database.entity.HistoryExercise
-import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.util.createRandomUUID
 import kotlinx.coroutines.flow.Flow
@@ -70,7 +65,7 @@ class HistoryLocalDataSource @Inject constructor(
         historyDao.insertHistoryExercise(newHistoryExercise)
     }
 
-    override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
+    override fun loadHistoryByDate(localDate: LocalDate): Flow<History> {
         return historyDao.loadHistoryByDate(localDate)
     }
 

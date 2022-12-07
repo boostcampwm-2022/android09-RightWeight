@@ -22,7 +22,7 @@ interface HistoryDataSource {
 
     suspend fun insertHistoryExercise(historyId: String)
 
-    suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>>
+    fun loadHistoryByDate(localDate: LocalDate): Flow<History>
 
     fun getHistoryByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>
 

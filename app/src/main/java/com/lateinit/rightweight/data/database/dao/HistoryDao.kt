@@ -30,7 +30,7 @@ interface HistoryDao {
     suspend fun insertHistoryExercise(historyExercise: HistoryExercise)
 
     @Query("SELECT * FROM history WHERE date = :localDate")
-    fun loadHistoryByDate(localDate: LocalDate) : Flow<List<History>>
+    fun loadHistoryByDate(localDate: LocalDate) : Flow<History>
 
     @Transaction
     @Query("SELECT * FROM history WHERE date = :localDate")

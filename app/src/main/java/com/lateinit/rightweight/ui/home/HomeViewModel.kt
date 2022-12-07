@@ -6,14 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -35,6 +33,10 @@ class HomeViewModel @Inject constructor(
          it?.routineId ?: return@map null
          routineRepository.getRoutineById(it.routineId)
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+
+    val todayHistory = historyRepository.loadHistoryByDate(LocalDate.now())
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
@@ -59,10 +61,6 @@ class HomeViewModel @Inject constructor(
             )
             _dayUiModel.value = dayUiModel
         }
-    }
-
-    suspend fun loadTodayHistory(): Flow<List<History>> {
-        return historyRepository.loadHistoryByDate(LocalDate.now())
     }
 
     fun saveHistory() {
