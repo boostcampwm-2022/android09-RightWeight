@@ -71,6 +71,13 @@ data class ExerciseSetField(
     val exerciseId: StringValue? = null,
 ) : RemoteData()
 
+data class UserInfoField(
+    @SerializedName("selected_routine_id")
+    val routineId: StringValue? = null,
+    @SerializedName("selected_day_id")
+    val dayId: StringValue? = null
+) : RemoteData()
+
 data class SharedCountField(
     @SerializedName("shared_count")
     val sharedCount: MapValue? = null,

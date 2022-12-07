@@ -9,8 +9,6 @@
             name="exerciseUiModel"
             type="com.lateinit.rightweight.ui.model.ExerciseUiModel" />
 
-        <import type="com.lateinit.rightweight.util.ExtensionsKt" />
-
         <import type="android.view.View" />
     </data>
 
@@ -43,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:gravity="center"
-                    android:text="@{ExtensionsKt.getPartNameRes(exerciseUiModel.part)}"
+                    android:text="@{exerciseUiModel.part.partName}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

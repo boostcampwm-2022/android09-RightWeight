@@ -59,7 +59,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_routine_management"
             excludeItem="@{routineManagementViewModel.selectedRoutine}"
-            setItems="@{routineManagementViewModel.routines}"
+            setItems="@{routineManagementViewModel.routineUiModels}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingVertical="8dp"

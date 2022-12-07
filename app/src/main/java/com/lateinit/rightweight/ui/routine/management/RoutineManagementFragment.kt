@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
+import com.lateinit.rightweight.ui.model.RoutineUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,10 +71,10 @@ class RoutineManagementFragment : Fragment() {
         findNavController().navigate(id)
     }
 
-    fun navigateTo(routine: Routine) {
+    fun navigateTo(routineUiModel: RoutineUiModel) {
         val action =
             RoutineManagementFragmentDirections.actionNavigationRoutineManagementToNavigationRoutineDetail(
-                routine.routineId
+                routineUiModel.routineId
             )
         findNavController().navigate(action)
     }

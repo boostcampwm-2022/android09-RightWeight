@@ -5,50 +5,18 @@ import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.DocumentsResponse
 import com.lateinit.rightweight.data.remote.model.*
-import retrofit2.http.*
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface RoutineApiService {
-
-    @GET("routine/routineID3")
-    suspend fun getRoutineById(): DocumentResponse<SharedRoutineField>
-
-    @GET("routine")
-    suspend fun getRoutines(): List<DocumentResponse<SharedRoutineField>>
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
         @Body order: SharedRoutineRequestBody
     ): List<DocumentResponse<SharedRoutineField>>
-
-    @POST("documents/shared_routine")
-    suspend fun shareRoutine(
-        @Query("documentId") routineId: String,
-        @Body rootField: RootField
-    ): DocumentResponse<SharedRoutineField>
-
-    @POST("documents/shared_routine/{routineId}/day")
-    suspend fun shareRoutineDay(
-        @Path("routineId") routineId: String,
-        @Query("documentId") dayId: String,
-        @Body rootField: RootField
-    ): DocumentResponse<DayField>
-
-    @POST("documents/shared_routine/{routineId}/day/{dayId}/exercise")
-    suspend fun shareRoutineExercise(
-        @Path("routineId") routineId: String,
-        @Path("dayId") dayId: String,
-        @Query("documentId") exerciseId: String,
-        @Body rootField: RootField
-    ): DocumentResponse<ExerciseField>
-
-    @POST("documents/shared_routine/{routineId}/day/{dayId}/exercise/{exerciseId}/exercise_set")
-    suspend fun shareRoutineExerciseSet(
-        @Path("routineId") routineId: String,
-        @Path("dayId") dayId: String,
-        @Path("exerciseId") exerciseId: String,
-        @Query("documentId") exerciseSetId: String,
-        @Body rootField: RootField
-    ): DocumentResponse<ExerciseSetField>
 
     @GET("documents/shared_routine/{path}")
     suspend fun getChildrenDocumentName(
@@ -56,11 +24,10 @@ interface RoutineApiService {
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
 
-    @DELETE("documents/shared_routine/{path}")
-    suspend fun deleteDocument(
-        @Path(value = "path", encoded = true)
-        path: String
-    ): List<DocumentResponse<SharedRoutineField>>?
+    @GET("documents/shared_routine/{routineId}")
+    suspend fun getSharedRoutine(
+        @Path("routineId") routineId: String
+    ): Response<SharedRoutineField>
 
     @GET("documents/shared_routine/{routineId}/day")
     suspend fun getSharedRoutineDays(
@@ -79,6 +46,12 @@ interface RoutineApiService {
         @Path("dayId") dayId: String,
         @Path("exerciseId") exerciseId: String
     ): DocumentsResponse<ExerciseSetField>?
+
+    @POST("./documents:commit")
+    suspend fun commitTransaction(
+        @Body
+        writes: WriteRequestBody
+    )
 
     @PATCH("documents/shared_routine/{routineId}")
     suspend fun updateSharedRoutineField(
