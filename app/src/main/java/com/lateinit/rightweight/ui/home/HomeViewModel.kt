@@ -67,6 +67,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveHistory() {
+        val routineId = userInfo.value?.routineId ?: return
         val dayId = dayUiModel.value?.dayId ?: return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
@@ -75,7 +76,7 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
         }
     }
 
