@@ -70,3 +70,10 @@ data class ExerciseSetField(
     @SerializedName("exercise_id")
     val exerciseId: StringValue? = null,
 ) : RemoteData()
+
+data class UserInfoField(
+    @SerializedName("selected_routine_id")
+    val routineId: StringValue? = null,
+    @SerializedName("selected_day_id")
+    val dayId: StringValue? = null
+) : RemoteData()
