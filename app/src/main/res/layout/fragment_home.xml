@@ -80,6 +80,19 @@
                 android:text="@string/reset" />
         </androidx.cardview.widget.CardView>
 
+        <ImageView
+            android:id="@+id/image_view_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="3dp"
+            android:src="@drawable/img_completed"
+            android:rotation="@integer/material_motion_duration_long_2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layout_day_exercises"
+            android:contentDescription="@string/end_exercise" />
+
         <include
             android:id="@+id/layout_day_exercises"
             layout="@layout/layout_day_exercises"

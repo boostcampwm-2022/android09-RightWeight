@@ -15,8 +15,6 @@ import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -51,6 +49,16 @@ class HomeFragment : Fragment() {
         setBinding()
         setListeners()
         setAdapter()
+
+        collectOnLifecycle {
+            viewModel.todayHistory.collect { todayHistory ->
+                if (todayHistory != null && todayHistory.completed) {
+                    binding.imageViewComplete.visibility = View.VISIBLE
+                } else {
+                    binding.imageViewComplete.visibility = View.GONE
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -95,14 +103,5 @@ class HomeFragment : Fragment() {
                 binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
             }
         }
-    }
-
-    private fun setHomeInfoText(description: String) {
-        binding.textViewHomeInfo.text = String.format(
-            description,
-            LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern(getString(R.string.date_format))
-            )
-        )
     }
 }
