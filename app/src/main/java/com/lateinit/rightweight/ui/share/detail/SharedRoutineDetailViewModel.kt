@@ -136,7 +136,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             }
                         }
                     }
-                    routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
+                    routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
                 }
             }
         }

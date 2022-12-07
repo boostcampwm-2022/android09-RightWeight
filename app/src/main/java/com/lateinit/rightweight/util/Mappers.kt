@@ -119,7 +119,7 @@ fun ExerciseUiModel.toExercise(): Exercise {
         dayId = dayId,
         title = title,
         order = order,
-        part = part
+        part = part.toExercisePartType()
     )
 }
 
@@ -148,7 +148,7 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     )
 }
 
-fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
+fun RoutineUiModel.toSharedRoutineField(userId: String): SharedRoutineField {
     return SharedRoutineField(
         author = StringValue(author),
         description = StringValue(description),
@@ -240,7 +240,7 @@ fun SharedRoutineExerciseWithExerciseSets.toExerciseUiModel(): ExerciseUiModel {
         dayId = exercise.dayId,
         title = exercise.title,
         order = exercise.order,
-        part = exercise.part,
+        part = exercise.part.toExercisePartTypeUiModel(),
         exerciseSets = sets.map { it.toExerciseSetUiModel() }
     )
 }
@@ -262,7 +262,8 @@ fun HistoryUiModel.toHistory(): History {
         time = time,
         routineTitle = routineTitle,
         dayOrder = order,
-        completed = completed
+        completed = completed,
+        routineId = routineId
     )
 }
 
@@ -272,7 +273,7 @@ fun HistoryExerciseUiModel.toHistoryExercise(): HistoryExercise {
         historyId = historyId,
         title = title,
         order = order,
-        part = part
+        part = part.toExercisePartType()
     )
 }
 
@@ -323,7 +324,7 @@ fun ExerciseUiModel.toExerciseWithNewIds(dayId: String, exerciseId: String): Exe
         dayId = dayId,
         title = title,
         order = order,
-        part = part
+        part = part.toExercisePartType()
     )
 }
 
