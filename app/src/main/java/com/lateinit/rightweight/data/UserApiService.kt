@@ -2,13 +2,13 @@ package com.lateinit.rightweight.data
 
 import com.lateinit.rightweight.data.remote.model.RootField
 import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.PATCH
+import retrofit2.http.Path
 
 interface UserApiService {
-    @POST("documents/user")
+    @PATCH("documents/user/{userId}")
     suspend fun backupUserInfo(
-        @Query("documentId") userId: String,
+        @Path("userId") userId: String,
         @Body userInfoField: RootField
     )
 }
