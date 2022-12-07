@@ -33,14 +33,8 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getHigherRoutineOrder()
     }
 
-
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineLocalDataSource.getRoutineById(routineId)
-    }
-
-    override suspend fun getDaysByRoutineId(routineId: String): List<Day> {
-        return routineLocalDataSource.getDaysByRoutineId(routineId)
-
     }
 
     override suspend fun getDayById(dayId: String): Day {
@@ -55,7 +49,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getSetsByExerciseId(exerciseId)
     }
 
-    override suspend fun getRoutines(): List<Routine> {
+    override fun getRoutines(): Flow<List<Routine>> {
         return routineLocalDataSource.getRoutines()
     }
 
