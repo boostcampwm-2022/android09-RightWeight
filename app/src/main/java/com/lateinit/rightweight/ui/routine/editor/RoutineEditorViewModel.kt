@@ -9,6 +9,8 @@ import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.*
@@ -52,6 +54,9 @@ class RoutineEditorViewModel @Inject constructor(
         }
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
+
+    private val _isPossibleSaveRoutine = MutableSharedFlow<Boolean>()
+    val isPossibleSaveRoutine = _isPossibleSaveRoutine.asSharedFlow()
 
     init {
         this.routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
@@ -169,7 +174,7 @@ class RoutineEditorViewModel @Inject constructor(
         exerciseToSet.value = exerciseToSet.value
     }
 
-    fun saveRoutine(successAction: () -> Unit, failAction: () -> Unit) {
+    fun saveRoutine() {
         viewModelScope.launch {
             val title = routineTitle.value
             val description = routineDescription.value
@@ -183,35 +188,35 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             if (title.isNullOrEmpty()) {
-                failAction()
+                sendEvent(false)
                 return@launch
             }
             if (description.isNullOrEmpty()) {
-                failAction()
+                sendEvent(false)
                 return@launch
             }
             if (days.isNullOrEmpty()) {
-                failAction()
+                sendEvent(false)
                 return@launch
             }
 
             val exercises = dayToExercise.value?.values?.flatMap { exercises ->
                 if (exercises.isEmpty()) {
-                    failAction()
+                    sendEvent(false)
                     return@launch
                 }
                 exercises
             } ?: run {
-                failAction()
+                sendEvent(false)
                 return@launch
             }
             val exerciseSets = exercises.flatMap { exercise ->
                 if (exercise.title.isEmpty()) {
-                    failAction()
+                    sendEvent(false)
                     return@launch
                 }
                 if (exercise.exerciseSets.isEmpty()) {
-                    failAction()
+                    sendEvent(false)
                     return@launch
                 }
                 exercise.exerciseSets
@@ -223,7 +228,13 @@ class RoutineEditorViewModel @Inject constructor(
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
             )
-            successAction()
+            sendEvent(true)
+        }
+    }
+
+    private fun sendEvent(isPossible: Boolean) {
+        viewModelScope.launch {
+            _isPossibleSaveRoutine.emit(isPossible)
         }
     }
 

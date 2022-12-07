@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.util.collectOnLifecycle
 import com.lateinit.rightweight.util.getPartNameRes
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,7 +43,7 @@ class RoutineEditorFragment : Fragment() {
         setRoutineDaysObserve()
         setExerciseAdapter()
         setDayExercisesObserve()
-        setRoutineSaveButtonListener()
+        setRoutineSaveButtonEvent()
     }
 
     private fun setBinding() {
@@ -101,21 +102,22 @@ class RoutineEditorFragment : Fragment() {
         }
     }
 
-    private fun setRoutineSaveButtonListener() {
-        val successAction: () -> Unit = {
-            Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT).apply {
-                anchorView = binding.buttonSave
-            }.show()
-            findNavController().navigateUp()
-        }
-        val failAction: () -> Unit = {
-            Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {
-                anchorView = binding.buttonSave
-            }.show()
-        }
-
-        binding.buttonSave.setOnClickListener {
-            viewModel.saveRoutine(successAction, failAction)
+    private fun setRoutineSaveButtonEvent() {
+        collectOnLifecycle {
+            viewModel.isPossibleSaveRoutine.collect {
+                if (it) {
+                    Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        setAction(R.string.submit) {
+                            this.dismiss()
+                        }
+                    }.show()
+                    findNavController().navigateUp()
+                } else {
+                    Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        anchorView = binding.buttonSave
+                    }.show()
+                }
+            }
         }
     }
 
