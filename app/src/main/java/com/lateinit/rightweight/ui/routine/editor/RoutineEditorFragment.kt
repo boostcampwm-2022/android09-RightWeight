@@ -107,6 +107,7 @@ class RoutineEditorFragment : Fragment() {
             viewModel.isPossibleSaveRoutine.collect {
                 if (it) {
                     Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        anchorView = binding.buttonSave
                         setAction(R.string.submit) {
                             this.dismiss()
                         }
