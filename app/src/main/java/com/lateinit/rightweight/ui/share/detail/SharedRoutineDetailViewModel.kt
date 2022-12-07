@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
+import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
-import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toSharedRoutineUiModel
+import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedRoutineDetailViewModel @Inject constructor(
-    private val sharedRoutineRepository: SharedRoutineRepository
+    private val sharedRoutineRepository: SharedRoutineRepository,
+    private val userRepository: UserRepository,
+    private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -34,7 +36,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
             sharedRoutineRepository.getSharedRoutineDetail(routineId)
                 .collect() { sharedRoutineWithDays ->
 
-                    if(sharedRoutineWithDays.days.isEmpty()){
+                    if (sharedRoutineWithDays.days.isEmpty()) {
                         sharedRoutineRepository.requestSharedRoutineDetail(routineId)
                     }
 
@@ -46,7 +48,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             )
                         }.sortedBy { it.order }
                     )
-                    if(_uiState.value.dayUiModels.isNotEmpty()){
+                    if (_uiState.value.dayUiModels.isNotEmpty()) {
                         initClickedDay()
                     }
                 }
@@ -54,11 +56,15 @@ class SharedRoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun initClickedDay(){
+    fun initClickedDay() {
         val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
-        originDayUiModels[FIRST_DAY_POSITION] = originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
+        originDayUiModels[FIRST_DAY_POSITION] =
+            originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
         _currentDayPosition.value = FIRST_DAY_POSITION
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(
+            _uiState.value.sharedRoutineUiModel,
+            originDayUiModels
+        )
     }
 
     fun clickDay(dayPosition: Int) {
@@ -72,7 +78,10 @@ class SharedRoutineDetailViewModel @Inject constructor(
         originDayUiModels[dayPosition] = originDayUiModels[dayPosition].copy(selected = true)
 
         _currentDayPosition.value = dayPosition
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(
+            _uiState.value.sharedRoutineUiModel,
+            originDayUiModels
+        )
     }
 
     fun clickExercise(exercisePosition: Int) {
@@ -89,7 +98,33 @@ class SharedRoutineDetailViewModel @Inject constructor(
             originDayUiModels[nowDayPosition].copy(exercises = originExerciseUiModels)
 
         _currentDayPosition.value = _currentDayPosition.value
-        _uiState.value = LatestSharedRoutineDetailUiState.Success(_uiState.value.sharedRoutineUiModel, originDayUiModels)
+        _uiState.value = LatestSharedRoutineDetailUiState.Success(
+            _uiState.value.sharedRoutineUiModel,
+            originDayUiModels
+        )
+    }
+
+    fun importSharedRoutineToMyRoutines(
+        sharedRoutineUiModel: SharedRoutineUiModel?,
+        dayUiModels: List<DayUiModel>
+    ) {
+        if (sharedRoutineUiModel != null) {
+            viewModelScope.launch {
+                userRepository.getUser().collect() { user ->
+                    val routine = sharedRoutineUiModel.toRoutine(
+                        user?.displayName ?: "",
+                        routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
+                    )
+                    val days = dayUiModels.map { it.toDay() }
+                    val exercises =
+                        dayUiModels.map { it.exercises.map { it.toExercise() } }.flatten()
+                    val exerciseSets =
+                        dayUiModels.map { it.exercises.map { it.exerciseSets.map { it.toExerciseSet() } } }
+                            .flatten().flatten()
+                    routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
+                }
+            }
+        }
     }
 
 }

@@ -280,6 +280,17 @@ fun SharedRoutine.toSharedRoutineUiModel(): SharedRoutineUiModel {
     )
 }
 
+fun SharedRoutineUiModel.toRoutine(author: String, order: Int): Routine{
+    return Routine(
+        routineId = routineId,
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = modifiedDate,
+        order = order
+    )
+}
+
 fun Routine.toRoutineUiModel():RoutineUiModel{
     return RoutineUiModel(
         routineId = routineId,

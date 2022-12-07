@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingHorizontal="16dp"
-            app:layout_constraintBottom_toTopOf="@id/button_routine_select"
+            app:layout_constraintBottom_toTopOf="@id/button_routine_import"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -162,7 +162,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_routine_select"
+            android:id="@+id/button_routine_import"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
