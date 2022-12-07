@@ -235,7 +235,7 @@ class RoutineDetailViewModel @Inject constructor(
         exerciseSetIds: List<String>,
     ) {
         exerciseSetIds.forEach { exerciseSetId ->
-            val path = "${lastPath}/exercise_set/${exerciseSetId} "
+            val path = "${lastPath}/exercise_set/${exerciseSetId}"
             commitItems.add(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
             )
