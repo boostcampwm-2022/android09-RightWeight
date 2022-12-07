@@ -103,6 +103,7 @@
             android:padding="16dp"
             android:text="@string/routine_select"
             android:textColor="@color/white"
+            android:onClick="@{() -> viewModel.selectRoutine()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

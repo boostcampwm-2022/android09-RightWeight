@@ -65,4 +65,6 @@
     <string name="profile_image_description">프로필 이미지</string>
     <string name="success_save_routine">루틴이 저장되었습니다.</string>
     <string name="fail_save_routine">루틴을 저장할 수 없습니다.</string>
+    <string name="return_back">돌아가기</string>
+    <string name="msg_selected_routine">%s이 선택되었습니다.</string>
 </resources>

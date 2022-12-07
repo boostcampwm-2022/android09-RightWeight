@@ -20,6 +20,7 @@ import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -64,7 +65,7 @@ class RoutineDetailFragment : Fragment(){
         setDayUiModelsObserve()
         setExerciseAdapter()
         setCurrentDayPositionObserve()
-        setSelectRoutineButtonListener()
+        setSelectRoutineButtonEvent()
     }
 
     private fun setMenu() {
@@ -133,17 +134,20 @@ class RoutineDetailFragment : Fragment(){
         }
     }
 
-    private fun setSelectRoutineButtonListener() {
-        binding.buttonRoutineSelect.setOnClickListener {
-            viewModel.selectRoutine()
-            Snackbar.make(
-                binding.root,
-                "${viewModel.routine.value?.title} 이 선택되었습니다.",
-                Snackbar.LENGTH_SHORT
-            ).apply{
-                anchorView = binding.buttonRoutineSelect
-            }.show()
-            findNavController().navigateUp()
+    private fun setSelectRoutineButtonEvent() {
+        collectOnLifecycle {
+            viewModel.isSelected.collect {
+                Snackbar.make(
+                    binding.root,
+                    String.format(getString(R.string.msg_selected_routine), "${viewModel.routine.value?.title}"),
+                    Snackbar.LENGTH_SHORT
+                ).apply{
+                    anchorView = binding.buttonRoutineSelect
+                    setAction(R.string.return_back) {
+                        findNavController().navigateUp()
+                    }
+                }.show()
+            }
         }
     }
 

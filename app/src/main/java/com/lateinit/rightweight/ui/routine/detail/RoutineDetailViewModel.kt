@@ -17,7 +17,9 @@ import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,6 +42,9 @@ class RoutineDetailViewModel @Inject constructor(
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
 
+    private val _isSelected = MutableSharedFlow<Boolean>()
+    val isSelected = _isSelected.asSharedFlow()
+
     fun selectRoutine() {
         viewModelScope.launch {
             val user = userInfo.value ?: return@launch
@@ -50,6 +55,7 @@ class RoutineDetailViewModel @Inject constructor(
                     dayId = _dayUiModels.value?.first()?.dayId
                 )
             )
+            _isSelected.emit(true)
         }
     }
 
