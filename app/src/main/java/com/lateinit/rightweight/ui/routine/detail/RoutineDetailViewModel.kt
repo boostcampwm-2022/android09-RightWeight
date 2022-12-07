@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.model.UpdateData
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.repository.RoutineRepository
@@ -20,6 +19,7 @@ import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
 import com.lateinit.rightweight.util.toRoutineUiModel
+import com.lateinit.rightweight.util.toSharedRoutineField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -121,11 +121,9 @@ class RoutineDetailViewModel @Inject constructor(
     }
 
     fun shareRoutine() {
-        val userId = userInfo.value?.userId ?: return
         val nowRoutine = _routineUiModel.value ?: return
-        val routineId = _routine.value?.routineId ?: return
         viewModelScope.launch {
-            if (sharedRoutineRepository.checkRoutineInRemote(routineId)) {
+            if (sharedRoutineRepository.checkRoutineInRemote(nowRoutine.routineId)) {
                 deleteSharedRoutine()
             }
             updateSharedRoutine()
@@ -134,7 +132,7 @@ class RoutineDetailViewModel @Inject constructor(
 
     private suspend fun updateSharedRoutine() {
         commitItems.clear()
-        val nowRoutine = _routine.value ?: return
+        val nowRoutine = _routineUiModel.value ?: return
         val days = _dayUiModels.value ?: return
         val path = "${WriteModelData.defaultPath}/shared_routine/${nowRoutine.routineId}"
         commitItems.add(
@@ -193,7 +191,7 @@ class RoutineDetailViewModel @Inject constructor(
 
     private suspend fun deleteSharedRoutine() {
         commitItems.clear()
-        val routineId = _routine.value?.routineId ?: return
+        val routineId = _routineUiModel.value?.routineId ?: return
         commitItems.add(
             WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${routineId}")
         )
