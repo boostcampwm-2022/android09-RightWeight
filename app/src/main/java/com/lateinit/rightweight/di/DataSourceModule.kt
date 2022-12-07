@@ -48,8 +48,8 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getUserDataSource(appPreferencesDataStore: AppPreferencesDataStore): UserDataSource {
-        return UserLocalDataSource(appPreferencesDataStore, )
+    fun getUserLocalDataSource(appPreferencesDataStore: AppPreferencesDataStore): UserLocalDataSource {
+        return UserLocalDataSourceImpl(appPreferencesDataStore, )
     }
 
     @Provides
