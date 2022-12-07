@@ -145,10 +145,11 @@ class RoutineDetailFragment : Fragment() {
                                 Snackbar.LENGTH_SHORT
                             ).apply {
                                 anchorView = binding.buttonRoutineSelect
-                                setAction(R.string.return_back) {
-                                    findNavController().navigateUp()
+                                setAction(R.string.submit) {
+                                    this.dismiss()
                                 }
                             }.show()
+                            findNavController().navigateUp()
                         }
                     }
                     is RoutineDetailViewModel.NavigationEvent.RemoveEvent -> {
