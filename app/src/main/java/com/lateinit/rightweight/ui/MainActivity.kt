@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityMainBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
@@ -37,6 +38,8 @@ import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
+import com.lateinit.rightweight.ui.login.NetworkState
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -179,9 +182,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun withdraw() {
-        client.signOut()
+
         mainViewModel.deleteAccount(getString(R.string.google_api_key), idToken)
-        moveToLoginActivity()
+        collectOnLifecycle {
+            mainViewModel.network.collect {
+                if (it == NetworkState.SUCCESS) {
+                    client.signOut()
+                    moveToLoginActivity()
+                } else {
+                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun moveToLoginActivity() {

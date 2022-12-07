@@ -63,4 +63,5 @@
     <string name="end_exercise_message">달성하지 않은 항목이 있습니다. \n 정말 운동을 종료하시겠습니까?</string>
     <string name="stopwatch">stopwatch start and pause</string>
     <string name="profile_image_description">프로필 이미지</string>
+    <string name="wrong_connection">인터넷 연결을 확인해주세요.</string>
 </resources>
