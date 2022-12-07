@@ -14,4 +14,8 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun backup() {
+        TODO("Not yet implemented")
+    }
 }
