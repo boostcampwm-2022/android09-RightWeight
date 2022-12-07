@@ -148,7 +148,7 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     )
 }
 
-fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
+fun RoutineUiModel.toSharedRoutineField(userId: String): SharedRoutineField {
     return SharedRoutineField(
         author = StringValue(author),
         description = StringValue(description),

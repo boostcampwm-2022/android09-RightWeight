@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.model.UpdateData
+import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -17,6 +19,7 @@ import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
 import com.lateinit.rightweight.util.toRoutineUiModel
+import com.lateinit.rightweight.util.toSharedRoutineField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -40,6 +43,8 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
+
+    private val commitItems = mutableListOf<WriteModelData>()
 
     fun selectRoutine() {
         viewModelScope.launch {
@@ -116,98 +121,124 @@ class RoutineDetailViewModel @Inject constructor(
     }
 
     fun shareRoutine() {
-        val userId = userInfo.value?.userId ?: return
+        val nowRoutine = _routineUiModel.value ?: return
+        viewModelScope.launch {
+            if (sharedRoutineRepository.checkRoutineInRemote(nowRoutine.routineId)) {
+                deleteSharedRoutine()
+            }
+            updateSharedRoutine()
+        }
+    }
+
+    private suspend fun updateSharedRoutine() {
+        commitItems.clear()
         val nowRoutine = _routineUiModel.value ?: return
         val days = _dayUiModels.value ?: return
-        viewModelScope.launch {
-            sharedRoutineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
-            saveDays(nowRoutine.routineId, days)
+        val path = "${WriteModelData.defaultPath}/shared_routine/${nowRoutine.routineId}"
+        commitItems.add(
+            WriteModelData(
+                update = UpdateData(path, nowRoutine.toSharedRoutineField(nowRoutine.routineId))
+            )
+        )
+        updateDays(path, days)
+        sharedRoutineRepository.commitTransaction(commitItems)
+    }
+
+    private fun updateDays(
+        lastPath: String,
+        dayUiModels: List<DayUiModel>
+    ) {
+        dayUiModels.forEach { dayUiModel ->
+            val path = "${lastPath}/day/${dayUiModel.dayId}"
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, dayUiModel.toDayField())
+                )
+            )
+            updateExercises(path, dayUiModel.exercises)
         }
     }
 
-    private fun saveDays(routineId: String, dayUiModels: List<DayUiModel>) {
-        viewModelScope.launch {
-            dayUiModels.forEach { dayUiModel ->
-                sharedRoutineRepository.shareDay(
-                    routineId,
-                    dayUiModel.dayId,
-                    dayUiModel.toDayField()
+    private fun updateExercises(
+        lastPath: String,
+        exerciseUiModels: List<ExerciseUiModel>
+    ) {
+        exerciseUiModels.forEach { exerciseUiModel ->
+            val path = "${lastPath}/exercise/${exerciseUiModel.exerciseId}"
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseUiModel.toExerciseField())
                 )
-                saveExercise(routineId, dayUiModel.dayId, dayUiModel.exercises)
-            }
+            )
+            updateExerciseSets(path, exerciseUiModel.exerciseSets)
         }
     }
 
-    private fun saveExercise(routineId: String, dayId: String, exercises: List<ExerciseUiModel>) {
-        viewModelScope.launch {
-            exercises.forEach { exerciseUiModel ->
-                sharedRoutineRepository.shareExercise(
-                    routineId,
-                    dayId,
-                    exerciseUiModel.exerciseId,
-                    exerciseUiModel.toExerciseField()
-                )
-                saveExerciseSet(
-                    routineId,
-                    dayId,
-                    exerciseUiModel.exerciseId,
-                    exerciseUiModel.exerciseSets
-                )
-            }
-        }
-
-    }
-
-    private fun saveExerciseSet(
-        routineId: String,
-        dayId: String,
-        exerciseId: String,
+    private fun updateExerciseSets(
+        lastPath: String,
         exerciseSets: List<ExerciseSetUiModel>
     ) {
-        viewModelScope.launch {
-            exerciseSets.forEach { exerciseSetUiModel ->
-                sharedRoutineRepository.shareExerciseSet(
-                    routineId,
-                    dayId,
-                    exerciseId,
-                    exerciseSetUiModel.setId,
-                    exerciseSetUiModel.toExerciseSetField()
+        exerciseSets.forEach { exerciseSetUiModel ->
+            val path = "${lastPath}/exercise_set/${exerciseSetUiModel.setId} "
+            commitItems.add(
+                WriteModelData(
+                    update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
                 )
-            }
+            )
         }
     }
 
-    fun deleteSharedRoutineAndDays() {
-        viewModelScope.launch {
-            val routineId = _routineUiModel.value?.routineId ?: return@launch
-            sharedRoutineRepository.deleteDocument(routineId)
-            val path = "${routineId}/day"
-            val dayDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
-            dayDocuments.forEach { dayId ->
-                deleteSharedExercise(routineId, dayId)
-                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}")
-            }
+
+    private suspend fun deleteSharedRoutine() {
+        commitItems.clear()
+        val routineId = _routineUiModel.value?.routineId ?: return
+        commitItems.add(
+            WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${routineId}")
+        )
+        val dayIds = sharedRoutineRepository.getChildrenDocumentName("$routineId/day")
+        deleteDays(routineId, dayIds)
+        sharedRoutineRepository.commitTransaction(commitItems)
+    }
+
+
+    private suspend fun deleteDays(
+        lastPath: String,
+        dayIds: List<String>
+    ) {
+        dayIds.forEach { dayId ->
+            val path = "${lastPath}/day/${dayId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
+            )
+            val exerciseIds = sharedRoutineRepository.getChildrenDocumentName("$path/exercise")
+            deleteExercises(path, exerciseIds)
         }
     }
 
-    private fun deleteSharedExercise(routineId: String, dayId: String) {
-        viewModelScope.launch {
-            val path = "${routineId}/day/${dayId}/exercise"
-            val exerciseDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
-            exerciseDocuments.forEach { exerciseId ->
-                deleteSharedExerciseSet(routineId, dayId, exerciseId)
-                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}")
-            }
+    private suspend fun deleteExercises(
+        lastPath: String,
+        exerciseIds: List<String>
+    ) {
+        exerciseIds.forEach { exerciseId ->
+            val path = "${lastPath}/exercise/${exerciseId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
+            )
+            val exerciseSetIds =
+                sharedRoutineRepository.getChildrenDocumentName("$path/exercise_set")
+            deleteExerciseSets(path, exerciseSetIds)
         }
     }
 
-    private fun deleteSharedExerciseSet(routineId: String, dayId: String, exerciseId: String) {
-        viewModelScope.launch {
-            val path = "${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set"
-            val exerciseSetDocuments = sharedRoutineRepository.getChildrenDocumentName(path)
-            exerciseSetDocuments.forEach { exerciseSetId ->
-                sharedRoutineRepository.deleteDocument("${routineId}/day/${dayId}/exercise/${exerciseId}/exercise_set/${exerciseSetId}")
-            }
+    private fun deleteExerciseSets(
+        lastPath: String,
+        exerciseSetIds: List<String>,
+    ) {
+        exerciseSetIds.forEach { exerciseSetId ->
+            val path = "${lastPath}/exercise_set/${exerciseSetId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
+            )
         }
     }
 
