@@ -6,12 +6,13 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import kotlinx.coroutines.flow.Flow
 
 interface RoutineRemoteDataSource {
     fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
     suspend fun getChildrenDocumentName(path: String): List<String>
-    suspend fun getSharedRoutine(routineId: String): Boolean
+    suspend fun getSharedRoutine(routineId: String): SharedRoutineField?
     suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay>
     suspend fun getSharedRoutineExercises(
         routineId: String,

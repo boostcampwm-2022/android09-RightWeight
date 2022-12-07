@@ -25,7 +25,7 @@ interface RoutineApiService {
     @GET("documents/shared_routine/{routineId}")
     suspend fun getSharedRoutine(
         @Path("routineId") routineId: String
-    ): Response<DocumentsResponse<SharedRoutineField>>
+    ): Response<SharedRoutineField>
 
     @GET("documents/shared_routine/{routineId}/day")
     suspend fun getSharedRoutineDays(

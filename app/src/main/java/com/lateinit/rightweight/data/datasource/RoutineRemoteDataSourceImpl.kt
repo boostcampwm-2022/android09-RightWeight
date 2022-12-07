@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
@@ -40,8 +41,13 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         } ?: emptyList()
     }
 
-    override suspend fun getSharedRoutine(routineId: String): Boolean {
-        return api.getSharedRoutine(routineId).isSuccessful
+    override suspend fun getSharedRoutine(routineId: String): SharedRoutineField? {
+        val response = api.getSharedRoutine(routineId)
+        return if(response.isSuccessful){
+            response.body()
+        } else {
+            null
+        }
     }
 
     override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {

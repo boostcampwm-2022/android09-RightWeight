@@ -124,7 +124,7 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    private fun updateSharedRoutine() {
+    private suspend fun updateSharedRoutine() {
         commitItems.clear()
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
@@ -135,6 +135,7 @@ class RoutineDetailViewModel @Inject constructor(
             )
         )
         updateDays(path, days)
+        sharedRoutineRepository.commitTransaction(commitItems)
     }
 
     private fun updateDays(
@@ -179,23 +180,20 @@ class RoutineDetailViewModel @Inject constructor(
                 )
             )
         }
-        viewModelScope.launch {
-            sharedRoutineRepository.commitTransaction(commitItems)
-        }
     }
 
 
-    private fun deleteSharedRoutine() {
+    private suspend fun deleteSharedRoutine() {
         commitItems.clear()
         val routineId = _routine.value?.routineId ?: return
         commitItems.add(
             WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${routineId}")
         )
-        viewModelScope.launch {
-            val dayIds = sharedRoutineRepository.getChildrenDocumentName("$routineId/day")
-            deleteDays(routineId, dayIds)
-        }
+        val dayIds = sharedRoutineRepository.getChildrenDocumentName("$routineId/day")
+        deleteDays(routineId, dayIds)
+        sharedRoutineRepository.commitTransaction(commitItems)
     }
+
 
     private suspend fun deleteDays(
         lastPath: String,
@@ -226,7 +224,7 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun deleteExerciseSets(
+    private fun deleteExerciseSets(
         lastPath: String,
         exerciseSetIds: List<String>,
     ) {
@@ -236,7 +234,6 @@ class RoutineDetailViewModel @Inject constructor(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
             )
         }
-        sharedRoutineRepository.commitTransaction(commitItems)
     }
 
 }
