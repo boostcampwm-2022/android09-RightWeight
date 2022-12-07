@@ -16,7 +16,7 @@ class MainViewModel @Inject constructor(
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun backup() {
+    fun backupUserInfo() {
         val user = userInfo.value ?: return
         viewModelScope.launch {
             userRepository.backupUserInfo(user)

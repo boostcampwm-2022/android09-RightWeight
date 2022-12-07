@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun backup() {
-        mainViewModel.backup()
+        mainViewModel.backupUserInfo()
     }
 
     private fun logout() {
