@@ -8,6 +8,7 @@ import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
+import com.lateinit.rightweight.data.database.dao.UserDao
 import com.lateinit.rightweight.data.datasource.*
 import dagger.Module
 import dagger.Provides
@@ -48,8 +49,8 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getUserLocalDataSource(appPreferencesDataStore: AppPreferencesDataStore): UserLocalDataSource {
-        return UserLocalDataSourceImpl(appPreferencesDataStore, )
+    fun getUserLocalDataSource(userDao: UserDao, appPreferencesDataStore: AppPreferencesDataStore): UserLocalDataSource {
+        return UserLocalDataSourceImpl(userDao, appPreferencesDataStore)
     }
 
     @Provides
