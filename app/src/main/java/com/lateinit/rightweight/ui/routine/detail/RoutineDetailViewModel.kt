@@ -52,8 +52,8 @@ class RoutineDetailViewModel @Inject constructor(
 
             userRepository.saveUser(
                 user.copy(
-                    routineId = _routineUiModel.value?.routineId,
-                    dayId = _dayUiModels.value?.first()?.dayId
+                    routineId = _routineUiModel.value?.routineId ?: "",
+                    dayId = _dayUiModels.value?.first()?.dayId ?: ""
                 )
             )
         }
@@ -65,8 +65,8 @@ class RoutineDetailViewModel @Inject constructor(
 
             userRepository.saveUser(
                 user.copy(
-                    routineId = null,
-                    dayId = null
+                    routineId = "",
+                    dayId = ""
                 )
             )
         }
