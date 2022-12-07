@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
@@ -63,6 +64,7 @@ class RoutineDetailFragment : Fragment(){
         setDayUiModelsObserve()
         setExerciseAdapter()
         setCurrentDayPositionObserve()
+        setSelectRoutineButtonListener()
     }
 
     private fun setMenu() {
@@ -130,7 +132,22 @@ class RoutineDetailFragment : Fragment(){
             exerciseAdapter.submitList(exercises)
         }
     }
-    
+
+    private fun setSelectRoutineButtonListener() {
+        binding.buttonRoutineSelect.setOnClickListener {
+            viewModel.selectRoutine()
+            Snackbar.make(
+                binding.root,
+                "${viewModel.routine.value?.title} 이 선택되었습니다.",
+                Snackbar.LENGTH_SHORT
+            ).apply{
+                anchorView = binding.buttonRoutineSelect
+            }.show()
+            findNavController().navigateUp()
+        }
+    }
+
+
     private fun removeRoutine(routineId: String) {
         val selectedRoutineId = viewModel.userInfo.value?.routineId
         if (selectedRoutineId != routineId) {
