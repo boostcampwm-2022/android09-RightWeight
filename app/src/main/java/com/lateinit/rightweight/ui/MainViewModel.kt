@@ -40,9 +40,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount(key: String, idToken: String) {
+    fun deleteAccount(key: String) {
+        val userInfo = userInfo.value?.idToken ?: return
         viewModelScope.launch(networkExceptionHandler) {
-            loginRepository.deleteAccount(key, idToken)
+            loginRepository.deleteAccount(key, userInfo)
             sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }

@@ -173,9 +173,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun withdraw() {
-        val idToken = viewModel.userInfo.value?.idToken ?: return
-
-        viewModel.deleteAccount(getString(R.string.google_api_key), idToken)
+        viewModel.deleteAccount(getString(R.string.google_api_key))
         collectOnLifecycle {
             viewModel.networkState.collect {
                 if (it == NetworkState.SUCCESS) {
