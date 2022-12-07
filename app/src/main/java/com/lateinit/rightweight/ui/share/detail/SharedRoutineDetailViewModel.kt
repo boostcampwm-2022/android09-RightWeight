@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -14,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -112,19 +116,40 @@ class SharedRoutineDetailViewModel @Inject constructor(
             viewModelScope.launch {
                 userRepository.getUser().collect() { user ->
                     val routine = sharedRoutineUiModel.toRoutine(
+                        createUUID(),
                         user?.displayName ?: "",
                         routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
                     )
-                    val days = dayUiModels.map { it.toDay() }
-                    val exercises =
-                        dayUiModels.map { it.exercises.map { it.toExercise() } }.flatten()
-                    val exerciseSets =
-                        dayUiModels.map { it.exercises.map { it.exerciseSets.map { it.toExerciseSet() } } }
-                            .flatten().flatten()
+                    val days = mutableListOf<Day>()
+                    val exercises = mutableListOf<Exercise>()
+                    val exerciseSets = mutableListOf<ExerciseSet>()
+
+                    dayUiModels.forEach(){ dayUiModel ->
+                        val dayId = createUUID()
+                        days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
+                        dayUiModel.exercises.forEach(){ exerciseUiModel ->
+                            val exerciseId = createUUID()
+                            exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
+                            exerciseUiModel.exerciseSets.forEach(){ exerciseSetUiModel ->
+                                val exerciseSetId = createUUID()
+                                exerciseSets.add(exerciseSetUiModel.toExerciseSetWithNewIds(exerciseId, exerciseSetId))
+                            }
+                        }
+                    }
+//                    val days = dayUiModels.map { it.toDayWithNewIds(routine.routineId, createUUID()) }
+//                    val exercises =
+//                        dayUiModels.map { it.exercises.map { it.toExerciseWithNewIds() } }.flatten()
+//                    val exerciseSets =
+//                        dayUiModels.map { it.exercises.map { it.exerciseSets.map { it.toExerciseSet() } } }
+//                            .flatten().flatten()
                     routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
                 }
             }
         }
+    }
+
+    private fun createUUID(): String {
+        return UUID.randomUUID().toString()
     }
 
 }
