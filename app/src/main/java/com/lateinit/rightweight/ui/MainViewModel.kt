@@ -30,11 +30,13 @@ class MainViewModel @Inject constructor(
 
 
     private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        when (throwable) {
-            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
-            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
-            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
-            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+        viewModelScope.launch {
+            when (throwable) {
+                is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+                is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+                is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+                else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+            }
         }
     }
 
@@ -45,9 +47,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun sendNetworkResultEvent(state: NetworkState) {
-        viewModelScope.launch {
-            _networkState.emit(state)
-        }
+    private suspend fun sendNetworkResultEvent(state: NetworkState) {
+        _networkState.emit(state)
     }
 }
