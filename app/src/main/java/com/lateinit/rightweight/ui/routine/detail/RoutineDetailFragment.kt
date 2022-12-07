@@ -24,7 +24,7 @@ import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoutineDetailFragment : Fragment(){
+class RoutineDetailFragment : Fragment() {
 
     private var _binding: FragmentRoutineDetailBinding? = null
     private val binding
@@ -37,12 +37,11 @@ class RoutineDetailFragment : Fragment(){
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment{
+        CommonDialogFragment {
             when (dialog.tag) {
                 ROUTINE_REMOVE_DIALOG_TAG -> {
-                    viewModel.removeRoutine(args.routineId)
                     viewModel.deselectRoutine()
-                    findNavController().navigateUp()
+                    viewModel.removeRoutine(args.routineId)
                 }
             }
         }
@@ -65,7 +64,7 @@ class RoutineDetailFragment : Fragment(){
         setDayUiModelsObserve()
         setExerciseAdapter()
         setCurrentDayPositionObserve()
-        setSelectRoutineButtonEvent()
+        handleNavigationEvent()
     }
 
     private fun setMenu() {
@@ -134,19 +133,34 @@ class RoutineDetailFragment : Fragment(){
         }
     }
 
-    private fun setSelectRoutineButtonEvent() {
+    private fun handleNavigationEvent() {
+
         collectOnLifecycle {
-            viewModel.isSelected.collect {
-                Snackbar.make(
-                    binding.root,
-                    String.format(getString(R.string.msg_selected_routine), "${viewModel.routine.value?.title}"),
-                    Snackbar.LENGTH_SHORT
-                ).apply{
-                    anchorView = binding.buttonRoutineSelect
-                    setAction(R.string.return_back) {
-                        findNavController().navigateUp()
+            viewModel.navigationEvent.collect { event ->
+                when (event) {
+                    is RoutineDetailViewModel.NavigationEvent.SelectEvent -> {
+                        if (event.isSelected) {
+                            Snackbar.make(
+                                binding.root,
+                                String.format(
+                                    getString(R.string.msg_selected_routine),
+                                    "${viewModel.routine.value?.title}"
+                                ),
+                                Snackbar.LENGTH_SHORT
+                            ).apply {
+                                anchorView = binding.buttonRoutineSelect
+                                setAction(R.string.return_back) {
+                                    findNavController().navigateUp()
+                                }
+                            }.show()
+                        }
                     }
-                }.show()
+                    is RoutineDetailViewModel.NavigationEvent.RemoveEvent -> {
+                        if (event.isRemoved) {
+                            findNavController().navigateUp()
+                        }
+                    }
+                }
             }
         }
     }
@@ -156,9 +170,12 @@ class RoutineDetailFragment : Fragment(){
         val selectedRoutineId = viewModel.userInfo.value?.routineId
         if (selectedRoutineId != routineId) {
             viewModel.removeRoutine(routineId)
-            findNavController().navigateUp()
         } else {
-            dialog.show(parentFragmentManager, ROUTINE_REMOVE_DIALOG_TAG, R.string.routine_remove_message)
+            dialog.show(
+                parentFragmentManager,
+                ROUTINE_REMOVE_DIALOG_TAG,
+                R.string.routine_remove_message
+            )
         }
     }
 

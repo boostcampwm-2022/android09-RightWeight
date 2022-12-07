@@ -42,8 +42,8 @@ class RoutineDetailViewModel @Inject constructor(
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
 
-    private val _isSelected = MutableSharedFlow<Boolean>()
-    val isSelected = _isSelected.asSharedFlow()
+    private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
 
     fun selectRoutine() {
         viewModelScope.launch {
@@ -55,7 +55,7 @@ class RoutineDetailViewModel @Inject constructor(
                     dayId = _dayUiModels.value?.first()?.dayId
                 )
             )
-            _isSelected.emit(true)
+            sendEvent(NavigationEvent.SelectEvent(true))
         }
     }
 
@@ -117,6 +117,7 @@ class RoutineDetailViewModel @Inject constructor(
     fun removeRoutine(routineId: String) {
         viewModelScope.launch {
             routineRepository.removeRoutineById(routineId)
+            sendEvent(NavigationEvent.RemoveEvent(true))
         }
     }
 
@@ -216,5 +217,15 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
+    private fun sendEvent(event: NavigationEvent) {
+        viewModelScope.launch {
+            _navigationEvent.emit(event)
+        }
+    }
+
+    sealed class NavigationEvent {
+        data class SelectEvent(val isSelected: Boolean) : NavigationEvent()
+        data class RemoveEvent(val isRemoved: Boolean) : NavigationEvent()
+    }
 }
 
