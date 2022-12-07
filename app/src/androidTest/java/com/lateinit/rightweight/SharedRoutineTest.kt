@@ -3,11 +3,14 @@ package com.lateinit.rightweight
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.gson.annotations.SerializedName
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.mediator.*
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
+import com.lateinit.rightweight.data.model.FieldTransformsModelData
+import com.lateinit.rightweight.data.model.TransformData
+import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.*
 import com.lateinit.rightweight.util.toSharedRoutine
 import com.lateinit.rightweight.util.toSharedRoutineDay
@@ -20,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -147,43 +149,17 @@ class SharedRoutineTest {
             val writeRequestBody = WriteRequestBody(
                 listOf(
                     WriteModelData(
-                        transform = Transform(
+                        transform = TransformData(
                             path,
                             listOf(FieldTransformsModelData("shared_count.count", IntValue("1")))
                         )
                     )
                 )
             )
+            routineApiService.commitTransaction(writeRequestBody)
 
         }
     }
 
-    data class WriteRequestBody(
-        val writes: List<WriteModelData>
-    )
-
-    data class WriteModelData(
-        @field:SerializedName("transform")
-        val transform: Transform,
-        val delete: String? = null,
-    ) {
-        companion object {
-            const val defaultPath = "projects/right-weight/databases/(default)/documents"
-        }
-    }
-
-    data class Transform(
-        @field:SerializedName("document")
-        val document: String,
-        @field:SerializedName("fieldTransforms")
-        val fieldTransforms: List<FieldTransformsModelData>
-    )
-
-    data class FieldTransformsModelData(
-        @field:SerializedName("fieldPath")
-        val fieldPath: String,
-        @field:SerializedName("increment")
-        val increment: IntValue
-    )
 
 }
