@@ -8,4 +8,6 @@ interface UserRepository {
     suspend fun saveUser(user: User)
 
     fun getUser(): Flow<User?>
+
+    suspend fun backupUserInfo(user: User)
 }

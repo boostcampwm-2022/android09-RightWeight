@@ -2,6 +2,7 @@ package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.AuthApiService
 import com.lateinit.rightweight.data.RoutineApiService
+import com.lateinit.rightweight.data.UserApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
@@ -48,7 +49,13 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun getUserDataSource(appPreferencesDataStore: AppPreferencesDataStore): UserDataSource {
-        return UserLocalDataSource(appPreferencesDataStore)
+        return UserLocalDataSource(appPreferencesDataStore, )
+    }
+
+    @Provides
+    @Singleton
+    fun getUserRemoteDataSource(userApiService: UserApiService): UserRemoteDataSource {
+        return UserRemoteDataSourceImpl(userApiService)
     }
 
     @Provides
