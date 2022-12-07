@@ -21,7 +21,7 @@ class SharedRoutineRemoteMediator(
     private val appPreferencesDataStore: AppPreferencesDataStore
 ) : RemoteMediator<Int, SharedRoutine>() {
 
-    private val initModifiedDateFlag = "1-1-1T1:1:1.1Z"
+    private val initModifiedDateFlag = "9999-1-1T1:1:1.1Z"
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -49,7 +49,7 @@ class SharedRoutineRemoteMediator(
             val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData("shared_routine"),
-                    OrderByData(FieldData("modified_date"), "ASCENDING"),
+                    OrderByData(FieldData("modified_date"), "DESCENDING"),
                     10,
                     StartAtData(ValuesData(pagingFlag))
                 )
