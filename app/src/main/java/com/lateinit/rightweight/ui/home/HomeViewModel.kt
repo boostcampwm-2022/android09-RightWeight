@@ -33,8 +33,9 @@ class HomeViewModel @Inject constructor(
         userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
      val selectedRoutine = userInfo.map {
-         it?.routineId ?: return@map null
-         routineRepository.getRoutineById(it.routineId).toRoutineUiModel()
+         val routineId = it?.routineId
+         if(routineId.isNullOrEmpty()) return@map null
+         routineRepository.getRoutineById(routineId).toRoutineUiModel()
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _exercises = MutableLiveData<List<Exercise>>()
