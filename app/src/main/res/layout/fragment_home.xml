@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginVertical="16dp"
-            app:dayUiModel="@{viewModel.dayUiModel}"
+            app:dayUiModel="@{viewModel.selectedDay}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/card_view_home_routine_reset_container"
             app:layout_constraintStart_toStartOf="@id/card_view_home_routine_title_container"
