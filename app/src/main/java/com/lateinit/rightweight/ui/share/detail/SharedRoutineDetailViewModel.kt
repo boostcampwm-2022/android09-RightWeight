@@ -114,6 +114,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
     ) {
         if (sharedRoutineUiModel != null) {
             viewModelScope.launch {
+                val sharedRoutineId = sharedRoutineUiModel.routineId
                 userRepository.getUser().collect() { user ->
                     val routine = sharedRoutineUiModel.toRoutine(
                         createUUID(),
@@ -137,6 +138,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                         }
                     }
                     routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
+                    sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
                 }
             }
         }

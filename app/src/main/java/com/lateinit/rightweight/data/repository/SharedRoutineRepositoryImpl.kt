@@ -8,7 +8,10 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
+import com.lateinit.rightweight.data.model.FieldTransformsModelData
+import com.lateinit.rightweight.data.model.TransformData
 import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.remote.model.IntValue
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -59,6 +62,21 @@ class SharedRoutineRepositoryImpl @Inject constructor(
 
     override suspend fun checkRoutineInRemote(routineId: String): Boolean {
         return routineRemoteDataSource.getSharedRoutine(routineId) != null
+    }
+
+    override suspend fun increaseSharedCount(routineId: String) {
+        val path =
+            "${WriteModelData.defaultPath}/shared_routine/${routineId}"
+        routineRemoteDataSource.commitTransaction(
+            listOf(
+                WriteModelData(
+                    transform = TransformData(
+                        path,
+                        listOf(FieldTransformsModelData("shared_count.count", IntValue("1")))
+                    )
+                )
+            )
+        )
     }
 
 }

@@ -51,10 +51,10 @@ interface RoutineApiService {
         writes: WriteRequestBody
     )
 
-    @PATCH("documents/shared_routine/{routineId}")
-    suspend fun updateSharedRoutineField(
-        @Path("routineId") routineId: String,
-        @Query("updateMask.fieldPaths") fieldPath: String,
-        @Body rootField: RootField
-    )
+//    @PATCH("documents/shared_routine/{routineId}")
+//    suspend fun updateSharedRoutineField(
+//        @Path("routineId") routineId: String,
+//        @Query("updateMask.fieldPaths") fieldPath: String,
+//        @Body rootField: RootField
+//    )
 }
