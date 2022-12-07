@@ -1,12 +1,7 @@
 package com.lateinit.rightweight.ui.routine.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -19,6 +14,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
+import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,6 +61,7 @@ class RoutineDetailFragment : Fragment() {
         setExerciseAdapter()
         setCurrentDayPositionObserve()
         handleNavigationEvent()
+        handleNetworkResultEvent()
     }
 
     private fun setMenu() {
@@ -134,7 +131,6 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun handleNavigationEvent() {
-
         collectOnLifecycle {
             viewModel.navigationEvent.collect { event ->
                 when (event) {
@@ -160,6 +156,30 @@ class RoutineDetailFragment : Fragment() {
                             findNavController().navigateUp()
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun handleNetworkResultEvent() {
+        collectOnLifecycle {
+            viewModel.networkState.collect { state ->
+                if (state == NetworkState.SUCCESS) {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.complete_share_message,
+                        Snackbar.LENGTH_LONG
+                    ).apply {
+                        anchorView = binding.buttonRoutineSelect
+                    }.show()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.wrong_connection,
+                        Snackbar.LENGTH_LONG
+                    ).apply {
+                        anchorView = binding.buttonRoutineSelect
+                    }.show()
                 }
             }
         }

@@ -8,20 +8,21 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
+import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDayField
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExerciseField
-import com.lateinit.rightweight.util.toExerciseSetField
+import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.SocketException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,6 +45,9 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
     val navigationEvent = _navigationEvent.asSharedFlow()
+
+    private val _networkState = MutableSharedFlow<NetworkState>()
+    val networkState = _networkState.asSharedFlow()
 
     fun selectRoutine() {
         viewModelScope.launch {
@@ -125,9 +129,10 @@ class RoutineDetailViewModel @Inject constructor(
         val userId = userInfo.value?.userId ?: return
         val nowRoutine = _routine.value ?: return
         val days = _dayUiModels.value ?: return
-        viewModelScope.launch {
+        viewModelScope.launch(networkExceptionHandler) {
             sharedRoutineRepository.shareRoutine(userId, nowRoutine.routineId, nowRoutine)
             saveDays(nowRoutine.routineId, days)
+            sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
 
@@ -220,6 +225,21 @@ class RoutineDetailViewModel @Inject constructor(
     private fun sendEvent(event: NavigationEvent) {
         viewModelScope.launch {
             _navigationEvent.emit(event)
+        }
+    }
+
+    private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        when (throwable) {
+            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+        }
+    }
+
+    private fun sendNetworkResultEvent(state: NetworkState) {
+        viewModelScope.launch {
+            _networkState.emit(state)
         }
     }
 
