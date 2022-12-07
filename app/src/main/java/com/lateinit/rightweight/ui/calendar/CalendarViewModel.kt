@@ -2,7 +2,6 @@ package com.lateinit.rightweight.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
@@ -10,8 +9,10 @@ import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.ui.model.ParentDayUiModel
+import com.lateinit.rightweight.ui.model.RoutineUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toHistoryUiModel
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,7 @@ class CalendarViewModel @Inject constructor(
         getHistoryBetweenDate(it)
     }.stateIn(viewModelScope, SharingStarted.Lazily, mapOf())
 
-    private var currentRoutine: Routine? = null
+    private var currentRoutine: RoutineUiModel? = null
     private val currentRoutineDays = MutableStateFlow<List<DayUiModel>>(emptyList())
     private var todayRoutineDayPosition = DAY_POSITION_NONE
 
@@ -73,7 +74,7 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
 
-            currentRoutine = routineWithDays.routine
+            currentRoutine = routineWithDays.routine.toRoutineUiModel()
             currentRoutineDays.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
                 if (routineWithDay.day.dayId == user.dayId) todayRoutineDayPosition = index
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
@@ -124,7 +125,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getHistoryBetweenDate(
-        month: YearMonth,
+        month: YearMonth
     ): Flow<Map<LocalDate, HistoryWithHistoryExercises>> {
         val startDay = month.atDay(START_DAY_OF_MONTH)
         val endDay = month.atEndOfMonth()

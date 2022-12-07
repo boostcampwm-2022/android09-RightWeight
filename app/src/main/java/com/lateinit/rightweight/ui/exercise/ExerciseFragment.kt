@@ -14,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAME
@@ -28,10 +27,10 @@ import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT
 import com.lateinit.rightweight.service.convertTimeStamp
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
-import com.lateinit.rightweight.util.getPartNameRes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -139,8 +138,8 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun setHistoryExerciseAdapter() {
-        val exerciseParts = ExercisePartType.values().map { exercisePart ->
-            getString(exercisePart.getPartNameRes())
+        val exerciseParts = ExercisePartTypeUiModel.values().map { exercisePart ->
+            getString(exercisePart.partName)
         }
         val exercisePartAdapter =
             ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
