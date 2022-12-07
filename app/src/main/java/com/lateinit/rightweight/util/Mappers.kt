@@ -13,6 +13,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
+import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
@@ -46,6 +47,16 @@ fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayU
         order = order,
         selected = index == FIRST_DAY_POSITION,
         exercises = exerciseWithSets.map { it.toExerciseUiModel() }
+    )
+}
+
+fun DayWithExercises.toDayUiModel(): DayUiModel {
+    return DayUiModel(
+        dayId = day.dayId,
+        routineId = day.routineId,
+        order = day.order,
+        selected = day.order == FIRST_DAY_POSITION,
+        exercises = exercises.map { it.toExerciseUiModel() }
     )
 }
 
