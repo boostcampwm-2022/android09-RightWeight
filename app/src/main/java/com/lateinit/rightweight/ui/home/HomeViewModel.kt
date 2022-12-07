@@ -48,7 +48,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadDayWithExercises() {
         viewModelScope.launch {
-            val dayId = userInfo.value?.dayId ?: run {
+            val dayId = userInfo.value?.dayId
+            if(dayId.isNullOrEmpty()){
                 _dayUiModel.value = null
                 return@launch
             }
@@ -67,8 +68,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveHistory() {
-        val routineId = userInfo.value?.routineId ?: return
-        val dayId = dayUiModel.value?.dayId ?: return
+        val routineId = userInfo.value?.routineId
+        if(routineId.isNullOrEmpty()) return
+        val dayId = dayUiModel.value?.dayId
+        if(dayId.isNullOrEmpty()) return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)

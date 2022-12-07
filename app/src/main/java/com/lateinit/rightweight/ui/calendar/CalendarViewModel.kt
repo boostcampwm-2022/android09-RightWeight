@@ -69,7 +69,8 @@ class CalendarViewModel @Inject constructor(
 
     private fun getRoutineDays() {
         val user = userInfo.value ?: return
-        val routineId = user.routineId ?: return
+        val routineId = user.routineId
+        if(routineId.isEmpty()) return
 
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
