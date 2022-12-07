@@ -31,7 +31,7 @@ class SharedRoutineDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSharedRoutineDetailBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -85,7 +85,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         sharedRoutineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if(dayUiModels.size > it){
-                val exercises = dayUiModels.get(it).exercises
+                val exercises = dayUiModels.get(it).exercises.sortedBy { it.order }
                 exerciseAdapter.submitList(exercises)
             }
         }
