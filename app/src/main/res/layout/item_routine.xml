@@ -80,11 +80,14 @@
                 <TextView
                     android:id="@+id/text_view_routine_title"
                     style="@style/Text.Medium.Bold"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{routineUiModel.title}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_description"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_author"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_author"
                     tools:text="Title" />
@@ -92,10 +95,13 @@
                 <TextView
                     android:id="@+id/text_view_routine_description"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{routineUiModel.description}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_modified_time"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_title"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_title"
                     tools:text="description" />
