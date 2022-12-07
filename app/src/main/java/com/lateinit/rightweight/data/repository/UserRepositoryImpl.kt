@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.User
@@ -22,6 +23,11 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun backupUserInfo(user: User) {
         userRemoteDataSource.backupUserInfo(user.userId, user.routineId, user.dayId)
     }
+
+    override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
+        return userLocalDataSource.getAllRoutineWithDays()
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         userRemoteDataSource.commitTransaction(writes)
     }
