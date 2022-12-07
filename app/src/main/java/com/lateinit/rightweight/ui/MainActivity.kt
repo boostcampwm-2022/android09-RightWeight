@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -21,11 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -49,7 +44,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var idToken: String
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment{ tag ->
             when (tag) {
@@ -62,7 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
-    private val mainViewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -159,12 +153,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                mainViewModel.userInfo.collect {
+                viewModel.userInfo.collect {
                     it?.let {
                         headerBinding.user = it
-                        idToken = it.idToken
-
-                        Log.d("delete", "${getString(R.string.google_api_key)}, $idToken")
                     }
                 }
             }
@@ -182,10 +173,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun withdraw() {
+        val idToken = viewModel.userInfo.value?.idToken ?: return
 
-        mainViewModel.deleteAccount(getString(R.string.google_api_key), idToken)
+        viewModel.deleteAccount(getString(R.string.google_api_key), idToken)
         collectOnLifecycle {
-            mainViewModel.network.collect {
+            viewModel.networkState.collect {
                 if (it == NetworkState.SUCCESS) {
                     client.signOut()
                     moveToLoginActivity()

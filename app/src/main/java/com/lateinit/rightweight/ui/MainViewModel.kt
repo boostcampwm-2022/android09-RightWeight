@@ -7,7 +7,10 @@ import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.SocketException
@@ -22,29 +25,29 @@ class MainViewModel @Inject constructor(
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val _network = MutableSharedFlow<NetworkState>()
-    val network = _network.asSharedFlow()
+    private val _networkState = MutableSharedFlow<NetworkState>()
+    val networkState = _networkState.asSharedFlow()
 
 
     private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         when (throwable) {
-            is SocketException -> netWorkResultEvent(NetworkState.BAD_INTERNET)
-            is HttpException -> netWorkResultEvent(NetworkState.PARSE_ERROR)
-            is UnknownHostException -> netWorkResultEvent(NetworkState.WRONG_CONNECTION)
-            else -> netWorkResultEvent(NetworkState.OTHER_ERROR)
+            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
         }
     }
 
     fun deleteAccount(key: String, idToken: String) {
         viewModelScope.launch(networkExceptionHandler) {
             loginRepository.deleteAccount(key, idToken)
-            netWorkResultEvent(NetworkState.SUCCESS)
+            sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
 
-    private fun netWorkResultEvent(state: NetworkState) {
+    private fun sendNetworkResultEvent(state: NetworkState) {
         viewModelScope.launch {
-            _network.emit(state)
+            _networkState.emit(state)
         }
     }
 }
