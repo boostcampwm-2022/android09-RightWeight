@@ -44,7 +44,7 @@ class RoutineDetailViewModel @Inject constructor(
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
 
-    private var commitItems = mutableListOf<WriteModelData>()
+    private val commitItems = mutableListOf<WriteModelData>()
 
     fun selectRoutine() {
         viewModelScope.launch {
