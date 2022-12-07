@@ -5,12 +5,7 @@ import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.DocumentsResponse
 import com.lateinit.rightweight.data.remote.model.*
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.DELETE
+import retrofit2.http.*
 
 interface RoutineApiService {
 
@@ -84,4 +79,11 @@ interface RoutineApiService {
         @Path("dayId") dayId: String,
         @Path("exerciseId") exerciseId: String
     ): DocumentsResponse<ExerciseSetField>?
+
+    @PATCH("documents/shared_routine/{routineId}")
+    suspend fun updateSharedRoutineField(
+        @Path("routineId") routineId: String,
+        @Query("updateMask.fieldPaths") fieldPath: String,
+        @Body rootField: RootField
+    )
 }

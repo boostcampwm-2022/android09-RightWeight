@@ -81,6 +81,7 @@ class SharedRoutineDetailFragment : Fragment() {
                                     uiState.sharedRoutineUiModel,
                                     uiState.dayUiModels
                                 )
+
                             }
                         }
                         is LatestSharedRoutineDetailUiState.Error -> Exception()

@@ -136,12 +136,6 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             }
                         }
                     }
-//                    val days = dayUiModels.map { it.toDayWithNewIds(routine.routineId, createUUID()) }
-//                    val exercises =
-//                        dayUiModels.map { it.exercises.map { it.toExerciseWithNewIds() } }.flatten()
-//                    val exerciseSets =
-//                        dayUiModels.map { it.exercises.map { it.exerciseSets.map { it.toExerciseSet() } } }
-//                            .flatten().flatten()
                     routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
                 }
             }

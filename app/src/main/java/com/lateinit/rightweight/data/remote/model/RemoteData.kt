@@ -70,3 +70,8 @@ data class ExerciseSetField(
     @SerializedName("exercise_id")
     val exerciseId: StringValue? = null,
 ) : RemoteData()
+
+data class SharedCountField(
+    @SerializedName("shared_count")
+    val sharedCount: MapValue? = null,
+) : RemoteData()
