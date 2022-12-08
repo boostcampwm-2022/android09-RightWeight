@@ -15,7 +15,9 @@ import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import com.lateinit.rightweight.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -23,9 +25,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedRoutineDetailViewModel @Inject constructor(
     private val sharedRoutineRepository: SharedRoutineRepository,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
+
+    val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _uiState = MutableStateFlow(
         LatestSharedRoutineDetailUiState.Success(null, mutableListOf())
@@ -38,7 +42,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
     fun getSharedRoutineDetail(routineId: String) {
         viewModelScope.launch {
             sharedRoutineRepository.getSharedRoutineDetail(routineId)
-                .collect() { sharedRoutineWithDays ->
+                .collect { sharedRoutineWithDays ->
 
                     if (sharedRoutineWithDays.days.isEmpty()) {
                         sharedRoutineRepository.requestSharedRoutineDetail(routineId)
@@ -115,31 +119,29 @@ class SharedRoutineDetailViewModel @Inject constructor(
         if (sharedRoutineUiModel != null) {
             viewModelScope.launch {
                 val sharedRoutineId = sharedRoutineUiModel.routineId
-                userRepository.getUser().collect() { user ->
-                    val routine = sharedRoutineUiModel.toRoutine(
-                        createUUID(),
-                        user?.displayName ?: "",
-                        routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
-                    )
-                    val days = mutableListOf<Day>()
-                    val exercises = mutableListOf<Exercise>()
-                    val exerciseSets = mutableListOf<ExerciseSet>()
+                val routine = sharedRoutineUiModel.toRoutine(
+                    createUUID(),
+                    userInfo.value?.displayName ?: "",
+                    routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
+                )
+                val days = mutableListOf<Day>()
+                val exercises = mutableListOf<Exercise>()
+                val exerciseSets = mutableListOf<ExerciseSet>()
 
-                    dayUiModels.forEach(){ dayUiModel ->
-                        val dayId = createUUID()
-                        days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
-                        dayUiModel.exercises.forEach(){ exerciseUiModel ->
-                            val exerciseId = createUUID()
-                            exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
-                            exerciseUiModel.exerciseSets.forEach(){ exerciseSetUiModel ->
-                                val exerciseSetId = createUUID()
-                                exerciseSets.add(exerciseSetUiModel.toExerciseSetWithNewIds(exerciseId, exerciseSetId))
-                            }
+                dayUiModels.forEach { dayUiModel ->
+                    val dayId = createUUID()
+                    days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
+                    dayUiModel.exercises.forEach { exerciseUiModel ->
+                        val exerciseId = createUUID()
+                        exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
+                        exerciseUiModel.exerciseSets.forEach { exerciseSetUiModel ->
+                            val exerciseSetId = createUUID()
+                            exerciseSets.add(exerciseSetUiModel.toExerciseSetWithNewIds(exerciseId, exerciseSetId))
                         }
                     }
-                    routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
-                    sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
                 }
+                routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
+                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
             }
         }
     }
