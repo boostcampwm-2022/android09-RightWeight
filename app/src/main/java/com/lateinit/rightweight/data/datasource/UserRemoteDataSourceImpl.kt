@@ -1,16 +1,19 @@
 package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.UserApiService
+import com.lateinit.rightweight.data.model.Direction
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.FiledReferenceData
 import com.lateinit.rightweight.data.model.FilterData
 import com.lateinit.rightweight.data.model.FilterOperator
 import com.lateinit.rightweight.data.model.FromData
+import com.lateinit.rightweight.data.model.OrderByData
 import com.lateinit.rightweight.data.model.RunQueryBody
 import com.lateinit.rightweight.data.model.StructuredQueryData
 import com.lateinit.rightweight.data.model.WhereData
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.StringValue
@@ -43,6 +46,22 @@ class UserRemoteDataSourceImpl @Inject constructor(
                             StringValue(userId)
                         )
                     )
+                )
+            )
+        )
+    }
+
+    override suspend fun getLastHistoryInServer(userId: String): List<DocumentResponse<HistoryField>> {
+        return api.getLastHistory(
+            userId,
+            RunQueryBody(
+                StructuredQueryData(
+                    from = FromData("history"),
+                    orderBy = OrderByData(
+                        FiledReferenceData("date"),
+                        Direction.DESCENDING.toString()
+                    ),
+                    limit = 1
                 )
             )
         )

@@ -41,9 +41,17 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun getLastHistoryInServer(userId: String): String? {
+        val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
+        return documentsResponseList.first().document?.fields?.date?.value
+
+    }
+
     override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
         return userLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
+
+
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
         return userRemoteDataSource.getChildrenDocumentName(path)

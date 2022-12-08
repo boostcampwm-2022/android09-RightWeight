@@ -19,6 +19,8 @@ interface UserRepository {
 
     suspend fun getUserRoutineInRemote(userId: String): List<String>
 
+    suspend fun getLastHistoryInServer(userId: String): String?
+
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 
     suspend fun getChildrenDocumentName(path: String): List<String>
