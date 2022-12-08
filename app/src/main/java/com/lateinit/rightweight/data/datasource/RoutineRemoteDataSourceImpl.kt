@@ -26,7 +26,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getSharedRoutinesByPaging() = Pager(
-        config = PagingConfig(10),
+        config = PagingConfig(10, prefetchDistance = 0, initialLoadSize = 1),
         remoteMediator = SharedRoutineRemoteMediator(
             db, api, appPreferencesDataStore
         ),
