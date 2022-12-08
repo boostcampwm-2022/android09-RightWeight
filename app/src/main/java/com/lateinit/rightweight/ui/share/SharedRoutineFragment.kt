@@ -23,10 +23,10 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    val viewModel: SharedRoutineViewModel by viewModels()
-    lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
+    private val viewModel: SharedRoutineViewModel by viewModels()
+    private lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
 
-    lateinit var sortTypes: List<String>
+    private lateinit var sortTypes: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
