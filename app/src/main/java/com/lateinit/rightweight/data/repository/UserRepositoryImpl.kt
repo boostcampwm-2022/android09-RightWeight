@@ -9,6 +9,7 @@ import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.util.toHistoryUiModel
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -41,16 +42,17 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getLastHistoryInServer(userId: String): String? {
+    override suspend fun getLastHistoryInServer(userId: String): LocalDate? {
         val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
-        return documentsResponseList.first().document?.fields?.date?.value
+        val lastDateTime =
+            documentsResponseList.first().document?.fields?.date?.value?.replace("Z", "")
+        return LocalDateTime.parse(lastDateTime).toLocalDate() ?: null
 
     }
 
     override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
         return userLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
-
 
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {

@@ -53,7 +53,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getLastHistoryInServer(userId: String): List<DocumentResponse<HistoryField>> {
         return api.getLastHistory(
-            userId,
             RunQueryBody(
                 StructuredQueryData(
                     from = FromData("history"),

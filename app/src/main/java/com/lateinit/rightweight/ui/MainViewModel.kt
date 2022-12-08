@@ -103,14 +103,20 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun backupHistory() {
+        val userId = userInfo.value?.userId ?: return
         commitItems.clear()
-        val historyList = userRepository.getHistoryAfterDate(LocalDate.parse("2020-01-01"))
+        val lastDate = getLastHistoryInServer(userId)
+        val historyList = userRepository.getHistoryAfterDate(lastDate)
         if (historyList.isNotEmpty()) {
             historyList.forEach { history ->
                 updateHistory(history)
             }
             userRepository.commitTransaction(commitItems)
         }
+    }
+
+    private suspend fun getLastHistoryInServer(userId: String): LocalDate {
+        return userRepository.getLastHistoryInServer(userId) ?: return DEFAULT_LOCAL_DATE
     }
 
     private fun updateHistory(history: HistoryUiModel) {
@@ -255,5 +261,9 @@ class MainViewModel @Inject constructor(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
             )
         }
+    }
+
+    companion object {
+        val DEFAULT_LOCAL_DATE: LocalDate = LocalDate.parse("1990-01-01")
     }
 }

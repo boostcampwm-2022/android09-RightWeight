@@ -19,7 +19,7 @@ interface UserRepository {
 
     suspend fun getUserRoutineInRemote(userId: String): List<String>
 
-    suspend fun getLastHistoryInServer(userId: String): String?
+    suspend fun getLastHistoryInServer(userId: String): LocalDate?
 
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 

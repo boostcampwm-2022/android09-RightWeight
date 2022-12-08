@@ -39,9 +39,8 @@ interface UserApiService {
         @Body query: RunQueryBody
     ): List<DocumentResponse<RoutineField>>
 
-    @POST("./documents/{userId}:runQuery")
+    @POST("./documents/user/wJ2EMAGR3bRF2oCFPUbFFe3myxf2/:runQuery")
     suspend fun getLastHistory(
-        @Path("userId") userId: String,
         @Body query: RunQueryBody
     ): List<DocumentResponse<HistoryField>>
 }
