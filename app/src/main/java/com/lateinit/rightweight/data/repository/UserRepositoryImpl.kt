@@ -45,8 +45,11 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getLastHistoryInServer(userId: String): LocalDate? {
         val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
         val lastDateTime =
-            documentsResponseList.first().document?.fields?.date?.value?.replace("Z", "")
-        return LocalDateTime.parse(lastDateTime).toLocalDate() ?: null
+            documentsResponseList.first()
+                .document?.fields?.date?.value
+                ?.replace("Z", "")
+                ?: return null
+        return LocalDateTime.parse(lastDateTime).toLocalDate()
 
     }
 
