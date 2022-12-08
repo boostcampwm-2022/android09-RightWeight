@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun backup() {
-        mainViewModel.backup()
+        viewModel.backup()
     }
 
     private fun logout() {

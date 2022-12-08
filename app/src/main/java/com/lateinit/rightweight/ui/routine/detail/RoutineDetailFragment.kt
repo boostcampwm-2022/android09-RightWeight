@@ -140,7 +140,7 @@ class RoutineDetailFragment : Fragment() {
                                 binding.root,
                                 String.format(
                                     getString(R.string.msg_selected_routine),
-                                    "${viewModel.routine.value?.title}"
+                                    "${viewModel.routineUiModel.value?.title}"
                                 ),
                                 Snackbar.LENGTH_SHORT
                             ).apply {

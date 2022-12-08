@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
         }
     }
 
