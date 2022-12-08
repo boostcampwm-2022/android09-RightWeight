@@ -29,7 +29,7 @@ interface RoutineLocalDataSource {
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
     fun getRoutines(): Flow<List<Routine>>
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
-    suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises
+    fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>
     suspend fun removeRoutineById(routineId: String)
 
     suspend fun insertSharedRoutineDetail(
