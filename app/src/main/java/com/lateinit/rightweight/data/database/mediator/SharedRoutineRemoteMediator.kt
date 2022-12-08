@@ -22,9 +22,6 @@ class SharedRoutineRemoteMediator(
     var sortType: SharedRoutineSortType
 ) : RemoteMediator<Int, SharedRoutine>() {
 
-    private val initModifiedDateFlag = "9999-1-1T1:1:1.1Z"
-    private val initSharedCountFlag = "999999999"
-
     lateinit var sharedRoutineRequestBody: SharedRoutineRequestBody
 
     override suspend fun initialize(): InitializeAction {
@@ -39,14 +36,14 @@ class SharedRoutineRemoteMediator(
             var endOfPaginationReached = false
 
             var pagingFlag = when (loadType) {
-                LoadType.REFRESH -> "$initModifiedDateFlag/$initSharedCountFlag"
+                LoadType.REFRESH -> "$INIT_MODIFIED_DATE_FLAG/$INIT_SHARED_COUNT_FLAG"
                 LoadType.PREPEND -> {
                     endOfPaginationReached = true
                     return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }
                 LoadType.APPEND -> {
                     val flag = appPreferencesDataStore.sharedRoutinePagingFlag.first()
-                    flag.ifEmpty { "$initModifiedDateFlag/$initSharedCountFlag" }
+                    flag.ifEmpty { "$INIT_MODIFIED_DATE_FLAG/$INIT_SHARED_COUNT_FLAG" }
                 }
             }
 
@@ -85,7 +82,7 @@ class SharedRoutineRemoteMediator(
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    appPreferencesDataStore.saveSharedRoutinePagingFlag("$initModifiedDateFlag/$initSharedCountFlag")
+                    appPreferencesDataStore.saveSharedRoutinePagingFlag("$INIT_MODIFIED_DATE_FLAG/$INIT_SHARED_COUNT_FLAG")
                     db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
@@ -109,6 +106,11 @@ class SharedRoutineRemoteMediator(
         } catch (e: HttpException) {
             return MediatorResult.Error(e)
         }
+    }
+
+    companion object{
+        const val INIT_MODIFIED_DATE_FLAG = "9999-1-1T1:1:1.1Z"
+        const val INIT_SHARED_COUNT_FLAG = "999999999"
     }
 
 }
