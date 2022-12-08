@@ -12,10 +12,12 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
+import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
@@ -23,6 +25,7 @@ import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.MapValue
 import com.lateinit.rightweight.data.remote.model.MapValueRootField
+import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.SharedCount
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.data.remote.model.StringValue
@@ -35,6 +38,7 @@ import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -46,6 +50,16 @@ fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayU
         order = order,
         selected = index == FIRST_DAY_POSITION,
         exercises = exerciseWithSets.map { it.toExerciseUiModel() }
+    )
+}
+
+fun DayWithExercises.toDayUiModel(): DayUiModel {
+    return DayUiModel(
+        dayId = day.dayId,
+        routineId = day.routineId,
+        order = day.order,
+        selected = day.order == FIRST_DAY_POSITION,
+        exercises = exercises.map { it.toExerciseUiModel() }
     )
 }
 
@@ -159,10 +173,22 @@ fun RoutineUiModel.toSharedRoutineField(userId: String): SharedRoutineField {
         sharedCount = MapValue(
             MapValueRootField(
                 SharedCount(
-                time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
-                count = IntValue("0")
-            ))
+                    time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
+                    count = IntValue("0")
+                )
+            )
         )
+    )
+}
+
+fun RoutineUiModel.toRoutineField(userId: String): RoutineField {
+    return RoutineField(
+        author = StringValue(author),
+        description = StringValue(description),
+        modifiedDate = TimeStampValue(modifiedDate.toString() + "Z"),
+        order = IntValue(order.toString()),
+        title = StringValue(title),
+        userId = StringValue(userId),
     )
 }
 
@@ -305,7 +331,7 @@ fun SharedRoutineUiModel.toRoutine(routineId: String, author: String, order: Int
         title = title,
         author = author,
         description = description,
-        modifiedDate = modifiedDate,
+        modifiedDate = LocalDateTime.now(),
         order = order
     )
 }
@@ -385,5 +411,12 @@ fun ExercisePartTypeUiModel.toExercisePartType(): ExercisePartType {
         ExercisePartTypeUiModel.CORE -> ExercisePartType.CORE
         ExercisePartTypeUiModel.FOREARM -> ExercisePartType.FOREARM
         ExercisePartTypeUiModel.CARDIO -> ExercisePartType.CARDIO
+    }
+}
+
+fun SharedRoutineSortTypeUiModel.toSharedRoutineSortType(): SharedRoutineSortType{
+    return when(this){
+        SharedRoutineSortTypeUiModel.MODIFIED_DATE_FIRST -> SharedRoutineSortType.MODIFIED_DATE_FIRST
+        SharedRoutineSortTypeUiModel.SHARED_COUNT_FIRST -> SharedRoutineSortType.SHARED_COUNT_FIRST
     }
 }

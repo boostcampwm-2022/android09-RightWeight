@@ -7,14 +7,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDay
 import com.lateinit.rightweight.util.toDayUiModel
@@ -37,6 +36,7 @@ class RoutineEditorViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var routineId: String
+    private var routineAuthor = DEFAULT_AUTHOR_NAME
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
@@ -73,10 +73,11 @@ class RoutineEditorViewModel @Inject constructor(
     val isPossibleSaveRoutine = _isPossibleSaveRoutine.asSharedFlow()
 
     init {
-        this.routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
+        routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
 
         if (routineId.isEmpty()) {
-            this.routineId = createUUID()
+            routineId = createUUID()
+            routineAuthor = savedStateHandle.get<String>("author") ?: DEFAULT_AUTHOR_NAME
             addDay()
         } else {
             getRoutine(routineId)
@@ -236,7 +237,7 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             routineRepository.insertRoutine(
-                RoutineUiModel(routineId, title, "author", description, LocalDateTime.now(), order),
+                RoutineUiModel(routineId, title, routineAuthor, description, LocalDateTime.now(), order),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
@@ -266,6 +267,7 @@ class RoutineEditorViewModel @Inject constructor(
                 routineTitle.value = title
                 routineDescription.value = description
                 routineOrder.value = order
+                routineAuthor = author
             }
             mapDayToExercise(dayUiModels)
             mapExerciseToSet(dayUiModels.flatMap { it.exercises })

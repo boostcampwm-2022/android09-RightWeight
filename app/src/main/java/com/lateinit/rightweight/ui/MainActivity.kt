@@ -20,7 +20,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -40,13 +44,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment{ tag ->
+        CommonDialogFragment { tag ->
             when (tag) {
                 LOGOUT_DIALOG_TAG -> {
                     logout()
@@ -171,15 +175,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
-
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    private fun backup() {
-        viewModel.backup()
     }
 
     private fun logout() {
@@ -195,7 +194,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     client.signOut()
                     moveToLoginActivity()
                 } else {
-                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -205,6 +205,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun hideKeyboard(focusView: View) {
+        val inputMethodManager: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(focusView.windowToken, 0)
+    }
+
+    fun navigateBottomNav(@IdRes itemId: Int) {
+        val item = binding.bottomNavigation.menu.findItem(itemId)
+        NavigationUI.onNavDestinationSelected(item, navController)
+    }
+
+    private fun backup() {
+        viewModel.backup()
+        collectOnLifecycle {
+            viewModel.networkState.collect { state ->
+                if (state == NetworkState.SUCCESS) {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.success_backup,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.wrong_connection,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -222,16 +254,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         return super.dispatchTouchEvent(event)
-    }
-
-    private fun hideKeyboard(focusView: View) {
-        val inputMethodManager: InputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(focusView.windowToken, 0)
-    }
-
-    fun navigateBottomNav(@IdRes itemId: Int) {
-        val item = binding.bottomNavigation.menu.findItem(itemId)
-        NavigationUI.onNavDestinationSelected(item, navController)
     }
 }

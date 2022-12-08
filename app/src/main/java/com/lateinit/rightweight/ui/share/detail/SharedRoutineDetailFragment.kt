@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
@@ -20,7 +23,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    val viewModel: SharedRoutineDetailViewModel by viewModels()
+    private val viewModel: SharedRoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
@@ -45,7 +48,7 @@ class SharedRoutineDetailFragment : Fragment() {
         setRoutineDayAdapter()
         setExerciseAdapter()
         setSharedRoutineDetailCollect()
-
+        handleNavigationEvent()
     }
 
     private fun setRoutineDayAdapter() {
@@ -65,14 +68,14 @@ class SharedRoutineDetailFragment : Fragment() {
 
     private fun setSharedRoutineDetailCollect() {
         collectOnLifecycle {
-            viewModel.uiState.collect() { uiState ->
+            viewModel.uiState.collect { uiState ->
                 when (uiState) {
                     is LatestSharedRoutineDetailUiState.Success -> {
                         binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
                         routineDayAdapter.submitList(uiState.dayUiModels)
                         setCurrentDayPositionObserve(uiState.dayUiModels)
 
-                        binding.buttonRoutineImport.setOnClickListener() {
+                        binding.buttonRoutineImport.setOnClickListener {
                             viewModel.importSharedRoutineToMyRoutines(
                                 uiState.sharedRoutineUiModel,
                                 uiState.dayUiModels
@@ -89,11 +92,18 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         viewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if (dayUiModels.size > it) {
-                val exercises = dayUiModels.get(it).exercises.sortedBy { it.order }
+                val exercises = dayUiModels.get(it).exercises
                 exerciseAdapter.submitList(exercises)
             }
         }
     }
 
-
+    private fun handleNavigationEvent() {
+        collectOnLifecycle {
+            viewModel.navigationEvent.collect { routineId ->
+                setFragmentResult("routineCopy", bundleOf("routineId" to routineId))
+                findNavController().navigateUp()
+            }
+        }
+    }
 }

@@ -21,9 +21,11 @@ import com.lateinit.rightweight.util.toRoutine
 import com.lateinit.rightweight.util.toRoutineUiModel
 import com.lateinit.rightweight.util.toSharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -32,7 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedRoutineDetailViewModel @Inject constructor(
     private val sharedRoutineRepository: SharedRoutineRepository,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
@@ -45,6 +47,10 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
     private val _currentDayPosition = MutableLiveData<Int>()
     val currentDayPosition: LiveData<Int> = _currentDayPosition
+
+    private val _navigationEvent = MutableSharedFlow<String>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
 
     fun getSharedRoutineDetail(routineId: String) {
         viewModelScope.launch {
@@ -61,7 +67,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             sharedRoutineWithDay.day.toDayUiModel(
                                 sharedRoutineWithDay.exercises
                             )
-                        }.sortedBy { it.order }
+                        }
                     )
                     if (_uiState.value.dayUiModels.isNotEmpty()) {
                         initClickedDay()
@@ -149,6 +155,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                 }
                 routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
                 sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
+                _navigationEvent.emit(routine.routineId)
             }
         }
     }

@@ -49,7 +49,7 @@ class DetailExerciseAdapter(
             binding.exerciseUiModel = exerciseUiModel
 
             binding.recyclerViewSet.adapter = detailExerciseSetAdapter
-            val exerciseSets = exerciseUiModel.exerciseSets.sortedBy { it.order }
+            val exerciseSets = exerciseUiModel.exerciseSets
             detailExerciseSetAdapter.submitList(exerciseSets)
         }
     }
