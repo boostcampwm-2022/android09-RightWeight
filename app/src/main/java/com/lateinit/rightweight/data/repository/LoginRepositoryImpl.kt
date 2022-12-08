@@ -11,4 +11,8 @@ class LoginRepositoryImpl @Inject constructor(
     override suspend fun loginToFirebase(key: String, token: String): LoginResponse {
         return loginDataSource.loginToFirebase(key, token)
     }
+
+    override suspend fun deleteAccount(key: String, idToken: String) {
+        loginDataSource.deleteAccount(key, idToken)
+    }
 }

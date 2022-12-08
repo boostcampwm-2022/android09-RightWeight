@@ -63,4 +63,12 @@
     <string name="end_exercise_message">달성하지 않은 항목이 있습니다. \n 정말 운동을 종료하시겠습니까?</string>
     <string name="stopwatch">stopwatch start and pause</string>
     <string name="profile_image_description">프로필 이미지</string>
+    <string name="wrong_connection">인터넷 연결을 확인해주세요.</string>
+    <string name="success_save_routine">루틴이 저장되었습니다.</string>
+    <string name="fail_save_routine">루틴을 저장할 수 없습니다.</string>
+    <string name="return_back">돌아가기</string>
+    <string name="msg_selected_routine">%s이 선택되었습니다.</string>
+    <string name="complete_share_message">루틴이 공유되었습니다.</string>
+    <string name="backup_user_info">내 정보 백업</string>
+    <string name="backup_message">"지금 상태의 정보를 저장하시겠습니까?"</string>
 </resources>

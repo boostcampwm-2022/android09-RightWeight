@@ -9,5 +9,6 @@ data class HistoryUiModel(
     val routineTitle: String,
     override val order: Int,
     val completed: Boolean,
+    val routineId: String,
     override val exercises: List<HistoryExerciseUiModel>
 ) : ParentDayUiModel(order, exercises)

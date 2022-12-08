@@ -78,6 +78,7 @@ fun HistoryWithHistoryExercises.toHistoryUiModel(): HistoryUiModel {
         routineTitle = history.routineTitle,
         order = history.dayOrder,
         completed = history.completed,
+        routineId = history.routineId,
         exercises = historyExercises.map { it.toHistoryExerciseUiModel() }
     )
 }
@@ -147,7 +148,7 @@ fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
     )
 }
 
-fun Routine.toSharedRoutineField(userId: String): SharedRoutineField {
+fun RoutineUiModel.toSharedRoutineField(userId: String): SharedRoutineField {
     return SharedRoutineField(
         author = StringValue(author),
         description = StringValue(description),
@@ -261,7 +262,8 @@ fun HistoryUiModel.toHistory(): History {
         time = time,
         routineTitle = routineTitle,
         dayOrder = order,
-        completed = completed
+        completed = completed,
+        routineId = routineId
     )
 }
 

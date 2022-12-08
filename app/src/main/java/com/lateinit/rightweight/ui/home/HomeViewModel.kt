@@ -1,20 +1,14 @@
 package com.lateinit.rightweight.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -33,41 +27,29 @@ class HomeViewModel @Inject constructor(
         userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
      val selectedRoutine = userInfo.map {
-         it?.routineId ?: return@map null
-         routineRepository.getRoutineById(it.routineId).toRoutineUiModel()
+         val routineId = it?.routineId
+         if(routineId.isNullOrEmpty()) return@map null
+         routineRepository.getRoutineById(routineId).toRoutineUiModel()
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    private val _exercises = MutableLiveData<List<Exercise>>()
-    val exercises: LiveData<List<Exercise>> get() = _exercises
+    val selectedDay = userInfo.map {
+        val dayId = it?.dayId
+        if (dayId.isNullOrEmpty()) return@map null
+        val dayWithExercises = routineRepository.getDayWithExercisesByDayId(it.dayId)
+        dayWithExercises.day.toDayUiModel(
+            dayWithExercises.day.order,
+            dayWithExercises.exercises
+        )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    private val _exerciseSets = MutableLiveData<List<ExerciseSet>>()
-    val exerciseSets: LiveData<List<ExerciseSet>> get() = _exerciseSets
-
-    private val _dayUiModel = MutableLiveData<DayUiModel?>()
-    val dayUiModel: LiveData<DayUiModel?> get() = _dayUiModel
-
-    fun loadDayWithExercises() {
-        viewModelScope.launch {
-            val dayId = userInfo.value?.dayId ?: run {
-                _dayUiModel.value = null
-                return@launch
-            }
-
-            val dayWithExercises = routineRepository.getDayWithExercisesByDayId(dayId)
-            val dayUiModel = dayWithExercises.day.toDayUiModel(
-                dayWithExercises.day.order,
-                dayWithExercises.exercises
-            )
-            _dayUiModel.value = dayUiModel
-        }
-    }
-
-    suspend fun loadTodayHistory(): Flow<List<History>> {
-        return historyRepository.loadHistoryByDate(LocalDate.now())
-    }
+    val todayHistory = historyRepository.loadHistoryByDate(LocalDate.now())
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun saveHistory() {
-        val dayId = dayUiModel.value?.dayId ?: return
+        val routineId = userInfo.value?.routineId
+        if(routineId.isNullOrEmpty()) return
+        val dayId = selectedDay.value?.dayId
+        if(dayId.isNullOrEmpty()) return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)
@@ -75,7 +57,7 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
         }
     }
 

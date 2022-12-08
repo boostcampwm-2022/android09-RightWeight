@@ -21,11 +21,12 @@ class HistoryRepositoryImpl @Inject constructor(
 ): HistoryRepository {
 
     override suspend fun saveHistory(
+        routineId: String,
         day: Day,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
-        return  historyLocalDataSource.saveHistory(day, exercises, exerciseSets)
+        return  historyLocalDataSource.saveHistory(routineId, day, exercises, exerciseSets)
     }
 
     override suspend fun insertHistorySet(historyExerciseId: String) {
@@ -36,7 +37,7 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.insertHistoryExercise(historyId)
     }
 
-    override suspend fun loadHistoryByDate(localDate: LocalDate): Flow<List<History>> {
+    override fun loadHistoryByDate(localDate: LocalDate): Flow<History> {
         return  historyLocalDataSource.loadHistoryByDate(localDate)
     }
 
