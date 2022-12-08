@@ -81,13 +81,13 @@ class MainViewModel @Inject constructor(
     private suspend fun backupMyRoutine() {
         commitItems.clear()
         val routineWithDaysList = userRepository.getAllRoutineWithDays()
-
         routineWithDaysList.forEach { routineWithDays ->
             updateRoutine(routineWithDays)
         }
+        userRepository.commitTransaction(commitItems)
     }
 
-    private suspend fun updateRoutine(routineWithDays: RoutineWithDays) {
+    private fun updateRoutine(routineWithDays: RoutineWithDays) {
         val routine = routineWithDays.routine.toRoutineUiModel()
         val days = routineWithDays.days
         val path = "${WriteModelData.defaultPath}/routine/${routine.routineId}"
@@ -97,9 +97,7 @@ class MainViewModel @Inject constructor(
             )
         )
         updateDays(path, days)
-        userRepository.commitTransaction(commitItems)
     }
-
 
     private fun updateDays(
         lastPath: String,

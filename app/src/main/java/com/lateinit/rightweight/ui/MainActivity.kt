@@ -23,8 +23,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -44,13 +44,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val dialog: CommonDialogFragment by lazy {
-        CommonDialogFragment{ tag ->
+        CommonDialogFragment { tag ->
             when (tag) {
                 LOGOUT_DIALOG_TAG -> {
                     logout()
@@ -175,13 +175,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
-
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
-
 
     private fun logout() {
         client.signOut()
@@ -196,7 +194,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     client.signOut()
                     moveToLoginActivity()
                 } else {
-                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -206,23 +205,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        when (event?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                val focusView = currentFocus
-                if (focusView is EditText) {
-                    val outRect = Rect()
-                    focusView.getGlobalVisibleRect(outRect)
-                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                        focusView.clearFocus()
-                        hideKeyboard(focusView)
-                    }
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     private fun hideKeyboard(focusView: View) {
@@ -255,5 +237,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                val focusView = currentFocus
+                if (focusView is EditText) {
+                    val outRect = Rect()
+                    focusView.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        focusView.clearFocus()
+                        hideKeyboard(focusView)
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }
