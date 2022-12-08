@@ -32,7 +32,7 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun getUserRepository(
-        userLocalDataSource: UserDataSource,
+        userLocalDataSource: UserLocalDataSource,
         userRemoteDataSource: UserRemoteDataSource
     ): UserRepository {
         return UserRepositoryImpl(userLocalDataSource, userRemoteDataSource)

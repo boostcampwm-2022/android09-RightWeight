@@ -1,19 +1,14 @@
 package com.lateinit.rightweight.data.datasource
 
-import com.lateinit.rightweight.data.database.AppPreferencesDataStore
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.model.User
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class UserLocalDataSource @Inject constructor(
-    private val appPreferencesDataStore: AppPreferencesDataStore
-) : UserDataSource {
+interface UserLocalDataSource {
 
-    override suspend fun saveUser(user: User) {
-        appPreferencesDataStore.saveUser(user)
-    }
+    suspend fun saveUser(user: User)
 
-    override fun getUser(): Flow<User?> {
-        return appPreferencesDataStore.userInfo
-    }
+    fun getUser(): Flow<User?>
+
+    suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
 }
