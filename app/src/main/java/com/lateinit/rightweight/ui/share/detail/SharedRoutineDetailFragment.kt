@@ -13,6 +13,7 @@ import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -67,25 +68,23 @@ class SharedRoutineDetailFragment : Fragment() {
     }
 
     private fun setSharedRoutineDetailCollect() {
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sharedRoutineDetailViewModel.uiState.collect() { uiState ->
-                    when (uiState) {
-                        is LatestSharedRoutineDetailUiState.Success -> {
-                            binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
-                            routineDayAdapter.submitList(uiState.dayUiModels)
-                            setCurrentDayPositionObserve(uiState.dayUiModels)
+        collectOnLifecycle {
+            sharedRoutineDetailViewModel.uiState.collect() { uiState ->
+                when (uiState) {
+                    is LatestSharedRoutineDetailUiState.Success -> {
+                        binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
+                        routineDayAdapter.submitList(uiState.dayUiModels)
+                        setCurrentDayPositionObserve(uiState.dayUiModels)
 
-                            binding.buttonRoutineImport.setOnClickListener() {
-                                sharedRoutineDetailViewModel.importSharedRoutineToMyRoutines(
-                                    uiState.sharedRoutineUiModel,
-                                    uiState.dayUiModels
-                                )
+                        binding.buttonRoutineImport.setOnClickListener() {
+                            sharedRoutineDetailViewModel.importSharedRoutineToMyRoutines(
+                                uiState.sharedRoutineUiModel,
+                                uiState.dayUiModels
+                            )
 
-                            }
                         }
-                        is LatestSharedRoutineDetailUiState.Error -> Exception()
                     }
+                    is LatestSharedRoutineDetailUiState.Error -> Exception()
                 }
             }
         }
