@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,8 +33,9 @@ class HomeViewModel @Inject constructor(
         userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
      val selectedRoutine = userInfo.map {
-         it?.routineId ?: return@map null
-         routineRepository.getRoutineById(it.routineId)
+         val routineId = it?.routineId
+         if(routineId.isNullOrEmpty()) return@map null
+         routineRepository.getRoutineById(routineId).toRoutineUiModel()
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     private val _exercises = MutableLiveData<List<Exercise>>()
@@ -47,7 +49,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadDayWithExercises() {
         viewModelScope.launch {
-            val dayId = userInfo.value?.dayId ?: run {
+            val dayId = userInfo.value?.dayId
+            if(dayId.isNullOrEmpty()){
                 _dayUiModel.value = null
                 return@launch
             }
@@ -66,7 +69,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveHistory() {
-        val dayId = dayUiModel.value?.dayId ?: return
+        val routineId = userInfo.value?.routineId
+        if(routineId.isNullOrEmpty()) return
+        val dayId = dayUiModel.value?.dayId
+        if(dayId.isNullOrEmpty()) return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)
@@ -74,7 +80,7 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
         }
     }
 

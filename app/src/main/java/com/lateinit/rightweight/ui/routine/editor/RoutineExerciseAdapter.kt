@@ -7,10 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.util.getPartNameRes
 
 class RoutineExerciseAdapter(
     private val exercisePartAdapter: ArrayAdapter<String>,
@@ -21,7 +20,7 @@ class RoutineExerciseAdapter(
 
         fun onExerciseRemove(dayId: String, position: Int)
 
-        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartType)
+        fun onExercisePartChange(dayId: String, position: Int, exercisePartType: ExercisePartTypeUiModel)
 
         fun onSetAdd(exerciseId: String)
 
@@ -55,7 +54,7 @@ class RoutineExerciseAdapter(
                 exerciseEventListener.onExercisePartChange(
                     exerciseUiModel.dayId,
                     layoutPosition,
-                    ExercisePartType.values()[position]
+                    ExercisePartTypeUiModel.values()[position]
                 )
             }
 
@@ -72,7 +71,7 @@ class RoutineExerciseAdapter(
             this.exerciseUiModel = exerciseUiModel
             binding.exerciseUiModel = exerciseUiModel
 
-            val exercisePartName = binding.root.context.getString(exerciseUiModel.part.getPartNameRes())
+            val exercisePartName = binding.root.context.getString(exerciseUiModel.part.partName)
             binding.textViewExercisePart.setText(exercisePartName, false)
 
             binding.recyclerViewSet.adapter = routineSetAdapter

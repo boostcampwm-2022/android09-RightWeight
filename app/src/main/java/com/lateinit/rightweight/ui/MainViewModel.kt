@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
@@ -50,5 +50,12 @@ class MainViewModel @Inject constructor(
 
     private suspend fun sendNetworkResultEvent(state: NetworkState) {
         _networkState.emit(state)
+    }
+
+    fun backup() {
+        val user = userInfo.value ?: return
+        viewModelScope.launch {
+            userRepository.backupUserInfo(user)
+        }
     }
 }

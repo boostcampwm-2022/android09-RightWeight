@@ -64,4 +64,6 @@
     <string name="stopwatch">stopwatch start and pause</string>
     <string name="profile_image_description">프로필 이미지</string>
     <string name="wrong_connection">인터넷 연결을 확인해주세요.</string>
+    <string name="backup_user_info">내 정보 백업</string>
+    <string name="backup_message">"지금 상태의 정보를 저장하시겠습니까?"</string>
 </resources>
