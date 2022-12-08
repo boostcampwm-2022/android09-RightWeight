@@ -1,19 +1,33 @@
 package com.lateinit.rightweight.ui.routine.editor
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.util.*
+import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.util.FIRST_DAY_POSITION
+import com.lateinit.rightweight.util.toDay
+import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toExercise
+import com.lateinit.rightweight.util.toExerciseSet
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
+import java.util.LinkedList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -125,8 +139,7 @@ class RoutineEditorViewModel @Inject constructor(
             exerciseId = createUUID(),
             dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
-            order = exercises.size,
-            part = ExercisePartType.CHEST
+            order = exercises.size
         )
 
         exercises.add(exercise)
@@ -146,7 +159,7 @@ class RoutineEditorViewModel @Inject constructor(
     fun changeExercisePart(
         dayId: String,
         exercisePosition: Int,
-        exercisePartType: ExercisePartType
+        exercisePartType: ExercisePartTypeUiModel
     ) {
         val exercises = dayToExercise.value?.get(dayId) ?: return
 
@@ -223,7 +236,7 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             routineRepository.insertRoutine(
-                Routine(routineId, title, "author", description, LocalDateTime.now(), order),
+                RoutineUiModel(routineId, title, "author", description, LocalDateTime.now(), order),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
@@ -249,7 +262,7 @@ class RoutineEditorViewModel @Inject constructor(
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
             }
 
-            with(routineWithDays.routine) {
+            with(routineWithDays.routine.toRoutineUiModel()) {
                 routineTitle.value = title
                 routineDescription.value = description
                 routineOrder.value = order

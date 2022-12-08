@@ -10,10 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
 import com.lateinit.rightweight.util.collectOnLifecycle
-import com.lateinit.rightweight.util.getPartNameRes
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -63,8 +62,8 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setExerciseAdapter(){
-        val exerciseParts = ExercisePartType.values().map { exercisePart ->
-            getString(exercisePart.getPartNameRes())
+        val exerciseParts = ExercisePartTypeUiModel.values().map { exercisePart ->
+            getString(exercisePart.partName)
         }
         val exercisePartAdapter =
             ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
@@ -77,7 +76,7 @@ class RoutineEditorFragment : Fragment() {
             override fun onExercisePartChange(
                 dayId: String,
                 position: Int,
-                exercisePartType: ExercisePartType,
+                exercisePartType: ExercisePartTypeUiModel,
             ) {
                 viewModel.changeExercisePart(dayId, position, exercisePartType)
             }

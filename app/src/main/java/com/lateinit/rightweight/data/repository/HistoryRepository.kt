@@ -14,6 +14,7 @@ import java.time.LocalDate
 interface HistoryRepository {
 
     suspend fun saveHistory(
+        routineId: String,
         day: Day,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>

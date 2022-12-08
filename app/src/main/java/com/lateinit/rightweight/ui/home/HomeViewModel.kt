@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.util.toDayUiModel
+import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -26,12 +27,14 @@ class HomeViewModel @Inject constructor(
         userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
      val selectedRoutine = userInfo.map {
-         it?.routineId ?: return@map null
-         routineRepository.getRoutineById(it.routineId)
+         val routineId = it?.routineId
+         if(routineId.isNullOrEmpty()) return@map null
+         routineRepository.getRoutineById(routineId).toRoutineUiModel()
      }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val selectedDay = userInfo.map {
-        it?.dayId ?: return@map null
+        val dayId = it?.dayId
+        if (dayId.isNullOrEmpty()) return@map null
         val dayWithExercises = routineRepository.getDayWithExercisesByDayId(it.dayId)
         dayWithExercises.day.toDayUiModel(
             dayWithExercises.day.order,
@@ -43,7 +46,10 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun saveHistory() {
-        val dayId = selectedDay.value?.dayId ?: return
+        val routineId = userInfo.value?.routineId
+        if(routineId.isNullOrEmpty()) return
+        val dayId = selectedDay.value?.dayId
+        if(dayId.isNullOrEmpty()) return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)

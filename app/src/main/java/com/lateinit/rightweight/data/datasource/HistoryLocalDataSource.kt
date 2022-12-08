@@ -14,12 +14,13 @@ class HistoryLocalDataSource @Inject constructor(
 ): HistoryDataSource {
 
     override suspend fun saveHistory(
+        routineId: String,
         day: Day,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
         val historyId = createRandomUUID()
-        val history = History(historyId, LocalDate.now(), "00:00:00", "", day.order, false)
+        val history = History(historyId, LocalDate.now(), "00:00:00", "", day.order, false, routineId)
         val historyExercises = mutableListOf<HistoryExercise>()
         val historySets = mutableListOf<HistorySet>()
         for(exercise in exercises){

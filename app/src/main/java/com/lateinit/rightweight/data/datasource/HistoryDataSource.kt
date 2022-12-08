@@ -13,6 +13,7 @@ import java.time.LocalDate
 interface HistoryDataSource {
 
     suspend fun saveHistory(
+        routineId: String,
         day: Day,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>

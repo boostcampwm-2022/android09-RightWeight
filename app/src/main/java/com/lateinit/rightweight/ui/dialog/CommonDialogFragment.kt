@@ -36,6 +36,7 @@ class CommonDialogFragment(private val callback: (String?) -> Unit) : DialogFrag
     }
 
     companion object {
+        const val BACKUP_USER_INFO_TAG = "BACKUP"
         const val LOGOUT_DIALOG_TAG = "LOGOUT"
         const val WITHDRAW_DIALOG_TAG = "WITHDRAW"
         const val RESET_DIALOG_TAG = "RESET"

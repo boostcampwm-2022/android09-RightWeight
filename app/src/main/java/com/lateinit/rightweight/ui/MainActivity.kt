@@ -34,6 +34,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityMainBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.BACKUP_USER_INFO_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
@@ -54,6 +55,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 WITHDRAW_DIALOG_TAG -> {
                     withdraw()
+                }
+                BACKUP_USER_INFO_TAG -> {
+                    backup()
                 }
             }
         }
@@ -91,6 +95,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.backup -> {
+                dialog.show(
+                    supportFragmentManager,
+                    BACKUP_USER_INFO_TAG,
+                    R.string.backup_message
+                )
+            }
             R.id.logout -> {
                 dialog.show(
                     supportFragmentManager,
@@ -167,6 +178,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // disable drawer swipe gesture
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    private fun backup() {
+        mainViewModel.backup()
     }
 
     private fun logout() {

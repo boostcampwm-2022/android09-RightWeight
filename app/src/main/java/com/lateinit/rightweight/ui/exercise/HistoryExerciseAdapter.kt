@@ -6,10 +6,9 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
+import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.util.getPartNameRes
 
 class HistoryExerciseAdapter(
     private val exercisePartAdapter: ArrayAdapter<String>,
@@ -50,7 +49,7 @@ class HistoryExerciseAdapter(
 
             binding.textViewExercisePart.setOnItemClickListener { _, _, position, _ ->
                 historyEventListener.updateHistoryExercise(
-                    historyExerciseUiModel.copy(part = ExercisePartType.values()[position])
+                    historyExerciseUiModel.copy(part = ExercisePartTypeUiModel.values()[position])
                 )
             }
 
@@ -70,7 +69,7 @@ class HistoryExerciseAdapter(
             binding.exerciseUiModel = historyExerciseUiModel
 
             val exercisePartName =
-                binding.root.context.getString(historyExerciseUiModel.part.getPartNameRes())
+                binding.root.context.getString(historyExerciseUiModel.part.partName)
             binding.textViewExercisePart.setText(exercisePartName, false)
 
             binding.recyclerViewSet.adapter = historySetAdapter
