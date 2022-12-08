@@ -71,4 +71,6 @@
     <string name="complete_share_message">루틴이 공유되었습니다.</string>
     <string name="backup_user_info">내 정보 백업</string>
     <string name="backup_message">"지금 상태의 정보를 저장하시겠습니까?"</string>
+    <string name="modified_date_sort">"최신순"</string>
+    <string name="shared_count_sort">"공유 횟수순"</string>
 </resources>

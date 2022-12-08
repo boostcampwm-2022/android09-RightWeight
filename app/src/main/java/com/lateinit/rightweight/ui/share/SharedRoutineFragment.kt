@@ -1,19 +1,17 @@
 package com.lateinit.rightweight.ui.share
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -30,7 +28,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSharedRoutineBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -39,7 +37,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu()
+        setSharedRoutineSortSelection()
 
         val sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
@@ -56,25 +54,13 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         }
     }
 
-    private fun setMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_shared_routine, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_item_search -> {
-                        Log.d("SharedRoutineFragment", "Search")
-                        true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    private fun setSharedRoutineSortSelection(){
+        val sortTypes = SharedRoutineSortType.values().map { sharedRoutineSortType ->
+            getString(sharedRoutineSortType.sortTypeName)
+        }
+        val sortTypeAdapter =
+            ArrayAdapter(requireContext(), R.layout.item_shared_routine_sort_type,sortTypes)
+        binding.textViewSharedRoutineSortType.setAdapter(sortTypeAdapter)
     }
 
     override fun gotoSharedRoutineDetailFragment(routineId: String) {

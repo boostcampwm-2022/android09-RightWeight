@@ -10,7 +10,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
-import com.lateinit.rightweight.data.database.mediator.SortType
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
@@ -25,8 +25,8 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     appPreferencesDataStore: AppPreferencesDataStore
 ) : RoutineRemoteDataSource {
 
-    val remoteMediator = SharedRoutineRemoteMediator(
-        db, api, appPreferencesDataStore, SortType.SHARED_COUNT_FIRST
+    private val remoteMediator = SharedRoutineRemoteMediator(
+        db, api, appPreferencesDataStore, SharedRoutineSortType.SHARED_COUNT_FIRST
     )
 
     @OptIn(ExperimentalPagingApi::class)
@@ -38,7 +38,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     }.flow
 
     @OptIn(ExperimentalPagingApi::class)
-    suspend fun changeSortType(sortType: SortType){
+    suspend fun changeMediatorSortType(sortType: SharedRoutineSortType){
         remoteMediator.sortType = sortType
         remoteMediator.initialize()
     }

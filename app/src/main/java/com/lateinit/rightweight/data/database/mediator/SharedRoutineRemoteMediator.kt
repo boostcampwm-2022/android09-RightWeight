@@ -1,10 +1,12 @@
 package com.lateinit.rightweight.data.database.mediator
 
+import androidx.annotation.StringRes
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
@@ -19,7 +21,7 @@ class SharedRoutineRemoteMediator(
     private val db: AppDatabase,
     private val api: RoutineApiService,
     private val appPreferencesDataStore: AppPreferencesDataStore,
-    var sortType: SortType
+    var sortType: SharedRoutineSortType
 ) : RemoteMediator<Int, SharedRoutine>() {
 
     private val initModifiedDateFlag = "9999-1-1T1:1:1.1Z"
@@ -55,7 +57,7 @@ class SharedRoutineRemoteMediator(
             var sharedCountFlag = splitedPagingFlag[1]
 
             when(sortType){
-                SortType.MODIFIED_DATE_FIRST ->{
+                SharedRoutineSortType.MODIFIED_DATE_FIRST ->{
                     sharedRoutineRequestBody = SharedRoutineRequestBody(
                         StructuredQueryData(
                             FromData("shared_routine"),
@@ -66,7 +68,7 @@ class SharedRoutineRemoteMediator(
                         )
                     )
                 }
-                SortType.SHARED_COUNT_FIRST ->{
+                SharedRoutineSortType.SHARED_COUNT_FIRST ->{
                     sharedRoutineRequestBody = SharedRoutineRequestBody(
                         StructuredQueryData(
                             FromData("shared_routine"),
@@ -146,6 +148,6 @@ data class ValuesData(
     val timestampValue: String? = null
 )
 
-enum class SortType(){
-    MODIFIED_DATE_FIRST, SHARED_COUNT_FIRST
+enum class SharedRoutineSortType(@StringRes val sortTypeName: Int){
+    MODIFIED_DATE_FIRST(R.string.modified_date_sort), SHARED_COUNT_FIRST(R.string.shared_count_sort)
 }
