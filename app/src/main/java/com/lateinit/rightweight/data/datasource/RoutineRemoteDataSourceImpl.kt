@@ -37,7 +37,6 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
 
-    @OptIn(ExperimentalPagingApi::class)
     override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType){
         remoteMediator.sortType = sortType
     }

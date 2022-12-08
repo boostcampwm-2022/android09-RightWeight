@@ -51,9 +51,9 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                 }
         }
         routineLocalDataSource.insertSharedRoutineDetail(
-            sharedRoutineDays,
-            sharedRoutineExercises,
-            sharedRoutineExerciseSets
+            sharedRoutineDays.sortedBy { it.order },
+            sharedRoutineExercises.sortedBy { it.order },
+            sharedRoutineExerciseSets.sortedBy { it.order }
         )
     }
 

@@ -307,7 +307,7 @@ fun SharedRoutineUiModel.toRoutine(routineId: String, author: String, order: Int
         title = title,
         author = author,
         description = description,
-        modifiedDate = modifiedDate,
+        modifiedDate = LocalDateTime.now(),
         order = order
     )
 }
