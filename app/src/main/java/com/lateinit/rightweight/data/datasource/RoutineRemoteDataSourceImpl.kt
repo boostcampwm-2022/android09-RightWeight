@@ -10,6 +10,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
@@ -21,18 +22,24 @@ import javax.inject.Inject
 class RoutineRemoteDataSourceImpl @Inject constructor(
     private val db: AppDatabase,
     private val api: RoutineApiService,
-    private val appPreferencesDataStore: AppPreferencesDataStore
+    appPreferencesDataStore: AppPreferencesDataStore
 ) : RoutineRemoteDataSource {
+
+    private val remoteMediator = SharedRoutineRemoteMediator(
+        db, api, appPreferencesDataStore, SharedRoutineSortType.MODIFIED_DATE_FIRST
+    )
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getSharedRoutinesByPaging() = Pager(
-        config = PagingConfig(10),
-        remoteMediator = SharedRoutineRemoteMediator(
-            db, api, appPreferencesDataStore
-        ),
+        config = PagingConfig(10, prefetchDistance = 0, initialLoadSize = 1),
+        remoteMediator = remoteMediator,
     ) {
         db.sharedRoutineDao().getAllSharedRoutinesByPaging()
     }.flow
+
+    override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType){
+        remoteMediator.sortType = sortType
+    }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
         val documentNameList = api.getChildrenDocumentName(path)

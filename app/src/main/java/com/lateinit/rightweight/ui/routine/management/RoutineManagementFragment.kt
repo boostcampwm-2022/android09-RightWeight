@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
+import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -84,7 +84,12 @@ class RoutineManagementFragment : Fragment() {
     }
 
     private fun navigateToRoutineEditor() {
-        findNavController().navigate(R.id.action_navigation_routine_management_to_navigation_routine_editor)
+        val author = viewModel.userInfo.value?.displayName ?: DEFAULT_AUTHOR_NAME
+        val action =
+            RoutineManagementFragmentDirections.actionNavigationRoutineManagementToNavigationRoutineEditor(
+                author = author
+            )
+        findNavController().navigate(action)
     }
 
     private fun navigateToRoutineDetail(routineId: String) {

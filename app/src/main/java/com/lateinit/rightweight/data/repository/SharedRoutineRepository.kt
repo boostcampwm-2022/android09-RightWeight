@@ -3,6 +3,7 @@ package com.lateinit.rightweight.data.repository
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import kotlinx.coroutines.flow.Flow
 
@@ -13,4 +14,6 @@ interface SharedRoutineRepository {
     suspend fun requestSharedRoutineDetail(routineId: String)
     suspend fun commitTransaction(writes: List<WriteModelData>)
     suspend fun checkRoutineInRemote(routineId: String): Boolean
+    suspend fun increaseSharedCount(routineId: String)
+    suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType)
 }

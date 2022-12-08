@@ -57,7 +57,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 
-    override suspend fun getDayWithExercisesByDayId(dayId: String): DayWithExercises {
+    override fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises> {
         return routineLocalDataSource.getDayWithExercisesByDayId(dayId)
     }
 

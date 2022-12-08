@@ -1,7 +1,10 @@
 package com.lateinit.rightweight.data
 
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
-import com.lateinit.rightweight.data.model.*
+import com.lateinit.rightweight.data.model.DetailResponse
+import com.lateinit.rightweight.data.model.DocumentResponse
+import com.lateinit.rightweight.data.model.DocumentsResponse
+import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.*
 import retrofit2.Response
 import retrofit2.http.Body
@@ -50,4 +53,5 @@ interface RoutineApiService {
         @Body
         writes: WriteRequestBody
     )
+
 }

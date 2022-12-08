@@ -132,3 +132,8 @@ data class HistoryExerciseSetField(
     @SerializedName("order")
     val order: IntValue,
 ) : RemoteData()
+
+data class SharedCountField(
+    @SerializedName("shared_count")
+    val sharedCount: MapValue? = null,
+) : RemoteData()
