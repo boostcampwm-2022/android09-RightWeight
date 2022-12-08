@@ -40,7 +40,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSharedRoutineSortSelection()
-        sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
+        sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
         lifecycleScope.launch {
