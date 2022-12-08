@@ -67,7 +67,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             sharedRoutineWithDay.day.toDayUiModel(
                                 sharedRoutineWithDay.exercises
                             )
-                        }.sortedBy { it.order }
+                        }
                     )
                     if (_uiState.value.dayUiModels.isNotEmpty()) {
                         initClickedDay()

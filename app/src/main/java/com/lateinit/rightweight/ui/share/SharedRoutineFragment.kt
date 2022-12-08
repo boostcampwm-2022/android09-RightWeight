@@ -1,16 +1,14 @@
 package com.lateinit.rightweight.ui.share
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -23,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.NavGraphDirections
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
+import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,7 +32,9 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    private val sharedRoutineViewModel: SharedRoutineViewModel by viewModels()
+    private val viewModel: SharedRoutineViewModel by viewModels()
+    private lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
+    private lateinit var sortTypes: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,15 +65,13 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setMenu()
-
-        val sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
+        initSharedRoutineSortSelection()
+        sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sharedRoutineViewModel.uiState.collect { uiState ->
+                viewModel.uiState.collect { uiState ->
                     when (uiState) {
                         is LatestSharedRoutineUiState.Success -> sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
                         is LatestSharedRoutineUiState.Error -> Exception()
@@ -82,25 +81,26 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         }
     }
 
-    private fun setMenu() {
-        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_shared_routine, menu)
-            }
+    override fun onResume() {
+        super.onResume()
+        setSharedRoutineSortSelection()
+    }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_item_search -> {
-                        Log.d("SharedRoutineFragment", "Search")
-                        true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            }
+    private fun initSharedRoutineSortSelection(){
+        sortTypes = SharedRoutineSortTypeUiModel.values().map { sharedRoutineSortType ->
+            getString(sharedRoutineSortType.sortTypeName)
+        }
+        binding.textViewSharedRoutineSortType.setText(sortTypes[0])
+    }
 
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    private fun setSharedRoutineSortSelection(){
+        val sortTypeAdapter =
+            ArrayAdapter(requireContext(), R.layout.item_shared_routine_sort_type, sortTypes)
+        binding.textViewSharedRoutineSortType.setAdapter(sortTypeAdapter)
+        binding.textViewSharedRoutineSortType.setOnItemClickListener { _, _, position, _ ->
+            viewModel.setSharedRoutineSortType(sortTypeUiModel = SharedRoutineSortTypeUiModel.values()[position])
+            sharedRoutinePagingAdapter.refresh()
+        }
     }
 
     override fun gotoSharedRoutineDetailFragment(routineId: String) {
