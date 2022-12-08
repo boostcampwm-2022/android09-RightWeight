@@ -76,11 +76,17 @@ class MainViewModel @Inject constructor(
     private suspend fun backupUserInfo() {
         val user = userInfo.value ?: return
         userRepository.backupUserInfo(user)
-        getUserRoutineInRemote()
     }
 
     private suspend fun backupMyRoutine() {
+        val userId = userInfo.value?.userId ?: return
+
         commitItems.clear()
+        val myRoutineInServer = userRepository.getUserRoutineInRemote(userId)
+        myRoutineInServer.forEach { routineId ->
+            deleteRoutine(routineId)
+        }
+
         val routineWithDaysList = userRepository.getAllRoutineWithDays()
         routineWithDaysList.forEach { routineWithDays ->
             updateRoutine(routineWithDays)
@@ -146,10 +152,53 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getUserRoutineInRemote() {
-        val userId = userInfo.value?.userId ?: return
-        viewModelScope.launch {
-            userRepository.getUserRoutineInRemote(userId)
+    private suspend fun deleteRoutine(routineId: String) {
+        commitItems.add(
+            WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${routineId}")
+        )
+        val dayIds = userRepository.getChildrenDocumentName("$routineId/day")
+        deleteDays(routineId, dayIds)
+    }
+
+
+    private suspend fun deleteDays(
+        lastPath: String,
+        dayIds: List<String>
+    ) {
+        dayIds.forEach { dayId ->
+            val path = "${lastPath}/day/${dayId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
+            )
+            val exerciseIds = userRepository.getChildrenDocumentName("$path/exercise")
+            deleteExercises(path, exerciseIds)
+        }
+    }
+
+    private suspend fun deleteExercises(
+        lastPath: String,
+        exerciseIds: List<String>
+    ) {
+        exerciseIds.forEach { exerciseId ->
+            val path = "${lastPath}/exercise/${exerciseId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
+            )
+            val exerciseSetIds =
+                userRepository.getChildrenDocumentName("$path/exercise_set")
+            deleteExerciseSets(path, exerciseSetIds)
+        }
+    }
+
+    private fun deleteExerciseSets(
+        lastPath: String,
+        exerciseSetIds: List<String>,
+    ) {
+        exerciseSetIds.forEach { exerciseSetId ->
+            val path = "${lastPath}/exercise_set/${exerciseSetId}"
+            commitItems.add(
+                WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
+            )
         }
     }
 }

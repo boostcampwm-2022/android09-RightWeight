@@ -17,5 +17,7 @@ interface UserRepository {
 
     suspend fun getUserRoutineInRemote(userId: String): List<String>
 
+    suspend fun getChildrenDocumentName(path: String): List<String>
+
     suspend fun commitTransaction(writes: List<WriteModelData>)
 }

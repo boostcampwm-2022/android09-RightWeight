@@ -48,6 +48,14 @@ class UserRemoteDataSourceImpl @Inject constructor(
         )
     }
 
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        val documentNameList = api.getChildrenDocumentName(path)
+        return documentNameList.documents?.map {
+            it.name.split("/").last()
+        } ?: emptyList()
+    }
+
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         api.commitTransaction(WriteRequestBody(writes))
     }

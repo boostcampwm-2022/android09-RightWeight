@@ -36,6 +36,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        return userRemoteDataSource.getChildrenDocumentName(path)
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         userRemoteDataSource.commitTransaction(writes)
     }
