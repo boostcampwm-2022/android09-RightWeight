@@ -49,9 +49,9 @@ class SharedRoutineRemoteMediator(
             val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData("shared_routine"),
-                    OrderByData(FieldData("modified_date"), "DESCENDING"),
+                    listOf(OrderByData(FieldData("modified_date"), "DESCENDING")),
                     10,
-                    StartAtData(ValuesData(pagingFlag))
+                    StartAtData(listOf(ValuesData(timestampValue = pagingFlag)))
                 )
             )
 
@@ -93,7 +93,7 @@ data class SharedRoutineRequestBody(
 
 data class StructuredQueryData(
     val from: FromData,
-    val orderBy: OrderByData,
+    val orderBy: List<OrderByData>,
     val limit: Int,
     val startAt: StartAtData
 )
@@ -112,9 +112,10 @@ data class FieldData(
 )
 
 data class StartAtData(
-    val values: ValuesData
+    val values: List<ValuesData>
 )
 
 data class ValuesData(
-    val timestampValue: String
+    val integerValue: String? = null,
+    val timestampValue: String? = null
 )
