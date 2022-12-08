@@ -3,6 +3,7 @@ package com.lateinit.rightweight.ui.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
+import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -32,6 +34,7 @@ import java.time.YearMonth
 import javax.inject.Inject
 
 @HiltViewModel
+@OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModel @Inject constructor(
     userRepository: UserRepository,
     private val historyRepository: HistoryRepository,
@@ -50,38 +53,25 @@ class CalendarViewModel @Inject constructor(
     private val _exerciseTime = MutableStateFlow(DEFAULT_EXERCISE_TIME)
     val exerciseTime: StateFlow<String> = _exerciseTime.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    private val currentRoutine = MutableStateFlow<RoutineUiModel?>(null)
+    private val currentRoutineDays = MutableStateFlow<List<DayUiModel>>(emptyList())
+    private var todayRoutineDayPosition = DAY_POSITION_NONE
+
     val dateToExerciseHistories = currentMonth.flatMapLatest {
         getHistoryBetweenDate(it)
     }.stateIn(viewModelScope, SharingStarted.Lazily, mapOf())
 
-    val selectedDayInfo = selectedDay.combine(dateToExerciseHistories) { date, _ ->
+    val selectedDayInfo = combine(
+        selectedDay,
+        dateToExerciseHistories,
+        currentRoutine,
+        currentRoutineDays
+    ) { date, _, _, _ ->
         getSelectedDayInfo(date)
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    private var currentRoutine: RoutineUiModel? = null
-    private val currentRoutineDays = MutableStateFlow<List<DayUiModel>>(emptyList())
-    private var todayRoutineDayPosition = DAY_POSITION_NONE
-
     init {
-        getRoutineDays()
-    }
-
-    private fun getRoutineDays() {
-        val user = userInfo.value ?: return
-        val routineId = user.routineId
-
-        if(routineId.isEmpty()) return
-
-        viewModelScope.launch {
-            val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
-
-            currentRoutine = routineWithDays.routine.toRoutineUiModel()
-            currentRoutineDays.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
-                if (routineWithDay.day.dayId == user.dayId) todayRoutineDayPosition = index
-                routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
-            }
-        }
+        getRoutineInfo()
     }
 
     fun selectDay(date: LocalDate) {
@@ -90,6 +80,30 @@ class CalendarViewModel @Inject constructor(
 
     fun changeMonth(date: LocalDate) {
         currentMonth.value = YearMonth.from(date)
+    }
+
+    private fun getRoutineInfo() {
+        viewModelScope.launch {
+            userInfo.flatMapLatest { user ->
+                val routineId = user?.routineId ?: return@flatMapLatest emptyFlow()
+
+                if (routineId.isEmpty()) return@flatMapLatest emptyFlow()
+
+                routineRepository.getRoutineWithDaysFlowByRoutineId(routineId)
+            }.collect { routineWithDays ->
+                separateRoutineInfo(routineWithDays)
+            }
+        }
+    }
+
+    private fun separateRoutineInfo(routineWithDays: RoutineWithDays) {
+        currentRoutine.value = routineWithDays.routine.toRoutineUiModel()
+        currentRoutineDays.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
+            if (routineWithDay.day.dayId == userInfo.value?.dayId) {
+                todayRoutineDayPosition = index
+            }
+            routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
+        }
     }
 
     private fun getSelectedDayInfo(date: LocalDate): ParentDayUiModel? {
@@ -120,7 +134,7 @@ class CalendarViewModel @Inject constructor(
             val currentRoutineDayPosition =
                 dayDiff % currentRoutineDays.value.size
 
-            _routineTitle.value = currentRoutine?.title ?: DEFAULT_ROUTINE_TITLE
+            _routineTitle.value = currentRoutine.value?.title ?: DEFAULT_ROUTINE_TITLE
             currentRoutineDays.value[currentRoutineDayPosition]
         }
     }
