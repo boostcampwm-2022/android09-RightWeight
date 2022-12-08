@@ -22,6 +22,7 @@ class SharedRoutineRemoteMediator(
 ) : RemoteMediator<Int, SharedRoutine>() {
 
     private val initModifiedDateFlag = "9999-1-1T1:1:1.1Z"
+    private val initSharedCountFlag = "999999999"
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -35,23 +36,36 @@ class SharedRoutineRemoteMediator(
             var endOfPaginationReached = false
 
             var pagingFlag = when (loadType) {
-                LoadType.REFRESH -> initModifiedDateFlag
+                LoadType.REFRESH -> "$initModifiedDateFlag/$initSharedCountFlag"
                 LoadType.PREPEND -> {
                     endOfPaginationReached = true
                     return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }
                 LoadType.APPEND -> {
                     val flag = appPreferencesDataStore.sharedRoutinePagingFlag.first()
-                    flag.ifEmpty { initModifiedDateFlag }
+                    flag.ifEmpty { "$initModifiedDateFlag/$initSharedCountFlag" }
                 }
             }
 
+            val splitedPagingFlag = pagingFlag.split("/")
+            var modifiedDateFlag = splitedPagingFlag[0]
+            var sharedCountFlag = splitedPagingFlag[1]
+
+//            val sharedRoutineRequestBody = SharedRoutineRequestBody(
+//                StructuredQueryData(
+//                    FromData("shared_routine"),
+//                    listOf(OrderByData(FieldData("modified_date"), "DESCENDING")),
+//                    10,
+//                    StartAtData(listOf(ValuesData(timestampValue = modifiedDateFlag)))
+//                )
+//            )
             val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData("shared_routine"),
-                    listOf(OrderByData(FieldData("modified_date"), "DESCENDING")),
+                    listOf(OrderByData(FieldData("shared_count.count"), "DESCENDING"),
+                        OrderByData(FieldData("modified_date"), "DESCENDING")),
                     10,
-                    StartAtData(listOf(ValuesData(timestampValue = pagingFlag)))
+                    StartAtData(listOf(ValuesData(integerValue = sharedCountFlag), ValuesData(timestampValue = modifiedDateFlag)))
                 )
             )
 
@@ -61,7 +75,7 @@ class SharedRoutineRemoteMediator(
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    appPreferencesDataStore.saveSharedRoutinePagingFlag("")
+                    appPreferencesDataStore.saveSharedRoutinePagingFlag("$initModifiedDateFlag/$initSharedCountFlag")
                     db.sharedRoutineDao().removeAllSharedRoutines()
                 }
 
@@ -69,7 +83,9 @@ class SharedRoutineRemoteMediator(
                     if (documentResponse.document != null) {
                         db.sharedRoutineDao()
                             .insertSharedRoutine(documentResponse.document.toSharedRoutine())
-                        pagingFlag = documentResponse.document.fields.modifiedDate?.value.toString()
+                        modifiedDateFlag = documentResponse.document.fields.modifiedDate?.value.toString()
+                        sharedCountFlag = documentResponse.document.fields.sharedCount?.value?.remoteData?.count?.value.toString()
+                        pagingFlag = "$modifiedDateFlag/$sharedCountFlag"
                     } else {
                         endOfPaginationReached = true
                     }
