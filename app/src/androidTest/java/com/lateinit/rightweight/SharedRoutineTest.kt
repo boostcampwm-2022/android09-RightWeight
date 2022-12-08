@@ -60,9 +60,9 @@ class SharedRoutineTest {
             val sharedRoutineRequestBody = SharedRoutineRequestBody(
                 StructuredQueryData(
                     FromData("shared_routine"),
-                    OrderByData(FieldData("modified_date"), "ASCENDING"),
+                    listOf(OrderByData(FieldData("modified_date"), "ASCENDING")),
                     10,
-                    StartAtData(ValuesData("2021-11-11T14:56:20.061Z"))
+                    StartAtData(listOf(ValuesData(timestampValue = "2021-11-11T14:56:20.061Z")))
                 )
             )
             val documentResponses = routineApiService.getSharedRoutines(
@@ -133,6 +133,36 @@ class SharedRoutineTest {
             )
             routineApiService.commitTransaction(writeRequestBody)
 
+        }
+    }
+
+    @Test
+    fun receiveSharedRoutinesOrderBySharedCount() {
+        runBlocking {
+            val sharedRoutineRequestBody = SharedRoutineRequestBody(
+                StructuredQueryData(
+                    FromData("shared_routine"),
+                    listOf(OrderByData(FieldData("shared_count.count"), "DESCENDING"),
+                        OrderByData(FieldData("modified_date"), "DESCENDING")),
+                    10,
+                    StartAtData(listOf(ValuesData(integerValue = "9999999"), ValuesData(timestampValue = "9999-11-11T14:56:20.061Z")))
+                )
+            )
+            val documentResponses = routineApiService.getSharedRoutines(
+                sharedRoutineRequestBody
+            )
+            println(documentResponses.toString())
+
+            documentResponses.forEach() { documentResponse ->
+                documentResponse.document?.let {
+                    db.sharedRoutineDao()
+                        .insertSharedRoutine(it.toSharedRoutine())
+                }
+            }
+
+            println(db.sharedRoutineDao().getAllSharedRoutines())
+
+            //assertEquals("DB_COMPLETE", documentResponses, db.sharedRoutineDao().getAllSharedRoutines())
         }
     }
 

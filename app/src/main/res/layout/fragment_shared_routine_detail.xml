@@ -111,7 +111,7 @@
                     android:text="@{sharedRoutineUiModel.title}"
                     android:textAppearance="@style/Text.Medium"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_title_label"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_title_label"
                     tools:text="Strength 5x5" />
 
                 <TextView
@@ -130,8 +130,8 @@
                     android:layout_height="wrap_content"
                     android:text="@{sharedRoutineUiModel.description}"
                     android:textAppearance="@style/Text.Medium"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_description_label"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_description_label"
+                    app:layout_constraintStart_toStartOf="@id/text_view_description_label"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_description_label"
                     tools:text="이 훈련법은 스트렝스의 증가에 목적을 두고..." />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -155,7 +155,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day"
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_day"
                     tools:itemCount="3"
                     tools:listitem="@layout/item_exercise_with_sets" />
             </androidx.constraintlayout.widget.ConstraintLayout>

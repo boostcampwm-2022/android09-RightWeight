@@ -20,7 +20,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    val viewModel: SharedRoutineDetailViewModel by viewModels()
+    private val viewModel: SharedRoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
@@ -89,7 +89,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         viewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if (dayUiModels.size > it) {
-                val exercises = dayUiModels.get(it).exercises.sortedBy { it.order }
+                val exercises = dayUiModels.get(it).exercises
                 exerciseAdapter.submitList(exercises)
             }
         }

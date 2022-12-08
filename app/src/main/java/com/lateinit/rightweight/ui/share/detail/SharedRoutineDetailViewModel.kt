@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedRoutineDetailViewModel @Inject constructor(
     private val sharedRoutineRepository: SharedRoutineRepository,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
@@ -61,7 +61,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                             sharedRoutineWithDay.day.toDayUiModel(
                                 sharedRoutineWithDay.exercises
                             )
-                        }.sortedBy { it.order }
+                        }
                     )
                     if (_uiState.value.dayUiModels.isNotEmpty()) {
                         initClickedDay()
