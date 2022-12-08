@@ -14,8 +14,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/text_view_exercise_part"
+            android:labelFor="@+id/text_view_shared_routine_sort_type"
             app:hintEnabled="false"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -28,8 +30,7 @@
                 android:includeFontPadding="true"
                 android:inputType="none"
                 android:textAppearance="@style/Text.Small"
-                tools:text="최신순"
-                tools:ignore="LabelFor" />
+                tools:text="최신순" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
