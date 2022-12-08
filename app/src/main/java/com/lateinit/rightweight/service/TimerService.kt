@@ -28,7 +28,7 @@ fun convertTimeStamp(count: Int): String {
 class TimerService : LifecycleService() {
     private var isTimerRunning = false
     private var timeCount = 0
-    private lateinit var timer: Job
+    private var timer: Job = lifecycleScope.launchWhenCreated {  }
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
     private lateinit var notificationLayout: RemoteViews

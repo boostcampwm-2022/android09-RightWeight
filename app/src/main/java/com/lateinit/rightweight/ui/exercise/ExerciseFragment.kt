@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentExerciseBinding
 import com.lateinit.rightweight.service.TimerService
+import com.lateinit.rightweight.service.TimerService.Companion.IS_TIMER_RUNNING_INTENT_EXTRA
 import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.PAUSE
 import com.lateinit.rightweight.service.TimerService.Companion.PENDING_INTENT_TAG
@@ -45,6 +46,9 @@ class ExerciseFragment : Fragment() {
 
     private val dialog = CommonDialogFragment { endExercise() }
     private lateinit var historyExerciseAdapter: HistoryExerciseAdapter
+
+    private var timeCount = 0
+    private var isTimerRunning = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,12 +103,9 @@ class ExerciseFragment : Fragment() {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?.let {
-                    val isTimerRunning =
-                        intent.getBooleanExtra(TimerService.IS_TIMER_RUNNING_INTENT_EXTRA, false)
-                    val timeCount = intent.getIntExtra(TIME_COUNT_INTENT_EXTRA, 0)
-
-                    binding.timeString = convertTimeStamp(timeCount)
-                    binding.isTimerRunning = isTimerRunning
+                    isTimerRunning = intent.getBooleanExtra(IS_TIMER_RUNNING_INTENT_EXTRA, false)
+                    timeCount = intent.getIntExtra(TIME_COUNT_INTENT_EXTRA, 0)
+                    updateViews()
                 }
             }
         }
@@ -112,9 +113,15 @@ class ExerciseFragment : Fragment() {
         requireActivity().registerReceiver(receiver, intentFilter)
     }
 
+    private fun updateViews() {
+        _binding ?: return
+        binding.timeString = convertTimeStamp(timeCount)
+        binding.isTimerRunning = isTimerRunning
+    }
+
     private fun setButtonClickListeners() {
         binding.buttonExerciseStartAndPause.setOnClickListener {
-            if (binding.isTimerRunning == true) {
+            if (isTimerRunning) {
                 startTimerServiceWithMode(PAUSE)
             } else {
                 startTimerServiceWithMode(START)
