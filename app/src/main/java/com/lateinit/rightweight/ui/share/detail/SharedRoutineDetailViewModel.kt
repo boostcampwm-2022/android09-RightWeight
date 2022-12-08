@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedRoutineDetailViewModel @Inject constructor(
     private val sharedRoutineRepository: SharedRoutineRepository,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
