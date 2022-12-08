@@ -54,6 +54,10 @@ interface RoutineDao {
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
 
     @Transaction
+    @Query("SELECT * FROM routine WHERE routine_id = :routineId")
+    fun getRoutineWithDaysFlowByRoutineId(routineId: String): Flow<RoutineWithDays>
+
+    @Transaction
     @Query("SELECT * FROM day WHERE day_id = :dayId")
     fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>
 

@@ -27,6 +27,7 @@ interface RoutineRepository {
     fun getRoutines(): Flow<List<Routine>>
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
+    fun getRoutineWithDaysFlowByRoutineId(routineId: String): Flow<RoutineWithDays>
     fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>
     suspend fun removeRoutineById(routineId: String)
     fun getSelectedRoutine(routineId: String?): Flow<Routine>

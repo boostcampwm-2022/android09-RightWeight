@@ -62,6 +62,10 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         return routineDao.getRoutineWithDaysByRoutineId(routineId)
     }
 
+    override fun getRoutineWithDaysFlowByRoutineId(routineId: String): Flow<RoutineWithDays> {
+        return routineDao.getRoutineWithDaysFlowByRoutineId(routineId)
+    }
+
     override fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises> {
         return routineDao.getDayWithExercisesByDayId(dayId)
     }
