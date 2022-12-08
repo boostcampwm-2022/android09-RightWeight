@@ -12,8 +12,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
-import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
+import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
@@ -24,6 +24,7 @@ import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.MapValue
 import com.lateinit.rightweight.data.remote.model.MapValueRootField
+import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.SharedCount
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.data.remote.model.StringValue
@@ -170,10 +171,22 @@ fun RoutineUiModel.toSharedRoutineField(userId: String): SharedRoutineField {
         sharedCount = MapValue(
             MapValueRootField(
                 SharedCount(
-                time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
-                count = IntValue("0")
-            ))
+                    time = TimeStampValue(LocalDateTime.now().toString() + "Z"),
+                    count = IntValue("0")
+                )
+            )
         )
+    )
+}
+
+fun RoutineUiModel.toRoutineField(userId: String): RoutineField {
+    return RoutineField(
+        author = StringValue(author),
+        description = StringValue(description),
+        modifiedDate = TimeStampValue(modifiedDate.toString() + "Z"),
+        order = IntValue(order.toString()),
+        title = StringValue(title),
+        userId = StringValue(userId),
     )
 }
 

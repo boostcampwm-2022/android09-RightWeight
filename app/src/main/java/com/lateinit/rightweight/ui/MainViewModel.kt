@@ -15,8 +15,8 @@ import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
 import com.lateinit.rightweight.util.toExerciseSetField
+import com.lateinit.rightweight.util.toRoutineField
 import com.lateinit.rightweight.util.toRoutineUiModel
-import com.lateinit.rightweight.util.toSharedRoutineField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -93,7 +93,7 @@ class MainViewModel @Inject constructor(
         val path = "${WriteModelData.defaultPath}/routine/${routine.routineId}"
         commitItems.add(
             WriteModelData(
-                update = UpdateData(path, routine.toSharedRoutineField(routine.routineId))
+                update = UpdateData(path, routine.toRoutineField(routine.routineId))
             )
         )
         updateDays(path, days)

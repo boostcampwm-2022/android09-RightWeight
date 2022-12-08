@@ -35,6 +35,26 @@ data class SharedCount(
     val count: IntValue? = null,
 ): RemoteData()
 
+data class RoutineField(
+    @field:SerializedName("author")
+    val author: StringValue? = null,
+
+    @field:SerializedName("description")
+    val description: StringValue? = null,
+
+    @field:SerializedName("modified_date")
+    val modifiedDate: TimeStampValue? = null,
+
+    @field:SerializedName("order")
+    val order: IntValue? = null,
+
+    @field:SerializedName("title")
+    val title: StringValue? = null,
+
+    @field:SerializedName("userId")
+    val userId: StringValue? = null,
+): RemoteData()
+
 data class DayField(
     @SerializedName("order")
     val order: IntValue? = null,
