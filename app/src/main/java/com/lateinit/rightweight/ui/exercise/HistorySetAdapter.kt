@@ -1,69 +1,82 @@
 package com.lateinit.rightweight.ui.exercise
 
-import android.content.Context
-import android.text.Layout
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.databinding.ItemHistorySetBinding
+import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 
 class HistorySetAdapter(
-    val context: Context,
-    val historyEventListener: HistoryEventListener
-    ) :
-    ListAdapter<HistorySet, HistorySetAdapter.HistorySetViewHolder>(diffUtil) {
+    private val historyEventListener: HistoryEventListener
+) : ListAdapter<HistoryExerciseSetUiModel, HistorySetAdapter.HistorySetViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistorySetViewHolder {
-        val bind = ItemHistorySetBinding.inflate(LayoutInflater.from(context), parent, false)
-        return HistorySetViewHolder(bind)
+        return HistorySetViewHolder(
+            historyEventListener,
+            ItemHistorySetBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: HistorySetViewHolder, position: Int) {
-        holder.setItem(getItem(position) ?: return)
+        holder.bind(getItem(position))
     }
 
-    inner class HistorySetViewHolder(val bind: ItemHistorySetBinding) : RecyclerView.ViewHolder(
-        bind.root
-    ) {
+    class HistorySetViewHolder(
+        historyEventListener: HistoryEventListener,
+        private val binding: ItemHistorySetBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun setItem(historySet: HistorySet) {
-            bind.historySet = historySet
-            bind.checkboxSet.setOnCheckedChangeListener { buttonView, isChecked ->
-                historySet.checked = isChecked
-                historyEventListener.updateHistorySet(historySet)
+        private lateinit var historyExerciseSetUiModel: HistoryExerciseSetUiModel
+
+        init {
+            binding.checkboxSet.setOnCheckedChangeListener { _, isChecked ->
+                if (historyExerciseSetUiModel.checked != isChecked) {
+                    historyEventListener.updateHistorySet(
+                        historyExerciseSetUiModel.copy(checked = isChecked)
+                    )
+                }
             }
-            bind.editTextSetWeight.setOnFocusChangeListener{ _, _ ->
-                // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
-                historyEventListener.updateHistorySet(historySet)
+
+            binding.editTextSetWeight.setOnFocusChangeListener { _, _ ->
+                historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
-            bind.editTextSetCount.setOnFocusChangeListener{ _, _ ->
-                // two way databinding을 사용했기 때문에 historySet이 자동으로 변경됨
-                historyEventListener.updateHistorySet(historySet)
+
+            binding.editTextSetCount.setOnFocusChangeListener { _, _ ->
+                historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
-            bind.buttonSetRemove.setOnClickListener {
-                historyEventListener.removeHistorySet(historySet.setId)
-                // Flow 사용할 경우 따로 renewTodayHistory를 부를 필요가 없음
-                //historyEventListener.renewTodayHistory()
+
+            binding.buttonSetRemove.setOnClickListener {
+                historyEventListener.removeHistorySet(historyExerciseSetUiModel.setId)
             }
+        }
+
+        fun bind(historyExerciseSetUiModel: HistoryExerciseSetUiModel) {
+            this.historyExerciseSetUiModel = historyExerciseSetUiModel
+            binding.historyExerciseSetUiModel = historyExerciseSetUiModel
         }
     }
 
     companion object {
-        val diffUtil = object : DiffUtil.ItemCallback<HistorySet>() {
-            override fun areItemsTheSame(oldItem: HistorySet, newItem: HistorySet): Boolean {
+        val diffUtil = object : DiffUtil.ItemCallback<HistoryExerciseSetUiModel>() {
+            override fun areItemsTheSame(
+                oldItem: HistoryExerciseSetUiModel,
+                newItem: HistoryExerciseSetUiModel
+            ): Boolean {
                 return oldItem.setId == newItem.setId
             }
 
-            override fun areContentsTheSame(oldItem: HistorySet, newItem: HistorySet): Boolean {
+            override fun areContentsTheSame(
+                oldItem: HistoryExerciseSetUiModel,
+                newItem: HistoryExerciseSetUiModel
+            ): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
 }

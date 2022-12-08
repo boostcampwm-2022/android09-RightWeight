@@ -2,7 +2,13 @@ package com.lateinit.rightweight.data.datasource
 
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
+import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
@@ -36,10 +42,6 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         return routineDao.getRoutineById(routineId)
     }
 
-    override suspend fun getDaysByRoutineId(routineId: String): List<Day> {
-        return routineDao.getDaysByRoutineId(routineId)
-    }
-
     override suspend fun getDayById(dayId: String): Day {
         return routineDao.getDayById(dayId)
     }
@@ -52,7 +54,7 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         return routineDao.getSetsByExerciseId(exerciseId)
     }
 
-    override suspend fun getRoutines(): List<Routine> {
+    override fun getRoutines(): Flow<List<Routine>> {
         return routineDao.getRoutines()
     }
 

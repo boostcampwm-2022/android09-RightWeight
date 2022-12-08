@@ -7,14 +7,17 @@ import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.mediator.*
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
+import com.lateinit.rightweight.data.model.FieldTransformsModelData
+import com.lateinit.rightweight.data.model.TransformData
+import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.remote.model.*
 import com.lateinit.rightweight.util.toSharedRoutine
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -45,8 +48,10 @@ class SharedRoutineTest {
 
     @Before
     fun initDb() {
-        db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().context,
-            AppDatabase::class.java).build()
+        db = Room.inMemoryDatabaseBuilder(
+            InstrumentationRegistry.getInstrumentation().context,
+            AppDatabase::class.java
+        ).build()
     }
 
     @Test
@@ -65,9 +70,11 @@ class SharedRoutineTest {
             )
             println(documentResponses.toString())
 
-            documentResponses?.forEach() { documentResponse ->
-                db.sharedRoutineDao()
-                    .insertSharedRoutine(documentResponse.document.toSharedRoutine())
+            documentResponses.forEach() { documentResponse ->
+                documentResponse.document?.let {
+                    db.sharedRoutineDao()
+                        .insertSharedRoutine(it.toSharedRoutine())
+                }
             }
 
             println(db.sharedRoutineDao().getAllSharedRoutines())
@@ -82,26 +89,27 @@ class SharedRoutineTest {
             val sharedRoutineDaysResponse = routineApiService.getSharedRoutineDays(
                 "07fd07ab-45c6-4479-881a-abe151a82456"
             )
-            sharedRoutineDaysResponse?.documents?.forEach(){
+            sharedRoutineDaysResponse?.documents?.forEach() {
                 val sharedRoutineDay = it.toSharedRoutineDay()
                 println(sharedRoutineDay.toString())
-                val sharedRoutineExercisesResponse= routineApiService.getSharedRoutineExercises(
+                val sharedRoutineExercisesResponse = routineApiService.getSharedRoutineExercises(
                     sharedRoutineDay.routineId,
                     sharedRoutineDay.dayId
                 )
                 println(sharedRoutineExercisesResponse.toString())
-                sharedRoutineExercisesResponse?.documents?.forEach(){
+                sharedRoutineExercisesResponse?.documents?.forEach() {
                     val sharedRoutineExercise = it.toSharedRoutineExercise()
                     println(sharedRoutineExercise.toString())
-                    val sharedRoutineExerciseSetsResponse = routineApiService.getSharedRoutineExerciseSets(
-                        sharedRoutineDay.routineId,
-                        sharedRoutineExercise.dayId,
-                        sharedRoutineExercise.exerciseId
-                    )
-                   sharedRoutineExerciseSetsResponse?.documents?.forEach(){
-                       val sharedRoutineExerciseSet = it.toSharedRoutineExerciseSet()
-                       println(sharedRoutineExerciseSet.toString())
-                   }
+                    val sharedRoutineExerciseSetsResponse =
+                        routineApiService.getSharedRoutineExerciseSets(
+                            sharedRoutineDay.routineId,
+                            sharedRoutineExercise.dayId,
+                            sharedRoutineExercise.exerciseId
+                        )
+                    sharedRoutineExerciseSetsResponse?.documents?.forEach() {
+                        val sharedRoutineExerciseSet = it.toSharedRoutineExerciseSet()
+                        println(sharedRoutineExerciseSet.toString())
+                    }
                 }
             }
 
@@ -109,12 +117,24 @@ class SharedRoutineTest {
     }
 
     @Test
-    fun flowTest(){
+    fun increaseSharedCountTest() {
         runBlocking {
-            routineRemoteDataSourceImpl.getSharedRoutineDays("07fd07ab-45c6-4479-881a-abe151a82456").collect(){
-                println(it.toString())
-            }
+            val path =
+                "${WriteModelData.defaultPath}/shared_routine/50207f59-1eff-4f25-adff-12b4819846c0"
+            val writeRequestBody = WriteRequestBody(
+                listOf(
+                    WriteModelData(
+                        transform = TransformData(
+                            path,
+                            listOf(FieldTransformsModelData("shared_count.count", IntValue("1")))
+                        )
+                    )
+                )
+            )
+            routineApiService.commitTransaction(writeRequestBody)
+
         }
     }
+
 
 }

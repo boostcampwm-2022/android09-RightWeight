@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -21,22 +20,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityMainBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.BACKUP_USER_INFO_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.LoginActivity
+import com.lateinit.rightweight.ui.login.NetworkState
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,10 +54,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 WITHDRAW_DIALOG_TAG -> {
                     withdraw()
                 }
+                BACKUP_USER_INFO_TAG -> {
+                    backup()
+                }
             }
         }
     }
-    private val mainViewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -91,6 +93,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.backup -> {
+                dialog.show(
+                    supportFragmentManager,
+                    BACKUP_USER_INFO_TAG,
+                    R.string.backup_message
+                )
+            }
             R.id.logout -> {
                 dialog.show(
                     supportFragmentManager,
@@ -155,7 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                mainViewModel.userInfo.collect {
+                viewModel.userInfo.collect {
                     it?.let {
                         headerBinding.user = it
                     }
@@ -169,16 +178,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
+    private fun backup() {
+        viewModel.backup()
+    }
+
     private fun logout() {
-        // 유저 정보 삭제
         client.signOut()
-        val intent = Intent(baseContext, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        moveToLoginActivity()
     }
 
     private fun withdraw() {
-        Toast.makeText(this, "회원 탈퇴", Toast.LENGTH_SHORT).show()
+        viewModel.deleteAccount(getString(R.string.google_api_key))
+        collectOnLifecycle {
+            viewModel.networkState.collect {
+                if (it == NetworkState.SUCCESS) {
+                    client.signOut()
+                    moveToLoginActivity()
+                } else {
+                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun moveToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
