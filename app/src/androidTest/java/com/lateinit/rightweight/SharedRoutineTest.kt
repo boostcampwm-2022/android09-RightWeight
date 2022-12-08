@@ -116,30 +116,6 @@ class SharedRoutineTest {
         }
     }
 
-//    @Test
-//    fun updateSharedCountTest() {
-//        runBlocking {
-//            //{ fields : { shared_count : { mapValue : { fields : { time: { timestampValue: "2022-12-05T21:03:09.340Z" }, count: { integerValue: 121 } } } } } }
-//            val rootField = RootField(
-//                SharedCountField(
-//                    MapValue(
-//                        MapValueRootField(
-//                            SharedCount(
-//                                TimeStampValue(LocalDateTime.now().toString() + "Z"),
-//                                IntValue("12345")
-//                            )
-//                        )
-//                    )
-//                )
-//            )
-//            routineApiService.updateSharedRoutineField(
-//                "8d4bf90a-d1b4-481e-9b75-19fa0bb18842",
-//                "shared_count",
-//                rootField
-//            )
-//        }
-//    }
-
     @Test
     fun increaseSharedCountTest() {
         runBlocking {
