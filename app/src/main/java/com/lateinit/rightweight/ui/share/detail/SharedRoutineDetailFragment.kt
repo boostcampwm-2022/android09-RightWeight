@@ -20,7 +20,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    val sharedRoutineDetailViewModel: SharedRoutineDetailViewModel by viewModels()
+    val viewModel: SharedRoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
@@ -39,7 +39,7 @@ class SharedRoutineDetailFragment : Fragment() {
 
         val routineId = arguments?.getString("routineId")
         routineId?.let {
-            sharedRoutineDetailViewModel.getSharedRoutineDetail(routineId)
+            viewModel.getSharedRoutineDetail(routineId)
         }
 
         setRoutineDayAdapter()
@@ -51,21 +51,21 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setRoutineDayAdapter() {
         routineDayAdapter =
             RoutineDayAdapter { position ->
-                sharedRoutineDetailViewModel.clickDay(position)
+                viewModel.clickDay(position)
             }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 
     private fun setExerciseAdapter() {
         exerciseAdapter = DetailExerciseAdapter { position ->
-            sharedRoutineDetailViewModel.clickExercise(position)
+            viewModel.clickExercise(position)
         }
         binding.recyclerViewExercise.adapter = exerciseAdapter
     }
 
     private fun setSharedRoutineDetailCollect() {
         collectOnLifecycle {
-            sharedRoutineDetailViewModel.uiState.collect() { uiState ->
+            viewModel.uiState.collect() { uiState ->
                 when (uiState) {
                     is LatestSharedRoutineDetailUiState.Success -> {
                         binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
@@ -73,7 +73,7 @@ class SharedRoutineDetailFragment : Fragment() {
                         setCurrentDayPositionObserve(uiState.dayUiModels)
 
                         binding.buttonRoutineImport.setOnClickListener() {
-                            sharedRoutineDetailViewModel.importSharedRoutineToMyRoutines(
+                            viewModel.importSharedRoutineToMyRoutines(
                                 uiState.sharedRoutineUiModel,
                                 uiState.dayUiModels
                             )
@@ -87,7 +87,7 @@ class SharedRoutineDetailFragment : Fragment() {
     }
 
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
-        sharedRoutineDetailViewModel.currentDayPosition.observe(viewLifecycleOwner) {
+        viewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if (dayUiModels.size > it) {
                 val exercises = dayUiModels.get(it).exercises.sortedBy { it.order }
                 exerciseAdapter.submitList(exercises)
