@@ -70,6 +70,7 @@ class CalendarViewModel @Inject constructor(
     private fun getRoutineDays() {
         val user = userInfo.value ?: return
         val routineId = user.routineId
+
         if(routineId.isEmpty()) return
 
         viewModelScope.launch {
@@ -101,9 +102,9 @@ class CalendarViewModel @Inject constructor(
 
     private fun getSelectedHistory(date: LocalDate): HistoryUiModel? {
         return dateToExerciseHistories.value[date]?.let {
-            _routineTitle.value = it.history.routineTitle
-            _exerciseTime.value = it.history.time
-            it.toHistoryUiModel()
+            _routineTitle.value = it.routineTitle
+            _exerciseTime.value = it.time
+            it
         }
     }
 
@@ -126,7 +127,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun getHistoryBetweenDate(
         month: YearMonth
-    ): Flow<Map<LocalDate, HistoryWithHistoryExercises>> {
+    ): Flow<Map<LocalDate, HistoryUiModel>> {
         val startDay = month.atDay(START_DAY_OF_MONTH)
         val endDay = month.atEndOfMonth()
         val startDayDiff =
@@ -136,13 +137,13 @@ class CalendarViewModel @Inject constructor(
         return historyRepository.getHistoryBetweenDate(
             startDay.minusDays(startDayDiff),
             endDay.plusDays(endDayDiff)
-        ).mapDateToHistoryWithExercises()
+        ).mapDateToHistoryUiModels()
     }
 
-    private fun Flow<List<HistoryWithHistoryExercises>>.mapDateToHistoryWithExercises() =
+    private fun Flow<List<HistoryWithHistoryExercises>>.mapDateToHistoryUiModels() =
         this.map { historyWithExercises ->
-            historyWithExercises.associateBy { historyWithExercise ->
-                historyWithExercise.history.date
+            historyWithExercises.associate { historyWithExercise ->
+                historyWithExercise.history.date to historyWithExercise.toHistoryUiModel()
             }
         }
 
