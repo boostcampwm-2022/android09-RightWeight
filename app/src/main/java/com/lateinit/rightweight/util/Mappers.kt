@@ -299,7 +299,46 @@ fun SharedRoutine.toSharedRoutineUiModel(): SharedRoutineUiModel {
     )
 }
 
-fun Routine.toRoutineUiModel(): RoutineUiModel {
+fun SharedRoutineUiModel.toRoutine(routineId: String, author: String, order: Int): Routine{
+    return Routine(
+        routineId = routineId,
+        title = title,
+        author = author,
+        description = description,
+        modifiedDate = modifiedDate,
+        order = order
+    )
+}
+
+fun DayUiModel.toDayWithNewIds(routineId: String, dayId: String): Day{
+    return Day(
+        dayId = dayId,
+        routineId = routineId,
+        order = order
+    )
+}
+
+fun ExerciseUiModel.toExerciseWithNewIds(dayId: String, exerciseId: String): Exercise {
+    return Exercise(
+        exerciseId = exerciseId,
+        dayId = dayId,
+        title = title,
+        order = order,
+        part = part.toExercisePartType()
+    )
+}
+
+fun ExerciseSetUiModel.toExerciseSetWithNewIds(exerciseId: String, setId: String): ExerciseSet {
+    return ExerciseSet(
+        setId = setId,
+        exerciseId = exerciseId,
+        weight = weight.ifEmpty { DEFAULT_SET_WEIGHT },
+        count = count.ifEmpty { DEFAULT_SET_COUNT },
+        order = order
+    )
+}
+
+fun Routine.toRoutineUiModel():RoutineUiModel{
     return RoutineUiModel(
         routineId = routineId,
         title = title,

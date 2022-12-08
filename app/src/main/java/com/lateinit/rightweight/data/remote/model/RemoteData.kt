@@ -77,3 +77,8 @@ data class UserInfoField(
     @SerializedName("selected_day_id")
     val dayId: StringValue? = null
 ) : RemoteData()
+
+data class SharedCountField(
+    @SerializedName("shared_count")
+    val sharedCount: MapValue? = null,
+) : RemoteData()

@@ -13,4 +13,5 @@ interface SharedRoutineRepository {
     suspend fun requestSharedRoutineDetail(routineId: String)
     suspend fun commitTransaction(writes: List<WriteModelData>)
     suspend fun checkRoutineInRemote(routineId: String): Boolean
+    suspend fun increaseSharedCount(routineId: String)
 }
