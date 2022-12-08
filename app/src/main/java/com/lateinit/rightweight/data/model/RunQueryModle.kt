@@ -14,7 +14,6 @@ data class StructuredQueryData(
     val startAt: StartAtData? = null
 )
 
-
 data class FromData(
     val collectionId: String,
 )
@@ -35,17 +34,18 @@ enum class FilterOperator {
     NOT_EQUAL,
 }
 
+enum class Direction{
+    ASCENDING,
+    DESCENDING
+}
+
 data class FiledReferenceData(
     val fieldPath: String
 )
 
 data class OrderByData(
-    val field: FieldData,
+    val field: FiledReferenceData,
     val direction: String
-)
-
-data class FieldData(
-    val fieldPath: String
 )
 
 data class StartAtData(
