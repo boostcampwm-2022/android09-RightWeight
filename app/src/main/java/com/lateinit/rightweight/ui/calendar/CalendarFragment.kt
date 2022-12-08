@@ -72,7 +72,7 @@ class CalendarFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dateToExerciseHistories.collectLatest {
-                    completedDayDecorator.changeCompletedHistories(it)
+                    completedDayDecorator.changeCompletedDates(it.keys)
                     binding.calendarView.invalidateDecorators()
                 }
             }
