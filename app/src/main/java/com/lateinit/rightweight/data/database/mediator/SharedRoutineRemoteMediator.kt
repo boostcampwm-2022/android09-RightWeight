@@ -18,11 +18,14 @@ import java.io.IOException
 class SharedRoutineRemoteMediator(
     private val db: AppDatabase,
     private val api: RoutineApiService,
-    private val appPreferencesDataStore: AppPreferencesDataStore
+    private val appPreferencesDataStore: AppPreferencesDataStore,
+    var sortType: SortType
 ) : RemoteMediator<Int, SharedRoutine>() {
 
     private val initModifiedDateFlag = "9999-1-1T1:1:1.1Z"
     private val initSharedCountFlag = "999999999"
+
+    lateinit var sharedRoutineRequestBody: SharedRoutineRequestBody
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -51,23 +54,30 @@ class SharedRoutineRemoteMediator(
             var modifiedDateFlag = splitedPagingFlag[0]
             var sharedCountFlag = splitedPagingFlag[1]
 
-//            val sharedRoutineRequestBody = SharedRoutineRequestBody(
-//                StructuredQueryData(
-//                    FromData("shared_routine"),
-//                    listOf(OrderByData(FieldData("modified_date"), "DESCENDING")),
-//                    10,
-//                    StartAtData(listOf(ValuesData(timestampValue = modifiedDateFlag)))
-//                )
-//            )
-            val sharedRoutineRequestBody = SharedRoutineRequestBody(
-                StructuredQueryData(
-                    FromData("shared_routine"),
-                    listOf(OrderByData(FieldData("shared_count.count"), "DESCENDING"),
-                        OrderByData(FieldData("modified_date"), "DESCENDING")),
-                    10,
-                    StartAtData(listOf(ValuesData(integerValue = sharedCountFlag), ValuesData(timestampValue = modifiedDateFlag)))
-                )
-            )
+            when(sortType){
+                SortType.MODIFIED_DATE_FIRST ->{
+                    sharedRoutineRequestBody = SharedRoutineRequestBody(
+                        StructuredQueryData(
+                            FromData("shared_routine"),
+                            listOf(OrderByData(FieldData("modified_date"), "DESCENDING"),
+                                OrderByData(FieldData("shared_count.count"), "DESCENDING")),
+                            10,
+                            StartAtData(listOf(ValuesData(timestampValue = modifiedDateFlag), ValuesData(integerValue = sharedCountFlag)))
+                        )
+                    )
+                }
+                SortType.SHARED_COUNT_FIRST ->{
+                    sharedRoutineRequestBody = SharedRoutineRequestBody(
+                        StructuredQueryData(
+                            FromData("shared_routine"),
+                            listOf(OrderByData(FieldData("shared_count.count"), "DESCENDING"),
+                                OrderByData(FieldData("modified_date"), "DESCENDING")),
+                            10,
+                            StartAtData(listOf(ValuesData(integerValue = sharedCountFlag), ValuesData(timestampValue = modifiedDateFlag)))
+                        )
+                    )
+                }
+            }
 
             val documentResponses = api.getSharedRoutines(
                 sharedRoutineRequestBody
@@ -135,3 +145,7 @@ data class ValuesData(
     val integerValue: String? = null,
     val timestampValue: String? = null
 )
+
+enum class SortType(){
+    MODIFIED_DATE_FIRST, SHARED_COUNT_FIRST
+}
