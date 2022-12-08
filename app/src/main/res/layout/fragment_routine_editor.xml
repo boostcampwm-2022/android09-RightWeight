@@ -167,6 +167,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:insetTop="0dp"
             android:onClick="@{() -> viewModel.saveRoutine()}"
             android:padding="16dp"
             android:stateListAnimator="@null"
