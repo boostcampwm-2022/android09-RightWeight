@@ -89,7 +89,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         viewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if (dayUiModels.size > it) {
-                val exercises = dayUiModels.get(it).exercises.sortedBy { it.order }
+                val exercises = dayUiModels.get(it).exercises
                 exerciseAdapter.submitList(exercises)
             }
         }
