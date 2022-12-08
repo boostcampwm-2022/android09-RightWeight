@@ -5,6 +5,10 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/navigation_home">
 
+    <action
+        android:id="@+id/to_navigation_routine_detail"
+        app:destination="@id/navigation_routine_detail" />
+
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.lateinit.rightweight.ui.home.HomeFragment"
