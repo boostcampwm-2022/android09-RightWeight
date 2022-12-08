@@ -25,7 +25,7 @@ data class SharedRoutineField(
 
     @field:SerializedName("shared_count")
     val sharedCount: MapValue? = null,
-): RemoteData()
+) : RemoteData()
 
 data class SharedCount(
     @field:SerializedName("time")
@@ -33,7 +33,7 @@ data class SharedCount(
 
     @field:SerializedName("count")
     val count: IntValue? = null,
-): RemoteData()
+) : RemoteData()
 
 data class RoutineField(
     @field:SerializedName("author")
@@ -53,7 +53,7 @@ data class RoutineField(
 
     @field:SerializedName("userId")
     val userId: StringValue? = null,
-): RemoteData()
+) : RemoteData()
 
 data class DayField(
     @SerializedName("order")
@@ -96,4 +96,39 @@ data class UserInfoField(
     val routineId: StringValue? = null,
     @SerializedName("selected_day_id")
     val dayId: StringValue? = null
+) : RemoteData()
+
+data class HistoryField(
+    @SerializedName("History_id")
+    val date: TimeStampValue? = null,
+    @SerializedName("History_id")
+    val time: StringValue,
+    @SerializedName("History_id")
+    val routineTitle: StringValue,
+    @SerializedName("History_id")
+    val order: IntValue,
+    @SerializedName("History_id")
+    val routineId: StringValue,
+) : RemoteData()
+
+data class HistoryExerciseField(
+    @SerializedName("history_id")
+    val historyId: StringValue,
+    @SerializedName("title")
+    val title: StringValue,
+    @SerializedName("order")
+    val order: IntValue,
+    @SerializedName("part")
+    val part: StringValue,
+) : RemoteData()
+
+data class HistoryExerciseSetField(
+    @SerializedName("exercise_id")
+    val exerciseId: StringValue,
+    @SerializedName("weight")
+    var weight: StringValue,
+    @SerializedName("count")
+    var count: StringValue,
+    @SerializedName("order")
+    val order: IntValue,
 ) : RemoteData()

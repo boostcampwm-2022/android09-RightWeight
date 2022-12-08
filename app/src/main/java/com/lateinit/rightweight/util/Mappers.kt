@@ -21,6 +21,9 @@ import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
 import com.lateinit.rightweight.data.remote.model.ExerciseSetField
+import com.lateinit.rightweight.data.remote.model.HistoryExerciseField
+import com.lateinit.rightweight.data.remote.model.HistoryExerciseSetField
+import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.MapValue
 import com.lateinit.rightweight.data.remote.model.MapValueRootField
@@ -212,6 +215,34 @@ fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField {
         count = StringValue(count),
         weight = StringValue(weight),
         exerciseId = StringValue(exerciseId)
+    )
+}
+
+fun HistoryUiModel.toHistoryField(): HistoryField {
+    return HistoryField(
+        date = TimeStampValue(date.toString() + "Z"),
+        time = StringValue(time),
+        routineTitle = StringValue(routineTitle),
+        order = IntValue(order.toString()),
+        routineId = StringValue(routineId)
+    )
+}
+
+fun HistoryExerciseUiModel.toHistoryExerciseField(): HistoryExerciseField {
+    return HistoryExerciseField(
+        historyId = StringValue(historyId),
+        title = StringValue(title),
+        order = IntValue(order.toString()),
+        part = StringValue(part.name),
+    )
+}
+
+fun HistoryExerciseSetUiModel.toHistoryExerciseSetField(): HistoryExerciseSetField {
+    return HistoryExerciseSetField(
+        exerciseId = StringValue(exerciseId),
+        weight = StringValue(weight),
+        count = StringValue(count),
+        order = IntValue(order.toString()),
     )
 }
 
