@@ -14,6 +14,10 @@ class LoginDataSourceImpl @Inject constructor(
             api.loginToFirebase(key, LoginRequestBody(postBody, "http://localhost", true, true))
         return loginResponse
     }
+
+    override suspend fun deleteAccount(key: String, idToken: String) {
+        api.deleteAccount(key, idToken)
+    }
 }
 
 data class LoginRequestBody(
