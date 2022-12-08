@@ -5,7 +5,9 @@ import com.lateinit.rightweight.data.datasource.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.ui.model.HistoryUiModel
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -34,6 +36,10 @@ class UserRepositoryImpl @Inject constructor(
             val documentName = documentResponse.document?.name ?: ""
             documentName.split("/").last()
         }
+    }
+
+    override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
+        return userLocalDataSource.getHistoryAfterDate(startDate)
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
