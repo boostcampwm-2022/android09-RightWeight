@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.util.collectOnLifecycle
 import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,6 +42,7 @@ class RoutineEditorFragment : Fragment() {
         setRoutineDaysObserve()
         setExerciseAdapter()
         setDayExercisesObserve()
+        setRoutineSaveButtonEvent()
     }
 
     private fun setBinding() {
@@ -94,6 +98,26 @@ class RoutineEditorFragment : Fragment() {
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
             exerciseAdapter.submitList(it)
+        }
+    }
+
+    private fun setRoutineSaveButtonEvent() {
+        collectOnLifecycle {
+            viewModel.isPossibleSaveRoutine.collect {
+                if (it) {
+                    Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        anchorView = binding.buttonSave
+                        setAction(R.string.submit) {
+                            this.dismiss()
+                        }
+                    }.show()
+                    findNavController().navigateUp()
+                } else {
+                    Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        anchorView = binding.buttonSave
+                    }.show()
+                }
+            }
         }
     }
 

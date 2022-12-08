@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
+import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.model.DayUiModel
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
@@ -21,9 +22,15 @@ import com.lateinit.rightweight.util.toExerciseSetField
 import com.lateinit.rightweight.util.toRoutineUiModel
 import com.lateinit.rightweight.util.toSharedRoutineField
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.SocketException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +53,12 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val commitItems = mutableListOf<WriteModelData>()
 
+    private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
+    private val _networkState = MutableSharedFlow<NetworkState>()
+    val networkState = _networkState.asSharedFlow()
+
     fun selectRoutine() {
         viewModelScope.launch {
             val user = userInfo.value ?: return@launch
@@ -56,6 +69,7 @@ class RoutineDetailViewModel @Inject constructor(
                     dayId = _dayUiModels.value?.first()?.dayId ?: ""
                 )
             )
+            sendEvent(NavigationEvent.SelectEvent(true))
         }
     }
 
@@ -117,16 +131,18 @@ class RoutineDetailViewModel @Inject constructor(
     fun removeRoutine(routineId: String) {
         viewModelScope.launch {
             routineRepository.removeRoutineById(routineId)
+            sendEvent(NavigationEvent.RemoveEvent(true))
         }
     }
 
     fun shareRoutine() {
         val nowRoutine = _routineUiModel.value ?: return
-        viewModelScope.launch {
+        viewModelScope.launch(networkExceptionHandler) {
             if (sharedRoutineRepository.checkRoutineInRemote(nowRoutine.routineId)) {
                 deleteSharedRoutine()
             }
             updateSharedRoutine()
+            sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
 
@@ -242,5 +258,30 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
+    private fun sendEvent(event: NavigationEvent) {
+        viewModelScope.launch {
+            _navigationEvent.emit(event)
+        }
+    }
+
+    private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        when (throwable) {
+            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+        }
+    }
+
+    private fun sendNetworkResultEvent(state: NetworkState) {
+        viewModelScope.launch {
+            _networkState.emit(state)
+        }
+    }
+
+    sealed class NavigationEvent {
+        data class SelectEvent(val isSelected: Boolean) : NavigationEvent()
+        data class RemoveEvent(val isRemoved: Boolean) : NavigationEvent()
+    }
 }
 
