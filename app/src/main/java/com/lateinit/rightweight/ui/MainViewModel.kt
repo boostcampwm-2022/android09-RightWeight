@@ -76,6 +76,7 @@ class MainViewModel @Inject constructor(
     private suspend fun backupUserInfo() {
         val user = userInfo.value ?: return
         userRepository.backupUserInfo(user)
+        getUserRoutineInRemote()
     }
 
     private suspend fun backupMyRoutine() {
@@ -88,12 +89,13 @@ class MainViewModel @Inject constructor(
     }
 
     private fun updateRoutine(routineWithDays: RoutineWithDays) {
+        val userId = userInfo.value?.userId ?: return
         val routine = routineWithDays.routine.toRoutineUiModel()
         val days = routineWithDays.days
         val path = "${WriteModelData.defaultPath}/routine/${routine.routineId}"
         commitItems.add(
             WriteModelData(
-                update = UpdateData(path, routine.toRoutineField(routine.routineId))
+                update = UpdateData(path, routine.toRoutineField(userId))
             )
         )
         updateDays(path, days)
@@ -141,6 +143,13 @@ class MainViewModel @Inject constructor(
                     update = UpdateData(path, exerciseSetUiModel.toExerciseSetField())
                 )
             )
+        }
+    }
+
+    private fun getUserRoutineInRemote() {
+        val userId = userInfo.value?.userId ?: return
+        viewModelScope.launch {
+            userRepository.getUserRoutineInRemote(userId)
         }
     }
 }

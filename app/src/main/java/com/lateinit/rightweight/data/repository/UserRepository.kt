@@ -15,5 +15,7 @@ interface UserRepository {
 
     suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
 
+    suspend fun getUserRoutineInRemote(userId: String): List<String>
+
     suspend fun commitTransaction(writes: List<WriteModelData>)
 }
