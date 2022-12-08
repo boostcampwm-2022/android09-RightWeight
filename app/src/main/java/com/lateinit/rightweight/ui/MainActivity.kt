@@ -182,10 +182,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-    private fun backup() {
-        viewModel.backupUserInfo()
-        viewModel.backupMyRoutine()
-    }
 
     private fun logout() {
         client.signOut()
@@ -238,5 +234,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun navigateBottomNav(@IdRes itemId: Int) {
         val item = binding.bottomNavigation.menu.findItem(itemId)
         NavigationUI.onNavDestinationSelected(item, navController)
+    }
+
+    private fun backup() {
+        viewModel.backup()
+        collectOnLifecycle {
+            viewModel.networkState.collect { state ->
+                if (state == NetworkState.SUCCESS) {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.success_backup,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        R.string.wrong_connection,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

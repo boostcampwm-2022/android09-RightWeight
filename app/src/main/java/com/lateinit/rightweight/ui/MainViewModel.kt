@@ -8,9 +8,9 @@ import com.lateinit.rightweight.data.model.UpdateData
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.UserRepository
+import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField
@@ -40,6 +40,7 @@ class MainViewModel @Inject constructor(
     private val _networkState = MutableSharedFlow<NetworkState>()
     val networkState = _networkState.asSharedFlow()
 
+    private val commitItems = mutableListOf<WriteModelData>()
 
     private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
@@ -64,23 +65,25 @@ class MainViewModel @Inject constructor(
         _networkState.emit(state)
     }
 
-    private val commitItems = mutableListOf<WriteModelData>()
-
-    fun backupUserInfo() {
-        val user = userInfo.value ?: return
-        viewModelScope.launch {
-            userRepository.backupUserInfo(user)
+    fun backup() {
+        viewModelScope.launch(networkExceptionHandler) {
+            backupUserInfo()
+            backupMyRoutine()
+            sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
 
-    fun backupMyRoutine(){
-        commitItems.clear()
-        viewModelScope.launch {
-            val routineWithDaysList = userRepository.getAllRoutineWithDays()
+    private suspend fun backupUserInfo() {
+        val user = userInfo.value ?: return
+        userRepository.backupUserInfo(user)
+    }
 
-            routineWithDaysList.forEach { routineWithDays ->
-                updateRoutine(routineWithDays)
-            }
+    private suspend fun backupMyRoutine() {
+        commitItems.clear()
+        val routineWithDaysList = userRepository.getAllRoutineWithDays()
+
+        routineWithDaysList.forEach { routineWithDays ->
+            updateRoutine(routineWithDays)
         }
     }
 
