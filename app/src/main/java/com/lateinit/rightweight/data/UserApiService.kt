@@ -1,7 +1,10 @@
 package com.lateinit.rightweight.data
 
+import com.lateinit.rightweight.data.model.DocumentResponse
+import com.lateinit.rightweight.data.model.RunQueryBody
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.RootField
+import com.lateinit.rightweight.data.remote.model.RoutineField
 import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -19,4 +22,9 @@ interface UserApiService {
         @Body
         writes: WriteRequestBody
     )
+
+    @POST("./documents:runQuery")
+    suspend fun getUserRoutine(
+        @Body query: RunQueryBody
+    ): List<DocumentResponse<RoutineField>>
 }

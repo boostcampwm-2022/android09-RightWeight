@@ -28,6 +28,14 @@ class UserRepositoryImpl @Inject constructor(
         return userLocalDataSource.getAllRoutineWithDays()
     }
 
+    override suspend fun getUserRoutineInRemote(userId: String): List<String> {
+        val documents = userRemoteDataSource.getUserRoutineInRemote(userId)
+        return documents.map { documentResponse ->
+            val documentName = documentResponse.document?.name ?: ""
+            documentName.split("/").last()
+        }
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         userRemoteDataSource.commitTransaction(writes)
     }
