@@ -10,4 +10,11 @@ interface AuthApiService {
         @Query("key") key: String,
         @Body body: LoginRequestBody,
     ): LoginResponse
+
+    @FormUrlEncoded
+    @POST("./accounts:delete")
+    suspend fun deleteAccount(
+        @Query("key") key: String,
+        @Field("idToken") idToken: String
+    )
 }
