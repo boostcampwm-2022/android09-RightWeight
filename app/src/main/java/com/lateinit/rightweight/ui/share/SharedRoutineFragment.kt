@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
+import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,7 +23,10 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    val sharedRoutineViewModel: SharedRoutineViewModel by viewModels()
+    val viewModel: SharedRoutineViewModel by viewModels()
+    lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
+
+    lateinit var sortTypes: List<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,15 +39,13 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setSharedRoutineSortSelection()
-
-        val sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
+        initSharedRoutineSortSelection()
+        sharedRoutinePagingAdapter = SharedRoutinePagingAdapter( this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sharedRoutineViewModel.uiState.collect { uiState ->
+                viewModel.uiState.collect { uiState ->
                     when (uiState) {
                         is LatestSharedRoutineUiState.Success -> sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
                         is LatestSharedRoutineUiState.Error -> Exception()
@@ -52,15 +53,29 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
                 }
             }
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setSharedRoutineSortSelection()
+    }
+
+    private fun initSharedRoutineSortSelection(){
+        sortTypes = SharedRoutineSortTypeUiModel.values().map { sharedRoutineSortType ->
+            getString(sharedRoutineSortType.sortTypeName)
+        }
+        binding.textViewSharedRoutineSortType.setText(sortTypes[0])
     }
 
     private fun setSharedRoutineSortSelection(){
-        val sortTypes = SharedRoutineSortType.values().map { sharedRoutineSortType ->
-            getString(sharedRoutineSortType.sortTypeName)
-        }
         val sortTypeAdapter =
-            ArrayAdapter(requireContext(), R.layout.item_shared_routine_sort_type,sortTypes)
+            ArrayAdapter(requireContext(), R.layout.item_shared_routine_sort_type, sortTypes)
         binding.textViewSharedRoutineSortType.setAdapter(sortTypeAdapter)
+        binding.textViewSharedRoutineSortType.setOnItemClickListener { _, _, position, _ ->
+            viewModel.setSharedRoutineSortType(sortTypeUiModel = SharedRoutineSortTypeUiModel.values()[position])
+            sharedRoutinePagingAdapter.refresh()
+        }
     }
 
     override fun gotoSharedRoutineDetailFragment(routineId: String) {

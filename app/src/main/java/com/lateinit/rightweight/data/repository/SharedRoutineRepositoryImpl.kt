@@ -6,6 +6,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
 import com.lateinit.rightweight.data.model.FieldTransformsModelData
@@ -77,6 +78,10 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                 )
             )
         )
+    }
+
+    override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType) {
+        routineRemoteDataSource.setSharedRoutineSortType(sortType)
     }
 
 }

@@ -16,6 +16,7 @@ import com.lateinit.rightweight.data.database.intermediate.ExerciseWithSets
 import com.lateinit.rightweight.data.database.intermediate.HistoryExerciseWithHistorySets
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineExerciseWithExerciseSets
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.remote.model.DayField
 import com.lateinit.rightweight.data.remote.model.ExerciseField
@@ -35,6 +36,7 @@ import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
 import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -385,5 +387,12 @@ fun ExercisePartTypeUiModel.toExercisePartType(): ExercisePartType {
         ExercisePartTypeUiModel.CORE -> ExercisePartType.CORE
         ExercisePartTypeUiModel.FOREARM -> ExercisePartType.FOREARM
         ExercisePartTypeUiModel.CARDIO -> ExercisePartType.CARDIO
+    }
+}
+
+fun SharedRoutineSortTypeUiModel.toSharedRoutineSortType(): SharedRoutineSortType{
+    return when(this){
+        SharedRoutineSortTypeUiModel.MODIFIED_DATE_FIRST -> SharedRoutineSortType.MODIFIED_DATE_FIRST
+        SharedRoutineSortTypeUiModel.SHARED_COUNT_FIRST -> SharedRoutineSortType.SHARED_COUNT_FIRST
     }
 }

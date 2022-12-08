@@ -1,12 +1,10 @@
 package com.lateinit.rightweight.data.database.mediator
 
-import androidx.annotation.StringRes
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.lateinit.rightweight.R
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
@@ -148,6 +146,6 @@ data class ValuesData(
     val timestampValue: String? = null
 )
 
-enum class SharedRoutineSortType(@StringRes val sortTypeName: Int){
-    MODIFIED_DATE_FIRST(R.string.modified_date_sort), SHARED_COUNT_FIRST(R.string.shared_count_sort)
+enum class SharedRoutineSortType(){
+    MODIFIED_DATE_FIRST, SHARED_COUNT_FIRST
 }

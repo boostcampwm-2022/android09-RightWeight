@@ -28,7 +28,8 @@
                 android:includeFontPadding="true"
                 android:inputType="none"
                 android:textAppearance="@style/Text.Small"
-                tools:text="최신순" />
+                tools:text="최신순"
+                tools:ignore="LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView

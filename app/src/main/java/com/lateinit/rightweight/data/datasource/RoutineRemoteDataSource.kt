@@ -5,6 +5,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
+import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import kotlinx.coroutines.flow.Flow
@@ -26,4 +27,5 @@ interface RoutineRemoteDataSource {
     ): List<SharedRoutineExerciseSet>
 
     suspend fun commitTransaction(writes: List<WriteModelData>)
+    suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType)
 }

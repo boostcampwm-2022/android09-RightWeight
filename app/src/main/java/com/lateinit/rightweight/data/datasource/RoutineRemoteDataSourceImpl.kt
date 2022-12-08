@@ -26,7 +26,7 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
 ) : RoutineRemoteDataSource {
 
     private val remoteMediator = SharedRoutineRemoteMediator(
-        db, api, appPreferencesDataStore, SharedRoutineSortType.SHARED_COUNT_FIRST
+        db, api, appPreferencesDataStore, SharedRoutineSortType.MODIFIED_DATE_FIRST
     )
 
     @OptIn(ExperimentalPagingApi::class)
@@ -38,9 +38,8 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
     }.flow
 
     @OptIn(ExperimentalPagingApi::class)
-    suspend fun changeMediatorSortType(sortType: SharedRoutineSortType){
+    override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType){
         remoteMediator.sortType = sortType
-        remoteMediator.initialize()
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
