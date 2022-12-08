@@ -22,7 +22,7 @@ class RoutineManagementViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val userInfo =
+    val userInfo =
         userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _selectedRoutineUiModel = MutableStateFlow<RoutineUiModel?>(null)
