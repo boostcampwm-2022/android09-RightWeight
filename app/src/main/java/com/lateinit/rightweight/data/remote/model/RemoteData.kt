@@ -99,15 +99,15 @@ data class UserInfoField(
 ) : RemoteData()
 
 data class HistoryField(
-    @SerializedName("History_id")
+    @SerializedName("date")
     val date: TimeStampValue? = null,
-    @SerializedName("History_id")
+    @SerializedName("time")
     val time: StringValue,
-    @SerializedName("History_id")
+    @SerializedName("routine_title")
     val routineTitle: StringValue,
-    @SerializedName("History_id")
+    @SerializedName("order")
     val order: IntValue,
-    @SerializedName("History_id")
+    @SerializedName("routine_id")
     val routineId: StringValue,
 ) : RemoteData()
 

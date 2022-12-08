@@ -220,7 +220,7 @@ fun ExerciseSetUiModel.toExerciseSetField(): ExerciseSetField {
 
 fun HistoryUiModel.toHistoryField(): HistoryField {
     return HistoryField(
-        date = TimeStampValue(date.toString() + "Z"),
+        date = TimeStampValue(date.toString() + "T00:00:00Z"),
         time = StringValue(time),
         routineTitle = StringValue(routineTitle),
         order = IntValue(order.toString()),
