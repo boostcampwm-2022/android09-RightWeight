@@ -7,7 +7,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
-import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
+import com.lateinit.rightweight.data.datasource.SharedRoutineRemoteDataSource
 import com.lateinit.rightweight.data.datasource.SharedRoutineLocalDataSource
 import com.lateinit.rightweight.data.model.FieldTransformsModelData
 import com.lateinit.rightweight.data.model.TransformData
@@ -18,16 +18,16 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SharedRoutineRepositoryImpl @Inject constructor(
-    private val routineRemoteDataSource: RoutineRemoteDataSource,
+    private val sharedRoutineRemoteDataSource: SharedRoutineRemoteDataSource,
     private val sharedRoutineLocalDataSource: SharedRoutineLocalDataSource
 ) : SharedRoutineRepository {
 
     override fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>> {
-        return routineRemoteDataSource.getSharedRoutinesByPaging()
+        return sharedRoutineRemoteDataSource.getSharedRoutinesByPaging()
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
-        return routineRemoteDataSource.getChildrenDocumentName(path)
+        return sharedRoutineRemoteDataSource.getChildrenDocumentName(path)
     }
 
     override fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays> {
@@ -39,12 +39,12 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
         val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
 
-        routineRemoteDataSource.getSharedRoutineDays(routineId).forEach { sharedRoutineDay ->
+        sharedRoutineRemoteDataSource.getSharedRoutineDays(routineId).forEach { sharedRoutineDay ->
             sharedRoutineDays.add(sharedRoutineDay)
-            routineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
+            sharedRoutineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
                 .forEach { sharedRoutineExercise ->
                     sharedRoutineExercises.add(sharedRoutineExercise)
-                    routineRemoteDataSource.getSharedRoutineExerciseSets(
+                    sharedRoutineRemoteDataSource.getSharedRoutineExerciseSets(
                         routineId,
                         sharedRoutineExercise.dayId,
                         sharedRoutineExercise.exerciseId
@@ -62,17 +62,17 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
-        routineRemoteDataSource.commitTransaction(writes)
+        sharedRoutineRemoteDataSource.commitTransaction(writes)
     }
 
     override suspend fun isRoutineShared(routineId: String): Boolean {
-        return routineRemoteDataSource.getSharedRoutine(routineId) != null
+        return sharedRoutineRemoteDataSource.getSharedRoutine(routineId) != null
     }
 
     override suspend fun increaseSharedCount(routineId: String) {
         val path =
             "${WriteModelData.defaultPath}/shared_routine/${routineId}"
-        routineRemoteDataSource.commitTransaction(
+        sharedRoutineRemoteDataSource.commitTransaction(
             listOf(
                 WriteModelData(
                     transform = TransformData(
@@ -85,7 +85,7 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType) {
-        routineRemoteDataSource.setSharedRoutineSortType(sortType)
+        sharedRoutineRemoteDataSource.setSharedRoutineSortType(sortType)
     }
 
 }

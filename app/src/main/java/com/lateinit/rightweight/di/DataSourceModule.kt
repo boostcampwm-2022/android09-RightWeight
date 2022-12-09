@@ -47,11 +47,11 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun getRoutineRemoteDataSource(
+        appPreferencesDataStore: AppPreferencesDataStore,
         db: AppDatabase,
-        api: RoutineApiService,
-        appPreferencesDataStore: AppPreferencesDataStore
-    ): RoutineRemoteDataSource {
-        return RoutineRemoteDataSourceImpl(db, api, appPreferencesDataStore)
+        api: RoutineApiService
+    ): SharedRoutineRemoteDataSource {
+        return SharedRoutineRemoteDataSourceImpl(appPreferencesDataStore, db, api)
     }
 
     @Provides

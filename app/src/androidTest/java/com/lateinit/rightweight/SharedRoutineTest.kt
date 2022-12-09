@@ -6,7 +6,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.mediator.*
-import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSourceImpl
 import com.lateinit.rightweight.data.model.FieldTransformsModelData
 import com.lateinit.rightweight.data.model.TransformData
 import com.lateinit.rightweight.data.model.WriteModelData
@@ -32,9 +31,6 @@ class SharedRoutineTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
-
-    @Inject
-    lateinit var routineRemoteDataSourceImpl: RoutineRemoteDataSourceImpl
 
     @Inject
     lateinit var routineApiService: RoutineApiService

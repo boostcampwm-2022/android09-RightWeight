@@ -19,38 +19,19 @@ import com.lateinit.rightweight.util.toSharedRoutineExercise
 import com.lateinit.rightweight.util.toSharedRoutineExerciseSet
 import javax.inject.Inject
 
-class RoutineRemoteDataSourceImpl @Inject constructor(
+class SharedRoutineRemoteDataSourceImpl @Inject constructor(
+    appPreferencesDataStore: AppPreferencesDataStore,
     private val db: AppDatabase,
-    private val api: RoutineApiService,
-    appPreferencesDataStore: AppPreferencesDataStore
-) : RoutineRemoteDataSource {
+    private val api: RoutineApiService
+) : SharedRoutineRemoteDataSource {
 
     private val remoteMediator = SharedRoutineRemoteMediator(
         db, api, appPreferencesDataStore, SharedRoutineSortType.MODIFIED_DATE_FIRST
     )
 
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getSharedRoutinesByPaging() = Pager(
-        config = PagingConfig(10, prefetchDistance = 0, initialLoadSize = 1),
-        remoteMediator = remoteMediator,
-    ) {
-        db.sharedRoutineDao().getAllSharedRoutinesByPaging()
-    }.flow
-
-    override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType){
-        remoteMediator.sortType = sortType
-    }
-
-    override suspend fun getChildrenDocumentName(path: String): List<String> {
-        val documentNameList = api.getChildrenDocumentName(path)
-        return documentNameList.documents?.map {
-            it.name.split("/").last()
-        } ?: emptyList()
-    }
-
     override suspend fun getSharedRoutine(routineId: String): SharedRoutineField? {
         val response = api.getSharedRoutine(routineId)
-        return if(response.isSuccessful){
+        return if (response.isSuccessful) {
             response.body()
         } else {
             null
@@ -86,6 +67,25 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
             sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
         }
         return sharedRoutineExerciseSets
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getSharedRoutinesByPaging() = Pager(
+        config = PagingConfig(10, prefetchDistance = 0, initialLoadSize = 1),
+        remoteMediator = remoteMediator,
+    ) {
+        db.sharedRoutineDao().getAllSharedRoutinesByPaging()
+    }.flow
+
+    override suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType) {
+        remoteMediator.sortType = sortType
+    }
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        val documentNameList = api.getChildrenDocumentName(path)
+        return documentNameList.documents?.map {
+            it.name.split("/").last()
+        } ?: emptyList()
     }
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {

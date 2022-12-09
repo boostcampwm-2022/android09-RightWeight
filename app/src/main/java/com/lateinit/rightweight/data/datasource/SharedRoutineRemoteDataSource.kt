@@ -10,11 +10,12 @@ import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import kotlinx.coroutines.flow.Flow
 
-interface RoutineRemoteDataSource {
-    fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
-    suspend fun getChildrenDocumentName(path: String): List<String>
+interface SharedRoutineRemoteDataSource {
+
     suspend fun getSharedRoutine(routineId: String): SharedRoutineField?
+
     suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay>
+
     suspend fun getSharedRoutineExercises(
         routineId: String,
         dayId: String
@@ -26,6 +27,11 @@ interface RoutineRemoteDataSource {
         exerciseId: String
     ): List<SharedRoutineExerciseSet>
 
-    suspend fun commitTransaction(writes: List<WriteModelData>)
+    fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>>
+
     suspend fun setSharedRoutineSortType(sortType: SharedRoutineSortType)
+
+    suspend fun getChildrenDocumentName(path: String): List<String>
+
+    suspend fun commitTransaction(writes: List<WriteModelData>)
 }
