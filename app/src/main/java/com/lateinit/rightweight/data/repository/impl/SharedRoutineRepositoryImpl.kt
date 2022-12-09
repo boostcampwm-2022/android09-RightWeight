@@ -7,8 +7,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
-import com.lateinit.rightweight.data.datasource.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.RoutineRemoteDataSource
+import com.lateinit.rightweight.data.datasource.SharedRoutineLocalDataSource
 import com.lateinit.rightweight.data.model.FieldTransformsModelData
 import com.lateinit.rightweight.data.model.TransformData
 import com.lateinit.rightweight.data.model.WriteModelData
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class SharedRoutineRepositoryImpl @Inject constructor(
     private val routineRemoteDataSource: RoutineRemoteDataSource,
-    private val routineLocalDataSource: RoutineLocalDataSource
+    private val sharedRoutineLocalDataSource: SharedRoutineLocalDataSource
 ) : SharedRoutineRepository {
 
     override fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>> {
@@ -31,7 +31,7 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     }
 
     override fun getSharedRoutineDetail(routineId: String): Flow<SharedRoutineWithDays> {
-        return routineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
+        return sharedRoutineLocalDataSource.getSharedRoutineWithDaysByRoutineId(routineId)
     }
 
     override suspend fun requestSharedRoutineDetail(routineId: String) {
@@ -54,7 +54,7 @@ class SharedRoutineRepositoryImpl @Inject constructor(
                 }
         }
 
-        routineLocalDataSource.insertSharedRoutineDetail(
+        sharedRoutineLocalDataSource.insertSharedRoutineDetail(
             sharedRoutineDays.sortedBy { it.order },
             sharedRoutineExercises.sortedBy { it.order },
             sharedRoutineExerciseSets.sortedBy { it.order }

@@ -31,10 +31,17 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun getRoutineLocalDataSource(
-        routineDao: RoutineDao,
-        sharedRoutineDao: SharedRoutineDao
+        routineDao: RoutineDao
     ): RoutineLocalDataSource {
-        return RoutineLocalDataSourceImpl(routineDao, sharedRoutineDao)
+        return RoutineLocalDataSourceImpl(routineDao)
+    }
+
+    @Provides
+    @Singleton
+    fun getSharedRoutineLocalDataSource(
+        sharedRoutineDao: SharedRoutineDao
+    ): SharedRoutineLocalDataSource {
+        return SharedRoutineLocalDataSourceImpl(sharedRoutineDao)
     }
 
     @Provides
