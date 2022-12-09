@@ -75,7 +75,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun buildOkHttpClient(
+    fun provideOkHttpClient(
         customInterceptor: Interceptor
     ): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -93,7 +93,7 @@ class ApiModule {
 
     @Singleton
     @Provides
-    fun customInterceptor(): Interceptor = Interceptor { chain ->
+    fun provideCustomInterceptor(): Interceptor = Interceptor { chain ->
         chain.run {
             proceed(
                 request()

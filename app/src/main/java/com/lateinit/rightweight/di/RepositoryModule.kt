@@ -26,7 +26,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getLoginRepository(
+    fun provideLoginRepository(
         loginDataSource: LoginDataSource
     ): LoginRepository {
         return LoginRepositoryImpl(loginDataSource)
@@ -34,7 +34,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getRoutineRepository(
+    fun provideRoutineRepository(
         routineLocalDataSource: RoutineLocalDataSource
 
     ): RoutineRepository {
@@ -43,7 +43,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getUserRepository(
+    fun provideUserRepository(
         userLocalDataSource: UserLocalDataSource,
         userRemoteDataSource: UserRemoteDataSource
     ): UserRepository {
@@ -52,7 +52,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getHistoryRepository(
+    fun provideHistoryRepository(
         historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
     ): HistoryRepository {
         return HistoryRepositoryImpl(historyLocalDataSourceImpl)
@@ -60,7 +60,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getSharedRoutineRepository(
+    fun provideSharedRoutineRepository(
         sharedRoutineRemoteDataSource: SharedRoutineRemoteDataSource,
         sharedRoutineLocalDataSource: SharedRoutineLocalDataSource
     ): SharedRoutineRepository {

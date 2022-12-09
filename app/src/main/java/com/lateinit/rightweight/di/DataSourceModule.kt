@@ -35,7 +35,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getLoginDataSource(
+    fun provideLoginDataSource(
         api: AuthApiService
     ): LoginDataSource {
         return LoginDataSourceImpl(api)
@@ -43,7 +43,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getRoutineLocalDataSource(
+    fun provideRoutineLocalDataSource(
         routineDao: RoutineDao
     ): RoutineLocalDataSource {
         return RoutineLocalDataSourceImpl(routineDao)
@@ -51,7 +51,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getSharedRoutineLocalDataSource(
+    fun provideSharedRoutineLocalDataSource(
         sharedRoutineDao: SharedRoutineDao
     ): SharedRoutineLocalDataSource {
         return SharedRoutineLocalDataSourceImpl(sharedRoutineDao)
@@ -59,7 +59,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getRoutineRemoteDataSource(
+    fun provideRoutineRemoteDataSource(
         appPreferencesDataStore: AppPreferencesDataStore,
         db: AppDatabase,
         api: RoutineApiService
@@ -69,19 +69,19 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getUserLocalDataSource(userDao: UserDao, appPreferencesDataStore: AppPreferencesDataStore): UserLocalDataSource {
+    fun provideUserLocalDataSource(userDao: UserDao, appPreferencesDataStore: AppPreferencesDataStore): UserLocalDataSource {
         return UserLocalDataSourceImpl(userDao, appPreferencesDataStore)
     }
 
     @Provides
     @Singleton
-    fun getUserRemoteDataSource(userApiService: UserApiService): UserRemoteDataSource {
+    fun provideUserRemoteDataSource(userApiService: UserApiService): UserRemoteDataSource {
         return UserRemoteDataSourceImpl(userApiService)
     }
 
     @Provides
     @Singleton
-    fun getHistoryLocalDataSource(historyDao: HistoryDao): HistoryLocalLocalDataSourceImpl {
+    fun provideHistoryLocalDataSource(historyDao: HistoryDao): HistoryLocalLocalDataSourceImpl {
         return HistoryLocalLocalDataSourceImpl(historyDao)
     }
 }
