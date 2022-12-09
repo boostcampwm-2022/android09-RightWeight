@@ -5,7 +5,11 @@ import com.lateinit.rightweight.data.datasource.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.util.toHistoryUiModel
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -29,12 +33,30 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserRoutineInRemote(userId: String): List<String> {
-        val documents = userRemoteDataSource.getUserRoutineInRemote(userId)
-        return documents.map { documentResponse ->
-            val documentName = documentResponse.document?.name ?: ""
-            documentName.split("/").last()
-        }
+        val documentsResponseList = userRemoteDataSource.getUserRoutineInRemote(userId)
+        val documents = documentsResponseList.map { it.document }
+        return documents
+            .filterNotNull()
+            .map {
+                it.name.split("/").last()
+            }
     }
+
+    override suspend fun getLastHistoryInServer(userId: String): LocalDate? {
+        val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
+        val lastDateTime =
+            documentsResponseList.first()
+                .document?.fields?.date?.value
+                ?.replace("Z", "")
+                ?: return null
+        return LocalDateTime.parse(lastDateTime).toLocalDate()
+
+    }
+
+    override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
+        return userLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
+    }
+
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
         return userRemoteDataSource.getChildrenDocumentName(path)

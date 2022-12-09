@@ -5,6 +5,7 @@ import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.DocumentsResponse
 import com.lateinit.rightweight.data.model.RunQueryBody
 import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.data.remote.model.RoutineField
@@ -37,4 +38,10 @@ interface UserApiService {
     suspend fun getUserRoutine(
         @Body query: RunQueryBody
     ): List<DocumentResponse<RoutineField>>
+
+    @POST("documents/user/{userId}/:runQuery")
+    suspend fun getLastHistory(
+        @Path(value = "userId", encoded = true) userId: String,
+        @Body query: RunQueryBody
+    ): List<DocumentResponse<HistoryField>>
 }
