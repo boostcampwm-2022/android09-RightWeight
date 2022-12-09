@@ -7,7 +7,7 @@
         <import type="java.time.format.DateTimeFormatter" />
         <variable
             name="sharedRoutineUiModel"
-            type="com.lateinit.rightweight.ui.model.SharedRoutineUiModel" />
+            type="com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

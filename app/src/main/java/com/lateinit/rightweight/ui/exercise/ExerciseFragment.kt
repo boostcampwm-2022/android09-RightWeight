@@ -27,9 +27,9 @@ import com.lateinit.rightweight.service.TimerService.Companion.STOP
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
 import com.lateinit.rightweight.util.convertTimeStamp
 import dagger.hilt.android.AndroidEntryPoint

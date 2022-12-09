@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.ui.model
+package com.lateinit.rightweight.ui.model.routine
 
 import androidx.annotation.StringRes
 import com.lateinit.rightweight.R

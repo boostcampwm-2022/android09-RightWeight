@@ -10,7 +10,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
-import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
 import com.lateinit.rightweight.util.collectOnLifecycle
@@ -92,7 +92,7 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setCurrentDayPositionObserve(dayUiModels: List<DayUiModel>) {
         viewModel.currentDayPosition.observe(viewLifecycleOwner) {
             if (dayUiModels.size > it) {
-                val exercises = dayUiModels.get(it).exercises
+                val exercises = dayUiModels[it].exercises
                 exerciseAdapter.submitList(exercises)
             }
         }

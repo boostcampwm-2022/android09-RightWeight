@@ -10,8 +10,8 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toDayWithNewIds

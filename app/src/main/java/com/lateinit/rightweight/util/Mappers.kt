@@ -33,16 +33,16 @@ import com.lateinit.rightweight.data.remote.model.SharedCount
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.data.remote.model.StringValue
 import com.lateinit.rightweight.data.remote.model.TimeStampValue
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
-import com.lateinit.rightweight.ui.model.RoutineUiModel
-import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineSortTypeUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

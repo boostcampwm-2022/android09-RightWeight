@@ -1,12 +1,13 @@
-package com.lateinit.rightweight.ui.model
+package com.lateinit.rightweight.ui.model.shared
 
+import com.lateinit.rightweight.ui.model.ParentRoutineUiModel
 import java.time.LocalDateTime
 
-data class RoutineUiModel(
+data class SharedRoutineUiModel(
     override val routineId: String,
     override val title: String,
     override val author: String,
     override val description: String,
     override val modifiedDate: LocalDateTime,
-    val order: Int
+    val sharedCount: String
 ): ParentRoutineUiModel(routineId, title, author, description, modifiedDate)

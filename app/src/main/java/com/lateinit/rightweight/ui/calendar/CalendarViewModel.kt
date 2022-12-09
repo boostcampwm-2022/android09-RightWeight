@@ -6,10 +6,10 @@ import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExe
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import com.lateinit.rightweight.ui.model.ParentDayUiModel
-import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toHistoryUiModel
 import com.lateinit.rightweight.util.toRoutineUiModel

@@ -9,11 +9,11 @@ import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel
 import com.lateinit.rightweight.util.toExerciseField

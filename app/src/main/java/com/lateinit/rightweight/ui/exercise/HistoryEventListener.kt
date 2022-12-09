@@ -1,7 +1,7 @@
 package com.lateinit.rightweight.ui.exercise
 
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 
 interface HistoryEventListener {
 

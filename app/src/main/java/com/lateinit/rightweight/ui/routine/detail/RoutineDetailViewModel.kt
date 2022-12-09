@@ -10,10 +10,10 @@ import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.toDayField
 import com.lateinit.rightweight.util.toDayUiModel

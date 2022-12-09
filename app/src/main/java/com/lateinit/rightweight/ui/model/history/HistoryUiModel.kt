@@ -1,5 +1,6 @@
-package com.lateinit.rightweight.ui.model
+package com.lateinit.rightweight.ui.model.history
 
+import com.lateinit.rightweight.ui.model.ParentDayUiModel
 import java.time.LocalDate
 
 data class HistoryUiModel(

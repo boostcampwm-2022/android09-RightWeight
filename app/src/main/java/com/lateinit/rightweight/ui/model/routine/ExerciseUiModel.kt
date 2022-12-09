@@ -1,4 +1,6 @@
-package com.lateinit.rightweight.ui.model
+package com.lateinit.rightweight.ui.model.routine
+
+import com.lateinit.rightweight.ui.model.ParentExerciseUiModel
 
 data class ExerciseUiModel(
     val exerciseId: String,

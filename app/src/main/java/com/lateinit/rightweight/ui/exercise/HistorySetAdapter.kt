@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemHistorySetBinding
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 
 class HistorySetAdapter(
     private val historyEventListener: HistoryEventListener
