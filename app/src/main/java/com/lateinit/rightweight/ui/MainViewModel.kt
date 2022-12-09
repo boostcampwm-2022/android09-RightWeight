@@ -90,7 +90,7 @@ class MainViewModel @Inject constructor(
         val userId = userInfo.value?.userId ?: return
 
         commitItems.clear()
-        val myRoutineInServer = userRepository.getUserRoutineInRemote(userId)
+        val myRoutineInServer = userRepository.getUserRoutineIds(userId)
         myRoutineInServer.forEach { routineId ->
             deleteRoutine(routineId)
         }
@@ -105,7 +105,7 @@ class MainViewModel @Inject constructor(
     private suspend fun backupHistory() {
         val userId = userInfo.value?.userId ?: return
         commitItems.clear()
-        val lastDate = getLastHistoryInServer(userId)
+        val lastDate = getLatestHistoryDate(userId)
         val historyList = userRepository.getHistoryAfterDate(lastDate)
         if (historyList.isNotEmpty()) {
             historyList.forEach { history ->
@@ -115,8 +115,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLastHistoryInServer(userId: String): LocalDate {
-        return userRepository.getLastHistoryInServer(userId) ?: return DEFAULT_LOCAL_DATE
+    private suspend fun getLatestHistoryDate(userId: String): LocalDate {
+        return userRepository.getLatestHistoryDate(userId) ?: return DEFAULT_LOCAL_DATE
     }
 
     private fun updateHistory(history: HistoryUiModel) {

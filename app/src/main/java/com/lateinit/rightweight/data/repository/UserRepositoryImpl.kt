@@ -16,23 +16,16 @@ class UserRepositoryImpl @Inject constructor(
     private val userLocalDataSource: UserLocalDataSource,
     private val userRemoteDataSource: UserRemoteDataSource
 ) : UserRepository {
+
     override suspend fun saveUser(user: User) {
         userLocalDataSource.saveUser(user)
-    }
-
-    override fun getUser(): Flow<User?> {
-        return userLocalDataSource.getUser()
-    }
-
-    override suspend fun backupUserInfo(user: User) {
-        userRemoteDataSource.backupUserInfo(user.userId, user.routineId, user.dayId)
     }
 
     override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
         return userLocalDataSource.getAllRoutineWithDays()
     }
 
-    override suspend fun getUserRoutineInRemote(userId: String): List<String> {
+    override suspend fun getUserRoutineIds(userId: String): List<String> {
         val documentsResponseList = userRemoteDataSource.getUserRoutineInRemote(userId)
         val documents = documentsResponseList.map { it.document }
         return documents
@@ -42,7 +35,7 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getLastHistoryInServer(userId: String): LocalDate? {
+    override suspend fun getLatestHistoryDate(userId: String): LocalDate? {
         val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
         val lastDateTime =
             documentsResponseList.first()
@@ -50,19 +43,25 @@ class UserRepositoryImpl @Inject constructor(
                 ?.replace("Z", "")
                 ?: return null
         return LocalDateTime.parse(lastDateTime).toLocalDate()
-
     }
 
     override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
         return userLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
 
-
     override suspend fun getChildrenDocumentName(path: String): List<String> {
         return userRemoteDataSource.getChildrenDocumentName(path)
     }
 
+    override fun getUser(): Flow<User?> {
+        return userLocalDataSource.getUser()
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         userRemoteDataSource.commitTransaction(writes)
+    }
+
+    override suspend fun backupUserInfo(user: User) {
+        userRemoteDataSource.backupUserInfo(user.userId, user.routineId, user.dayId)
     }
 }
