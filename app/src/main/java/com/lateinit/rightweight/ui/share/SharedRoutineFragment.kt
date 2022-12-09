@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
@@ -30,7 +31,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     private val viewModel: SharedRoutineViewModel by viewModels()
     private lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
     private lateinit var sortTypes: List<String>
-
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
