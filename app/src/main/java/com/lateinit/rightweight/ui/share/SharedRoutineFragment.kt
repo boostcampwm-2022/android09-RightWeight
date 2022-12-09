@@ -2,9 +2,6 @@ package com.lateinit.rightweight.ui.share
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -15,8 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.NavGraphDirections
 import com.lateinit.rightweight.R
@@ -42,13 +39,14 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         setFragmentResultListener("routineCopy") { _, bundle ->
             val routineId = bundle.getString("routineId") ?: return@setFragmentResultListener
             Snackbar.make(
-                binding.root,
+                binding.recyclerViewSharedRoutines,
                 R.string.success_save_routine,
                 Snackbar.LENGTH_SHORT
             ).apply {
+                anchorView = binding.guideLineBottom
                 setAction(getText(R.string.go_routine_detail)) {
                     val action = NavGraphDirections.toNavigationRoutineDetail(routineId)
-                    it.findNavController().navigate(action)
+                    findNavController().navigate(action)
                 }
             }.show()
         }
