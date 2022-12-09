@@ -33,7 +33,7 @@ class RoutineManagementViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userInfo.combine(routineRepository.getRoutines()) { user, routines ->
+            userInfo.combine(routineRepository.getAllRoutines()) { user, routines ->
                 user?.routineId to routines.map { it.toRoutineUiModel() }
             }.collect { (selectedRoutineId, routineUiModels) ->
                 separateSelectedRoutine(selectedRoutineId, routineUiModels)

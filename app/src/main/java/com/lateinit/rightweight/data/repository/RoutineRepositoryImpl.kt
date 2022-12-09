@@ -25,10 +25,6 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.insertRoutine(routine.toRoutine(), days, exercises, sets)
     }
 
-    override suspend fun updateRoutines(routines: List<RoutineUiModel>) {
-        routineLocalDataSource.updateRoutines(routines.map { it.toRoutine() })
-    }
-
     override suspend fun getHigherRoutineOrder(): Int? {
         return routineLocalDataSource.getHigherRoutineOrder()
     }
@@ -49,25 +45,23 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getSetsByExerciseId(exerciseId)
     }
 
-    override fun getRoutines(): Flow<List<Routine>> {
-        return routineLocalDataSource.getRoutines()
-    }
-
     override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
+    }
+
+    override fun getAllRoutines(): Flow<List<Routine>> {
+        return routineLocalDataSource.getAllRoutines()
     }
 
     override fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises> {
         return routineLocalDataSource.getDayWithExercisesByDayId(dayId)
     }
 
+    override suspend fun updateRoutines(routines: List<RoutineUiModel>) {
+        routineLocalDataSource.updateRoutines(routines.map { it.toRoutine() })
+    }
+
     override suspend fun removeRoutineById(routineId: String) {
         routineLocalDataSource.removeRoutineById(routineId)
     }
-
-    override fun getSelectedRoutine(routineId: String?): Flow<Routine> {
-        return routineLocalDataSource.getSelectedRoutine(routineId)
-    }
-
-
 }

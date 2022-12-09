@@ -18,17 +18,23 @@ interface RoutineRepository {
         sets: List<ExerciseSet>
     )
 
-    suspend fun updateRoutines(routines: List<RoutineUiModel>)
     suspend fun getRoutineById(routineId: String): Routine
+
     suspend fun getHigherRoutineOrder(): Int?
+
     suspend fun getDayById(dayId: String): Day
+
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
+
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
-    fun getRoutines(): Flow<List<Routine>>
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
-    fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>
-    suspend fun removeRoutineById(routineId: String)
-    fun getSelectedRoutine(routineId: String?): Flow<Routine>
 
+    fun getAllRoutines(): Flow<List<Routine>>
+
+    fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>
+
+    suspend fun updateRoutines(routines: List<RoutineUiModel>)
+
+    suspend fun removeRoutineById(routineId: String)
 }
