@@ -1,103 +1,44 @@
 package com.lateinit.rightweight.data.datasource
 
-import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.dao.HistoryDao
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
-import com.lateinit.rightweight.util.createRandomUUID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import javax.inject.Inject
 
-class HistoryLocalDataSource @Inject constructor(
-    private val historyDao: HistoryDao
-): HistoryDataSource {
+interface HistoryLocalDataSource {
 
-    override suspend fun saveHistory(
+    suspend fun insertHistory(
         routineId: String,
         day: Day,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
-    ) {
-        val historyId = createRandomUUID()
-        val history = History(historyId, LocalDate.now(), "00:00:00", "", day.order, false, routineId)
-        val historyExercises = mutableListOf<HistoryExercise>()
-        val historySets = mutableListOf<HistorySet>()
-        for(exercise in exercises){
-            val historyExerciseId = createRandomUUID()
-            val historyExercise = HistoryExercise(historyExerciseId, historyId, exercise.title, exercise.order, exercise.part)
-            historyExercises.add(historyExercise)
-            for(exerciseSet in exerciseSets){
-                if(exerciseSet.exerciseId == exercise.exerciseId){
-                    val historySetId = createRandomUUID()
-                    val historySet = HistorySet(historySetId, historyExerciseId, exerciseSet.weight, exerciseSet.count, exerciseSet.order, false)
-                    historySets.add(historySet)
-                }
-            }
-        }
+    )
 
-        historyDao.insertHistory(history, historyExercises, historySets)
-    }
+    suspend fun insertHistorySet(historyExerciseId: String)
 
-    override suspend fun insertHistorySet(historyExerciseId: String) {
-        val historySetId = createRandomUUID()
-        val maxHistorySetOrder = historyDao.getMaxHistorySetOrder()
-        val newHistorySet = HistorySet(
-            setId = historySetId,
-            exerciseId = historyExerciseId,
-            weight = "",
-            count = "",
-            order = maxHistorySetOrder.inc(),
-            checked = false
-        )
-        historyDao.insertHistorySet(newHistorySet)
-    }
+    suspend fun insertHistoryExercise(historyId: String)
 
-    override suspend fun insertHistoryExercise(historyId: String) {
-        val historyExerciseId = createRandomUUID()
-        val maxHistoryExerciseOrder = historyDao.getMaxHistoryExerciseOrder()
-        val newHistoryExercise = HistoryExercise(
-            exerciseId = historyExerciseId,
-            historyId = historyId,
-            title = "",
-            order = maxHistoryExerciseOrder.inc(),
-            part = ExercisePartType.CHEST
-        )
-        historyDao.insertHistoryExercise(newHistoryExercise)
-    }
+    fun getHistoryByDate(localDate: LocalDate): Flow<History>
 
-    override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
-        return historyDao.getHistoryByDate(localDate)
-    }
+    fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>
 
-    override fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?> {
-        return historyDao.getHistoryWithHistoryExercisesByDate(localDate)
-    }
-
-    override fun getHistoryBetweenDate(
+    fun getHistoryBetweenDate(
         startDate: LocalDate,
         endDate: LocalDate
-    ): Flow<List<HistoryWithHistoryExercises>> {
-        return historyDao.getHistoryBetweenDate(startDate, endDate)
-    }
+    ): Flow<List<HistoryWithHistoryExercises>>
 
-    override suspend fun updateHistory(history: History) {
-        historyDao.updateHistory(history)
-    }
+    suspend fun updateHistory(history: History)
 
-    override suspend fun updateHistorySet(historySet: HistorySet) {
-        historyDao.updateHistorySet(historySet)
-    }
+    suspend fun updateHistorySet(historySet: HistorySet)
 
-    override suspend fun updateHistoryExercise(historyExercise: HistoryExercise) {
-        historyDao.updateHistoryExercise(historyExercise)
-    }
+    suspend fun updateHistoryExercise(historyExercise: HistoryExercise)
 
-    override suspend fun removeHistorySet(historySetId: String) {
-        historyDao.removeHistorySet(historySetId)
-    }
+    suspend fun removeHistorySet(historySetId: String)
 
-    override suspend fun removeHistoryExercise(historyExerciseId: String) {
-        historyDao.removeHistoryExercise(historyExerciseId)
-    }
+    suspend fun removeHistoryExercise(historyExerciseId: String)
 }

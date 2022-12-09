@@ -46,9 +46,9 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun getHistoryRepository(
-        historyLocalDataSource: HistoryLocalDataSource
+        historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
     ): HistoryRepository {
-        return HistoryRepositoryImpl(historyLocalDataSource)
+        return HistoryRepositoryImpl(historyLocalDataSourceImpl)
     }
 
     @Provides

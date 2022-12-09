@@ -68,7 +68,7 @@ class DataSourceModule {
 
     @Provides
     @Singleton
-    fun getHistoryLocalDataSource(historyDao: HistoryDao): HistoryLocalDataSource {
-        return HistoryLocalDataSource(historyDao)
+    fun getHistoryLocalDataSource(historyDao: HistoryDao): HistoryLocalLocalDataSourceImpl {
+        return HistoryLocalLocalDataSourceImpl(historyDao)
     }
 }

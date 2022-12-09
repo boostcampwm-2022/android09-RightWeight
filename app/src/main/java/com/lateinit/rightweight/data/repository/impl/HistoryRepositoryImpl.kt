@@ -5,7 +5,7 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
-import com.lateinit.rightweight.data.datasource.HistoryLocalDataSource
+import com.lateinit.rightweight.data.datasource.HistoryLocalLocalDataSourceImpl
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
@@ -18,7 +18,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class HistoryRepositoryImpl @Inject constructor(
-    private val historyLocalDataSource: HistoryLocalDataSource
+    private val historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
 ): HistoryRepository {
 
     override suspend fun saveHistory(
@@ -27,49 +27,49 @@ class HistoryRepositoryImpl @Inject constructor(
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
-        return  historyLocalDataSource.saveHistory(routineId, day, exercises, exerciseSets)
+        return  historyLocalDataSourceImpl.insertHistory(routineId, day, exercises, exerciseSets)
     }
 
     override suspend fun insertHistorySet(historyExerciseId: String) {
-        historyLocalDataSource.insertHistorySet(historyExerciseId)
+        historyLocalDataSourceImpl.insertHistorySet(historyExerciseId)
     }
 
     override suspend fun insertHistoryExercise(historyId: String) {
-        historyLocalDataSource.insertHistoryExercise(historyId)
+        historyLocalDataSourceImpl.insertHistoryExercise(historyId)
     }
 
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
-        return  historyLocalDataSource.getHistoryByDate(localDate)
+        return  historyLocalDataSourceImpl.getHistoryByDate(localDate)
     }
 
     override fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?> {
-        return historyLocalDataSource.getHistoryWithHistoryExercisesByDate(localDate)
+        return historyLocalDataSourceImpl.getHistoryWithHistoryExercisesByDate(localDate)
     }
 
     override fun getHistoryBetweenDate(
         startDate: LocalDate,
         endDate: LocalDate
     ): Flow<List<HistoryWithHistoryExercises>> {
-        return historyLocalDataSource.getHistoryBetweenDate(startDate, endDate)
+        return historyLocalDataSourceImpl.getHistoryBetweenDate(startDate, endDate)
     }
 
     override suspend fun updateHistory(historyUiModel: HistoryUiModel) {
-        historyLocalDataSource.updateHistory(historyUiModel.toHistory())
+        historyLocalDataSourceImpl.updateHistory(historyUiModel.toHistory())
     }
 
     override suspend fun updateHistorySet(historyExerciseSetUiModel: HistoryExerciseSetUiModel) {
-        historyLocalDataSource.updateHistorySet(historyExerciseSetUiModel.toHistorySet())
+        historyLocalDataSourceImpl.updateHistorySet(historyExerciseSetUiModel.toHistorySet())
     }
 
     override suspend fun updateHistoryExercise(historyExerciseUiModel: HistoryExerciseUiModel) {
-        historyLocalDataSource.updateHistoryExercise(historyExerciseUiModel.toHistoryExercise())
+        historyLocalDataSourceImpl.updateHistoryExercise(historyExerciseUiModel.toHistoryExercise())
     }
 
     override suspend fun removeHistorySet(historySetId: String) {
-        historyLocalDataSource.removeHistorySet(historySetId)
+        historyLocalDataSourceImpl.removeHistorySet(historySetId)
     }
 
     override suspend fun removeHistoryExercise(historyExerciseId: String) {
-        historyLocalDataSource.removeHistoryExercise(historyExerciseId)
+        historyLocalDataSourceImpl.removeHistoryExercise(historyExerciseId)
     }
 }
