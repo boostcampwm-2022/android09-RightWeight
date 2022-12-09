@@ -1,8 +1,8 @@
 package com.lateinit.rightweight.data.repository
 
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.model.User
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.local.User
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate

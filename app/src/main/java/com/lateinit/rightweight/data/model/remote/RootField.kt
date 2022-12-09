@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class RootField(
     @SerializedName("fields")
-    val remoteData: RemoteData? = null
+    val remoteData: RemoteData
 )
 
 data class MapValueRootField(
     @SerializedName("fields")
-    val remoteData: SharedCount? = null
+    val remoteData: SharedCount
 )

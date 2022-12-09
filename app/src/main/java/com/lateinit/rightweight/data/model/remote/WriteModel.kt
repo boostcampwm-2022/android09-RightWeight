@@ -1,13 +1,11 @@
-package com.lateinit.rightweight.data.model
+package com.lateinit.rightweight.data.model.remote
 
-import com.google.gson.annotations.SerializedName
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.RemoteData
 
 data class WriteRequestBody(
     val writes: List<WriteModelData>
 )
-
 
 data class WriteModelData(
     val transform: TransformData? = null,

@@ -1,7 +1,7 @@
 package com.lateinit.rightweight.data.datasource.remote
 
-import com.lateinit.rightweight.data.model.DocumentResponse
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.remote.DocumentResponse
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RoutineField
 

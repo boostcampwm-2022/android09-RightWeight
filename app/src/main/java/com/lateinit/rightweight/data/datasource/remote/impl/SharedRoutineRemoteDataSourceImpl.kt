@@ -11,9 +11,9 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
-import com.lateinit.rightweight.data.model.SharedRoutineSortType
-import com.lateinit.rightweight.data.model.WriteModelData
-import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.model.remote.SharedRoutineSortType
+import com.lateinit.rightweight.data.model.remote.WriteModelData
+import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.util.toSharedRoutineDay
 import com.lateinit.rightweight.util.toSharedRoutineExercise

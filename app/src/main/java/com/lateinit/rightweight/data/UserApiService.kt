@@ -1,10 +1,10 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.model.DetailResponse
-import com.lateinit.rightweight.data.model.DocumentResponse
-import com.lateinit.rightweight.data.model.DocumentsResponse
-import com.lateinit.rightweight.data.model.RunQueryBody
-import com.lateinit.rightweight.data.model.WriteRequestBody
+import com.lateinit.rightweight.data.model.remote.DetailResponse
+import com.lateinit.rightweight.data.model.remote.DocumentResponse
+import com.lateinit.rightweight.data.model.remote.DocumentsResponse
+import com.lateinit.rightweight.data.model.remote.RunQueryBody
+import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.remote.model.RootField

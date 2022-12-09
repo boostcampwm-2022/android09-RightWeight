@@ -3,8 +3,8 @@ package com.lateinit.rightweight.data.repository.impl
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
-import com.lateinit.rightweight.data.model.User
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.local.User
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.model.HistoryUiModel
 import com.lateinit.rightweight.util.toHistoryUiModel

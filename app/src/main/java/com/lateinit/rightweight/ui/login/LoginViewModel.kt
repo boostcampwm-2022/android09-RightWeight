@@ -3,7 +3,7 @@ package com.lateinit.rightweight.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.LoginResponse
-import com.lateinit.rightweight.data.model.User
+import com.lateinit.rightweight.data.model.local.User
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.model
+package com.lateinit.rightweight.data.model.local
 
 data class User(
     val userId: String,

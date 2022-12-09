@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.model.UpdateData
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.remote.UpdateData
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState

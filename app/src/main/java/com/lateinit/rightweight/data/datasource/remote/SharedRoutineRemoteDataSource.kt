@@ -5,8 +5,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
-import com.lateinit.rightweight.data.model.SharedRoutineSortType
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.model.remote.SharedRoutineSortType
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import kotlinx.coroutines.flow.Flow
 

@@ -9,13 +9,13 @@ import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
-import com.lateinit.rightweight.data.model.FiledReferenceData
-import com.lateinit.rightweight.data.model.FromData
-import com.lateinit.rightweight.data.model.OrderByData
-import com.lateinit.rightweight.data.model.RunQueryBody
-import com.lateinit.rightweight.data.model.SharedRoutineSortType
-import com.lateinit.rightweight.data.model.StartAtData
-import com.lateinit.rightweight.data.model.StructuredQueryData
+import com.lateinit.rightweight.data.model.remote.FiledReferenceData
+import com.lateinit.rightweight.data.model.remote.FromData
+import com.lateinit.rightweight.data.model.remote.OrderByData
+import com.lateinit.rightweight.data.model.remote.RunQueryBody
+import com.lateinit.rightweight.data.model.remote.SharedRoutineSortType
+import com.lateinit.rightweight.data.model.remote.StartAtData
+import com.lateinit.rightweight.data.model.remote.StructuredQueryData
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.TimeStampValue
 import com.lateinit.rightweight.util.toSharedRoutine
@@ -114,9 +114,9 @@ class SharedRoutineRemoteMediator(
                         db.sharedRoutineDao()
                             .insertSharedRoutine(documentResponse.document.toSharedRoutine())
                         modifiedDateFlag =
-                            documentResponse.document.fields.modifiedDate?.value.toString()
+                            documentResponse.document.fields.modifiedDate.value.toString()
                         sharedCountFlag =
-                            documentResponse.document.fields.sharedCount?.value?.remoteData?.count?.value.toString()
+                            documentResponse.document.fields.sharedCount.value?.remoteData?.count?.value.toString()
                         pagingFlag = "$modifiedDateFlag/$sharedCountFlag"
                     } else {
                         endOfPaginationReached = true

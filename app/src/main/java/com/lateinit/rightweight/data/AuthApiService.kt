@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.model.LoginRequestBody
+import com.lateinit.rightweight.data.model.remote.LoginRequestBody
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.model
+package com.lateinit.rightweight.data.model.remote
 
 
 data class LoginRequestBody(

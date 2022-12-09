@@ -2,7 +2,7 @@ package com.lateinit.rightweight.data.datasource.local
 
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.model.User
+import com.lateinit.rightweight.data.model.local.User
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
