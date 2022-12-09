@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
 
     fun loginToFirebase(key: String, token: String) {
         viewModelScope.launch(networkExceptionHandler) {
-            saveUser(loginRepository.loginToFirebase(key, token))
+            saveUser(loginRepository.login(key, token))
             _networkResult.value = NetworkState.SUCCESS
         }
     }

@@ -8,7 +8,7 @@ class LoginDataSourceImpl @Inject constructor(
     val api: AuthApiService
 ) : LoginDataSource {
 
-    override suspend fun loginToFirebase(key: String, token: String): LoginResponse {
+    override suspend fun login(key: String, token: String): LoginResponse {
         val postBody = PostBody(token, "google.com").toString()
         val loginResponse =
             api.loginToFirebase(key, LoginRequestBody(postBody, "http://localhost", true, true))
