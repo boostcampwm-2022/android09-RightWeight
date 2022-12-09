@@ -37,12 +37,12 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.insertHistoryExercise(historyId)
     }
 
-    override fun loadHistoryByDate(localDate: LocalDate): Flow<History> {
-        return  historyLocalDataSource.loadHistoryByDate(localDate)
+    override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
+        return  historyLocalDataSource.getHistoryByDate(localDate)
     }
 
-    override fun getHistoryByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?> {
-        return historyLocalDataSource.getHistoryByDate(localDate)
+    override fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?> {
+        return historyLocalDataSource.getHistoryWithHistoryExercisesByDate(localDate)
     }
 
     override fun getHistoryBetweenDate(

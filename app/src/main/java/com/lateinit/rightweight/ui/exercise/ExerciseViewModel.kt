@@ -19,7 +19,7 @@ class ExerciseViewModel @Inject constructor(
     private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-    val historyUiModel = historyRepository.getHistoryByDate(LocalDate.now()).map {
+    val historyUiModel = historyRepository.getHistoryWithHistoryExercisesByDate(LocalDate.now()).map {
         it ?: return@map null
         it.toHistoryUiModel()
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)

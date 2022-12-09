@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
         it.day.toDayUiModel(it.day.order, it.exercises)
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    val todayHistory = historyRepository.loadHistoryByDate(LocalDate.now())
+    val todayHistory = historyRepository.getHistoryByDate(LocalDate.now())
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun saveHistory() {
