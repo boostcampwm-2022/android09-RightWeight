@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.lateinit.rightweight.NavGraphDirections
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
 import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
@@ -32,26 +31,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     private val viewModel: SharedRoutineViewModel by viewModels()
     private lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
     private lateinit var sortTypes: List<String>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setFragmentResultListener("routineCopy") { _, bundle ->
-            val routineId = bundle.getString("routineId") ?: return@setFragmentResultListener
-            Snackbar.make(
-                binding.recyclerViewSharedRoutines,
-                R.string.success_save_routine,
-                Snackbar.LENGTH_SHORT
-            ).apply {
-                anchorView = binding.guideLineBottom
-                setAction(getText(R.string.go_routine_detail)) {
-                    val action = NavGraphDirections.toNavigationRoutineDetail(routineId)
-                    findNavController().navigate(action)
-                }
-            }.show()
-        }
-    }
-
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +43,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentResult()
         initSharedRoutineSortSelection()
         sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
@@ -82,6 +63,22 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     override fun onResume() {
         super.onResume()
         setSharedRoutineSortSelection()
+    }
+
+    private fun setFragmentResult() {
+        setFragmentResultListener("routineCopy") { _, bundle ->
+            Snackbar.make(
+                binding.root,
+                R.string.success_save_routine,
+                Snackbar.LENGTH_SHORT
+            ).apply {
+                anchorView = binding.guideLineBottom
+                setAction(getText(R.string.submit)) {
+                    this.dismiss()
+                }
+            }.show()
+        }
+
     }
 
     private fun initSharedRoutineSortSelection(){

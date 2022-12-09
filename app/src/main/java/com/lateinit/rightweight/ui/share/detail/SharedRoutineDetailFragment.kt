@@ -100,8 +100,8 @@ class SharedRoutineDetailFragment : Fragment() {
 
     private fun handleNavigationEvent() {
         collectOnLifecycle {
-            viewModel.navigationEvent.collect { routineId ->
-                setFragmentResult("routineCopy", bundleOf("routineId" to routineId))
+            viewModel.navigationEvent.collect { 
+                setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()
             }
         }
