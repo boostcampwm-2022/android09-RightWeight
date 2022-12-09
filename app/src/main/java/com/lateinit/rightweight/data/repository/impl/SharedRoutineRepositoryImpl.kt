@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.repository
+package com.lateinit.rightweight.data.repository.impl
 
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
@@ -13,6 +13,7 @@ import com.lateinit.rightweight.data.model.FieldTransformsModelData
 import com.lateinit.rightweight.data.model.TransformData
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.remote.model.IntValue
+import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

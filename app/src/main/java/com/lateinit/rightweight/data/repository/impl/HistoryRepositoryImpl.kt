@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.repository
+package com.lateinit.rightweight.data.repository.impl
 
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
@@ -6,6 +6,7 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.datasource.HistoryLocalDataSource
+import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.HistoryUiModel

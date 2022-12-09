@@ -2,6 +2,11 @@ package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.datasource.*
 import com.lateinit.rightweight.data.repository.*
+import com.lateinit.rightweight.data.repository.impl.HistoryRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.LoginRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.RoutineRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.SharedRoutineRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
