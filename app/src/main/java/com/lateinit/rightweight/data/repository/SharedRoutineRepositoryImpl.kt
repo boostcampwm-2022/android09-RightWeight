@@ -20,6 +20,7 @@ class SharedRoutineRepositoryImpl @Inject constructor(
     private val routineRemoteDataSource: RoutineRemoteDataSource,
     private val routineLocalDataSource: RoutineLocalDataSource
 ) : SharedRoutineRepository {
+
     override fun getSharedRoutinesByPaging(): Flow<PagingData<SharedRoutine>> {
         return routineRemoteDataSource.getSharedRoutinesByPaging()
     }
@@ -36,20 +37,22 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
         val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
         val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
-        routineRemoteDataSource.getSharedRoutineDays(routineId).forEach() { sharedRoutineDay ->
+
+        routineRemoteDataSource.getSharedRoutineDays(routineId).forEach { sharedRoutineDay ->
             sharedRoutineDays.add(sharedRoutineDay)
             routineRemoteDataSource.getSharedRoutineExercises(routineId, sharedRoutineDay.dayId)
-                .forEach() { sharedRoutineExercise ->
+                .forEach { sharedRoutineExercise ->
                     sharedRoutineExercises.add(sharedRoutineExercise)
                     routineRemoteDataSource.getSharedRoutineExerciseSets(
                         routineId,
                         sharedRoutineExercise.dayId,
                         sharedRoutineExercise.exerciseId
-                    ).forEach() { sharedRoutineExerciseSet ->
+                    ).forEach { sharedRoutineExerciseSet ->
                         sharedRoutineExerciseSets.add(sharedRoutineExerciseSet)
                     }
                 }
         }
+
         routineLocalDataSource.insertSharedRoutineDetail(
             sharedRoutineDays.sortedBy { it.order },
             sharedRoutineExercises.sortedBy { it.order },
@@ -61,7 +64,7 @@ class SharedRoutineRepositoryImpl @Inject constructor(
         routineRemoteDataSource.commitTransaction(writes)
     }
 
-    override suspend fun checkRoutineInRemote(routineId: String): Boolean {
+    override suspend fun isRoutineShared(routineId: String): Boolean {
         return routineRemoteDataSource.getSharedRoutine(routineId) != null
     }
 

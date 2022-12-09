@@ -138,7 +138,7 @@ class RoutineDetailViewModel @Inject constructor(
     fun shareRoutine() {
         val nowRoutine = _routineUiModel.value ?: return
         viewModelScope.launch(networkExceptionHandler) {
-            if (sharedRoutineRepository.checkRoutineInRemote(nowRoutine.routineId)) {
+            if (sharedRoutineRepository.isRoutineShared(nowRoutine.routineId)) {
                 deleteSharedRoutine()
             }
             updateSharedRoutine()
