@@ -7,9 +7,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -141,19 +143,8 @@ class RoutineDetailFragment : Fragment() {
                 when (event) {
                     is RoutineDetailViewModel.NavigationEvent.SelectEvent -> {
                         if (event.isSelected) {
-                            Snackbar.make(
-                                binding.root,
-                                String.format(
-                                    getString(R.string.msg_selected_routine),
-                                    "${viewModel.routineUiModel.value?.title}"
-                                ),
-                                Snackbar.LENGTH_SHORT
-                            ).apply {
-                                anchorView = binding.buttonRoutineSelect
-                                setAction(R.string.submit) {
-                                    this.dismiss()
-                                }
-                            }.show()
+                            val routineTitle = viewModel.routineUiModel.value?.title
+                            setFragmentResult("management", bundleOf("select" to routineTitle))
                             findNavController().navigateUp()
                         }
                     }
