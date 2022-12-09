@@ -58,9 +58,11 @@ class UserRemoteDataSourceImpl @Inject constructor(
             RunQueryBody(
                 StructuredQueryData(
                     from = FromData("history"),
-                    orderBy = OrderByData(
-                        FiledReferenceData("date"),
-                        Direction.DESCENDING.toString()
+                    orderBy = listOf(
+                        OrderByData(
+                            FiledReferenceData("date"),
+                            Direction.DESCENDING.toString()
+                        )
                     ),
                     limit = 1
                 )

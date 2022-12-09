@@ -9,6 +9,15 @@ import com.lateinit.rightweight.data.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.model.FiledReferenceData
+import com.lateinit.rightweight.data.model.FromData
+import com.lateinit.rightweight.data.model.OrderByData
+import com.lateinit.rightweight.data.model.RunQueryBody
+import com.lateinit.rightweight.data.model.SharedRoutineSortType
+import com.lateinit.rightweight.data.model.StartAtData
+import com.lateinit.rightweight.data.model.StructuredQueryData
+import com.lateinit.rightweight.data.remote.model.IntValue
+import com.lateinit.rightweight.data.remote.model.TimeStampValue
 import com.lateinit.rightweight.util.toSharedRoutine
 import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
@@ -22,7 +31,7 @@ class SharedRoutineRemoteMediator(
     var sortType: SharedRoutineSortType
 ) : RemoteMediator<Int, SharedRoutine>() {
 
-    lateinit var sharedRoutineRequestBody: SharedRoutineRequestBody
+    lateinit var runQueryBody: RunQueryBody
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -51,33 +60,47 @@ class SharedRoutineRemoteMediator(
             var modifiedDateFlag = splitedPagingFlag[0]
             var sharedCountFlag = splitedPagingFlag[1]
 
-            when(sortType){
-                SharedRoutineSortType.MODIFIED_DATE_FIRST ->{
-                    sharedRoutineRequestBody = SharedRoutineRequestBody(
+            when (sortType) {
+                SharedRoutineSortType.MODIFIED_DATE_FIRST -> {
+                    runQueryBody = RunQueryBody(
                         StructuredQueryData(
-                            FromData("shared_routine"),
-                            listOf(OrderByData(FieldData("modified_date"), "DESCENDING"),
-                                OrderByData(FieldData("shared_count.count"), "DESCENDING")),
-                            10,
-                            StartAtData(listOf(ValuesData(timestampValue = modifiedDateFlag), ValuesData(integerValue = sharedCountFlag)))
+                            from = FromData("shared_routine"),
+                            orderBy = listOf(
+                                OrderByData(FiledReferenceData("modified_date"), "DESCENDING"),
+                                OrderByData(FiledReferenceData("shared_count.count"), "DESCENDING")
+                            ),
+                            limit = 10,
+                            startAt = StartAtData(
+                                listOf(
+                                    TimeStampValue(modifiedDateFlag),
+                                    IntValue(sharedCountFlag)
+                                )
+                            )
                         )
                     )
                 }
-                SharedRoutineSortType.SHARED_COUNT_FIRST ->{
-                    sharedRoutineRequestBody = SharedRoutineRequestBody(
+                SharedRoutineSortType.SHARED_COUNT_FIRST -> {
+                    runQueryBody = RunQueryBody(
                         StructuredQueryData(
                             FromData("shared_routine"),
-                            listOf(OrderByData(FieldData("shared_count.count"), "DESCENDING"),
-                                OrderByData(FieldData("modified_date"), "DESCENDING")),
-                            10,
-                            StartAtData(listOf(ValuesData(integerValue = sharedCountFlag), ValuesData(timestampValue = modifiedDateFlag)))
+                            orderBy = listOf(
+                                OrderByData(FiledReferenceData("shared_count.count"), "DESCENDING"),
+                                OrderByData(FiledReferenceData("modified_date"), "DESCENDING")
+                            ),
+                            limit = 10,
+                            startAt = StartAtData(
+                                listOf(
+                                    IntValue(sharedCountFlag),
+                                    TimeStampValue(modifiedDateFlag)
+                                )
+                            )
                         )
                     )
                 }
             }
 
             val documentResponses = api.getSharedRoutines(
-                sharedRoutineRequestBody
+                runQueryBody
             )
 
             db.withTransaction {
@@ -90,8 +113,10 @@ class SharedRoutineRemoteMediator(
                     if (documentResponse.document != null) {
                         db.sharedRoutineDao()
                             .insertSharedRoutine(documentResponse.document.toSharedRoutine())
-                        modifiedDateFlag = documentResponse.document.fields.modifiedDate?.value.toString()
-                        sharedCountFlag = documentResponse.document.fields.sharedCount?.value?.remoteData?.count?.value.toString()
+                        modifiedDateFlag =
+                            documentResponse.document.fields.modifiedDate?.value.toString()
+                        sharedCountFlag =
+                            documentResponse.document.fields.sharedCount?.value?.remoteData?.count?.value.toString()
                         pagingFlag = "$modifiedDateFlag/$sharedCountFlag"
                     } else {
                         endOfPaginationReached = true
@@ -108,46 +133,11 @@ class SharedRoutineRemoteMediator(
         }
     }
 
-    companion object{
+    companion object {
         const val INIT_MODIFIED_DATE_FLAG = "9999-1-1T1:1:1.1Z"
         const val INIT_SHARED_COUNT_FLAG = "999999999"
     }
 
 }
 
-data class SharedRoutineRequestBody(
-    val structuredQuery: StructuredQueryData
-)
 
-data class StructuredQueryData(
-    val from: FromData,
-    val orderBy: List<OrderByData>,
-    val limit: Int,
-    val startAt: StartAtData
-)
-
-data class FromData(
-    val collectionId: String,
-)
-
-data class OrderByData(
-    val field: FieldData,
-    val direction: String
-)
-
-data class FieldData(
-    val fieldPath: String
-)
-
-data class StartAtData(
-    val values: List<ValuesData>
-)
-
-data class ValuesData(
-    val integerValue: String? = null,
-    val timestampValue: String? = null
-)
-
-enum class SharedRoutineSortType(){
-    MODIFIED_DATE_FIRST, SHARED_COUNT_FIRST
-}

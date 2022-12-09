@@ -1,9 +1,9 @@
 package com.lateinit.rightweight.data
 
-import com.lateinit.rightweight.data.database.mediator.SharedRoutineRequestBody
 import com.lateinit.rightweight.data.model.DetailResponse
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.DocumentsResponse
+import com.lateinit.rightweight.data.model.RunQueryBody
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.*
 import retrofit2.Response
@@ -16,7 +16,7 @@ interface RoutineApiService {
 
     @POST("./documents:runQuery")
     suspend fun getSharedRoutines(
-        @Body order: SharedRoutineRequestBody
+        @Body order: RunQueryBody
     ): List<DocumentResponse<SharedRoutineField>>
 
     @GET("documents/shared_routine/{path}")

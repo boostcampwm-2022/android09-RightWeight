@@ -9,7 +9,7 @@ data class RunQueryBody(
 data class StructuredQueryData(
     val from: FromData,
     val where: WhereData? = null,
-    val orderBy: OrderByData? = null,
+    val orderBy: List<OrderByData>? = null,
     val limit: Int? = null,
     val startAt: StartAtData? = null
 )
@@ -28,17 +28,6 @@ data class FilterData(
     val value: ValueData
 )
 
-enum class FilterOperator {
-    //https://firebase.google.com/docs/firestore/reference/rest/v1/StructuredQuery#operator_1
-    EQUAL,
-    NOT_EQUAL,
-}
-
-enum class Direction{
-    ASCENDING,
-    DESCENDING
-}
-
 data class FiledReferenceData(
     val fieldPath: String
 )
@@ -49,9 +38,21 @@ data class OrderByData(
 )
 
 data class StartAtData(
-    val values: ValuesData
+    val values: List<ValueData>
 )
 
-data class ValuesData(
-    val timestampValue: String
-)
+enum class SharedRoutineSortType{
+    MODIFIED_DATE_FIRST,
+    SHARED_COUNT_FIRST
+}
+
+enum class FilterOperator {
+    //https://firebase.google.com/docs/firestore/reference/rest/v1/StructuredQuery#operator_1
+    EQUAL,
+    NOT_EQUAL,
+}
+
+enum class Direction{
+    ASCENDING,
+    DESCENDING
+}

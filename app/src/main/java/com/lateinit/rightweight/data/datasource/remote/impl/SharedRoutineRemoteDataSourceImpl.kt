@@ -10,8 +10,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
-import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
 import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
+import com.lateinit.rightweight.data.model.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
@@ -41,7 +41,7 @@ class SharedRoutineRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getSharedRoutineDays(routineId: String): List<SharedRoutineDay> {
         val sharedRoutineDays = mutableListOf<SharedRoutineDay>()
-        api.getSharedRoutineDays(routineId)?.documents?.forEach() {
+        api.getSharedRoutineDays(routineId)?.documents?.forEach {
             sharedRoutineDays.add(it.toSharedRoutineDay())
         }
         return sharedRoutineDays
@@ -52,7 +52,7 @@ class SharedRoutineRemoteDataSourceImpl @Inject constructor(
         dayId: String
     ): List<SharedRoutineExercise> {
         val sharedRoutineExercises = mutableListOf<SharedRoutineExercise>()
-        api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach() {
+        api.getSharedRoutineExercises(routineId, dayId)?.documents?.forEach {
             sharedRoutineExercises.add(it.toSharedRoutineExercise())
         }
         return sharedRoutineExercises
@@ -64,7 +64,7 @@ class SharedRoutineRemoteDataSourceImpl @Inject constructor(
         exerciseId: String
     ): List<SharedRoutineExerciseSet> {
         val sharedRoutineExerciseSets = mutableListOf<SharedRoutineExerciseSet>()
-        api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach() {
+        api.getSharedRoutineExerciseSets(routineId, dayId, exerciseId)?.documents?.forEach {
             sharedRoutineExerciseSets.add(it.toSharedRoutineExerciseSet())
         }
         return sharedRoutineExerciseSets

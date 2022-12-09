@@ -3,7 +3,7 @@ package com.lateinit.rightweight.data.repository
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
-import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
+import com.lateinit.rightweight.data.model.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.WriteModelData
 import kotlinx.coroutines.flow.Flow
 
