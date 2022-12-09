@@ -7,7 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.mapper.toDay
+import com.lateinit.rightweight.data.mapper.toExercise
+import com.lateinit.rightweight.data.mapper.toExerciseSet
 import com.lateinit.rightweight.data.repository.RoutineRepository
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
@@ -15,11 +20,6 @@ import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDay
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExercise
-import com.lateinit.rightweight.util.toExerciseSet
-import com.lateinit.rightweight.util.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

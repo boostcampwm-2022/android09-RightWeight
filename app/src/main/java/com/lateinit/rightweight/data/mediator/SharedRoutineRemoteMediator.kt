@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.api.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.mapper.toSharedRoutine
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
 import com.lateinit.rightweight.data.model.remote.FromData
 import com.lateinit.rightweight.data.model.remote.OrderByData
@@ -18,7 +19,6 @@ import com.lateinit.rightweight.data.model.remote.StartAtData
 import com.lateinit.rightweight.data.model.remote.StructuredQueryData
 import com.lateinit.rightweight.data.remote.model.IntValue
 import com.lateinit.rightweight.data.remote.model.TimeStampValue
-import com.lateinit.rightweight.util.toSharedRoutine
 import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
 import java.io.IOException

@@ -6,13 +6,13 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.mapper.toHistory
+import com.lateinit.rightweight.data.mapper.toHistoryExercise
+import com.lateinit.rightweight.data.mapper.toHistorySet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
-import com.lateinit.rightweight.util.toHistory
-import com.lateinit.rightweight.util.toHistoryExercise
-import com.lateinit.rightweight.util.toHistorySet
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject

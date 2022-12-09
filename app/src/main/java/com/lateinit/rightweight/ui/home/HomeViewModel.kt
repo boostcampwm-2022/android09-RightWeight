@@ -6,8 +6,8 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted

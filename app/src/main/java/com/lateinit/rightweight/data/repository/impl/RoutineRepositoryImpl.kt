@@ -7,9 +7,9 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
+import com.lateinit.rightweight.data.mapper.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
-import com.lateinit.rightweight.util.toRoutine
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

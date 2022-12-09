@@ -4,23 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lateinit.rightweight.data.mapper.remote.toDayField
+import com.lateinit.rightweight.data.mapper.remote.toExerciseField
+import com.lateinit.rightweight.data.mapper.remote.toExerciseSetField
+import com.lateinit.rightweight.data.mapper.remote.toSharedRoutineField
 import com.lateinit.rightweight.data.model.remote.UpdateData
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDayField
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExerciseField
-import com.lateinit.rightweight.util.toExerciseSetField
-import com.lateinit.rightweight.util.toRoutineUiModel
-import com.lateinit.rightweight.util.toSharedRoutineField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -91,8 +91,8 @@ class RoutineDetailViewModel @Inject constructor(
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
 
             _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
-            _dayUiModels.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
-                routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
+            _dayUiModels.value = routineWithDays.days.mapIndexed { index, dayWithExercise ->
+                dayWithExercise.day.toDayUiModel(index, dayWithExercise.exercises)
             }
             _currentDayPosition.value = FIRST_DAY_POSITION
         }
