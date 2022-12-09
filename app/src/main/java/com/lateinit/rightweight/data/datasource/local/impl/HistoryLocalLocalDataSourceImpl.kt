@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data.datasource.local.impl
 
-import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises

@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data.datasource.local.impl
 
-import com.lateinit.rightweight.data.database.AppPreferencesDataStore
+import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.UserDao
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays

@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data
+package com.lateinit.rightweight.data.api
 
 import com.lateinit.rightweight.data.model.remote.DetailResponse
 import com.lateinit.rightweight.data.model.remote.DocumentResponse

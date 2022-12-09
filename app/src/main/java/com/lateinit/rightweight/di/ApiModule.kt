@@ -1,9 +1,9 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.BuildConfig
-import com.lateinit.rightweight.data.AuthApiService
-import com.lateinit.rightweight.data.RoutineApiService
-import com.lateinit.rightweight.data.UserApiService
+import com.lateinit.rightweight.data.api.AuthApiService
+import com.lateinit.rightweight.data.api.RoutineApiService
+import com.lateinit.rightweight.data.api.UserApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

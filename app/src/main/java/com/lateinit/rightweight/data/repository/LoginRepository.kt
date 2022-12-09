@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.LoginResponse
+import com.lateinit.rightweight.data.model.remote.LoginResponse
 
 interface LoginRepository {
 

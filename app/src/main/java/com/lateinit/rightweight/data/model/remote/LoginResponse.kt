@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data
+package com.lateinit.rightweight.data.model.remote
 
 data class LoginResponse(
     val federatedId: String,

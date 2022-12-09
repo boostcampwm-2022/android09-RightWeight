@@ -1,7 +1,7 @@
 package com.lateinit.rightweight.data.datasource.remote.impl
 
-import com.lateinit.rightweight.data.AuthApiService
-import com.lateinit.rightweight.data.LoginResponse
+import com.lateinit.rightweight.data.api.AuthApiService
+import com.lateinit.rightweight.data.model.remote.LoginResponse
 import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
 import com.lateinit.rightweight.data.model.remote.LoginRequestBody
 import com.lateinit.rightweight.data.model.remote.PostBody

@@ -3,7 +3,7 @@ package com.lateinit.rightweight.di
 import android.content.Context
 import androidx.room.Room
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppPreferencesDataStore
+import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao

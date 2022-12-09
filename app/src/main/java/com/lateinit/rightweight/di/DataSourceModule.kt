@@ -1,10 +1,10 @@
 package com.lateinit.rightweight.di
 
-import com.lateinit.rightweight.data.AuthApiService
-import com.lateinit.rightweight.data.RoutineApiService
-import com.lateinit.rightweight.data.UserApiService
+import com.lateinit.rightweight.data.api.AuthApiService
+import com.lateinit.rightweight.data.api.RoutineApiService
+import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppPreferencesDataStore
+import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao

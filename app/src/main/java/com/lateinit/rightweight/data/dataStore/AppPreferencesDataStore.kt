@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.database
+package com.lateinit.rightweight.data.dataStore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

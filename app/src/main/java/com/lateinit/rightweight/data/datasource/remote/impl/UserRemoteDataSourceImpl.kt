@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data.datasource.remote.impl
 
-import com.lateinit.rightweight.data.UserApiService
+import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.remote.Direction
 import com.lateinit.rightweight.data.model.remote.DocumentResponse

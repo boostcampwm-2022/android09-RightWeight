@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.util
 
-import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet

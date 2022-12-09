@@ -1,6 +1,6 @@
 package com.lateinit.rightweight.data.repository.impl
 
-import com.lateinit.rightweight.data.LoginResponse
+import com.lateinit.rightweight.data.model.remote.LoginResponse
 import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
 import com.lateinit.rightweight.data.repository.LoginRepository
 import javax.inject.Inject

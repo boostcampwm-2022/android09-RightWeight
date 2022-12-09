@@ -1,13 +1,13 @@
-package com.lateinit.rightweight.data.database.mediator
+package com.lateinit.rightweight.data.mediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.lateinit.rightweight.data.RoutineApiService
+import com.lateinit.rightweight.data.api.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppPreferencesDataStore
+import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
 import com.lateinit.rightweight.data.model.remote.FromData
@@ -31,7 +31,7 @@ class SharedRoutineRemoteMediator(
     var sortType: SharedRoutineSortType
 ) : RemoteMediator<Int, SharedRoutine>() {
 
-    lateinit var runQueryBody: RunQueryBody
+    private lateinit var runQueryBody: RunQueryBody
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
