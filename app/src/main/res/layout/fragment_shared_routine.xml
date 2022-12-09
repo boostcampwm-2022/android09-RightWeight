@@ -44,6 +44,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_edit_text_shared_routine_sort_type" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_line_bottom"
+            app:layout_constraintGuide_percent="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

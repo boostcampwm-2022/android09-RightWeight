@@ -26,9 +26,24 @@ class RoutineManagementFragment : Fragment() {
 
     private lateinit var routineAdapter: RoutineAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRoutineManagementBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFragmentResult()
+        setBinding()
+        setRoutineAdapter()
+        setOnClickListeners()
+        collectRoutines()
+    }
+
+    private fun setFragmentResult() {
         setFragmentResultListener("management") { _, bundle ->
             val selectedRoutineTitle = bundle.getString("select")
             if (selectedRoutineTitle != null) {
@@ -56,22 +71,6 @@ class RoutineManagementFragment : Fragment() {
                     }.show()
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRoutineManagementBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setBinding()
-        setRoutineAdapter()
-        setOnClickListeners()
-        collectRoutines()
     }
 
     private fun setBinding() {
