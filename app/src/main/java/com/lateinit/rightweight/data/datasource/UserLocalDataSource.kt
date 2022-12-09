@@ -10,9 +10,9 @@ interface UserLocalDataSource {
 
     suspend fun saveUser(user: User)
 
-    fun getUser(): Flow<User?>
-
     suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
 
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises>
+
+    fun getUser(): Flow<User?>
 }

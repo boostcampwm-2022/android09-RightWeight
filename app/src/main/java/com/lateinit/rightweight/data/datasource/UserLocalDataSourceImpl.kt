@@ -18,15 +18,15 @@ class UserLocalDataSourceImpl @Inject constructor(
         appPreferencesDataStore.saveUser(user)
     }
 
-    override fun getUser(): Flow<User?> {
-        return appPreferencesDataStore.userInfo
-    }
-
     override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
         return userDao.getAllRoutineWithDays()
     }
 
     override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises> {
         return userDao.getHistoryAfterDate(startDate)
+    }
+
+    override fun getUser(): Flow<User?> {
+        return appPreferencesDataStore.userInfo
     }
 }
