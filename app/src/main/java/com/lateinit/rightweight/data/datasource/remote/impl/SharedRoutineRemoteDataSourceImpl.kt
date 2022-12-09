@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.remote.impl
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -11,6 +11,7 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
+import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
 import com.lateinit.rightweight.data.model.WriteModelData
 import com.lateinit.rightweight.data.model.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField

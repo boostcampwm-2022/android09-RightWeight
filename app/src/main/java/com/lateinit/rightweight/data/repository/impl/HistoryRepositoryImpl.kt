@@ -5,7 +5,7 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
-import com.lateinit.rightweight.data.datasource.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel

@@ -1,7 +1,8 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.AuthApiService
 import com.lateinit.rightweight.data.LoginResponse
+import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
 import com.lateinit.rightweight.data.model.LoginRequestBody
 import com.lateinit.rightweight.data.model.PostBody
 import javax.inject.Inject

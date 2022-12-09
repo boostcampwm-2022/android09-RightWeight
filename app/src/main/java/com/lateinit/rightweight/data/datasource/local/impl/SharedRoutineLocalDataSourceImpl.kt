@@ -1,10 +1,11 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.local.impl
 
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
+import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

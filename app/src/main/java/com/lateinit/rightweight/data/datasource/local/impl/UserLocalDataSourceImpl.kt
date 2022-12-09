@@ -1,9 +1,10 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.local.impl
 
 import com.lateinit.rightweight.data.database.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.UserDao
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
+import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
 import com.lateinit.rightweight.data.model.User
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate

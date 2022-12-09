@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.remote
 
 import androidx.paging.PagingData
 import com.lateinit.rightweight.data.database.entity.SharedRoutine

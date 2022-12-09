@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.local
 
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise

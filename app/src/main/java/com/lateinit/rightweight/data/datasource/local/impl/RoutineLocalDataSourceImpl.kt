@@ -1,4 +1,4 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.local.impl
 
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.entity.Day
@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
+import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

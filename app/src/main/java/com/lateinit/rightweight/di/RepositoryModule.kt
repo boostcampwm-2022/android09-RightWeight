@@ -1,6 +1,13 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.datasource.*
+import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
+import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
+import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.repository.*
 import com.lateinit.rightweight.data.repository.impl.HistoryRepositoryImpl
 import com.lateinit.rightweight.data.repository.impl.LoginRepositoryImpl

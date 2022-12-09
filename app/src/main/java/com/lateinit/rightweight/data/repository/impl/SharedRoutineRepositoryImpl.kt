@@ -7,8 +7,8 @@ import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
 import com.lateinit.rightweight.data.database.intermediate.SharedRoutineWithDays
 import com.lateinit.rightweight.data.database.mediator.SharedRoutineSortType
-import com.lateinit.rightweight.data.datasource.SharedRoutineRemoteDataSource
-import com.lateinit.rightweight.data.datasource.SharedRoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
+import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
 import com.lateinit.rightweight.data.model.FieldTransformsModelData
 import com.lateinit.rightweight.data.model.TransformData
 import com.lateinit.rightweight.data.model.WriteModelData

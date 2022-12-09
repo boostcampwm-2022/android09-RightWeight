@@ -1,6 +1,7 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.UserApiService
+import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.Direction
 import com.lateinit.rightweight.data.model.DocumentResponse
 import com.lateinit.rightweight.data.model.FiledReferenceData

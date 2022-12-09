@@ -1,9 +1,10 @@
-package com.lateinit.rightweight.data.datasource
+package com.lateinit.rightweight.data.datasource.local.impl
 
 import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.entity.*
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
+import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
 import com.lateinit.rightweight.util.createRandomUUID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
