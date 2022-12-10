@@ -72,13 +72,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         GoogleSignIn.getClient(applicationContext, options)
     }
 
-    private var isSilentSignIn: Boolean = false
+    private var isLoginBefore: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
-        isSilentSignIn = intent.extras?.getBoolean("isSilentSignIn") ?: false
+        isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
 
         setActionBar()
         setNavController()
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun restore() {
-        if(isSilentSignIn.not()){
+        if(isLoginBefore.not()){
             viewModel.restore()
         }
     }

@@ -42,7 +42,6 @@ interface UserApiService {
         @Body query: RunQueryBody
     ): List<DocumentResponse<HistoryField>>
 
-
     @GET("documents/user/{userId}")
     suspend fun restoreUserInfo(
         @Path(value = "userId", encoded = true) userId: String

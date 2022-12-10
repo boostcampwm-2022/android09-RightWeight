@@ -82,9 +82,9 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
     }
 
-    private fun moveToHomeActivity(isSilentSignIn: Boolean) {
+    private fun moveToHomeActivity(isLoginBefore: Boolean) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("isSilentSignIn", isSilentSignIn)
+        intent.putExtra("isLoginBefore", isLoginBefore)
         startActivity(intent)
         finish()
     }

@@ -11,5 +11,4 @@ interface UserRemoteDataSource {
     suspend fun commitTransaction(writes: List<WriteModelData>)
 
     suspend fun restoreUserInfo(userId: String): UserInfoField?
-
 }

@@ -38,7 +38,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
         } ?: emptyList()
     }
 
-
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         api.commitTransaction(WriteRequestBody(writes))
     }
