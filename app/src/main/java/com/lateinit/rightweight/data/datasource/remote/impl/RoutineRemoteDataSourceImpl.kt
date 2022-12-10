@@ -46,29 +46,29 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         return api.getRoutine(routineId).fields.toRoutine(routineId, order)
     }
 
-    override suspend fun getRoutineDays(routineId: String): List<Day>? {
+    override suspend fun getRoutineDays(routineId: String): List<Day> {
         val path = "routine/${routineId}/day"
         val days = api.getDays(path)
         return days.documents?.map {
             val dayId = it.name.split("/").last()
             it.fields.toDay(dayId)
-        }
+        } ?: emptyList()
     }
 
-    override suspend fun getRoutineExercises(path: String): List<Exercise>? {
+    override suspend fun getRoutineExercises(path: String): List<Exercise> {
         val exercises = api.getExercises(path)
         return exercises.documents?.map {
             val exerciseId = it.name.split("/").last()
             it.fields.toExercise(exerciseId)
-        }
+        } ?: emptyList()
     }
 
-    override suspend fun getRoutineExerciseSets(path: String): List<ExerciseSet>? {
+    override suspend fun getRoutineExerciseSets(path: String): List<ExerciseSet> {
         val exerciseSets = api.getExerciseSets(path)
         return exerciseSets.documents?.map {
             val exerciseSetId = it.name.split("/").last()
             it.fields.toExerciseSet(exerciseSetId)
-        }
+        } ?: emptyList()
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {

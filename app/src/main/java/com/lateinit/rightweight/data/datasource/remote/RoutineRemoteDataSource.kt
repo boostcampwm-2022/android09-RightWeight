@@ -12,11 +12,11 @@ interface RoutineRemoteDataSource {
 
     suspend fun getRoutine(routineId: String, order: Int): Routine
 
-    suspend fun getRoutineDays(routineId: String): List<Day>?
+    suspend fun getRoutineDays(routineId: String): List<Day>
 
-    suspend fun getRoutineExercises(path: String): List<Exercise>?
+    suspend fun getRoutineExercises(path: String): List<Exercise>
 
-    suspend fun getRoutineExerciseSets(path: String): List<ExerciseSet>?
+    suspend fun getRoutineExerciseSets(path: String): List<ExerciseSet>
 
     suspend fun getChildrenDocumentName(path: String): List<String>
 }
