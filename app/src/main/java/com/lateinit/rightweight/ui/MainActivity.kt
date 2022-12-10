@@ -72,19 +72,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         GoogleSignIn.getClient(applicationContext, options)
     }
 
+    private var isLoginBefore: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
+        isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
 
         setActionBar()
         setNavController()
+        restore()
+    }
+
+    private fun restore() {
+        if(isLoginBefore.not()){
+            viewModel.restore()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
-
     }
 
     override fun onBackPressed() {

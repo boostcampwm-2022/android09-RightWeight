@@ -96,6 +96,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun restore(){
+        val userId = userInfo.value?.userId ?: return
+        viewModelScope.launch() {
+            val userInfoInServer = userRepository.restoreUserInfo(userId)
+            if(userInfoInServer != null){
+                restoreUserInfo(
+                    userInfoInServer.routineId.value,
+                    userInfoInServer.dayId.value
+                )
+            }
+        }
+    }
+
+    private suspend fun restoreUserInfo(routineId: String, datId: String) {
+        val nowUser = userInfo.value ?: return
+        userRepository.saveUser(
+            nowUser.copy(
+                routineId = routineId,
+                dayId = datId
+            )
+        )
+    }
+
     private suspend fun backupUserInfo() {
         val user = userInfo.value ?: return
         userRepository.backupUserInfo(user)
