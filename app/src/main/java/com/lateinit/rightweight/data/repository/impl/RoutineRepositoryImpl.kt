@@ -52,6 +52,20 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getRoutineWithDaysByRoutineId(routineId)
     }
 
+    override suspend fun getUserRoutineIds(userId: String): List<String> {
+        val documentsResponseList = routineRemoteDataSource.getRoutineByUserId(userId)
+        val documents = documentsResponseList.map { it.document }
+        return documents
+            .filterNotNull()
+            .map {
+                it.name.split("/").last()
+            }
+    }
+
+    override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
+        return routineLocalDataSource.getAllRoutineWithDays()
+    }
+
     override fun getAllRoutines(): Flow<List<Routine>> {
         return routineLocalDataSource.getAllRoutines()
     }

@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.data.repository.impl
 
-import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.local.User
@@ -22,19 +21,6 @@ class UserRepositoryImpl @Inject constructor(
         userLocalDataSource.saveUser(user)
     }
 
-    override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
-        return userLocalDataSource.getAllRoutineWithDays()
-    }
-
-    override suspend fun getUserRoutineIds(userId: String): List<String> {
-        val documentsResponseList = userRemoteDataSource.getUserRoutineInRemote(userId)
-        val documents = documentsResponseList.map { it.document }
-        return documents
-            .filterNotNull()
-            .map {
-                it.name.split("/").last()
-            }
-    }
 
     override suspend fun getLatestHistoryDate(userId: String): LocalDate? {
         val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)

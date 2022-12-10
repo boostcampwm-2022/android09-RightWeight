@@ -2,7 +2,6 @@ package com.lateinit.rightweight.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.mapper.remote.toDayField
 import com.lateinit.rightweight.data.mapper.remote.toExerciseField
@@ -14,15 +13,17 @@ import com.lateinit.rightweight.data.mapper.remote.toRoutineField
 import com.lateinit.rightweight.data.model.remote.UpdateData
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.LoginRepository
+import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
-import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,6 +40,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val routineRepository: RoutineRepository,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
@@ -90,12 +92,12 @@ class MainViewModel @Inject constructor(
         val userId = userInfo.value?.userId ?: return
 
         commitItems.clear()
-        val myRoutineInServer = userRepository.getUserRoutineIds(userId)
+        val myRoutineInServer = routineRepository.getUserRoutineIds(userId)
         myRoutineInServer.forEach { routineId ->
             deleteRoutine(routineId)
         }
 
-        val routineWithDaysList = userRepository.getAllRoutineWithDays()
+        val routineWithDaysList = routineRepository.getAllRoutineWithDays()
         routineWithDaysList.forEach { routineWithDays ->
             updateRoutine(routineWithDays)
         }
@@ -165,15 +167,14 @@ class MainViewModel @Inject constructor(
                 update = UpdateData(path, routine.toRoutineField(userId))
             )
         )
-        updateDays(path, routineWithDays.days)
+        updateDays(path, routineWithDays.days.map { it.toDayUiModel() })
     }
 
     private fun updateDays(
         lastPath: String,
-        days: List<DayWithExercises>
+        days: List<DayUiModel>
     ) {
-        days.forEach { day ->
-            val dayUiModel = day.toDayUiModel()
+        days.forEach { dayUiModel ->
             val path = "${lastPath}/day/${dayUiModel.dayId}"
             commitItems.add(
                 WriteModelData(

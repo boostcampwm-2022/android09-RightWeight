@@ -30,6 +30,10 @@ interface RoutineRepository {
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
 
+    suspend fun getUserRoutineIds(userId: String): List<String>
+
+    suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
+
     fun getAllRoutines(): Flow<List<Routine>>
 
     fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises>

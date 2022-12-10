@@ -1,6 +1,5 @@
 package com.lateinit.rightweight.data.repository
 
-import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.model.local.User
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
@@ -10,10 +9,6 @@ import java.time.LocalDate
 interface UserRepository {
 
     suspend fun saveUser(user: User)
-
-    suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
-
-    suspend fun getUserRoutineIds(userId: String): List<String>
 
     suspend fun getLatestHistoryDate(userId: String): LocalDate?
 

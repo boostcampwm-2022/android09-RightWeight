@@ -5,18 +5,14 @@ import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.remote.Direction
 import com.lateinit.rightweight.data.model.remote.DocumentResponse
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
-import com.lateinit.rightweight.data.model.remote.FilterData
-import com.lateinit.rightweight.data.model.remote.FilterOperator
 import com.lateinit.rightweight.data.model.remote.FromData
 import com.lateinit.rightweight.data.model.remote.OrderByData
 import com.lateinit.rightweight.data.model.remote.RunQueryBody
 import com.lateinit.rightweight.data.model.remote.StructuredQueryData
-import com.lateinit.rightweight.data.model.remote.WhereData
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RootField
-import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.StringValue
 import com.lateinit.rightweight.data.remote.model.UserInfoField
 import javax.inject.Inject
@@ -35,22 +31,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun getUserRoutineInRemote(userId: String): List<DocumentResponse<RoutineField>> {
-        return api.getUserRoutine(
-            RunQueryBody(
-                StructuredQueryData(
-                    from = FromData("routine"),
-                    where = WhereData(
-                        FilterData(
-                            FiledReferenceData("userId"),
-                            FilterOperator.EQUAL.toString(),
-                            StringValue(userId)
-                        )
-                    )
-                )
-            )
-        )
-    }
 
     override suspend fun getLastHistoryInServer(userId: String): List<DocumentResponse<HistoryField>> {
         return api.getLastHistory(

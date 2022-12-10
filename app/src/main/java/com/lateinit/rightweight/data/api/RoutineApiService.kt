@@ -48,6 +48,11 @@ interface RoutineApiService {
         @Path("exerciseId") exerciseId: String
     ): DocumentsResponse<ExerciseSetField>?
 
+    @POST("./documents:runQuery")
+    suspend fun getUserRoutine(
+        @Body query: RunQueryBody
+    ): List<DocumentResponse<RoutineField>>
+
     @POST("./documents:commit")
     suspend fun commitTransaction(
         @Body
