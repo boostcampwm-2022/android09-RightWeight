@@ -9,6 +9,7 @@ import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.data.remote.model.UserInfoField
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -45,5 +46,5 @@ interface UserApiService {
     @GET("documents/user/{userId}")
     suspend fun restoreUserInfo(
         @Path(value = "userId", encoded = true) userId: String
-    ): DetailResponse<UserInfoField>
+    ): Response<DetailResponse<UserInfoField>>
 }

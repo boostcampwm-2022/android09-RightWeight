@@ -22,8 +22,8 @@ class UserRepositoryImpl @Inject constructor(
         return userLocalDataSource.getUser()
     }
 
-    override suspend fun restoreUserInfo(userId: String): UserInfoField {
-        return userRemoteDataSource.restoreUserInfo(userId).fields
+    override suspend fun restoreUserInfo(userId: String): UserInfoField? {
+        return userRemoteDataSource.restoreUserInfo(userId)
     }
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
