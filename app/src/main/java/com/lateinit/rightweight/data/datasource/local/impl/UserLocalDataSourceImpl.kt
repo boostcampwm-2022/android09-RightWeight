@@ -17,4 +17,8 @@ class UserLocalDataSourceImpl @Inject constructor(
     override fun getUser(): Flow<User?> {
         return appPreferencesDataStore.userInfo
     }
+
+    override suspend fun removeUserInfo() {
+        appPreferencesDataStore.deleteUserInfo()
+    }
 }
