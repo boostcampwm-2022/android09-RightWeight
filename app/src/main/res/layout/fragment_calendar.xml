@@ -30,8 +30,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:mcv_allowClickDaysOutsideCurrentMonth="false"
-                app:mcv_selectionColor="@color/secondaryColor"
                 app:mcv_showOtherDates="other_months" />
 
             <androidx.constraintlayout.widget.Guideline
