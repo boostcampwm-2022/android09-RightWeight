@@ -1,11 +1,13 @@
-package com.lateinit.rightweight.data.mapper
+package com.lateinit.rightweight.data.mapper.local
 
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.mapper.toExercisePartType
 import com.lateinit.rightweight.data.model.remote.DetailResponse
+import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
@@ -98,17 +100,32 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
+fun DetailResponse<RoutineField>.toRoutine(order: Int): Routine {
+    val routineId = name.split("/").last()
+    val refinedModifiedDateString = fields.modifiedDate.value
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
+    return Routine(
+        routineId = routineId,
+        title = fields.title.value,
+        author = fields.author.value,
+        description = fields.description.value,
+        modifiedDate = modifiedDate,
+        order = order
+    )
+}
+
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
-    val splitedName = name.split("/")
-    val refinedModifiedDateString = fields.modifiedDate.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    val routineId = name.split("/").last()
+    val refinedModifiedDateString = fields.modifiedDate.value
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
-        routineId = splitedName.last(),
-        title = fields.title.value.toString(),
-        author = fields.author.value.toString(),
-        description = fields.description.value.toString(),
+        routineId = routineId,
+        title = fields.title.value,
+        author = fields.author.value,
+        description = fields.description.value,
         modifiedDate = modifiedDate,
-        sharedCount = fields.sharedCount.value?.remoteData?.count?.value.toString()
+        sharedCount = fields.sharedCount.value.remoteData.count.value
     )
 }
