@@ -1,11 +1,17 @@
 package com.lateinit.rightweight.ui.login
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnticipateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -54,11 +60,41 @@ class LoginActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setSplachScreen()
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
-        setLoginButtonListener()
-        collectNetworkResponse()
     }
+
+    private fun setSplachScreen(){
+        installSplashScreen().setOnExitAnimationListener{ splashScreenViewProvider ->
+            ObjectAnimator.ofFloat(splashScreenViewProvider.view, View.ALPHA, 1f, 0f).run {
+                interpolator = AnticipateInterpolator()
+                duration = 2000L
+                doOnStart {
+                    checkLoginBefore()
+                }
+                doOnEnd {
+                    splashScreenViewProvider.remove()
+                }
+                start()
+            }
+        }
+    }
+
+    private fun checkLoginBefore() {
+        lifecycleScope.launch {
+            client.silentSignIn().addOnCompleteListener {
+                it.addOnSuccessListener{
+                    moveToHomeActivity()
+                }
+                it.addOnFailureListener{
+                    binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
+                    setLoginButtonListener()
+                    collectNetworkResponse()
+                }
+            }
+        }
+    }
+
 
     private fun setLoginButtonListener() {
         binding.buttonGoogleLogin.setOnClickListener {
