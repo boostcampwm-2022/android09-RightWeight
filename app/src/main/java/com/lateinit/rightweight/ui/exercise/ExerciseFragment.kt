@@ -27,9 +27,9 @@ import com.lateinit.rightweight.service.TimerService.Companion.STOP
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
-import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
 import com.lateinit.rightweight.util.convertTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,8 +69,8 @@ class ExerciseFragment : Fragment() {
         setHistoryExerciseAdapter()
         setButtonClickListeners()
         collectHistory()
+        handleNavigationEvent()
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -186,10 +186,18 @@ class ExerciseFragment : Fragment() {
         }
     }
 
+    private fun handleNavigationEvent() {
+        collectOnLifecycle {
+            viewModel.navigationEvent.collect { _ ->
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+
     private fun endExercise() {
         viewModel.endExercise(binding.timeString ?: "")
         startTimerServiceWithMode(STOP)
-        findNavController().navigateUp()
     }
 
     override fun onDestroyView() {
