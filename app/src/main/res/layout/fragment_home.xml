@@ -87,6 +87,7 @@
             android:elevation="3dp"
             android:src="@drawable/img_completed"
             android:rotation="@integer/material_motion_duration_long_2"
+            android:visibility="@{viewModel.todayHistory.completed ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +113,7 @@
             android:layout_margin="16dp"
             android:contentDescription="@string/start_exercise"
             android:src="@drawable/ic_play_arrow"
-            android:visibility="@{viewModel.todayHistory.completed == true ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.selectedRoutine == null ? View.GONE : viewModel.todayHistory.completed ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
