@@ -9,7 +9,7 @@ import com.lateinit.rightweight.data.model.remote.OrderByData
 import com.lateinit.rightweight.data.model.remote.RunQueryBody
 import com.lateinit.rightweight.data.model.remote.StructuredQueryData
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class HistoryRemoteDataSourceImpl @Inject constructor(
@@ -31,10 +31,10 @@ class HistoryRemoteDataSourceImpl @Inject constructor(
                 )
             )
         )
-        val lastDateTime = documentResponseList.first().document?.fields?.date?.value
-                            ?.replace("Z", "")
-                            ?: return DEFAULT_LOCAL_DATE
-        return LocalDateTime.parse(lastDateTime).toLocalDate()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val lastDateTime = documentResponseList.first()
+            .document?.fields?.date?.value ?: return DEFAULT_LOCAL_DATE
+        return LocalDate.parse(lastDateTime, formatter)
     }
 
     companion object {
