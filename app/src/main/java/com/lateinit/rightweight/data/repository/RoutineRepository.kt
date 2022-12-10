@@ -44,5 +44,7 @@ interface RoutineRepository {
 
     suspend fun removeRoutineById(routineId: String)
 
+    suspend fun removeAllRoutines()
+
     suspend fun getChildrenDocumentName(path: String): List<String>
 }

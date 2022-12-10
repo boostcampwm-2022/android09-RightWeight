@@ -31,6 +31,12 @@ class AppPreferencesDataStore @Inject constructor(private val context: Context) 
             it[USER_INFO] = Gson().toJson(user)
         }
     }
+
+    suspend fun deleteUserInfo() {
+        context.dataStore.edit {
+            it.remove(USER_INFO)
+        }
+    }
     
     suspend fun saveSharedRoutinePagingFlag(flag: String) {
         context.dataStore.edit {

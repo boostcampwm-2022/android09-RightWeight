@@ -67,4 +67,7 @@ interface RoutineDao {
 
     @Query("DELETE FROM routine WHERE routine_id = :routineId")
     suspend fun removeRoutineById(routineId: String)
+
+    @Query("DELETE FROM routine")
+    suspend fun removeAllRoutines()
 }

@@ -111,4 +111,8 @@ class HistoryLocalDataSourceImpl @Inject constructor(
     override suspend fun removeHistoryExercise(historyExerciseId: String) {
         historyDao.removeHistoryExercise(historyExerciseId)
     }
+
+    override suspend fun removeAllHistories() {
+        historyDao.removeAllHistories()
+    }
 }
