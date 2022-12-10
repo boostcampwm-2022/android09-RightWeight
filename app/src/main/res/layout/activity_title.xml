@@ -27,7 +27,8 @@
             android:src="@drawable/img_right_weight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_view_title" />
+            app:layout_constraintTop_toBottomOf="@id/text_view_title"
+            android:contentDescription="@string/app_icon_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
