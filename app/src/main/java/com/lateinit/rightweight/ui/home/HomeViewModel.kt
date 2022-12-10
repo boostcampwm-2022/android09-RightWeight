@@ -65,8 +65,8 @@ class HomeViewModel @Inject constructor(
         val routineId = routine.routineId
         val routineTitle = routine.title
 
-        if (routineId.isEmpty() || routineTitle.isEmpty()) return
-        if (dayId.isNullOrEmpty()) return
+        if (routineId.isEmpty() || routineTitle.isEmpty() || dayId.isNullOrEmpty()) return
+
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)

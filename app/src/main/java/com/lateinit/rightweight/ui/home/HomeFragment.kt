@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
 
         setBinding()
         setListeners()
-        setAdapter()
+        collectSelectedDay()
     }
 
     override fun onDestroyView() {
@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
         return viewModel.todayHistory.value != null
     }
 
-    private fun setAdapter() {
+    private fun collectSelectedDay() {
         collectOnLifecycle {
             viewModel.selectedDay.collect { dayUiModel ->
                 setAdapter(dayUiModel)
