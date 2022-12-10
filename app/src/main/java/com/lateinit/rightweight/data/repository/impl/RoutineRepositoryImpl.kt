@@ -7,6 +7,7 @@ import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.RoutineRemoteDataSource
 import com.lateinit.rightweight.data.mapper.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
@@ -14,7 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(
-    private val routineLocalDataSource: RoutineLocalDataSource
+    private val routineLocalDataSource: RoutineLocalDataSource,
+    private val routineRemoteDataSource: RoutineRemoteDataSource
 ) : RoutineRepository {
 
     override suspend fun insertRoutine(
