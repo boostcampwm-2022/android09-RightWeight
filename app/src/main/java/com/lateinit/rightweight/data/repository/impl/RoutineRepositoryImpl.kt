@@ -20,17 +20,18 @@ class RoutineRepositoryImpl @Inject constructor(
 ) : RoutineRepository {
 
     override suspend fun insertRoutine(
-        routine: RoutineUiModel,
+        routine: Routine,
         days: List<Day>,
         exercises: List<Exercise>,
         sets: List<ExerciseSet>,
     ) {
-        routineLocalDataSource.insertRoutine(routine.toRoutine(), days, exercises, sets)
+        routineLocalDataSource.insertRoutine(routine, days, exercises, sets)
     }
 
     override suspend fun getHigherRoutineOrder(): Int? {
         return routineLocalDataSource.getHigherRoutineOrder()
     }
+
 
     override suspend fun getRoutineById(routineId: String): Routine {
         return routineLocalDataSource.getRoutineById(routineId)
@@ -72,27 +73,29 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun restoreMyRoutine(routineIds: List<String>) {
         var order = 0
+        val routines = mutableListOf<Routine>()
+        val days = mutableListOf<Day>()
+        val exercises = mutableListOf<Exercise>()
+        val exerciseSets = mutableListOf<ExerciseSet>()
+
         routineIds.forEach { routineId ->
-            val routine = routineRemoteDataSource.getRoutine(routineId, order++)
-            val days = routineRemoteDataSource.getRoutineDays(routineId) ?: emptyList()
-            val exercises = mutableListOf<Exercise>()
-            val exerciseSets = mutableListOf<ExerciseSet>()
+            routines.add(routineRemoteDataSource.getRoutine(routineId, order++))
+            days.addAll(routineRemoteDataSource.getRoutineDays(routineId))
             days.forEach {
                 val path = "routine/${routineId}/day/${it.dayId}/exercise"
                 exercises.addAll(
-                    routineRemoteDataSource.getRoutineExercises(path) ?: emptyList()
+                    routineRemoteDataSource.getRoutineExercises(path)
                 )
             }
             exercises.forEach {
                 val path =
                     "routine/$routineId/day/${it.dayId}/exercise/${it.exerciseId}/exercise_set"
                 exerciseSets.addAll(
-                    routineRemoteDataSource.getRoutineExerciseSets(path) ?: emptyList()
+                    routineRemoteDataSource.getRoutineExerciseSets(path)
                 )
             }
-            routineLocalDataSource.insertRoutine(routine, days, exercises, exerciseSets)
         }
-
+        routineLocalDataSource.restoreRoutines(routines,days,exercises,exerciseSets)
     }
 
     override fun getAllRoutines(): Flow<List<Routine>> {
