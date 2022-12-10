@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun checkLoginBefore() {
         client.silentSignIn().addOnSuccessListener {
-            moveToHomeActivity()
+            moveToHomeActivity(true)
         }
     }
 
@@ -82,8 +82,9 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
     }
 
-    private fun moveToHomeActivity() {
+    private fun moveToHomeActivity(isSilentSignIn: Boolean) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("isSilentSignIn", isSilentSignIn)
         startActivity(intent)
         finish()
     }
@@ -107,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
                             Snackbar.make(binding.root, "예상치 못한 오류", Snackbar.LENGTH_LONG).show()
                         }
                         NetworkState.SUCCESS -> {
-                            moveToHomeActivity()
+                            moveToHomeActivity(false)
                         }
                     }
                 }

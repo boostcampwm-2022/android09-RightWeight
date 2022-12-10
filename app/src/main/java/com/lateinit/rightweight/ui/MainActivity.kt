@@ -72,11 +72,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         GoogleSignIn.getClient(applicationContext, options)
     }
 
+    private var isSilentSignIn: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
+        isSilentSignIn = intent.extras?.getBoolean("isSilentSignIn") ?: false
 
         setActionBar()
         setNavController()
@@ -84,12 +86,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun restore() {
+        if(isSilentSignIn.not()){
             viewModel.restore()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
-
     }
 
     override fun onBackPressed() {
