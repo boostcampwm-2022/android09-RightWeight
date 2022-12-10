@@ -31,7 +31,7 @@ class HistoryRemoteDataSourceImpl @Inject constructor(
                 )
             )
         )
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val lastDateTime = documentResponseList.first()
             .document?.fields?.date?.value ?: return DEFAULT_LOCAL_DATE
         return LocalDate.parse(lastDateTime, formatter)
