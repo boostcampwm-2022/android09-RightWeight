@@ -4,6 +4,7 @@ import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.local.User
 import com.lateinit.rightweight.data.model.remote.WriteModelData
+import com.lateinit.rightweight.data.remote.model.UserInfoField
 import com.lateinit.rightweight.data.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -19,6 +20,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUser(): Flow<User?> {
         return userLocalDataSource.getUser()
+    }
+
+    override suspend fun restoreUserInfo(userId: String): UserInfoField? {
+        return userRemoteDataSource.restoreUserInfo(userId)
     }
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
