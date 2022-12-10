@@ -69,4 +69,7 @@ interface HistoryDao {
 
     @Query("DELETE FROM history_exercise WHERE exercise_id = :historyExerciseId")
     suspend fun removeHistoryExercise(historyExerciseId: String)
+
+    @Query("DELETE FROM history")
+    suspend fun removeAllHistories()
 }

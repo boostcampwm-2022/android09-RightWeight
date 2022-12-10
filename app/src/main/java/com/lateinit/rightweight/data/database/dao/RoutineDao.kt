@@ -32,6 +32,16 @@ interface RoutineDao {
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
     )
+    
+    @Transaction
+    suspend fun restoreRoutine(
+        routines: List<Routine>,
+        days: List<Day>,
+        exercises: List<Exercise>,
+        sets: List<ExerciseSet>
+    ){
+        insertRoutines(routines,days,exercises,sets)
+    }
 
     @Update
     suspend fun updateRoutines(routines: List<Routine>)
@@ -82,14 +92,7 @@ interface RoutineDao {
     @Query("DELETE FROM routine WHERE routine_id = :routineId")
     suspend fun removeRoutineById(routineId: String)
 
-    @Transaction
-    suspend fun restoreRoutine(
-        routines: List<Routine>,
-        days: List<Day>,
-        exercises: List<Exercise>,
-        sets: List<ExerciseSet>
-    ){
-        insertRoutines(routines,days,exercises,sets)
-    }
+    @Query("DELETE FROM routine")
+    suspend fun removeAllRoutines()
 
 }

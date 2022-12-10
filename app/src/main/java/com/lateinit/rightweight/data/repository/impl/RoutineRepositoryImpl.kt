@@ -113,6 +113,10 @@ class RoutineRepositoryImpl @Inject constructor(
         routineLocalDataSource.removeRoutineById(routineId)
     }
 
+    override suspend fun removeAllRoutines() {
+        routineLocalDataSource.removeAllRoutines()
+    }
+
     override suspend fun getChildrenDocumentName(path: String): List<String> {
         return routineRemoteDataSource.getChildrenDocumentName(path)
     }

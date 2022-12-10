@@ -190,17 +190,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        client.signOut()
-        moveToLoginActivity()
+        viewModel.deleteLocalData()
+        collectOnLifecycle {
+            viewModel.deleteEvent.collect {
+                client.signOut()
+                moveToLoginActivity()
+            }
+        }
     }
 
     private fun withdraw() {
+        viewModel.deleteLocalData()
         viewModel.deleteAccount(getString(R.string.google_api_key))
         collectOnLifecycle {
             viewModel.networkState.collect {
                 if (it == NetworkState.SUCCESS) {
-                    client.signOut()
-                    moveToLoginActivity()
+                    logout()
                 } else {
                     Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
                         .show()

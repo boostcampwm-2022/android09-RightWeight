@@ -80,4 +80,8 @@ class RoutineLocalDataSourceImpl @Inject constructor(
     override suspend fun removeRoutineById(routineId: String) {
         return routineDao.removeRoutineById(routineId)
     }
+
+    override suspend fun removeAllRoutines() {
+        routineDao.removeAllRoutines()
+    }
 }

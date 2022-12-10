@@ -47,4 +47,6 @@ interface HistoryRepository {
     suspend fun removeHistorySet(historySetId: String)
 
     suspend fun removeHistoryExercise(historyExerciseId: String)
+
+    suspend fun removeAllHistories()
 }

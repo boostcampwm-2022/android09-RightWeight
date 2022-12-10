@@ -48,4 +48,5 @@ interface RoutineLocalDataSource {
 
     suspend fun removeRoutineById(routineId: String)
 
+    suspend fun removeAllRoutines()
 }
