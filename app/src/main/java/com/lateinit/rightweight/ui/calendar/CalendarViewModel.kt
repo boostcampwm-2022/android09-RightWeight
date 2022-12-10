@@ -43,11 +43,7 @@ class CalendarViewModel @Inject constructor(
 
     val selectedDayInfo = selectedDay.combine(dateToExerciseHistories) { date, _ ->
         getSelectedDayInfo(date)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        SelectedDayInfo.NoHistory
-    )
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun selectDay(date: LocalDate) {
         selectedDay.value = date
@@ -57,22 +53,22 @@ class CalendarViewModel @Inject constructor(
         currentMonth.value = YearMonth.from(date)
     }
 
-    private fun getSelectedDayInfo(date: LocalDate): SelectedDayInfo {
+    private fun getSelectedDayInfo(date: LocalDate): HistoryUiModel? {
         return if (date in dateToExerciseHistories.value) {
             getSelectedHistory(date)
         } else {
             _routineTitle.value = DEFAULT_ROUTINE_TITLE
             _exerciseTime.value = DEFAULT_EXERCISE_TIME
-            SelectedDayInfo.NoHistory
+            null
         }
     }
 
-    private fun getSelectedHistory(date: LocalDate): SelectedDayInfo {
+    private fun getSelectedHistory(date: LocalDate): HistoryUiModel? {
         return dateToExerciseHistories.value[date]?.let {
             _routineTitle.value = it.routineTitle
             _exerciseTime.value = it.time
-            SelectedDayInfo.History(it)
-        } ?: SelectedDayInfo.History(null)
+            it
+        }
     }
 
     private fun getHistoryBetweenDate(
@@ -96,11 +92,6 @@ class CalendarViewModel @Inject constructor(
                 historyWithExercise.history.date to historyWithExercise.toHistoryUiModel()
             }
         }
-
-    sealed class SelectedDayInfo {
-        data class History(val data: HistoryUiModel?) : SelectedDayInfo()
-        object NoHistory : SelectedDayInfo()
-    }
 
     companion object {
         private const val START_DAY_OF_MONTH = 1
