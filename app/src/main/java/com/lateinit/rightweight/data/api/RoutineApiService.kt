@@ -19,7 +19,7 @@ interface RoutineApiService {
         @Body order: RunQueryBody
     ): List<DocumentResponse<SharedRoutineField>>
 
-    @GET("documents/shared_routine/{path}")
+    @GET("documents/{path}")
     suspend fun getChildrenDocumentName(
         @Path(value = "path", encoded = true)
         path: String
@@ -47,6 +47,12 @@ interface RoutineApiService {
         @Path("dayId") dayId: String,
         @Path("exerciseId") exerciseId: String
     ): DocumentsResponse<ExerciseSetField>?
+
+    @POST("./documents:runQuery")
+    suspend fun getUserRoutine(
+        @Body query: RunQueryBody
+    ): List<DocumentResponse<RoutineField>>
+
 
     @POST("./documents:commit")
     suspend fun commitTransaction(

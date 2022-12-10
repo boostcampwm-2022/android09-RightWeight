@@ -1,11 +1,13 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.datasource.*
-import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
-import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
-import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
 import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
+import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
+import com.lateinit.rightweight.data.datasource.remote.RoutineRemoteDataSource
 import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.repository.*
@@ -35,10 +37,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideRoutineRepository(
-        routineLocalDataSource: RoutineLocalDataSource
-
+        routineLocalDataSource: RoutineLocalDataSource,
+        routineRemoteDataSource: RoutineRemoteDataSource
     ): RoutineRepository {
-        return RoutineRepositoryImpl(routineLocalDataSource)
+        return RoutineRepositoryImpl(routineLocalDataSource, routineRemoteDataSource)
     }
 
     @Provides
@@ -53,9 +55,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideHistoryRepository(
-        historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
+        historyLocalDataSource: HistoryLocalDataSource,
+        historyRemoteDatasource: HistoryRemoteDatasource
     ): HistoryRepository {
-        return HistoryRepositoryImpl(historyLocalDataSourceImpl)
+        return HistoryRepositoryImpl(historyLocalDataSource, historyRemoteDatasource)
     }
 
     @Provides
@@ -64,6 +67,9 @@ class RepositoryModule {
         sharedRoutineRemoteDataSource: SharedRoutineRemoteDataSource,
         sharedRoutineLocalDataSource: SharedRoutineLocalDataSource
     ): SharedRoutineRepository {
-        return SharedRoutineRepositoryImpl(sharedRoutineRemoteDataSource, sharedRoutineLocalDataSource)
+        return SharedRoutineRepositoryImpl(
+            sharedRoutineRemoteDataSource,
+            sharedRoutineLocalDataSource
+        )
     }
 }
