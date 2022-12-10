@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentCalendarBinding
+import com.lateinit.rightweight.ui.calendar.CalendarViewModel.SelectedDayInfo
 import com.lateinit.rightweight.ui.home.ExpandableItemAnimator
 import com.lateinit.rightweight.ui.home.HomeAdapter
 import com.lateinit.rightweight.util.collectOnLifecycle
@@ -52,6 +54,7 @@ class CalendarFragment : Fragment() {
         completedDayDecorator = CompletedDayDecorator(requireContext())
         binding.calendarView.addDecorators(DayDecorator(requireContext()), completedDayDecorator)
         binding.calendarView.setSelectedDate(LocalDate.now())
+        binding.calendarView.state().edit().setMaximumDate(LocalDate.now()).commit()
         setCalendarListeners()
     }
 
@@ -76,17 +79,43 @@ class CalendarFragment : Fragment() {
 
     private fun collectSelectedDayInfo() {
         viewLifecycleOwner.collectOnLifecycle {
-            viewModel.selectedDayInfo.collectLatest { dayUiModel ->
-                dayUiModel?.let {
-                    val adapters = it.exercises.map { exerciseUiModel ->
-                        HomeAdapter(exerciseUiModel)
+            viewModel.selectedDayInfo.collectLatest { dayInfo ->
+                when (dayInfo) {
+                    is SelectedDayInfo.NoHistory -> {
+                        hideHistory(dayInfo)
                     }
-                    val adapter = ConcatAdapter(adapters)
-
-                    binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
-                    binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator =
-                        ExpandableItemAnimator()
+                    is SelectedDayInfo.History -> {
+                        showHistory(dayInfo)
+                    }
                 }
+            }
+        }
+    }
+
+    private fun hideHistory(dayInfo: SelectedDayInfo.NoHistory) {
+        binding.textViewNoHistory.visibility = View.VISIBLE
+        binding.layoutDayExercises.dayUiModel = null
+
+        val noHistoryMessageResId = if (dayInfo.isPast) {
+            R.string.history_none_past
+        } else {
+            R.string.history_none
+        }
+        binding.textViewNoHistory.setText(noHistoryMessageResId)
+    }
+
+    private fun showHistory(dayInfo: SelectedDayInfo.History) {
+        binding.textViewNoHistory.visibility = View.GONE
+        dayInfo.data?.let {
+            val adapters = it.exercises.map { exerciseUiModel ->
+                HomeAdapter(exerciseUiModel)
+            }
+            val adapter = ConcatAdapter(adapters)
+
+            binding.layoutDayExercises.apply {
+                dayUiModel = it
+                recyclerViewTodayRoutine.adapter = adapter
+                recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
             }
         }
     }
