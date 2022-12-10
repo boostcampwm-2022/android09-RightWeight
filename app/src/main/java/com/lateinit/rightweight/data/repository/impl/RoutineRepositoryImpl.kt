@@ -8,7 +8,7 @@ import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.RoutineRemoteDataSource
-import com.lateinit.rightweight.data.mapper.toRoutine
+import com.lateinit.rightweight.data.mapper.local.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +68,31 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
         return routineLocalDataSource.getAllRoutineWithDays()
+    }
+
+    override suspend fun restoreMyRoutine(routineIds: List<String>) {
+        var order = 0
+        routineIds.forEach { routineId ->
+            val routine = routineRemoteDataSource.getRoutine(routineId, order++)
+            val days = routineRemoteDataSource.getRoutineDays(routineId) ?: emptyList()
+            val exercises = mutableListOf<Exercise>()
+            val exerciseSets = mutableListOf<ExerciseSet>()
+            days.forEach {
+                val path = "routine/${routineId}/day/${it.dayId}/exercise"
+                exercises.addAll(
+                    routineRemoteDataSource.getRoutineExercises(path) ?: emptyList()
+                )
+            }
+            exercises.forEach {
+                val path =
+                    "routine/$routineId/day/${it.dayId}/exercise/${it.exerciseId}/exercise_set"
+                exerciseSets.addAll(
+                    routineRemoteDataSource.getRoutineExerciseSets(path) ?: emptyList()
+                )
+            }
+            routineLocalDataSource.insertRoutine(routine, days, exercises, exerciseSets)
+        }
+
     }
 
     override fun getAllRoutines(): Flow<List<Routine>> {

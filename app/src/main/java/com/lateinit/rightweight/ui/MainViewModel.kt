@@ -89,12 +89,19 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch() {
             val userInfoInServer = userRepository.restoreUserInfo(userId)
             if(userInfoInServer != null){
+                restoreRoutine()
                 restoreUserInfo(
                     userInfoInServer.routineId.value,
                     userInfoInServer.dayId.value
                 )
             }
         }
+    }
+
+    private suspend fun restoreRoutine() {
+        val userId = userInfo.value?.userId ?: return
+        val routineIds = routineRepository.getUserRoutineIds(userId)
+        routineRepository.restoreMyRoutine(routineIds)
     }
 
     private suspend fun restoreUserInfo(routineId: String, datId: String) {
