@@ -1,10 +1,11 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.datasource.*
+import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
 import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
-import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
 import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
 import com.lateinit.rightweight.data.datasource.remote.RoutineRemoteDataSource
 import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
@@ -54,9 +55,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideHistoryRepository(
-        historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
+        historyLocalDataSource: HistoryLocalDataSource,
+        historyRemoteDatasource: HistoryRemoteDatasource
     ): HistoryRepository {
-        return HistoryRepositoryImpl(historyLocalDataSourceImpl)
+        return HistoryRepositoryImpl(historyLocalDataSource, historyRemoteDatasource)
     }
 
     @Provides

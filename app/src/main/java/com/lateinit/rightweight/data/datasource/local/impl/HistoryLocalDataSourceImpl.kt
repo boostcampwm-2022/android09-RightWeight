@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
-class HistoryLocalLocalDataSourceImpl @Inject constructor(
+class HistoryLocalDataSourceImpl @Inject constructor(
     private val historyDao: HistoryDao
 ): HistoryLocalDataSource {
 
