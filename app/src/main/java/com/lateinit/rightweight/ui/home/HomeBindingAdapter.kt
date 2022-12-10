@@ -8,7 +8,7 @@ import com.lateinit.rightweight.R
 @BindingAdapter(
     value = ["imageUrl"]
 )
-fun ImageView.setImage(imageUrl: String){
+fun ImageView.setImage(imageUrl: String?){
     Glide.with(this)
         .load(imageUrl)
         .error(R.drawable.ic_launcher_foreground)

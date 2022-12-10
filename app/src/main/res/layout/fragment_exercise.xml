@@ -45,13 +45,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/secondaryColor"
-                android:text="@string/exercise_add"
                 android:paddingTop="12dp"
                 android:paddingBottom="24dp"
+                android:text="@string/exercise_add"
                 app:icon="@drawable/ic_add"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,7 +99,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_exercise_start_and_pause"
-            isTimerRunning="@{isTimerRunning}"
+            android:src="@{isTimerRunning ? @drawable/ic_pause : @drawable/ic_play_arrow}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/secondaryDarkColor"

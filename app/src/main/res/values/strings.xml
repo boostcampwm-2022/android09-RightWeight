@@ -37,7 +37,7 @@
     <string name="routine_save">루틴 저장하기</string>
     <string name="shared_routine_author">작성자</string>
     <string name="shared_routine_modified_date">작성일</string>
-    <string name="shared_routine_download_count">다운로드 수</string>
+    <string name="shared_routine_shared_count">공유된 횟수</string>
     <string name="chest">가슴</string>
     <string name="back">등</string>
     <string name="leg">하체</string>
@@ -62,4 +62,17 @@
     <string name="routine_remove_message">"현재 선택된 루틴 입니다. 삭제 하시겠습니까?"</string>
     <string name="end_exercise_message">달성하지 않은 항목이 있습니다. \n 정말 운동을 종료하시겠습니까?</string>
     <string name="stopwatch">stopwatch start and pause</string>
+    <string name="profile_image_description">프로필 이미지</string>
+    <string name="wrong_connection">인터넷 연결을 확인해주세요.</string>
+    <string name="success_save_routine">루틴이 저장되었습니다.</string>
+    <string name="fail_save_routine">루틴을 저장할 수 없습니다.</string>
+    <string name="go_routine_detail">보러가기</string>
+    <string name="success_backup">운동 기록과 루틴 정보가 저장 되었습니다.</string>
+    <string name="return_back">돌아가기</string>
+    <string name="msg_selected_routine">%s이 선택되었습니다.</string>
+    <string name="complete_share_message">루틴이 공유되었습니다.</string>
+    <string name="backup_user_info">내 정보 백업</string>
+    <string name="backup_message">"지금 상태의 정보를 저장하시겠습니까?"</string>
+    <string name="modified_date_sort">"최신순"</string>
+    <string name="shared_count_sort">"공유 횟수순"</string>
 </resources>

@@ -8,8 +8,8 @@
         <import type="java.time.format.DateTimeFormatter" />
 
         <variable
-            name="sharedRoutine"
-            type="com.lateinit.rightweight.data.database.entity.SharedRoutine" />
+            name="sharedRoutineUiModel"
+            type="com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel" />
 
         <variable
             name="sharedRoutineClickHandler"
@@ -31,7 +31,7 @@
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="4dp"
-            android:onClick="@{() -> sharedRoutineClickHandler.gotoSharedRoutineDetailFragment(sharedRoutine.routineId)}"
+            android:onClick="@{() -> sharedRoutineClickHandler.gotoSharedRoutineDetailFragment(sharedRoutineUiModel.routineId)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{sharedRoutine.author}"
+                    android:text="@{sharedRoutineUiModel.author}"
                     android:layout_marginStart="20dp"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_title"
                     app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
-                    android:text="@{sharedRoutine.title}"
+                    android:text="@{sharedRoutineUiModel.title}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_description"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_author"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_author"
@@ -71,7 +71,7 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{sharedRoutine.description}"
+                    android:text="@{sharedRoutineUiModel.description}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_modified_time"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_title"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_title"
@@ -82,11 +82,33 @@
                     style="@style/Text.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{sharedRoutine.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
+                    android:text="@{sharedRoutineUiModel.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/text_view_routine_description"
                     app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
                     tools:text="2022년 11월 24일" />
+
+                <ImageView
+                    android:id="@+id/image_view_routine_share_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_down_arrow"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toStartOf="@id/text_view_share_count"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
+                    android:contentDescription="@string/shared_routine_shared_count"/>
+
+                <TextView
+                    android:id="@+id/text_view_share_count"
+                    style="@style/Text.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{sharedRoutineUiModel.sharedCount}"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
+                    tools:text="공유 횟수" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

@@ -13,22 +13,15 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.util.convertTimeStamp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-fun convertTimeStamp(count: Int): String {
-    val hours: Int = (count / 60) / 60
-    val minutes: Int = (count / 60) % 60
-    val seconds: Int = count % 60
-
-    return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
-}
-
 class TimerService : LifecycleService() {
     private var isTimerRunning = false
     private var timeCount = 0
-    private lateinit var timer: Job
+    private var timer: Job = lifecycleScope.launchWhenCreated {  }
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
     private lateinit var notificationLayout: RemoteViews

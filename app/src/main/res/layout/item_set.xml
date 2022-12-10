@@ -7,7 +7,7 @@
 
         <variable
             name="exerciseSetUiModel"
-            type="com.lateinit.rightweight.ui.model.ExerciseSetUiModel" />
+            type="com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel" />
 
     </data>
 

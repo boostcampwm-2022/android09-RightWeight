@@ -1,15 +1,17 @@
 package com.lateinit.rightweight.ui.exercise
 
-import com.lateinit.rightweight.data.database.entity.HistoryExercise
-import com.lateinit.rightweight.data.database.entity.HistorySet
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 
 interface HistoryEventListener {
 
-    fun applyHistorySets(historyExerciseId: String, adapter:HistorySetAdapter)
-    fun updateHistorySet(historySet: HistorySet)
-    fun updateHistoryExercise(historyExercise: HistoryExercise)
-    fun removeHistorySet(historySetId: String)
-    fun removeHistoryExercise(historyExerciseId:String)
-    fun renewTodayHistory()
     fun addHistorySet(historyExerciseId: String)
+
+    fun updateHistorySet(historyExerciseSetUiModel: HistoryExerciseSetUiModel)
+
+    fun updateHistoryExercise(historyExerciseUiModel: HistoryExerciseUiModel)
+
+    fun removeHistorySet(historySetId: String)
+
+    fun removeHistoryExercise(historyExerciseId:String)
 }

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ItemExerciseWithSetsBinding
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 
 class DetailExerciseAdapter(
     private val onClickExercise: (Int) -> Unit
@@ -49,7 +49,8 @@ class DetailExerciseAdapter(
             binding.exerciseUiModel = exerciseUiModel
 
             binding.recyclerViewSet.adapter = detailExerciseSetAdapter
-            detailExerciseSetAdapter.submitList(exerciseUiModel.exerciseSets)
+            val exerciseSets = exerciseUiModel.exerciseSets
+            detailExerciseSetAdapter.submitList(exerciseSets)
         }
     }
 

@@ -1,7 +1,19 @@
 package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.datasource.*
+import com.lateinit.rightweight.data.datasource.local.impl.HistoryLocalLocalDataSourceImpl
+import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
+import com.lateinit.rightweight.data.datasource.local.SharedRoutineLocalDataSource
+import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
+import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.repository.*
+import com.lateinit.rightweight.data.repository.impl.HistoryRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.LoginRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.RoutineRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.SharedRoutineRepositoryImpl
+import com.lateinit.rightweight.data.repository.impl.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +26,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getLoginRepository(
+    fun provideLoginRepository(
         loginDataSource: LoginDataSource
     ): LoginRepository {
         return LoginRepositoryImpl(loginDataSource)
@@ -22,7 +34,7 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getRoutineRepository(
+    fun provideRoutineRepository(
         routineLocalDataSource: RoutineLocalDataSource
 
     ): RoutineRepository {
@@ -31,26 +43,27 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun getUserRepository(
-        userDataSource: UserDataSource
+    fun provideUserRepository(
+        userLocalDataSource: UserLocalDataSource,
+        userRemoteDataSource: UserRemoteDataSource
     ): UserRepository {
-        return UserRepositoryImpl(userDataSource)
+        return UserRepositoryImpl(userLocalDataSource, userRemoteDataSource)
     }
 
     @Provides
     @Singleton
-    fun getHistoryRepository(
-        historyLocalDataSource: HistoryLocalDataSource
+    fun provideHistoryRepository(
+        historyLocalDataSourceImpl: HistoryLocalLocalDataSourceImpl
     ): HistoryRepository {
-        return HistoryRepositoryImpl(historyLocalDataSource)
+        return HistoryRepositoryImpl(historyLocalDataSourceImpl)
     }
 
     @Provides
     @Singleton
-    fun getSharedRoutineRepository(
-        routineRemoteDataSource: RoutineRemoteDataSource,
-        routineLocalDataSource: RoutineLocalDataSource
+    fun provideSharedRoutineRepository(
+        sharedRoutineRemoteDataSource: SharedRoutineRemoteDataSource,
+        sharedRoutineLocalDataSource: SharedRoutineLocalDataSource
     ): SharedRoutineRepository {
-        return SharedRoutineRepositoryImpl(routineRemoteDataSource, routineLocalDataSource)
+        return SharedRoutineRepositoryImpl(sharedRoutineRemoteDataSource, sharedRoutineLocalDataSource)
     }
 }

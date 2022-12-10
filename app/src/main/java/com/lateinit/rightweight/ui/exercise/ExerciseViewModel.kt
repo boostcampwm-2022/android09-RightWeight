@@ -1,18 +1,16 @@
 package com.lateinit.rightweight.ui.exercise
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.History
-import com.lateinit.rightweight.data.database.entity.HistoryExercise
-import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.repository.HistoryRepository
+import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -21,44 +19,35 @@ class ExerciseViewModel @Inject constructor(
     private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-    private val _isAllHistorySetsChecked = MutableLiveData<Boolean>()
-    val isAllHistorySetsChecked: LiveData<Boolean> get() = _isAllHistorySetsChecked
+    val historyUiModel = historyRepository.getHistoryWithHistoryExercisesByDate(LocalDate.now()).map {
+        it ?: return@map null
+        it.toHistoryUiModel()
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    suspend fun loadTodayHistory(): Flow<List<History>>{
-        return historyRepository.loadHistoryByDate(LocalDate.now())
-    }
+    val isAllHistorySetsChecked get() = verifyAllHistorySets()
 
-    suspend fun loadHistoryExercises(historyId: String): Flow<List<HistoryExercise>> {
-        return historyRepository.getHistoryExercisesByHistoryId(historyId)
-    }
-
-    suspend fun loadHistorySets(historyExerciseId: String): Flow<List<HistorySet>> {
-        return historyRepository.getHistorySetsByHistoryExerciseId(historyExerciseId)
-    }
-
-    fun verifyAllHistorySets(historyExercises: List<HistoryExercise>){
+    fun addHistorySet(historyExerciseId: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                _isAllHistorySetsChecked.postValue(historyRepository.verifyAllHistorySets(historyExercises))
-            }
+            historyRepository.insertHistorySet(historyExerciseId)
         }
     }
 
-    fun updateHistory(history: History){
+    fun addHistoryExercise() {
         viewModelScope.launch {
-            historyRepository.updateHistory(history)
+            val historyId = historyUiModel.value?.historyId ?: return@launch
+            historyRepository.insertHistoryExercise(historyId)
         }
     }
 
-    fun updateHistorySet(historySet: HistorySet) {
+    fun updateHistorySet(historyExerciseSetUiModel: HistoryExerciseSetUiModel) {
         viewModelScope.launch {
-            historyRepository.updateHistorySet(historySet)
+            historyRepository.updateHistorySet(historyExerciseSetUiModel)
         }
     }
 
-    fun updateHistoryExercise(historyExercise: HistoryExercise) {
+    fun updateHistoryExercise(historyExerciseUiModel: HistoryExerciseUiModel) {
         viewModelScope.launch {
-            historyRepository.updateHistoryExercise(historyExercise)
+            historyRepository.updateHistoryExercise(historyExerciseUiModel)
         }
     }
 
@@ -74,15 +63,16 @@ class ExerciseViewModel @Inject constructor(
         }
     }
 
-    fun addHistorySet(historyExerciseId: String) {
+    fun endExercise(time: String) {
         viewModelScope.launch {
-            historyRepository.addHistorySet(historyExerciseId)
+            val originHistoryUiModel = historyUiModel.value ?: return@launch
+            historyRepository.updateHistory(originHistoryUiModel.copy(time = time, completed = true))
         }
     }
 
-    fun addHistoryExercise(historyId: String) {
-        viewModelScope.launch {
-            historyRepository.addHistoryExercise(historyId)
-        }
+    private fun verifyAllHistorySets(): Boolean {
+        return historyUiModel.value?.exercises?.all { exercise ->
+            exercise.exerciseSets.all { exerciseSet -> exerciseSet.checked }
+        } ?: false
     }
 }

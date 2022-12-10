@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
-import com.lateinit.rightweight.data.ExercisePartType
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
-import com.lateinit.rightweight.util.getPartNameRes
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +44,7 @@ class RoutineEditorFragment : Fragment() {
         setRoutineDaysObserve()
         setExerciseAdapter()
         setDayExercisesObserve()
+        setRoutineSaveButtonEvent()
     }
 
     private fun setBinding() {
@@ -59,8 +64,8 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setExerciseAdapter(){
-        val exerciseParts = ExercisePartType.values().map { exercisePart ->
-            getString(exercisePart.getPartNameRes())
+        val exerciseParts = ExercisePartTypeUiModel.values().map { exercisePart ->
+            getString(exercisePart.partName)
         }
         val exercisePartAdapter =
             ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
@@ -73,7 +78,7 @@ class RoutineEditorFragment : Fragment() {
             override fun onExercisePartChange(
                 dayId: String,
                 position: Int,
-                exercisePartType: ExercisePartType,
+                exercisePartType: ExercisePartTypeUiModel,
             ) {
                 viewModel.changeExercisePart(dayId, position, exercisePartType)
             }
@@ -95,6 +100,21 @@ class RoutineEditorFragment : Fragment() {
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
             exerciseAdapter.submitList(it)
+        }
+    }
+
+    private fun setRoutineSaveButtonEvent() {
+        collectOnLifecycle {
+            viewModel.isPossibleSaveRoutine.collect {
+                if (it) {
+                    setFragmentResult("management", bundleOf("save" to true))
+                    findNavController().navigateUp()
+                } else {
+                    Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {
+                        anchorView = binding.buttonSave
+                    }.show()
+                }
+            }
         }
     }
 

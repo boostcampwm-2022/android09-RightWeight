@@ -7,18 +7,22 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.ExercisePartType
-import com.lateinit.rightweight.data.database.entity.Routine
+import com.lateinit.rightweight.data.mapper.toDay
+import com.lateinit.rightweight.data.mapper.toExercise
+import com.lateinit.rightweight.data.mapper.toExerciseSet
 import com.lateinit.rightweight.data.repository.RoutineRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
+import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDay
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExercise
-import com.lateinit.rightweight.util.toExerciseSet
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID
@@ -32,6 +36,7 @@ class RoutineEditorViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var routineId: String
+    private var routineAuthor = DEFAULT_AUTHOR_NAME
 
     val routineTitle = MutableLiveData<String>()
     val routineDescription = MutableLiveData<String>()
@@ -64,11 +69,15 @@ class RoutineEditorViewModel @Inject constructor(
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
 
+    private val _isPossibleSaveRoutine = MutableSharedFlow<Boolean>()
+    val isPossibleSaveRoutine = _isPossibleSaveRoutine.asSharedFlow()
+
     init {
-        this.routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
+        routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
 
         if (routineId.isEmpty()) {
-            this.routineId = createUUID()
+            routineId = createUUID()
+            routineAuthor = savedStateHandle.get<String>("author") ?: DEFAULT_AUTHOR_NAME
             addDay()
         } else {
             getRoutine(routineId)
@@ -131,8 +140,7 @@ class RoutineEditorViewModel @Inject constructor(
             exerciseId = createUUID(),
             dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
-            order = exercises.size,
-            part = ExercisePartType.CHEST
+            order = exercises.size
         )
 
         exercises.add(exercise)
@@ -152,7 +160,7 @@ class RoutineEditorViewModel @Inject constructor(
     fun changeExercisePart(
         dayId: String,
         exercisePosition: Int,
-        exercisePartType: ExercisePartType
+        exercisePartType: ExercisePartTypeUiModel
     ) {
         val exercises = dayToExercise.value?.get(dayId) ?: return
 
@@ -185,6 +193,7 @@ class RoutineEditorViewModel @Inject constructor(
             val title = routineTitle.value
             val description = routineDescription.value
             val routineOrder = routineOrder.value
+            val days = days.value
             val order: Int = if (routineOrder == null) {
                 val higherOrder = routineRepository.getHigherRoutineOrder()
                 if (higherOrder == null) 0 else higherOrder + 1
@@ -192,29 +201,54 @@ class RoutineEditorViewModel @Inject constructor(
                 routineOrder
             }
 
-            if (title == null || title.isEmpty()) return@launch
-            if (description == null || description.isEmpty()) return@launch
-
-            val days = _days.value ?: return@launch
-
-            if (days.isEmpty()) return@launch
+            if (title.isNullOrEmpty()) {
+                sendEvent(false)
+                return@launch
+            }
+            if (description.isNullOrEmpty()) {
+                sendEvent(false)
+                return@launch
+            }
+            if (days.isNullOrEmpty()) {
+                sendEvent(false)
+                return@launch
+            }
 
             val exercises = dayToExercise.value?.values?.flatMap { exercises ->
-                if (exercises.isEmpty()) return@launch
+                if (exercises.isEmpty()) {
+                    sendEvent(false)
+                    return@launch
+                }
                 exercises
-            } ?: return@launch
+            } ?: run {
+                sendEvent(false)
+                return@launch
+            }
             val exerciseSets = exercises.flatMap { exercise ->
-                if (exercise.title.isEmpty()) return@launch
-                if (exercise.exerciseSets.isEmpty()) return@launch
+                if (exercise.title.isEmpty()) {
+                    sendEvent(false)
+                    return@launch
+                }
+                if (exercise.exerciseSets.isEmpty()) {
+                    sendEvent(false)
+                    return@launch
+                }
                 exercise.exerciseSets
             }
 
             routineRepository.insertRoutine(
-                Routine(routineId, title, "author", description, LocalDateTime.now(), order),
+                RoutineUiModel(routineId, title, routineAuthor, description, LocalDateTime.now(), order),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
             )
+            sendEvent(true)
+        }
+    }
+
+    private fun sendEvent(isPossible: Boolean) {
+        viewModelScope.launch {
+            _isPossibleSaveRoutine.emit(isPossible)
         }
     }
 
@@ -229,10 +263,11 @@ class RoutineEditorViewModel @Inject constructor(
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
             }
 
-            with(routineWithDays.routine) {
+            with(routineWithDays.routine.toRoutineUiModel()) {
                 routineTitle.value = title
                 routineDescription.value = description
                 routineOrder.value = order
+                routineAuthor = author
             }
             mapDayToExercise(dayUiModels)
             mapExerciseToSet(dayUiModels.flatMap { it.exercises })

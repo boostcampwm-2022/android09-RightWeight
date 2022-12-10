@@ -2,17 +2,17 @@ package com.lateinit.rightweight.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
-import com.lateinit.rightweight.data.model.User
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import com.lateinit.rightweight.ui.model.ParentDayUiModel
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toHistoryUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -33,12 +33,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val historyRepository: HistoryRepository,
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private lateinit var user: User
+    private val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val selectedDay = MutableStateFlow(LocalDate.MIN)
     private val currentMonth = MutableStateFlow(YearMonth.now())
@@ -59,24 +59,23 @@ class CalendarViewModel @Inject constructor(
         getHistoryBetweenDate(it)
     }.stateIn(viewModelScope, SharingStarted.Lazily, mapOf())
 
-    private var currentRoutine: Routine? = null
+    private var currentRoutine: RoutineUiModel? = null
     private val currentRoutineDays = MutableStateFlow<List<DayUiModel>>(emptyList())
     private var todayRoutineDayPosition = DAY_POSITION_NONE
 
     init {
-        viewModelScope.launch {
-            user = userRepository.getUser()
-            getRoutineDays()
-        }
+        getRoutineDays()
     }
 
     private fun getRoutineDays() {
-        val routineId = user.routineId ?: return
+        val user = userInfo.value ?: return
+        val routineId = user.routineId
+        if(routineId.isEmpty()) return
 
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
 
-            currentRoutine = routineWithDays.routine
+            currentRoutine = routineWithDays.routine.toRoutineUiModel()
             currentRoutineDays.value = routineWithDays.days.mapIndexed { index, routineWithDay ->
                 if (routineWithDay.day.dayId == user.dayId) todayRoutineDayPosition = index
                 routineWithDay.day.toDayUiModel(index, routineWithDay.exercises)
@@ -127,7 +126,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getHistoryBetweenDate(
-        month: YearMonth,
+        month: YearMonth
     ): Flow<Map<LocalDate, HistoryWithHistoryExercises>> {
         val startDay = month.atDay(START_DAY_OF_MONTH)
         val endDay = month.atEndOfMonth()

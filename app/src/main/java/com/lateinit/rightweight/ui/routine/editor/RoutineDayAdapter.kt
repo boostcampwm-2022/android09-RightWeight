@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ItemDayBinding
-import com.lateinit.rightweight.ui.model.DayUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
 
 class RoutineDayAdapter(
     private val onClickDay: (Int) -> Unit

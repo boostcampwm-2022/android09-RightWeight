@@ -3,10 +3,11 @@ package com.lateinit.rightweight.di
 import android.content.Context
 import androidx.room.Room
 import com.lateinit.rightweight.data.database.AppDatabase
-import com.lateinit.rightweight.data.database.AppSharedPreferences
+import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
+import com.lateinit.rightweight.data.database.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,32 +21,38 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun getAppDatabase(@ApplicationContext context: Context): AppDatabase {
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME).build()
     }
 
     @Provides
     @Singleton
-    fun getRoutineDao(appDatabase: AppDatabase): RoutineDao {
+    fun provideRoutineDao(appDatabase: AppDatabase): RoutineDao {
         return appDatabase.routineDao()
     }
 
     @Provides
     @Singleton
-    fun getHistoryDao(appDatabase: AppDatabase): HistoryDao {
+    fun provideHistoryDao(appDatabase: AppDatabase): HistoryDao {
         return appDatabase.historyDao()
     }
 
     @Provides
     @Singleton
-    fun getSharedRoutineDao(appDatabase: AppDatabase): SharedRoutineDao {
+    fun provideSharedRoutineDao(appDatabase: AppDatabase): SharedRoutineDao {
         return appDatabase.sharedRoutineDao()
     }
 
     @Provides
     @Singleton
-    fun getAppSharedPreferences(@ApplicationContext context: Context): AppSharedPreferences {
-        return AppSharedPreferences(context)
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppPreferencesDataStore(@ApplicationContext context: Context): AppPreferencesDataStore {
+        return AppPreferencesDataStore(context)
     }
 
     companion object {

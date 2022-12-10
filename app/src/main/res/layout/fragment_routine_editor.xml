@@ -44,6 +44,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="20"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_view_title">
@@ -53,6 +55,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/input_routine_name"
+                        android:inputType="text"
+                        android:maxLength="20"
                         android:text="@={viewModel.routineTitle}"
                         android:textAppearance="@style/Text.Small" />
 
@@ -62,7 +66,6 @@
                     android:id="@+id/text_view_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:text="@string/routine_description"
                     android:textAppearance="@style/Text.Medium.Bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -106,12 +109,13 @@
                     style="@style/Text.Small.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:onClick="@{()->viewModel.removeDay()}"
                     android:text="@string/day_remove"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toStartOf="@id/button_add_day"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_day" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_add_day"
@@ -121,9 +125,10 @@
                     android:onClick="@{()->viewModel.addDay()}"
                     android:text="@string/day_add"
                     android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/button_remove_day"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/button_remove_day"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_day" />
+                    app:layout_constraintTop_toTopOf="@id/button_remove_day" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_exercise"
@@ -134,7 +139,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/button_remove_day"
+                    app:layout_constraintTop_toBottomOf="@id/button_remove_day"
                     tools:itemCount="2"
                     tools:listitem="@layout/item_exercise" />
 
@@ -153,7 +158,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_exercise" />
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_exercise" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -162,8 +167,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:insetTop="0dp"
             android:onClick="@{() -> viewModel.saveRoutine()}"
             android:padding="16dp"
+            android:stateListAnimator="@null"
             android:text="@string/routine_save"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"

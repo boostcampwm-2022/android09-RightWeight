@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="loginResponse"
-            type="com.lateinit.rightweight.data.LoginResponse"/>
+            name="user"
+            type="com.lateinit.rightweight.data.model.local.User"/>
 
     </data>
 
@@ -21,10 +21,11 @@
             android:layout_height="150dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="4dp"
-            app:imageUrl="@{loginResponse.photoUrl}"
+            app:imageUrl="@{user.photoUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            android:contentDescription="@string/profile_image_description" />
 
         <TextView
             android:id="@+id/text_view_name"
@@ -32,7 +33,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
-            android:text="@{loginResponse.fullName}"
+            android:text="@{user.displayName}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -40,7 +41,7 @@
             android:id="@+id/text_view_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{loginResponse.email}"
+            android:text="@{user.email}"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/text_view_name"
             app:layout_constraintTop_toBottomOf="@+id/text_view_name" />

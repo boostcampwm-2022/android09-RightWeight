@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 
 @Entity(
     tableName = "shared_routine_exercise",
