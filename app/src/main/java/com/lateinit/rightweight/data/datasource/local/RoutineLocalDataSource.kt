@@ -23,6 +23,8 @@ interface RoutineLocalDataSource {
 
     suspend fun getDayById(dayId: String): Day
 
+    suspend fun getDaysByRoutineId(routineId: String): List<Day>
+
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
 
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>

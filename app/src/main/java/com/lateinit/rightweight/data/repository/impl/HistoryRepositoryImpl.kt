@@ -24,10 +24,11 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun saveHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
-        return  historyLocalDataSourceImpl.insertHistory(routineId, day, exercises, exerciseSets)
+        return  historyLocalDataSourceImpl.insertHistory(routineId, day, routineTitle, exercises, exerciseSets)
     }
 
     override suspend fun insertHistorySet(historyExerciseId: String) {
