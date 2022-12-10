@@ -15,7 +15,6 @@ import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
-import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
 import com.lateinit.rightweight.ui.mapper.toSharedRoutineUiModel
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
@@ -153,7 +152,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                         }
                     }
                 }
-                routineRepository.insertRoutine(routine.toRoutineUiModel(), days, exercises, exerciseSets)
+                routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
                 sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
                 _navigationEvent.emit(routine.routineId)
             }
