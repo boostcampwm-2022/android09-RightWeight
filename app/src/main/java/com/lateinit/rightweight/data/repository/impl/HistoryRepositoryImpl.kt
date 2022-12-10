@@ -11,6 +11,7 @@ import com.lateinit.rightweight.data.mapper.toHistory
 import com.lateinit.rightweight.data.mapper.toHistoryExercise
 import com.lateinit.rightweight.data.mapper.toHistorySet
 import com.lateinit.rightweight.data.repository.HistoryRepository
+import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
@@ -43,6 +44,10 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun getLatestHistoryDate(userId: String): LocalDate {
         return historyRemoteDatasource.getLatestHistoryDate(userId)
+    }
+
+    override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
+        return historyLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
 
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {

@@ -26,6 +26,8 @@ interface HistoryRepository {
 
     suspend fun getLatestHistoryDate(userId: String): LocalDate
 
+    suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
+
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 
     fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>

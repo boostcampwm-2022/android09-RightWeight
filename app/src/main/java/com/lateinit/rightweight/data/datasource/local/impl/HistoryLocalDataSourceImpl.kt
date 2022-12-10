@@ -67,6 +67,10 @@ class HistoryLocalDataSourceImpl @Inject constructor(
         historyDao.insertHistoryExercise(newHistoryExercise)
     }
 
+    override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises> {
+        return historyDao.getHistoryAfterDate(startDate)
+    }
+
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
         return historyDao.getHistoryByDate(localDate)
     }

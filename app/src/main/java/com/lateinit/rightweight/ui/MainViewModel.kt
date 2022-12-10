@@ -109,7 +109,7 @@ class MainViewModel @Inject constructor(
         val userId = userInfo.value?.userId ?: return
         commitItems.clear()
         val lastDate = historyRepository.getLatestHistoryDate(userId)
-        val historyList = userRepository.getHistoryAfterDate(lastDate)
+        val historyList = historyRepository.getHistoryAfterDate(lastDate)
         if (historyList.isNotEmpty()) {
             historyList.forEach { history ->
                 updateHistory(history)
@@ -229,7 +229,7 @@ class MainViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
             )
-            val exerciseIds = userRepository.getChildrenDocumentName("$path/exercise")
+            val exerciseIds = routineRepository.getChildrenDocumentName("$path/exercise")
             deleteExercises(path, exerciseIds)
         }
     }
@@ -244,7 +244,7 @@ class MainViewModel @Inject constructor(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
             )
             val exerciseSetIds =
-                userRepository.getChildrenDocumentName("$path/exercise_set")
+                routineRepository.getChildrenDocumentName("$path/exercise_set")
             deleteExerciseSets(path, exerciseSetIds)
         }
     }
