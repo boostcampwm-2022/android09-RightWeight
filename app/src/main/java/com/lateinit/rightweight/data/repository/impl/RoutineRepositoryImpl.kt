@@ -72,14 +72,13 @@ class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun restoreMyRoutine(routineIds: List<String>) {
-        var order = 0
         val routines = mutableListOf<Routine>()
         val days = mutableListOf<Day>()
         val exercises = mutableListOf<Exercise>()
         val exerciseSets = mutableListOf<ExerciseSet>()
 
         routineIds.forEach { routineId ->
-            routines.add(routineRemoteDataSource.getRoutine(routineId, order++))
+            routines.add(routineRemoteDataSource.getRoutine(routineId))
             days.addAll(routineRemoteDataSource.getRoutineDays(routineId))
             days.forEach {
                 val path = "routine/${routineId}/day/${it.dayId}/exercise"

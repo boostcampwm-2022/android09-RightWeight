@@ -104,7 +104,7 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
-fun RoutineField.toRoutine(routineId: String, order: Int): Routine {
+fun RoutineField.toRoutine(routineId: String): Routine {
     val refinedModifiedDateString = modifiedDate.value
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
@@ -114,7 +114,7 @@ fun RoutineField.toRoutine(routineId: String, order: Int): Routine {
         author = author.value,
         description = description.value,
         modifiedDate = modifiedDate,
-        order = order
+        order = order.value.toInt()
     )
 }
 

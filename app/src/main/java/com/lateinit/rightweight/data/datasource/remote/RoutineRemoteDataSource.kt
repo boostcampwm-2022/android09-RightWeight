@@ -10,7 +10,7 @@ import com.lateinit.rightweight.data.remote.model.RoutineField
 interface RoutineRemoteDataSource {
     suspend fun getRoutineByUserId(userId: String): List<DocumentResponse<RoutineField>>
 
-    suspend fun getRoutine(routineId: String, order: Int): Routine
+    suspend fun getRoutine(routineId: String): Routine
 
     suspend fun getRoutineDays(routineId: String): List<Day>
 

@@ -42,8 +42,8 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun getRoutine(routineId: String, order: Int): Routine {
-        return api.getRoutine(routineId).fields.toRoutine(routineId, order)
+    override suspend fun getRoutine(routineId: String): Routine {
+        return api.getRoutine(routineId).fields.toRoutine(routineId)
     }
 
     override suspend fun getRoutineDays(routineId: String): List<Day> {
