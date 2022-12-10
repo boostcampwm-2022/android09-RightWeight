@@ -8,7 +8,6 @@ import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.dao.HistoryDao
 import com.lateinit.rightweight.data.database.dao.RoutineDao
 import com.lateinit.rightweight.data.database.dao.SharedRoutineDao
-import com.lateinit.rightweight.data.database.dao.UserDao
 import com.lateinit.rightweight.data.datasource.*
 import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
 import com.lateinit.rightweight.data.datasource.local.RoutineLocalDataSource
@@ -83,10 +82,9 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun provideUserLocalDataSource(
-        userDao: UserDao,
         appPreferencesDataStore: AppPreferencesDataStore
     ): UserLocalDataSource {
-        return UserLocalDataSourceImpl(userDao, appPreferencesDataStore)
+        return UserLocalDataSourceImpl(appPreferencesDataStore)
     }
 
     @Provides

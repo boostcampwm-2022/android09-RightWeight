@@ -229,7 +229,7 @@ class MainViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
             )
-            val exerciseIds = routineRepository.getChildrenDocumentName("$path/exercise")
+            val exerciseIds = routineRepository.getChildrenDocumentName("routine/$path/exercise")
             deleteExercises(path, exerciseIds)
         }
     }
@@ -244,7 +244,7 @@ class MainViewModel @Inject constructor(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${path}")
             )
             val exerciseSetIds =
-                routineRepository.getChildrenDocumentName("$path/exercise_set")
+                routineRepository.getChildrenDocumentName("routine/$path/exercise_set")
             deleteExerciseSets(path, exerciseSetIds)
         }
     }
