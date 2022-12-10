@@ -40,6 +40,10 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         return routineDao.getDayById(dayId)
     }
 
+    override suspend fun getDaysByRoutineId(routineId: String): List<Day> {
+        return routineDao.getDaysByRoutineId(routineId)
+    }
+
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineDao.getExercisesByDayId(dayId)
     }
@@ -48,12 +52,16 @@ class RoutineLocalDataSourceImpl @Inject constructor(
         return routineDao.getSetsByExerciseId(exerciseId)
     }
 
+    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
+        return routineDao.getRoutineWithDaysByRoutineId(routineId)
+    }
+
     override fun getAllRoutines(): Flow<List<Routine>> {
         return routineDao.getAllRoutines()
     }
 
-    override suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays {
-        return routineDao.getRoutineWithDaysByRoutineId(routineId)
+    override suspend fun getAllRoutineWithDays(): List<RoutineWithDays> {
+        return routineDao.getAllRoutineWithDays()
     }
 
     override fun getDayWithExercisesByDayId(dayId: String): Flow<DayWithExercises> {

@@ -24,11 +24,17 @@ interface RoutineRepository {
 
     suspend fun getDayById(dayId: String): Day
 
+    suspend fun getDaysByRoutineId(routineId: String): List<Day>
+
     suspend fun getExercisesByDayId(dayId: String): List<Exercise>
 
     suspend fun getSetsByExerciseId(exerciseId: String): List<ExerciseSet>
 
     suspend fun getRoutineWithDaysByRoutineId(routineId: String): RoutineWithDays
+
+    suspend fun getUserRoutineIds(userId: String): List<String>
+
+    suspend fun getAllRoutineWithDays(): List<RoutineWithDays>
 
     fun getAllRoutines(): Flow<List<Routine>>
 
@@ -37,4 +43,6 @@ interface RoutineRepository {
     suspend fun updateRoutines(routines: List<RoutineUiModel>)
 
     suspend fun removeRoutineById(routineId: String)
+
+    suspend fun getChildrenDocumentName(path: String): List<String>
 }

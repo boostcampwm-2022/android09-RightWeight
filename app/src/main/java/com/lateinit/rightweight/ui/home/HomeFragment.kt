@@ -13,6 +13,7 @@ import com.lateinit.rightweight.databinding.FragmentHomeBinding
 import com.lateinit.rightweight.ui.MainActivity
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.RESET_DIALOG_TAG
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,7 +29,7 @@ class HomeFragment : Fragment() {
         CommonDialogFragment{ tag ->
             when (tag) {
                 RESET_DIALOG_TAG -> {
-//                    userViewModel.resetRoutine()
+                    viewModel.resetRoutine()
                 }
             }
         }
@@ -48,17 +49,7 @@ class HomeFragment : Fragment() {
 
         setBinding()
         setListeners()
-        setAdapter()
-
-        collectOnLifecycle {
-            viewModel.todayHistory.collect { todayHistory ->
-                if (todayHistory != null && todayHistory.completed) {
-                    binding.imageViewComplete.visibility = View.VISIBLE
-                } else {
-                    binding.imageViewComplete.visibility = View.GONE
-                }
-            }
-        }
+        collectSelectedDay()
     }
 
     override fun onDestroyView() {
@@ -90,18 +81,22 @@ class HomeFragment : Fragment() {
         return viewModel.todayHistory.value != null
     }
 
-    private fun setAdapter() {
+    private fun collectSelectedDay() {
         collectOnLifecycle {
             viewModel.selectedDay.collect { dayUiModel ->
-                val exercises = dayUiModel?.exercises ?: emptyList()
-                val homeAdapters = exercises.map { exerciseUiModel ->
-                    HomeAdapter(exerciseUiModel)
-                }
-
-                adapter = ConcatAdapter(homeAdapters)
-                binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
-                binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+                setAdapter(dayUiModel)
             }
         }
+    }
+
+    private fun setAdapter(dayUiModel: DayUiModel?) {
+        val exercises = dayUiModel?.exercises ?: emptyList()
+        val homeAdapters = exercises.map { exerciseUiModel ->
+            HomeAdapter(exerciseUiModel)
+        }
+
+        adapter = ConcatAdapter(homeAdapters)
+        binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
+        binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
     }
 }

@@ -15,6 +15,7 @@ interface HistoryLocalDataSource {
     suspend fun insertHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     )
@@ -22,6 +23,8 @@ interface HistoryLocalDataSource {
     suspend fun insertHistorySet(historyExerciseId: String)
 
     suspend fun insertHistoryExercise(historyId: String)
+
+    suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises>
 
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 

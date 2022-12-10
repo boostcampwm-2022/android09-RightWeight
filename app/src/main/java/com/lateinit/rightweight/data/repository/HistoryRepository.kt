@@ -16,6 +16,7 @@ interface HistoryRepository {
     suspend fun saveHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     )
@@ -23,6 +24,10 @@ interface HistoryRepository {
     suspend fun insertHistorySet(historyExerciseId: String)
 
     suspend fun insertHistoryExercise(historyId: String)
+
+    suspend fun getLatestHistoryDate(userId: String): LocalDate
+
+    suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 

@@ -20,9 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val userRepository: UserRepository,
     private val routineRepository: RoutineRepository,
     private val historyRepository: HistoryRepository,
-    userRepository: UserRepository
 ) : ViewModel() {
 
     private val userInfo =
@@ -35,23 +35,38 @@ class HomeViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val dayWithExercises = userInfo.flatMapLatest {
-        routineRepository.getDayWithExercisesByDayId(it?.dayId ?: "")
+    private val selectedDayWithExercises = userInfo.flatMapLatest {
+
+        if (it == null) {
+            routineRepository.getDayWithExercisesByDayId("")
+        } else {
+            todayHistory.flatMapLatest { history ->
+                if (history?.completed == true) {
+                    routineRepository.getDayWithExercisesByDayId(it.completedDayId)
+                } else {
+                    routineRepository.getDayWithExercisesByDayId(it.dayId)
+                }
+            }
+        }
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    val selectedDay = dayWithExercises.map {
+    val selectedDay = selectedDayWithExercises.map {
         it ?: return@map null
         it.day.toDayUiModel(it.day.order, it.exercises)
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val todayHistory = historyRepository.getHistoryByDate(LocalDate.now())
-        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun saveHistory() {
-        val routineId = userInfo.value?.routineId
-        if (routineId.isNullOrEmpty()) return
+        val routine = selectedRoutine.value ?: return
         val dayId = selectedDay.value?.dayId
-        if (dayId.isNullOrEmpty()) return
+
+        val routineId = routine.routineId
+        val routineTitle = routine.title
+
+        if (routineId.isEmpty() || routineTitle.isEmpty() || dayId.isNullOrEmpty()) return
+
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
             val exercises = routineRepository.getExercisesByDayId(dayId)
@@ -59,7 +74,17 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, routineTitle, exercises, totalExerciseSets)
+        }
+    }
+
+    fun resetRoutine() {
+        val currentUser = userInfo.value ?: return
+        val routineId = currentUser.routineId
+        viewModelScope.launch {
+            val days = routineRepository.getDaysByRoutineId(routineId)
+            val firstDay = days.filter { it.order == 0 }[0]
+            userRepository.saveUser(currentUser.copy(dayId = firstDay.dayId))
         }
     }
 
