@@ -80,6 +80,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setActionBar()
         setNavController()
+        restore()
+    }
+
+    private fun restore() {
+            viewModel.restore()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -2,6 +2,7 @@ package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
+import com.lateinit.rightweight.data.model.remote.DetailResponse
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.RootField
@@ -21,6 +22,11 @@ class UserRemoteDataSourceImpl @Inject constructor(
                 )
             )
         )
+    }
+
+
+    override suspend fun restoreUserInfo(userId: String): DetailResponse<UserInfoField> {
+        return api.restoreUserInfo(userId)
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
