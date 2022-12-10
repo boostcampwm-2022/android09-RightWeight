@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineManagementBinding
 import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.collectOnLifecycle
@@ -33,10 +36,41 @@ class RoutineManagementFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setFragmentResult()
         setBinding()
         setRoutineAdapter()
         setOnClickListeners()
         collectRoutines()
+    }
+
+    private fun setFragmentResult() {
+        setFragmentResultListener("management") { _, bundle ->
+            val selectedRoutineTitle = bundle.getString("select")
+            if (selectedRoutineTitle != null) {
+                Snackbar.make(
+                    binding.root,
+                    String.format(
+                        getString(R.string.msg_selected_routine),
+                        "$selectedRoutineTitle"
+                    ),
+                    Snackbar.LENGTH_SHORT
+                ).apply {
+                    anchorView = binding.floatingActionButtonCreateRoutine
+                    setAction(R.string.submit) {
+                        this.dismiss()
+                    }
+                }.show()
+            }
+            if (bundle.getBoolean("save")) {
+                Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT)
+                    .apply {
+                        anchorView = binding.floatingActionButtonCreateRoutine
+                        setAction(R.string.submit) {
+                            this.dismiss()
+                        }
+                    }.show()
+            }
+        }
     }
 
     private fun setBinding() {
@@ -74,7 +108,8 @@ class RoutineManagementFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.cardViewHomeRoutineTitleContainer.setOnClickListener {
-            val routineId = viewModel.selectedRoutineUiModel.value?.routineId ?: return@setOnClickListener
+            val routineId =
+                viewModel.selectedRoutineUiModel.value?.routineId ?: return@setOnClickListener
             navigateToRoutineDetail(routineId)
         }
 

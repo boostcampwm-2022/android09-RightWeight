@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 
 class HistoryExerciseAdapter(
     private val exercisePartAdapter: ArrayAdapter<String>,

@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.lateinit.rightweight.data.model.User"/>
+            type="com.lateinit.rightweight.data.model.local.User"/>
 
     </data>
 

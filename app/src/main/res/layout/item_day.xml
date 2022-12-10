@@ -7,7 +7,7 @@
 
         <variable
             name="dayUiModel"
-            type="com.lateinit.rightweight.ui.model.DayUiModel" />
+            type="com.lateinit.rightweight.ui.model.routine.DayUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

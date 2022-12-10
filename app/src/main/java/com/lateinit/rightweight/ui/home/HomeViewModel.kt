@@ -6,8 +6,8 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
         it.day.toDayUiModel(it.day.order, it.exercises)
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    val todayHistory = historyRepository.loadHistoryByDate(LocalDate.now())
+    val todayHistory = historyRepository.getHistoryByDate(LocalDate.now())
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun saveHistory() {

@@ -30,11 +30,11 @@ interface HistoryDao {
     suspend fun insertHistoryExercise(historyExercise: HistoryExercise)
 
     @Query("SELECT * FROM history WHERE date = :localDate")
-    fun loadHistoryByDate(localDate: LocalDate) : Flow<History>
+    fun getHistoryByDate(localDate: LocalDate) : Flow<History>
 
     @Transaction
     @Query("SELECT * FROM history WHERE date = :localDate")
-    fun getHistoryByDate(localDate: LocalDate) : Flow<HistoryWithHistoryExercises?>
+    fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate) : Flow<HistoryWithHistoryExercises?>
 
     @Transaction
     @Query("SELECT * FROM history WHERE date BETWEEN :startDate AND :endDate")

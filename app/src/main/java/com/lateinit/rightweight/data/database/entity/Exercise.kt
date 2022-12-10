@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
-import com.lateinit.rightweight.data.ExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 
 @Entity(
     tableName = "exercise",

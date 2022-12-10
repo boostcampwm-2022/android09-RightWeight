@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ItemExerciseBinding
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 
 class RoutineExerciseAdapter(
     private val exercisePartAdapter: ArrayAdapter<String>,

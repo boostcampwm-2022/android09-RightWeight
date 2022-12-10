@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -105,12 +107,7 @@ class RoutineEditorFragment : Fragment() {
         collectOnLifecycle {
             viewModel.isPossibleSaveRoutine.collect {
                 if (it) {
-                    Snackbar.make(binding.root, R.string.success_save_routine, Snackbar.LENGTH_SHORT).apply {
-                        anchorView = binding.buttonSave
-                        setAction(R.string.submit) {
-                            this.dismiss()
-                        }
-                    }.show()
+                    setFragmentResult("management", bundleOf("save" to true))
                     findNavController().navigateUp()
                 } else {
                     Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {

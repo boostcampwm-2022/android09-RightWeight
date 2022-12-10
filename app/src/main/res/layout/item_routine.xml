@@ -9,7 +9,7 @@
 
         <variable
             name="routineUiModel"
-            type="com.lateinit.rightweight.ui.model.RoutineUiModel" />
+            type="com.lateinit.rightweight.ui.model.routine.RoutineUiModel" />
 
     </data>
 

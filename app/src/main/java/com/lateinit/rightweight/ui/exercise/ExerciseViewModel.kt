@@ -3,9 +3,9 @@ package com.lateinit.rightweight.ui.exercise
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.repository.HistoryRepository
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.util.toHistoryUiModel
+import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -19,7 +19,7 @@ class ExerciseViewModel @Inject constructor(
     private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-    val historyUiModel = historyRepository.getHistoryByDate(LocalDate.now()).map {
+    val historyUiModel = historyRepository.getHistoryWithHistoryExercisesByDate(LocalDate.now()).map {
         it ?: return@map null
         it.toHistoryUiModel()
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
