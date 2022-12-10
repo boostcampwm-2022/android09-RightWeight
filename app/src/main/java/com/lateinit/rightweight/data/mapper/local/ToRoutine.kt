@@ -6,7 +6,11 @@ import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.mapper.toExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.data.model.remote.DetailResponse
+import com.lateinit.rightweight.data.remote.model.DayField
+import com.lateinit.rightweight.data.remote.model.ExerciseField
+import com.lateinit.rightweight.data.remote.model.ExerciseSetField
 import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
@@ -100,18 +104,45 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
-fun DetailResponse<RoutineField>.toRoutine(order: Int): Routine {
-    val routineId = name.split("/").last()
-    val refinedModifiedDateString = fields.modifiedDate.value
+fun RoutineField.toRoutine(routineId: String, order: Int): Routine {
+    val refinedModifiedDateString = modifiedDate.value
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return Routine(
         routineId = routineId,
-        title = fields.title.value,
-        author = fields.author.value,
-        description = fields.description.value,
+        title = title.value,
+        author = author.value,
+        description = description.value,
         modifiedDate = modifiedDate,
         order = order
+    )
+}
+
+fun DayField.toDay(dayId: String): Day {
+    return Day(
+        dayId = dayId,
+        routineId = routineId.value,
+        order = order.value.toInt()
+    )
+}
+
+fun ExerciseField.toExercise(exerciseId: String): Exercise {
+    return Exercise(
+        exerciseId = exerciseId,
+        dayId = dayId.value,
+        title = title.value,
+        order = order.value.toInt(),
+        part = ExercisePartType.valueOf(partType.value)
+    )
+}
+
+fun ExerciseSetField.toExerciseSet(setId: String): ExerciseSet {
+    return ExerciseSet(
+        setId = setId,
+        exerciseId = exerciseId.value,
+        weight = weight.value,
+        count = count.value,
+        order = order.value.toInt()
     )
 }
 
