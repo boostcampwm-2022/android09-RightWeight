@@ -41,4 +41,6 @@ interface RoutineRepository {
     suspend fun updateRoutines(routines: List<RoutineUiModel>)
 
     suspend fun removeRoutineById(routineId: String)
+
+    suspend fun getChildrenDocumentName(path: String): List<String>
 }

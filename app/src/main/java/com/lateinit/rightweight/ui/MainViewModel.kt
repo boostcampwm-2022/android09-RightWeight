@@ -218,7 +218,7 @@ class MainViewModel @Inject constructor(
         commitItems.add(
             WriteModelData(delete = "${WriteModelData.defaultPath}/routine/${routineId}")
         )
-        val dayIds = userRepository.getChildrenDocumentName("$routineId/day")
+        val dayIds = routineRepository.getChildrenDocumentName("routine/${routineId}/day")
         deleteDays(routineId, dayIds)
     }
 

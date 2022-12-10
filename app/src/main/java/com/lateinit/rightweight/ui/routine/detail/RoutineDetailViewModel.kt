@@ -211,7 +211,7 @@ class RoutineDetailViewModel @Inject constructor(
         commitItems.add(
             WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${routineId}")
         )
-        val dayIds = sharedRoutineRepository.getChildrenDocumentName("$routineId/day")
+        val dayIds = sharedRoutineRepository.getChildrenDocumentName("shared_routine/$routineId/day")
         deleteDays(routineId, dayIds)
         sharedRoutineRepository.commitTransaction(commitItems)
     }
@@ -226,7 +226,7 @@ class RoutineDetailViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
             )
-            val exerciseIds = sharedRoutineRepository.getChildrenDocumentName("$path/exercise")
+            val exerciseIds = sharedRoutineRepository.getChildrenDocumentName("shared_routine/$path/exercise")
             deleteExercises(path, exerciseIds)
         }
     }
@@ -241,7 +241,7 @@ class RoutineDetailViewModel @Inject constructor(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
             )
             val exerciseSetIds =
-                sharedRoutineRepository.getChildrenDocumentName("$path/exercise_set")
+                sharedRoutineRepository.getChildrenDocumentName("shared_routine/$path/exercise_set")
             deleteExerciseSets(path, exerciseSetIds)
         }
     }

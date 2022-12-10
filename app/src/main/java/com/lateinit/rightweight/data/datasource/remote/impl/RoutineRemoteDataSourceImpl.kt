@@ -33,4 +33,11 @@ class RoutineRemoteDataSourceImpl @Inject constructor(
             )
         )
     }
+
+    override suspend fun getChildrenDocumentName(path: String): List<String> {
+        val documentNameList = api.getChildrenDocumentName(path)
+        return documentNameList.documents?.map {
+            it.name.split("/").last()
+        } ?: emptyList()
+    }
 }
