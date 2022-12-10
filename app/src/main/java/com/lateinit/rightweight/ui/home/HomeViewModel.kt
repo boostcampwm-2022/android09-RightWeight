@@ -48,9 +48,13 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun saveHistory() {
-        val routineId = userInfo.value?.routineId
-        if (routineId.isNullOrEmpty()) return
+        val routine = selectedRoutine.value ?: return
         val dayId = selectedDay.value?.dayId
+
+        val routineId = routine.routineId
+        val routineTitle = routine.title
+
+        if (routineId.isEmpty() || routineTitle.isEmpty()) return
         if (dayId.isNullOrEmpty()) return
         viewModelScope.launch {
             val day = routineRepository.getDayById(dayId)
@@ -59,7 +63,7 @@ class HomeViewModel @Inject constructor(
             for (exercise in exercises) {
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
-            historyRepository.saveHistory(routineId, day, exercises, totalExerciseSets)
+            historyRepository.saveHistory(routineId, day, routineTitle, exercises, totalExerciseSets)
         }
     }
 
