@@ -19,7 +19,6 @@ class UserLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun removeUserInfo() {
-        appPreferencesDataStore.saveUser(User("", "", "", "", "", "", "", ""))
-
+        appPreferencesDataStore.deleteUserInfo()
     }
 }
