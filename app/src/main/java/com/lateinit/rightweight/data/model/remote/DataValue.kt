@@ -6,20 +6,20 @@ sealed class ValueData
 
 data class StringValue(
     @SerializedName("stringValue")
-    val value: String? = null
+    val value: String
 ): ValueData()
 
 data class IntValue(
     @SerializedName("integerValue")
-    val value: String? = null
+    val value: String
 ): ValueData()
 
 data class TimeStampValue(
     @SerializedName("timestampValue")
-    val value: String? = null
+    val value: String
 ): ValueData()
 
 data class MapValue(
     @SerializedName("mapValue")
-    val value: MapValueRootField? = null
+    val value: MapValueRootField
 ): ValueData()
