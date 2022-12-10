@@ -57,14 +57,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
         setLoginButtonListener()
-        checkLoginBefore()
         collectNetworkResponse()
-    }
-
-    private fun checkLoginBefore() {
-        client.silentSignIn().addOnSuccessListener {
-            moveToHomeActivity()
-        }
     }
 
     private fun setLoginButtonListener() {
