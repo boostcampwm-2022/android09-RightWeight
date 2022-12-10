@@ -25,8 +25,26 @@ interface RoutineDao {
         sets: List<ExerciseSet>
     )
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutines(
+        routine: List<Routine>,
+        days: List<Day>,
+        exercises: List<Exercise>,
+        sets: List<ExerciseSet>
+    )
+
     @Update
     suspend fun updateRoutines(routines: List<Routine>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun transactionRoutinesTest(
+        routine: Routine
+    )
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRoutinesTest(
+        routine: List<Routine>
+    )
 
     @Query("SELECT (`order`) FROM routine ORDER BY `order` DESC LIMIT 1")
     suspend fun getHigherRoutineOrder(): Int?
@@ -63,4 +81,15 @@ interface RoutineDao {
 
     @Query("DELETE FROM routine WHERE routine_id = :routineId")
     suspend fun removeRoutineById(routineId: String)
+
+    @Transaction
+    suspend fun restoreRoutine(
+        routines: List<Routine>,
+        days: List<Day>,
+        exercises: List<Exercise>,
+        sets: List<ExerciseSet>
+    ){
+        insertRoutines(routines,days,exercises,sets)
+    }
+
 }

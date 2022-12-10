@@ -17,6 +17,13 @@ interface RoutineLocalDataSource {
         sets: List<ExerciseSet>
     )
 
+    suspend fun restoreRoutines(
+        routine: List<Routine>,
+        days: List<Day>,
+        exercises: List<Exercise>,
+        sets: List<ExerciseSet>
+    )
+
     suspend fun getRoutineById(routineId: String): Routine
 
     suspend fun getHigherRoutineOrder(): Int?
