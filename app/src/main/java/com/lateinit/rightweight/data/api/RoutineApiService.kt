@@ -23,10 +23,10 @@ interface RoutineApiService {
     suspend fun getChildrenDocument(
         @Path(value = "path", encoded = true)
         path: String
-    ): DocumentsResponse<RemoteData>
+    ): DocumentsResponse<DetailResponse<RemoteData>>
 
     @GET("documents/routine/{path}")
-    suspend fun getRoutineDocument(
+    suspend fun getRoutine(
         @Path("path") path: String
     ): DetailResponse<RoutineField>
 
