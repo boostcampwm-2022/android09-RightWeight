@@ -1,0 +1,6 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/img_right_weight"
+    android:insetLeft="72dp"
+    android:insetRight="72dp"
+    android:insetTop="90dp"
+    android:insetBottom="90dp"/>
