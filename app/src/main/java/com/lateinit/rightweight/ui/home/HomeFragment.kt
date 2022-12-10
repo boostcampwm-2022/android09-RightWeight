@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
         CommonDialogFragment{ tag ->
             when (tag) {
                 RESET_DIALOG_TAG -> {
-//                    userViewModel.resetRoutine()
+                    viewModel.resetRoutine()
                 }
             }
         }

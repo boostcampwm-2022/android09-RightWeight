@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val routineRepository: RoutineRepository,
     private val historyRepository: HistoryRepository,
 ) : ViewModel() {
@@ -75,6 +75,16 @@ class HomeViewModel @Inject constructor(
                 totalExerciseSets.addAll(routineRepository.getSetsByExerciseId(exercise.exerciseId))
             }
             historyRepository.saveHistory(routineId, day, routineTitle, exercises, totalExerciseSets)
+        }
+    }
+
+    fun resetRoutine() {
+        val currentUser = userInfo.value ?: return
+        val routineId = currentUser.routineId
+        viewModelScope.launch {
+            val days = routineRepository.getDaysByRoutineId(routineId)
+            val firstDay = days.filter { it.order == 0 }[0]
+            userRepository.saveUser(currentUser.copy(dayId = firstDay.dayId))
         }
     }
 
