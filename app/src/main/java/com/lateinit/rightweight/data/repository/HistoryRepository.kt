@@ -16,6 +16,7 @@ interface HistoryRepository {
     suspend fun saveHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     )

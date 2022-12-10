@@ -4,6 +4,7 @@ data class User(
     val userId: String,
     val routineId: String,
     val dayId: String,
+    val completedDayId: String = "",
     val email: String,
     val displayName: String,
     val photoUrl: String,

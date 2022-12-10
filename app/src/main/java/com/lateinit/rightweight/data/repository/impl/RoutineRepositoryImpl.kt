@@ -40,6 +40,10 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineLocalDataSource.getDayById(dayId)
     }
 
+    override suspend fun getDaysByRoutineId(routineId: String): List<Day> {
+        return routineLocalDataSource.getDaysByRoutineId(routineId)
+    }
+
     override suspend fun getExercisesByDayId(dayId: String): List<Exercise> {
         return routineLocalDataSource.getExercisesByDayId(dayId)
     }

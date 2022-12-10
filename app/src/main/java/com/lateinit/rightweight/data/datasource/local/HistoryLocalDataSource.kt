@@ -15,6 +15,7 @@ interface HistoryLocalDataSource {
     suspend fun insertHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     )

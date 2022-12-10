@@ -1,10 +1,15 @@
 package com.lateinit.rightweight.data.datasource.local.impl
 
-import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.data.database.dao.HistoryDao
-import com.lateinit.rightweight.data.database.entity.*
+import com.lateinit.rightweight.data.database.entity.Day
+import com.lateinit.rightweight.data.database.entity.Exercise
+import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.util.createRandomUUID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -17,11 +22,12 @@ class HistoryLocalDataSourceImpl @Inject constructor(
     override suspend fun insertHistory(
         routineId: String,
         day: Day,
+        routineTitle: String,
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
         val historyId = createRandomUUID()
-        val history = History(historyId, LocalDate.now(), "00:00:00", "", day.order, false, routineId)
+        val history = History(historyId, LocalDate.now(), "00:00:00", routineTitle, day.order, false, routineId)
         val historyExercises = mutableListOf<HistoryExercise>()
         val historySets = mutableListOf<HistorySet>()
         for(exercise in exercises){
