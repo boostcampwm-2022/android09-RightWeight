@@ -50,6 +50,9 @@ class MainViewModel @Inject constructor(
     private val _networkState = MutableSharedFlow<NetworkState>()
     val networkState = _networkState.asSharedFlow()
 
+    private val _deleteEvent = MutableSharedFlow<Boolean>()
+    val deleteEvent = _deleteEvent.asSharedFlow()
+
     private val commitItems = mutableListOf<WriteModelData>()
 
     private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -60,6 +63,15 @@ class MainViewModel @Inject constructor(
                 is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
                 else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
             }
+        }
+    }
+
+    fun deleteLocalData() {
+        viewModelScope.launch {
+            userRepository.removeUserInfo()
+            historyRepository.removeAllHistories()
+            routineRepository.removeAllRoutines()
+            _deleteEvent.emit(true)
         }
     }
 

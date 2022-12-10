@@ -8,4 +8,6 @@ interface UserLocalDataSource {
     suspend fun saveUser(user: User)
 
     fun getUser(): Flow<User?>
+
+    suspend fun removeUserInfo()
 }

@@ -21,6 +21,10 @@ class UserRepositoryImpl @Inject constructor(
         return userLocalDataSource.getUser()
     }
 
+    override suspend fun removeUserInfo() {
+        userLocalDataSource.removeUserInfo()
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         userRemoteDataSource.commitTransaction(writes)
     }

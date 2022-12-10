@@ -182,8 +182,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        client.signOut()
-        moveToLoginActivity()
+        viewModel.deleteLocalData()
+        collectOnLifecycle {
+            viewModel.deleteEvent.collect {
+                client.signOut()
+                moveToLoginActivity()
+            }
+        }
     }
 
     private fun withdraw() {

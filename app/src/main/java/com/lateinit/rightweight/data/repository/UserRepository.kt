@@ -10,6 +10,8 @@ interface UserRepository {
 
     fun getUser(): Flow<User?>
 
+    suspend fun removeUserInfo()
+
     suspend fun commitTransaction(writes: List<WriteModelData>)
 
     suspend fun backupUserInfo(user: User)
