@@ -52,10 +52,14 @@ class CalendarFragment : Fragment() {
 
     private fun setCalendarView() {
         completedDayDecorator = CompletedDayDecorator(requireContext())
-        binding.calendarView.addDecorators(DayDecorator(requireContext()), completedDayDecorator)
-        binding.calendarView.setSelectedDate(LocalDate.now())
-        binding.calendarView.state().edit().setMaximumDate(LocalDate.now()).commit()
         setCalendarListeners()
+        binding.calendarView.apply {
+            val today = LocalDate.now()
+
+            state().edit().setMaximumDate(today).commit()
+            addDecorators(DayDecorator(requireContext()), completedDayDecorator)
+            setSelectedDate(today)
+        }
     }
 
     private fun setCalendarListeners() {
@@ -82,7 +86,7 @@ class CalendarFragment : Fragment() {
             viewModel.selectedDayInfo.collectLatest { dayInfo ->
                 when (dayInfo) {
                     is SelectedDayInfo.NoHistory -> {
-                        hideHistory(dayInfo)
+                        hideHistory()
                     }
                     is SelectedDayInfo.History -> {
                         showHistory(dayInfo)
@@ -92,16 +96,10 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun hideHistory(dayInfo: SelectedDayInfo.NoHistory) {
+    private fun hideHistory() {
         binding.textViewNoHistory.visibility = View.VISIBLE
         binding.layoutDayExercises.dayUiModel = null
-
-        val noHistoryMessageResId = if (dayInfo.isPast) {
-            R.string.history_none_past
-        } else {
-            R.string.history_none
-        }
-        binding.textViewNoHistory.setText(noHistoryMessageResId)
+        binding.textViewNoHistory.setText(R.string.history_none)
     }
 
     private fun showHistory(dayInfo: SelectedDayInfo.History) {

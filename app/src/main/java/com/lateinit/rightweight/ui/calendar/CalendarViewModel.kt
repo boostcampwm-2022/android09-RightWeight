@@ -46,7 +46,7 @@ class CalendarViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.Lazily,
-        SelectedDayInfo.NoHistory(isPast = false)
+        SelectedDayInfo.NoHistory
     )
 
     fun selectDay(date: LocalDate) {
@@ -61,7 +61,9 @@ class CalendarViewModel @Inject constructor(
         return if (date in dateToExerciseHistories.value) {
             getSelectedHistory(date)
         } else {
-            getSelectedRoutineDay(date)
+            _routineTitle.value = DEFAULT_ROUTINE_TITLE
+            _exerciseTime.value = DEFAULT_EXERCISE_TIME
+            SelectedDayInfo.NoHistory
         }
     }
 
@@ -71,18 +73,6 @@ class CalendarViewModel @Inject constructor(
             _exerciseTime.value = it.time
             SelectedDayInfo.History(it)
         } ?: SelectedDayInfo.History(null)
-    }
-
-    private fun getSelectedRoutineDay(date: LocalDate): SelectedDayInfo {
-        val today = LocalDate.now()
-        _routineTitle.value = DEFAULT_ROUTINE_TITLE
-        _exerciseTime.value = DEFAULT_EXERCISE_TIME
-
-        return if (date.isBefore(today)) {
-            SelectedDayInfo.NoHistory(true)
-        } else {
-            SelectedDayInfo.NoHistory(false)
-        }
     }
 
     private fun getHistoryBetweenDate(
@@ -109,7 +99,7 @@ class CalendarViewModel @Inject constructor(
 
     sealed class SelectedDayInfo {
         data class History(val data: HistoryUiModel?) : SelectedDayInfo()
-        data class NoHistory(val isPast: Boolean) : SelectedDayInfo()
+        object NoHistory : SelectedDayInfo()
     }
 
     companion object {
