@@ -87,6 +87,7 @@
             android:elevation="3dp"
             android:src="@drawable/img_completed"
             android:rotation="@integer/material_motion_duration_long_2"
+            android:visibility="@{viewModel.todayHistory.completed ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
