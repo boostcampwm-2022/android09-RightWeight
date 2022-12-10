@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface RoutineRepository {
 
-    suspend fun insertRoutine(
-        routine: RoutineUiModel,
+    suspend fun insertRoutines(
+        routine: Routine,
         days: List<Day>,
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
