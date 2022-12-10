@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
-import com.lateinit.rightweight.data.mapper.toDayWithNewIds
-import com.lateinit.rightweight.data.mapper.toExerciseSetWithNewIds
-import com.lateinit.rightweight.data.mapper.toExerciseWithNewIds
-import com.lateinit.rightweight.data.mapper.toRoutine
+import com.lateinit.rightweight.data.mapper.local.toDayWithNewIds
+import com.lateinit.rightweight.data.mapper.local.toExerciseSetWithNewIds
+import com.lateinit.rightweight.data.mapper.local.toExerciseWithNewIds
+import com.lateinit.rightweight.data.mapper.local.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository

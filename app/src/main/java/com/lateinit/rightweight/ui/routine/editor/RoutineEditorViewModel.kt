@@ -7,9 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.mapper.toDay
-import com.lateinit.rightweight.data.mapper.toExercise
-import com.lateinit.rightweight.data.mapper.toExerciseSet
+import com.lateinit.rightweight.data.mapper.local.toDay
+import com.lateinit.rightweight.data.mapper.local.toExercise
+import com.lateinit.rightweight.data.mapper.local.toExerciseSet
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
