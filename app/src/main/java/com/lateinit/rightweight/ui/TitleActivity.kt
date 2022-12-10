@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class TitleActivity: AppCompatActivity() {
 
-    private var binding: ActivityTitleBinding? = null
+    private lateinit var binding: ActivityTitleBinding
 
     private val options: GoogleSignInOptions by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
