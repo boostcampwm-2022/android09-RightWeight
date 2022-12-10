@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.mapper.remote.toHistoryField
 import com.lateinit.rightweight.data.mapper.remote.toRoutineField
 import com.lateinit.rightweight.data.model.remote.UpdateData
 import com.lateinit.rightweight.data.model.remote.WriteModelData
+import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
@@ -34,13 +35,13 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.SocketException
 import java.net.UnknownHostException
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val routineRepository: RoutineRepository,
+    private val historyRepository: HistoryRepository,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
@@ -107,7 +108,7 @@ class MainViewModel @Inject constructor(
     private suspend fun backupHistory() {
         val userId = userInfo.value?.userId ?: return
         commitItems.clear()
-        val lastDate = getLatestHistoryDate(userId)
+        val lastDate = historyRepository.getLatestHistoryDate(userId)
         val historyList = userRepository.getHistoryAfterDate(lastDate)
         if (historyList.isNotEmpty()) {
             historyList.forEach { history ->
@@ -115,10 +116,6 @@ class MainViewModel @Inject constructor(
             }
             userRepository.commitTransaction(commitItems)
         }
-    }
-
-    private suspend fun getLatestHistoryDate(userId: String): LocalDate {
-        return userRepository.getLatestHistoryDate(userId) ?: return DEFAULT_LOCAL_DATE
     }
 
     private fun updateHistory(history: HistoryUiModel) {
@@ -264,7 +261,4 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    companion object {
-        val DEFAULT_LOCAL_DATE: LocalDate = LocalDate.parse("1990-01-01")
-    }
 }

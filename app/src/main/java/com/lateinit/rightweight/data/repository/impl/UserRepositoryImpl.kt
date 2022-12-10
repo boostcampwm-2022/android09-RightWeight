@@ -9,7 +9,6 @@ import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -21,16 +20,6 @@ class UserRepositoryImpl @Inject constructor(
         userLocalDataSource.saveUser(user)
     }
 
-
-    override suspend fun getLatestHistoryDate(userId: String): LocalDate? {
-        val documentsResponseList = userRemoteDataSource.getLastHistoryInServer(userId)
-        val lastDateTime =
-            documentsResponseList.first()
-                .document?.fields?.date?.value
-                ?.replace("Z", "")
-                ?: return null
-        return LocalDateTime.parse(lastDateTime).toLocalDate()
-    }
 
     override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel> {
         return userLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }

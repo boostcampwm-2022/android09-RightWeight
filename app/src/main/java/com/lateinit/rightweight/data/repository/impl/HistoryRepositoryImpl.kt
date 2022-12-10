@@ -41,6 +41,10 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.insertHistoryExercise(historyId)
     }
 
+    override suspend fun getLatestHistoryDate(userId: String): LocalDate {
+        return historyRemoteDatasource.getLatestHistoryDate(userId)
+    }
+
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
         return  historyLocalDataSource.getHistoryByDate(localDate)
     }

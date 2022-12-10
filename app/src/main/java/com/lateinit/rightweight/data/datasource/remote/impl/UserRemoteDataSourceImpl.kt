@@ -2,16 +2,8 @@ package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
-import com.lateinit.rightweight.data.model.remote.Direction
-import com.lateinit.rightweight.data.model.remote.DocumentResponse
-import com.lateinit.rightweight.data.model.remote.FiledReferenceData
-import com.lateinit.rightweight.data.model.remote.FromData
-import com.lateinit.rightweight.data.model.remote.OrderByData
-import com.lateinit.rightweight.data.model.remote.RunQueryBody
-import com.lateinit.rightweight.data.model.remote.StructuredQueryData
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.model.remote.WriteRequestBody
-import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.data.remote.model.StringValue
 import com.lateinit.rightweight.data.remote.model.UserInfoField
@@ -26,25 +18,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
                 UserInfoField(
                     routineId = StringValue(routineId),
                     dayId = StringValue(dayId)
-                )
-            )
-        )
-    }
-
-
-    override suspend fun getLastHistoryInServer(userId: String): List<DocumentResponse<HistoryField>> {
-        return api.getLastHistory(
-            userId,
-            RunQueryBody(
-                StructuredQueryData(
-                    from = FromData("history"),
-                    orderBy = listOf(
-                        OrderByData(
-                            FiledReferenceData("date"),
-                            Direction.DESCENDING.toString()
-                        )
-                    ),
-                    limit = 1
                 )
             )
         )

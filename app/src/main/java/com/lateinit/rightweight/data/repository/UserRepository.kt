@@ -10,8 +10,6 @@ interface UserRepository {
 
     suspend fun saveUser(user: User)
 
-    suspend fun getLatestHistoryDate(userId: String): LocalDate?
-
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 
     suspend fun getChildrenDocumentName(path: String): List<String>
