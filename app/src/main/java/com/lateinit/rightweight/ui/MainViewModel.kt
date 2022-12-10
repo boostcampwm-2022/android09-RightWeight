@@ -4,25 +4,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.intermediate.DayWithExercises
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
-import com.lateinit.rightweight.data.model.UpdateData
-import com.lateinit.rightweight.data.model.WriteModelData
+import com.lateinit.rightweight.data.mapper.remote.toDayField
+import com.lateinit.rightweight.data.mapper.remote.toExerciseField
+import com.lateinit.rightweight.data.mapper.remote.toExerciseSetField
+import com.lateinit.rightweight.data.mapper.remote.toHistoryExerciseField
+import com.lateinit.rightweight.data.mapper.remote.toHistoryExerciseSetField
+import com.lateinit.rightweight.data.mapper.remote.toHistoryField
+import com.lateinit.rightweight.data.mapper.remote.toRoutineField
+import com.lateinit.rightweight.data.model.remote.UpdateData
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.LoginRepository
 import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.ExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseSetUiModel
-import com.lateinit.rightweight.ui.model.HistoryExerciseUiModel
-import com.lateinit.rightweight.ui.model.HistoryUiModel
-import com.lateinit.rightweight.util.toDayField
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toExerciseField
-import com.lateinit.rightweight.util.toExerciseSetField
-import com.lateinit.rightweight.util.toHistoryExerciseField
-import com.lateinit.rightweight.util.toHistoryExerciseSetField
-import com.lateinit.rightweight.util.toHistoryField
-import com.lateinit.rightweight.util.toRoutineField
-import com.lateinit.rightweight.util.toRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
+import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -90,7 +90,7 @@ class MainViewModel @Inject constructor(
         val userId = userInfo.value?.userId ?: return
 
         commitItems.clear()
-        val myRoutineInServer = userRepository.getUserRoutineInRemote(userId)
+        val myRoutineInServer = userRepository.getUserRoutineIds(userId)
         myRoutineInServer.forEach { routineId ->
             deleteRoutine(routineId)
         }
@@ -105,7 +105,7 @@ class MainViewModel @Inject constructor(
     private suspend fun backupHistory() {
         val userId = userInfo.value?.userId ?: return
         commitItems.clear()
-        val lastDate = getLastHistoryInServer(userId)
+        val lastDate = getLatestHistoryDate(userId)
         val historyList = userRepository.getHistoryAfterDate(lastDate)
         if (historyList.isNotEmpty()) {
             historyList.forEach { history ->
@@ -115,8 +115,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLastHistoryInServer(userId: String): LocalDate {
-        return userRepository.getLastHistoryInServer(userId) ?: return DEFAULT_LOCAL_DATE
+    private suspend fun getLatestHistoryDate(userId: String): LocalDate {
+        return userRepository.getLatestHistoryDate(userId) ?: return DEFAULT_LOCAL_DATE
     }
 
     private fun updateHistory(history: HistoryUiModel) {

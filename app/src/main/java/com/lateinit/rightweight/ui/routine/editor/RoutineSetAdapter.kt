@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ItemSetBinding
-import com.lateinit.rightweight.ui.model.ExerciseSetUiModel
+import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
 
 class RoutineSetAdapter(val exerciseEventListener: RoutineExerciseAdapter.ExerciseEventListener) :
     ListAdapter<ExerciseSetUiModel, RoutineSetAdapter.SetViewHolder>(diffUtil) {

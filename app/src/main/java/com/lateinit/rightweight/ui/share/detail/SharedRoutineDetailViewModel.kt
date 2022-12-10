@@ -7,19 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
+import com.lateinit.rightweight.data.mapper.toDayWithNewIds
+import com.lateinit.rightweight.data.mapper.toExerciseSetWithNewIds
+import com.lateinit.rightweight.data.mapper.toExerciseWithNewIds
+import com.lateinit.rightweight.data.mapper.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
-import com.lateinit.rightweight.ui.model.DayUiModel
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toDayUiModel
+import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toSharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.DayUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
-import com.lateinit.rightweight.util.toDayUiModel
-import com.lateinit.rightweight.util.toDayWithNewIds
-import com.lateinit.rightweight.util.toExerciseSetWithNewIds
-import com.lateinit.rightweight.util.toExerciseWithNewIds
-import com.lateinit.rightweight.util.toRoutine
-import com.lateinit.rightweight.util.toRoutineUiModel
-import com.lateinit.rightweight.util.toSharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,7 +63,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
                     _uiState.value = LatestSharedRoutineDetailUiState.Success(
                         sharedRoutineWithDays.routine.toSharedRoutineUiModel(),
-                        sharedRoutineWithDays.days.mapIndexed { index, sharedRoutineWithDay ->
+                        sharedRoutineWithDays.days.map { sharedRoutineWithDay ->
                             sharedRoutineWithDay.day.toDayUiModel(
                                 sharedRoutineWithDay.exercises
                             )
@@ -77,7 +77,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
         }
     }
 
-    fun initClickedDay() {
+    private fun initClickedDay() {
         val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
         originDayUiModels[FIRST_DAY_POSITION] =
             originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)

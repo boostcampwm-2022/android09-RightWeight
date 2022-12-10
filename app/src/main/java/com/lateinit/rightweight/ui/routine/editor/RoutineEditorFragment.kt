@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
-import com.lateinit.rightweight.ui.model.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 

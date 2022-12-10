@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemRoutineBinding
-import com.lateinit.rightweight.ui.model.RoutineUiModel
+import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 
 class RoutineAdapter(
     private val routineEventListener: RoutineEventListener

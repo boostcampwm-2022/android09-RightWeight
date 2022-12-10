@@ -7,7 +7,7 @@
 
         <variable
             name="exerciseUiModel"
-            type="com.lateinit.rightweight.ui.model.ExerciseUiModel" />
+            type="com.lateinit.rightweight.ui.model.routine.ExerciseUiModel" />
 
         <import type="android.view.View" />
     </data>

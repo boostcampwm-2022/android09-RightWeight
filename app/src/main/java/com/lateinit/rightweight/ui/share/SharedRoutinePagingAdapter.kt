@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lateinit.rightweight.databinding.ItemSharedRoutineBinding
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 
 class SharedRoutinePagingAdapter(
     private val sharedRoutineClickHandler: SharedRoutineClickHandler

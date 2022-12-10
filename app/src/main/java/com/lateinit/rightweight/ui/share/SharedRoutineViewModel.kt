@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.lateinit.rightweight.data.mapper.local.toSharedRoutineSortType
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
-import com.lateinit.rightweight.ui.model.SharedRoutineSortTypeUiModel
-import com.lateinit.rightweight.ui.model.SharedRoutineUiModel
-import com.lateinit.rightweight.util.toSharedRoutineSortType
-import com.lateinit.rightweight.util.toSharedRoutineUiModel
+import com.lateinit.rightweight.ui.mapper.toSharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineSortTypeUiModel
+import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -9,7 +9,7 @@
 
         <variable
             name="sharedRoutineUiModel"
-            type="com.lateinit.rightweight.ui.model.SharedRoutineUiModel" />
+            type="com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel" />
 
         <variable
             name="sharedRoutineClickHandler"
