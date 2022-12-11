@@ -27,7 +27,7 @@ class HistoryLocalDataSourceImpl @Inject constructor(
         exerciseSets: List<ExerciseSet>
     ) {
         val historyId = createRandomUUID()
-        val history = History(historyId, LocalDate.now(), "00:00:00", routineTitle, day.order, false, routineId)
+        val history = History(historyId, LocalDate.now(), "00:00:00", routineTitle, day.order, false)
         val historyExercises = mutableListOf<HistoryExercise>()
         val historySets = mutableListOf<HistorySet>()
         for(exercise in exercises){

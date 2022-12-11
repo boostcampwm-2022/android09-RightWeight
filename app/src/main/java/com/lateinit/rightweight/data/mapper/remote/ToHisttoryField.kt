@@ -15,8 +15,7 @@ fun HistoryUiModel.toHistoryField(): HistoryField {
         date = TimeStampValue(date.toString() + "T00:00:00Z"),
         time = StringValue(time),
         routineTitle = StringValue(routineTitle),
-        order = IntValue(order.toString()),
-        routineId = StringValue(routineId)
+        order = IntValue(order.toString())
     )
 }
 
