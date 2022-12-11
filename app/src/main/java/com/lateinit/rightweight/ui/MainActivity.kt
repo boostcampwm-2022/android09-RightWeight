@@ -200,7 +200,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun withdraw() {
-        viewModel.deleteLocalData()
         viewModel.deleteAccount(getString(R.string.google_api_key))
         collectOnLifecycle {
             viewModel.networkState.collect {
