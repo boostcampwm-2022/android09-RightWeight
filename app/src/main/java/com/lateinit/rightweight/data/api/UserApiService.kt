@@ -5,6 +5,8 @@ import com.lateinit.rightweight.data.model.remote.DocumentResponse
 import com.lateinit.rightweight.data.model.remote.DocumentsResponse
 import com.lateinit.rightweight.data.model.remote.RunQueryBody
 import com.lateinit.rightweight.data.model.remote.WriteRequestBody
+import com.lateinit.rightweight.data.remote.model.HistoryExerciseField
+import com.lateinit.rightweight.data.remote.model.HistoryExerciseSetField
 import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.remote.model.RootField
@@ -35,12 +37,29 @@ interface UserApiService {
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
 
-
     @POST("documents/user/{userId}/:runQuery")
     suspend fun getLastHistoryDate(
         @Path(value = "userId", encoded = true) userId: String,
         @Body query: RunQueryBody
     ): List<DocumentResponse<HistoryField>>
+
+    @GET("documents/{path}")
+    suspend fun getHistories(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<HistoryField>
+
+    @GET("documents/{path}")
+    suspend fun getHistoryExercises(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<HistoryExerciseField>
+
+    @GET("documents/{path}")
+    suspend fun getHistoryExerciseSets(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<HistoryExerciseSetField>
 
     @GET("documents/user/{userId}")
     suspend fun restoreUserInfo(
