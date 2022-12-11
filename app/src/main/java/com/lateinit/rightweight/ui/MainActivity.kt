@@ -16,8 +16,6 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -41,7 +39,6 @@ import com.lateinit.rightweight.ui.login.LoginActivity
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -174,12 +171,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // set drawer header
         val headerBinding = NavigationHeaderBinding.bind(binding.navigationView.getHeaderView(0))
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.userInfo.collect {
-                    it?.let {
-                        headerBinding.user = it
-                    }
+        collectOnLifecycle(Lifecycle.State.CREATED) {
+            viewModel.userInfo.collect {
+                it?.let {
+                    headerBinding.user = it
                 }
             }
         }

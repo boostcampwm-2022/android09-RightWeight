@@ -9,16 +9,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineBinding
 import com.lateinit.rightweight.ui.model.shared.SharedRoutineSortTypeUiModel
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
@@ -28,15 +25,15 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
     private val viewModel: SharedRoutineViewModel by viewModels()
+
     private lateinit var sharedRoutinePagingAdapter: SharedRoutinePagingAdapter
     private lateinit var sortTypes: List<String>
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSharedRoutineBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -47,13 +44,13 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { uiState ->
-                    when (uiState) {
-                        is LatestSharedRoutineUiState.Success -> sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
-                        is LatestSharedRoutineUiState.Error -> Exception()
+        viewLifecycleOwner.collectOnLifecycle {
+            viewModel.uiState.collect { uiState ->
+                when (uiState) {
+                    is LatestSharedRoutineUiState.Success -> {
+                        sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
                     }
+                    is LatestSharedRoutineUiState.Error -> Exception()
                 }
             }
         }
@@ -65,7 +62,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
     }
 
     private fun setFragmentResult() {
-        setFragmentResultListener("routineCopy") { _, bundle ->
+        setFragmentResultListener("routineCopy") { _, _ ->
             Snackbar.make(
                 binding.root,
                 R.string.success_save_routine,
@@ -77,28 +74,31 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
                 }
             }.show()
         }
-
     }
 
-    private fun initSharedRoutineSortSelection(){
+    private fun initSharedRoutineSortSelection() {
         sortTypes = SharedRoutineSortTypeUiModel.values().map { sharedRoutineSortType ->
             getString(sharedRoutineSortType.sortTypeName)
         }
         binding.textViewSharedRoutineSortType.setText(sortTypes[0])
     }
 
-    private fun setSharedRoutineSortSelection(){
+    private fun setSharedRoutineSortSelection() {
         val sortTypeAdapter =
             ArrayAdapter(requireContext(), R.layout.item_shared_routine_sort_type, sortTypes)
+
         binding.textViewSharedRoutineSortType.setAdapter(sortTypeAdapter)
         binding.textViewSharedRoutineSortType.setOnItemClickListener { _, _, position, _ ->
-            viewModel.setSharedRoutineSortType(sortTypeUiModel = SharedRoutineSortTypeUiModel.values()[position])
+            viewModel.setSharedRoutineSortType(SharedRoutineSortTypeUiModel.values()[position])
             sharedRoutinePagingAdapter.refresh()
         }
     }
 
     override fun gotoSharedRoutineDetailFragment(routineId: String) {
         val bundle = bundleOf("routineId" to routineId)
-        findNavController(this).navigate(R.id.action_navigation_shared_routine_to_navigation_shared_routine_detail, bundle)
+        findNavController(this).navigate(
+            R.id.action_navigation_shared_routine_to_navigation_shared_routine_detail,
+            bundle
+        )
     }
 }
