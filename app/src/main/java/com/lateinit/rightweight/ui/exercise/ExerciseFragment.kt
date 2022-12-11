@@ -181,7 +181,7 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun collectHistory() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.historyUiModel.collect {
                 it ?: return@collect
 
@@ -199,7 +199,7 @@ class ExerciseFragment : Fragment() {
     }
 
     private fun handleNavigationEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.navigationEvent.collect {
                 findNavController().navigateUp()
             }

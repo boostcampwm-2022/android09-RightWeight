@@ -23,7 +23,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
+
     private val viewModel: HomeViewModel by viewModels()
+
     private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment{ tag ->
@@ -40,21 +42,14 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setBinding()
         setListeners()
         collectSelectedDay()
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     private fun setBinding() {
@@ -82,7 +77,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun collectSelectedDay() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.selectedDay.collect { dayUiModel ->
                 setAdapter(dayUiModel)
             }
@@ -98,5 +93,10 @@ class HomeFragment : Fragment() {
         adapter = ConcatAdapter(homeAdapters)
         binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
         binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

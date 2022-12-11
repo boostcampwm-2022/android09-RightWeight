@@ -67,7 +67,7 @@ class SharedRoutineDetailFragment : Fragment() {
     }
 
     private fun setSharedRoutineDetailCollect() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
                     is LatestSharedRoutineDetailUiState.Success -> {
@@ -99,7 +99,7 @@ class SharedRoutineDetailFragment : Fragment() {
     }
 
     private fun handleNavigationEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.navigationEvent.collect { 
                 setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()

@@ -142,7 +142,7 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun handleNavigationEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.navigationEvent.collect { event ->
                 when (event) {
                     is RoutineDetailViewModel.NavigationEvent.SelectEvent -> {
@@ -163,7 +163,7 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun handleNetworkResultEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.networkState.collect { state ->
                 if (state == NetworkState.SUCCESS) {
                     Snackbar.make(
