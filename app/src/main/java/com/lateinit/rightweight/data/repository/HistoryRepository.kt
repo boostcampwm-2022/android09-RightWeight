@@ -53,5 +53,9 @@ interface HistoryRepository {
 
     suspend fun removeAllHistories()
 
+    suspend fun removeUncheckedHistorySet()
+
+    suspend fun removeUncheckedHistoryExercise()
+
     suspend fun commitTransaction(writes: List<WriteModelData>)
 }

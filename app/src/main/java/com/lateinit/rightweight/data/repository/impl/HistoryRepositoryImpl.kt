@@ -123,6 +123,14 @@ class HistoryRepositoryImpl @Inject constructor(
         historyLocalDataSource.removeAllHistories()
     }
 
+    override suspend fun removeUncheckedHistorySet() {
+        historyLocalDataSource.removeUncheckedHistorySet()
+    }
+
+    override suspend fun removeUncheckedHistoryExercise() {
+        historyLocalDataSource.removeUncheckedHistoryExercise()
+    }
+
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         historyRemoteDatasource.commitTransaction(writes)
     }
