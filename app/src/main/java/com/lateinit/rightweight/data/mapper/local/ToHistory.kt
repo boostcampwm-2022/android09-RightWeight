@@ -22,8 +22,7 @@ fun HistoryUiModel.toHistory(): History {
         time = time,
         routineTitle = routineTitle,
         dayOrder = order,
-        completed = completed,
-        routineId = routineId
+        completed = completed
     )
 }
 
