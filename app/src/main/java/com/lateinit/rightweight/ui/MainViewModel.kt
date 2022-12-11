@@ -105,7 +105,8 @@ class MainViewModel @Inject constructor(
                 restoreHistory(userId)
                 restoreUserInfo(
                     userInfoInServer.routineId.value,
-                    userInfoInServer.dayId.value
+                    userInfoInServer.dayId.value,
+                    userInfoInServer.completedDayId.value
                 )
             }
         }
@@ -121,12 +122,13 @@ class MainViewModel @Inject constructor(
         routineRepository.restoreMyRoutine(routineIds)
     }
 
-    private suspend fun restoreUserInfo(routineId: String, datId: String) {
+    private suspend fun restoreUserInfo(routineId: String, datId: String,completedDayId: String) {
         val nowUser = userInfo.value ?: return
         userRepository.saveUser(
             nowUser.copy(
                 routineId = routineId,
-                dayId = datId
+                dayId = datId,
+                completedDayId = completedDayId
             )
         )
     }

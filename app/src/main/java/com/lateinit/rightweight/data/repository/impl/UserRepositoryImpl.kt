@@ -30,6 +30,6 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun backupUserInfo(user: User) {
-        userRemoteDataSource.backupUserInfo(user.userId, user.routineId, user.dayId)
+        userRemoteDataSource.backupUserInfo(user.userId, user.routineId, user.dayId, user.completedDayId)
     }
 }
