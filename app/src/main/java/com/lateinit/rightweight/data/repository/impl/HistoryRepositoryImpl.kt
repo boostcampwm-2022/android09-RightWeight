@@ -121,4 +121,12 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun removeAllHistories() {
         historyLocalDataSource.removeAllHistories()
     }
+
+    override suspend fun removeUncheckedHistorySet() {
+        historyLocalDataSource.removeUncheckedHistorySet()
+    }
+
+    override suspend fun removeUncheckedHistoryExercise() {
+        historyLocalDataSource.removeUncheckedHistoryExercise()
+    }
 }
