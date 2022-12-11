@@ -39,7 +39,7 @@ class HomeAdapter(private val exerciseUiModel: ParentExerciseUiModel) :
                 holder.bind(exerciseUiModel)
             }
             is SetViewHolder -> {
-                holder.bind(exerciseUiModel.exerciseSets[position - 1])
+                holder.bind(exerciseUiModel.exerciseSets[position - 1], position)
             }
         }
     }
@@ -55,11 +55,9 @@ class HomeAdapter(private val exerciseUiModel: ParentExerciseUiModel) :
     var isExpanded: Boolean by Delegates.observable(true) { _, _, newExpandedValue: Boolean ->
         if (newExpandedValue) {
             notifyItemRangeInserted(1, exerciseUiModel.exerciseSets.size)
-            //To update the header expand icon
             notifyItemChanged(0)
         } else {
             notifyItemRangeRemoved(1, exerciseUiModel.exerciseSets.size)
-            //To update the header expand icon
             notifyItemChanged(0)
         }
     }
@@ -80,8 +78,9 @@ class HomeAdapter(private val exerciseUiModel: ParentExerciseUiModel) :
 
     inner class SetViewHolder(val binding: ItemSetReadBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(exerciseSetUiModel: ParentExerciseSetUiModel) {
+        fun bind(exerciseSetUiModel: ParentExerciseSetUiModel, position: Int) {
             binding.exerciseSetUiModel = exerciseSetUiModel
+            binding.position = position.toString()
         }
     }
 

@@ -59,11 +59,11 @@ interface HistoryDao {
         endDate: LocalDate
     ): Flow<List<HistoryWithHistoryExercises>>
 
-    @Query("SELECT COALESCE(MAX(`order`), 0) FROM history_exercise")
-    suspend fun getMaxHistoryExerciseOrder(): Int
+    @Query("SELECT COALESCE(MAX(`order`), 0) FROM history_exercise WHERE history_id = :historyId")
+    suspend fun getMaxHistoryExerciseOrder(historyId: String): Int
 
-    @Query("SELECT COALESCE(MAX(`order`), 0) FROM history_set")
-    suspend fun getMaxHistorySetOrder(): Int
+    @Query("SELECT COALESCE(MAX(`order`), 0) FROM history_set WHERE exercise_id = :exerciseId")
+    suspend fun getMaxHistorySetOrder(exerciseId: String): Int
 
     @Update
     suspend fun updateHistory(history: History)
