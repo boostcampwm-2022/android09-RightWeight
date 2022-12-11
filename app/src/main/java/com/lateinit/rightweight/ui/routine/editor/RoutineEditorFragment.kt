@@ -36,6 +36,14 @@ class RoutineEditorFragment : Fragment() {
     private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
     private val backPressedDialog = CommonDialogFragment { findNavController().navigateUp() }
+    private var backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            backPressedDialog.show(
+                parentFragmentManager,
+                EDITOR_BACK_PRESSED_DIALOG_TAG, R.string.editor_back_pressed_message
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -136,14 +144,7 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setBackStackEvent() {
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                backPressedDialog.show(
-                    parentFragmentManager,
-                    EDITOR_BACK_PRESSED_DIALOG_TAG, R.string.editor_back_pressed_message
-                )
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
     }
 
     private fun setRoutineSaveButtonEvent() {
@@ -195,5 +196,10 @@ class RoutineEditorFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        backPressedCallback.remove()
     }
 }
