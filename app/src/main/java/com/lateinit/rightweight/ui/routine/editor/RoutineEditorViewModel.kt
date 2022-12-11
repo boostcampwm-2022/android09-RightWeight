@@ -86,6 +86,12 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun addDay() {
         val days = _days.value ?: return
+
+        if (days.size == MAX_ROUTINE_SIZE) {
+            sendEvent(false)
+            return
+        }
+
         val day = DayUiModel(createUUID(), routineId, days.size, true)
 
         days.add(day)
@@ -137,6 +143,12 @@ class RoutineEditorViewModel @Inject constructor(
     fun addExercise() {
         val dayId = currentDay.value?.dayId ?: return
         val exercises = dayToExercise.value?.getOrDefault(dayId, LinkedList()) ?: return
+
+        if (exercises.size == MAX_EXERCISE_SIZE) {
+            sendEvent(false)
+            return
+        }
+
         val exercise = ExerciseUiModel(
             exerciseId = createUUID(),
             dayId = dayId,
@@ -171,6 +183,12 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun addExerciseSet(exerciseId: String) {
         val exerciseSets = exerciseToSet.value?.getOrDefault(exerciseId, LinkedList()) ?: return
+
+        if (exerciseSets.size == MAX_EXERCISE_SET_SIZE) {
+            sendEvent(false)
+            return
+        }
+
         val exerciseSet = ExerciseSetUiModel(
             setId = createUUID(),
             exerciseId = exerciseId,
@@ -328,5 +346,8 @@ class RoutineEditorViewModel @Inject constructor(
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
         private const val DEFAULT_ROUTINE_ID = ""
+        private const val MAX_ROUTINE_SIZE = 10
+        private const val MAX_EXERCISE_SIZE = 10
+        private const val MAX_EXERCISE_SET_SIZE = 10
     }
 }
