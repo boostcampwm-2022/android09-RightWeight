@@ -29,7 +29,7 @@ interface HistoryRepository {
 
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 
-    suspend fun restoreHistory(userId: String, historyIds: List<String>)
+    suspend fun restoreHistory(userId: String)
 
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 

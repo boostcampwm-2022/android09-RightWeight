@@ -50,7 +50,7 @@ fun HistoryExerciseSetUiModel.toHistorySet(): HistorySet {
 
 fun HistoryField.toHistory(historyId: String): History {
     val refinedDateString = date.value
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
     val date = LocalDate.parse(refinedDateString, formatter)
 
     return History(

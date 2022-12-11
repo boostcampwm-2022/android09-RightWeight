@@ -58,7 +58,7 @@ class HistoryRepositoryImpl @Inject constructor(
         return historyLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
 
-    override suspend fun restoreHistory(userId: String, historyIds: List<String>) {
+    override suspend fun restoreHistory(userId: String) {
         var path = "user/${userId}/history"
         val histories = historyRemoteDatasource.getHistories(path)
         val historyExercises = mutableListOf<HistoryExercise>()
