@@ -28,7 +28,7 @@ fun Day.toDayUiModel(index: Int, exerciseWithSets: List<ExerciseWithSets>): DayU
         routineId = routineId,
         order = order,
         selected = index == FIRST_DAY_POSITION,
-        exercises = exerciseWithSets.map { it.toExerciseUiModel() }
+        exercises = exerciseWithSets.map { it.toExerciseUiModel() }.sortedBy { it.order }
     )
 }
 
@@ -38,7 +38,7 @@ fun DayWithExercises.toDayUiModel(): DayUiModel {
         routineId = day.routineId,
         order = day.order,
         selected = day.order == FIRST_DAY_POSITION,
-        exercises = exercises.map { it.toExerciseUiModel() }
+        exercises = exercises.map { it.toExerciseUiModel() }.sortedBy { it.order }
     )
 }
 
@@ -49,7 +49,7 @@ fun ExerciseWithSets.toExerciseUiModel(): ExerciseUiModel {
         title = exercise.title,
         order = exercise.order,
         part = exercise.part.toExercisePartTypeUiModel(),
-        exerciseSets = sets.map { it.toExerciseSetUiModel() }
+        exerciseSets = sets.map { it.toExerciseSetUiModel() }.sortedBy { it.order }
     )
 }
 
