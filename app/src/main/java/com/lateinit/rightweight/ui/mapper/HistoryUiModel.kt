@@ -15,7 +15,7 @@ fun HistoryWithHistoryExercises.toHistoryUiModel(): HistoryUiModel {
         routineTitle = history.routineTitle,
         order = history.dayOrder,
         completed = history.completed,
-        exercises = historyExercises.map { it.toHistoryExerciseUiModel() }.sortedBy { it.order }
+        exercises = historyExercises.map { it.toHistoryExerciseUiModel() }
     )
 }
 
@@ -26,7 +26,7 @@ fun HistoryExerciseWithHistorySets.toHistoryExerciseUiModel(): HistoryExerciseUi
         title = historyExercise.title,
         order = historyExercise.order,
         part = historyExercise.part.toExercisePartTypeUiModel(),
-        exerciseSets = historySets.map { it.toHistoryExerciseSetUiModel() }.sortedBy { it.order }
+        exerciseSets = historySets.map { it.toHistoryExerciseSetUiModel() }
     )
 }
 

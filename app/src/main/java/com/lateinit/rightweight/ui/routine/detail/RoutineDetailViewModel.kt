@@ -90,7 +90,9 @@ class RoutineDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
             _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
-            _dayUiModels.value = routineWithDays.days.map { it.toDayUiModel() }.sortedBy { it.order }
+            _dayUiModels.value = routineWithDays.days.mapIndexed { index, dayWithExercise ->
+                dayWithExercise.day.toDayUiModel(index, dayWithExercise.exercises)
+            }
             _currentDayPosition.value = FIRST_DAY_POSITION
         }
     }

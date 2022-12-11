@@ -121,8 +121,8 @@ class RoutineDetailFragment : Fragment() {
     }
 
     private fun setDayUiModelsObserve() {
-        viewModel.dayUiModels.observe(viewLifecycleOwner) { dayUiModels ->
-            routineDayAdapter.submitList(dayUiModels.sortedBy { it.order })
+        viewModel.dayUiModels.observe(viewLifecycleOwner) {
+            routineDayAdapter.submitList(it)
         }
     }
 
