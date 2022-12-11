@@ -4,16 +4,16 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.lateinit.rightweight.data.api.RoutineApiService
-import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
+import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.entity.SharedRoutineDay
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExercise
 import com.lateinit.rightweight.data.database.entity.SharedRoutineExerciseSet
-import com.lateinit.rightweight.data.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.datasource.remote.SharedRoutineRemoteDataSource
 import com.lateinit.rightweight.data.mapper.toSharedRoutineDay
 import com.lateinit.rightweight.data.mapper.toSharedRoutineExercise
 import com.lateinit.rightweight.data.mapper.toSharedRoutineExerciseSet
+import com.lateinit.rightweight.data.mediator.SharedRoutineRemoteMediator
 import com.lateinit.rightweight.data.model.remote.SharedRoutineSortType
 import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.model.remote.WriteRequestBody
@@ -83,7 +83,7 @@ class SharedRoutineRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getChildrenDocumentName(path: String): List<String> {
-        val documentNameList = api.getChildrenDocumentName(path)
+        val documentNameList = api.getChildrenDocument(path)
         return documentNameList.documents?.map {
             it.name.split("/").last()
         } ?: emptyList()

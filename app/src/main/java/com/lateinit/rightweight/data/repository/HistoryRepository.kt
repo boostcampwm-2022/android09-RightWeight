@@ -29,6 +29,8 @@ interface HistoryRepository {
 
     suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryUiModel>
 
+    suspend fun restoreHistory(userId: String)
+
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 
     fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>
@@ -36,7 +38,7 @@ interface HistoryRepository {
     fun getHistoryBetweenDate(
         startDate: LocalDate,
         endDate: LocalDate
-    ): Flow<List<HistoryWithHistoryExercises>>
+    ): Flow<Map<LocalDate, HistoryUiModel>>
 
     suspend fun updateHistory(historyUiModel: HistoryUiModel)
 

@@ -20,10 +20,33 @@ interface RoutineApiService {
     ): List<DocumentResponse<SharedRoutineField>>
 
     @GET("documents/{path}")
-    suspend fun getChildrenDocumentName(
+    suspend fun getChildrenDocument(
         @Path(value = "path", encoded = true)
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
+
+    @GET("documents/routine/{path}")
+    suspend fun getRoutine(
+        @Path("path") path: String
+    ): DetailResponse<RoutineField>
+
+    @GET("documents/{path}")
+    suspend fun getDays(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<DayField>
+
+    @GET("documents/{path}")
+    suspend fun getExercises(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<ExerciseField>
+
+    @GET("documents/{path}")
+    suspend fun getExerciseSets(
+        @Path(value = "path", encoded = true)
+        path: String
+    ): DocumentsResponse<ExerciseSetField>
 
     @GET("documents/shared_routine/{routineId}")
     suspend fun getSharedRoutine(

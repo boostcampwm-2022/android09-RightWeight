@@ -9,7 +9,7 @@ import com.lateinit.rightweight.data.api.RoutineApiService
 import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
-import com.lateinit.rightweight.data.mapper.toSharedRoutine
+import com.lateinit.rightweight.data.mapper.local.toSharedRoutine
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
 import com.lateinit.rightweight.data.model.remote.FromData
 import com.lateinit.rightweight.data.model.remote.OrderByData
@@ -114,9 +114,9 @@ class SharedRoutineRemoteMediator(
                         db.sharedRoutineDao()
                             .insertSharedRoutine(documentResponse.document.toSharedRoutine())
                         modifiedDateFlag =
-                            documentResponse.document.fields.modifiedDate.value.toString()
+                            documentResponse.document.fields.modifiedDate.value
                         sharedCountFlag =
-                            documentResponse.document.fields.sharedCount.value?.remoteData?.count?.value.toString()
+                            documentResponse.document.fields.sharedCount.value.remoteData.count.value
                         pagingFlag = "$modifiedDateFlag/$sharedCountFlag"
                     } else {
                         endOfPaginationReached = true

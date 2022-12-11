@@ -126,6 +126,7 @@ class RoutineDetailViewModel @Inject constructor(
             originDayUiModels[nowDayPosition].copy(exercises = originExerciseUiModels)
 
         _dayUiModels.value = originDayUiModels
+        _currentDayPosition.value = _currentDayPosition.value
     }
 
     fun removeRoutine(routineId: String) {
