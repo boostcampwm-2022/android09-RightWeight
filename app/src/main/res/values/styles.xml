@@ -45,4 +45,7 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <style name="DayTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/color_day_text</item>
+    </style>
 </resources>

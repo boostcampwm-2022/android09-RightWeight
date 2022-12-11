@@ -18,6 +18,7 @@ import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -89,8 +90,12 @@ class HistoryRepositoryImpl @Inject constructor(
     override fun getHistoryBetweenDate(
         startDate: LocalDate,
         endDate: LocalDate
-    ): Flow<List<HistoryWithHistoryExercises>> {
-        return historyLocalDataSource.getHistoryBetweenDate(startDate, endDate)
+    ): Flow<Map<LocalDate, HistoryUiModel>> {
+        return historyLocalDataSource.getHistoryBetweenDate(startDate, endDate).map {
+            it.associate { historyWithExercise ->
+                historyWithExercise.history.date to historyWithExercise.toHistoryUiModel()
+            }
+        }
     }
 
     override suspend fun updateHistory(historyUiModel: HistoryUiModel) {

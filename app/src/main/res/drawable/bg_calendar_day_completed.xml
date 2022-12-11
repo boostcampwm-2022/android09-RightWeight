@@ -7,7 +7,7 @@
         android:top="5dp">
 
         <shape>
-            <solid android:color="@color/lightGreen" />
+            <solid android:color="@color/color_completed_day_background" />
 
             <corners android:radius="20px" />
         </shape>
