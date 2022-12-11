@@ -81,7 +81,7 @@ interface HistoryDao {
     suspend fun removeAllHistories()
 
     @Transaction
-    suspend fun restoreRoutine(
+    suspend fun restoreHistory(
         histories: List<History>,
         exercises: List<HistoryExercise>,
         sets: List<HistorySet>
