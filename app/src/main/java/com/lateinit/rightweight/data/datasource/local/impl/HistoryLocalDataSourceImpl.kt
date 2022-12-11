@@ -136,4 +136,12 @@ class HistoryLocalDataSourceImpl @Inject constructor(
     override suspend fun removeAllHistories() {
         historyDao.removeAllHistories()
     }
+
+    override suspend fun removeUncheckedHistorySet() {
+        historyDao.removeUncheckedHistorySet()
+    }
+
+    override suspend fun removeUncheckedHistoryExercise() {
+        historyDao.removeUncheckedHistoryExercise()
+    }
 }

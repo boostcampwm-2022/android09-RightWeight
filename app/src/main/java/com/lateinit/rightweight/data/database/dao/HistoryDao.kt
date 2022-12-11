@@ -37,10 +37,10 @@ interface HistoryDao {
     suspend fun insertHistoryExercise(historyExercise: HistoryExercise)
 
     @Query("SELECT * FROM history WHERE date = :localDate")
-    fun getHistoryByDate(localDate: LocalDate) : Flow<History>
+    fun getHistoryByDate(localDate: LocalDate): Flow<History>
 
     @Query("SELECT * FROM history ORDER BY date DESC LIMIT 1")
-    fun getLatestHistory() : History
+    fun getLatestHistory(): History
 
     @Transaction
     @Query("SELECT * FROM history WHERE date > :startDate")
@@ -50,7 +50,7 @@ interface HistoryDao {
 
     @Transaction
     @Query("SELECT * FROM history WHERE date = :localDate")
-    fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate) : Flow<HistoryWithHistoryExercises?>
+    fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>
 
     @Transaction
     @Query("SELECT * FROM history WHERE date BETWEEN :startDate AND :endDate")
@@ -79,8 +79,13 @@ interface HistoryDao {
 
     @Query("DELETE FROM history_exercise WHERE exercise_id = :historyExerciseId")
     suspend fun removeHistoryExercise(historyExerciseId: String)
-    
+
     @Query("DELETE FROM history")
     suspend fun removeAllHistories()
 
+    @Query("DELETE FROM history_set WHERE checked = 0")
+    suspend fun removeUncheckedHistorySet()
+
+    @Query("DELETE FROM history_exercise WHERE (SELECT count(*) FROM history_set WHERE history_set.exercise_id = history_exercise.exercise_id) = 0")
+    suspend fun removeUncheckedHistoryExercise()
 }
