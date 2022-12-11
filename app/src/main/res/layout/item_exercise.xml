@@ -66,8 +66,10 @@
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:hint="@string/input_exercise_name"
+                    android:textSize="11sp"
                     android:inputType="text"
                     android:text="@={exerciseUiModel.title}"
+                    android:maxLength="15"
                     app:layout_constraintBottom_toBottomOf="@+id/layout_edit_text_exercise_part"
                     app:layout_constraintStart_toEndOf="@+id/layout_edit_text_exercise_part"
                     app:layout_constraintTop_toTopOf="@id/layout_edit_text_exercise_part" />
