@@ -62,6 +62,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setSplachScreen()
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
+        setLoginButtonListener()
+        collectNetworkResponse()
     }
 
     private fun setSplachScreen(){
@@ -81,17 +84,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkLoginBefore() {
-        lifecycleScope.launch {
-            client.silentSignIn().addOnCompleteListener {
-                it.addOnSuccessListener{
-                    moveToHomeActivity()
-                }
-                it.addOnFailureListener{
-                    binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
-                    setLoginButtonListener()
-                    collectNetworkResponse()
-                }
-            }
+        client.silentSignIn().addOnSuccessListener {
+            moveToHomeActivity()
         }
     }
 
