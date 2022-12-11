@@ -17,11 +17,12 @@ import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.EDITOR_BACK_PRESSED_DIALOG_TAG
 import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.util.CenterSmoothScroller
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RoutineEditorFragment : Fragment(){
+class RoutineEditorFragment : Fragment() {
 
     private var _binding: FragmentRoutineEditorBinding? = null
     private val binding
@@ -59,13 +60,22 @@ class RoutineEditorFragment : Fragment(){
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter { position -> viewModel.clickDay(position) }
+        routineDayAdapter = RoutineDayAdapter { position ->
+            viewModel.clickDay(position)
+            val centerSmoothScroller =
+                CenterSmoothScroller(binding.recyclerViewDay.context)
+            centerSmoothScroller.targetPosition = position
+            binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
+        }
         binding.recyclerViewDay.adapter = routineDayAdapter
     }
 
     private fun setRoutineDaysObserve() {
         viewModel.days.observe(viewLifecycleOwner) {
             routineDayAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.recyclerViewDay.smoothScrollToPosition(it.size - 1)
+            }
         }
     }
 
@@ -107,6 +117,9 @@ class RoutineEditorFragment : Fragment(){
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
             exerciseAdapter.submitList(it)
+            if (it.isNotEmpty()) {
+                binding.recyclerViewExercise.smoothScrollToPosition(it.size - 1)
+            }
         }
     }
 
