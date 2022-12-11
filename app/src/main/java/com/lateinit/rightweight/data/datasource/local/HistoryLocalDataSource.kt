@@ -20,6 +20,12 @@ interface HistoryLocalDataSource {
         exerciseSets: List<ExerciseSet>
     )
 
+    suspend fun restoreHistory(
+        histories: List<History>,
+        exercises: List<HistoryExercise>,
+        sets: List<HistorySet>
+    )
+
     suspend fun insertHistorySet(historyExerciseId: String)
 
     suspend fun insertHistoryExercise(historyId: String)
