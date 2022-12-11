@@ -67,12 +67,12 @@ class HistoryRepositoryImpl @Inject constructor(
         val historySets = mutableListOf<HistorySet>()
 
         histories.forEach {
-            path = "user/${userId}/day/${it.historyId}/exercise"
+            path = "user/${userId}/history/${it.historyId}/exercise"
             historyExercises.addAll(historyRemoteDatasource.getHistoryExercises(path))
 
         }
         historyExercises.forEach {
-            path = "user/${userId}/day/${it.historyId}/exercise/${it.exerciseId}/exercise_set"
+            path = "user/${userId}/history/${it.historyId}/exercise/${it.exerciseId}/exercise_set"
             historySets.addAll(
                 historyRemoteDatasource.getHistoryExerciseSets(path)
             )
