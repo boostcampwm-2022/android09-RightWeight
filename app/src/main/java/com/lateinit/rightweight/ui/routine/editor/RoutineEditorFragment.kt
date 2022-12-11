@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
 import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.ui.routine.editor.RoutineEditorViewModel.RoutineSaveState
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,13 +65,13 @@ class RoutineEditorFragment : Fragment() {
         }
     }
 
-    private fun setExerciseAdapter(){
+    private fun setExerciseAdapter() {
         val exerciseParts = ExercisePartTypeUiModel.values().map { exercisePart ->
             getString(exercisePart.partName)
         }
         val exercisePartAdapter =
             ArrayAdapter(requireContext(), R.layout.item_exercise_part, exerciseParts)
-        val exerciseEventListener = object : RoutineExerciseAdapter.ExerciseEventListener{
+        val exerciseEventListener = object : RoutineExerciseAdapter.ExerciseEventListener {
 
             override fun onExerciseRemove(dayId: String, position: Int) {
                 viewModel.removeExercise(dayId, position)
@@ -106,16 +108,47 @@ class RoutineEditorFragment : Fragment() {
     private fun setRoutineSaveButtonEvent() {
         collectOnLifecycle {
             viewModel.isPossibleSaveRoutine.collect {
-                if (it) {
-                    setFragmentResult("management", bundleOf("save" to true))
-                    findNavController().navigateUp()
-                } else {
-                    Snackbar.make(binding.root, R.string.fail_save_routine, Snackbar.LENGTH_SHORT).apply {
-                        anchorView = binding.buttonSave
-                    }.show()
+                when (it) {
+                    RoutineSaveState.SUCCESS -> {
+                        setFragmentResult("management", bundleOf("save" to true))
+                        findNavController().navigateUp()
+                    }
+                    RoutineSaveState.ROUTINE_TITLE_EMPTY -> {
+                        showSnackBar(R.string.routine_title_empty)
+                    }
+                    RoutineSaveState.ROUTINE_DESCRIPTION_EMPTY -> {
+                        showSnackBar(R.string.routine_description_empty)
+                    }
+                    RoutineSaveState.EXERCISE_TITLE_EMPTY -> {
+                        showSnackBar(R.string.exercise_title_empty)
+                    }
+                    RoutineSaveState.DAY_EMPTY -> {
+                        showSnackBar(R.string.day_empty)
+                    }
+                    RoutineSaveState.EXERCISE_EMPTY -> {
+                        showSnackBar(R.string.exercise_empty)
+                    }
+                    RoutineSaveState.EXERCISE_SET_EMPTY -> {
+                        showSnackBar(R.string.exercise_set_empty)
+                    }
+                    RoutineSaveState.EXCEED_MAX_DAY_SIZE -> {
+                        showSnackBar(R.string.exceed_max_day_size)
+                    }
+                    RoutineSaveState.EXCEED_MAX_EXERCISE_SIZE -> {
+                        showSnackBar(R.string.exceed_max_exercise_size)
+                    }
+                    RoutineSaveState.EXCEED_MAX_EXERCISE_SET_SIZE -> {
+                        showSnackBar(R.string.exceed_max_exercise_set_size)
+                    }
                 }
             }
         }
+    }
+
+    private fun showSnackBar(@StringRes messageResId: Int) {
+        Snackbar.make(binding.root, messageResId, Snackbar.LENGTH_SHORT).apply {
+            anchorView = binding.buttonSave
+        }.show()
     }
 
     override fun onDestroyView() {
