@@ -52,4 +52,8 @@ interface HistoryLocalDataSource {
     suspend fun removeHistoryExercise(historyExerciseId: String)
 
     suspend fun removeAllHistories()
+
+    suspend fun removeUncheckedHistorySet()
+
+    suspend fun removeUncheckedHistoryExercise()
 }

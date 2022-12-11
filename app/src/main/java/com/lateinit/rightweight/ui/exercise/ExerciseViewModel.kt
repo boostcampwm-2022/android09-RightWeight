@@ -86,9 +86,19 @@ class ExerciseViewModel @Inject constructor(
                     completed = true
                 )
             )
+            removeUncheckedHistorySet()
+            removeUncheckedHistoryExercise()
             setCompletedDay()
             _navigationEvent.emit(true)
         }
+    }
+
+    private suspend fun removeUncheckedHistorySet() {
+        historyRepository.removeUncheckedHistorySet()
+    }
+
+    private suspend fun removeUncheckedHistoryExercise() {
+        historyRepository.removeUncheckedHistoryExercise()
     }
 
     private suspend fun setCompletedDay() {
