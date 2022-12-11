@@ -61,20 +61,29 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setRoutineDayAdapter() {
         routineDayAdapter = RoutineDayAdapter { position ->
-            viewModel.clickDay(position)
-            val centerSmoothScroller =
-                CenterSmoothScroller(binding.recyclerViewDay.context)
-            centerSmoothScroller.targetPosition = position
-            binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
+            setDayFocus(position)
         }
         binding.recyclerViewDay.adapter = routineDayAdapter
+        binding.recyclerViewDay.itemAnimator = null
+    }
+
+    private fun setDayFocus(position: Int){
+        viewModel.clickDay(position)
+        val centerSmoothScroller =
+            CenterSmoothScroller(binding.recyclerViewDay.context)
+        centerSmoothScroller.targetPosition = position
+        binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
     }
 
     private fun setRoutineDaysObserve() {
         viewModel.days.observe(viewLifecycleOwner) {
+            val lastListSize = routineDayAdapter.currentList.size
             routineDayAdapter.submitList(it)
-            if (it.isNotEmpty()) {
-                binding.recyclerViewDay.smoothScrollToPosition(it.size - 1)
+            if(lastListSize < it.size){
+                setDayFocus(it.size -1)
+            }
+            else if(lastListSize > it.size){
+                setDayFocus(0)
             }
         }
     }
@@ -111,14 +120,15 @@ class RoutineEditorFragment : Fragment() {
 
         exerciseAdapter = RoutineExerciseAdapter(exercisePartAdapter, exerciseEventListener)
         binding.recyclerViewExercise.adapter = exerciseAdapter
-        binding.recyclerViewExercise.setItemAnimator(null)
+        binding.recyclerViewExercise.itemAnimator = null
     }
 
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
+            val lastListSize = exerciseAdapter.currentList.size
             exerciseAdapter.submitList(it)
-            if (it.isNotEmpty()) {
-                binding.recyclerViewExercise.smoothScrollToPosition(it.size - 1)
+            if (lastListSize < it.size) {
+                binding.nestedScrollViewRoutineEditor.fullScroll(View.FOCUS_DOWN)
             }
         }
     }
