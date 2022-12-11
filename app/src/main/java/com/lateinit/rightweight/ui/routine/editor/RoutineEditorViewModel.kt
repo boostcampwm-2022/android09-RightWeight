@@ -70,7 +70,7 @@ class RoutineEditorViewModel @Inject constructor(
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
 
-    private val _isPossibleSaveRoutine = MutableSharedFlow<Boolean>()
+    private val _isPossibleSaveRoutine = MutableSharedFlow<RoutineSaveState>()
     val isPossibleSaveRoutine = _isPossibleSaveRoutine.asSharedFlow()
 
     init {
@@ -88,8 +88,8 @@ class RoutineEditorViewModel @Inject constructor(
     fun addDay() {
         val days = _days.value ?: return
 
-        if (days.size == MAX_ROUTINE_SIZE) {
-            sendEvent(false)
+        if (days.size == MAX_DAY_SIZE) {
+            sendEvent(RoutineSaveState.EXCEED_MAX_DAY_SIZE)
             return
         }
 
@@ -146,7 +146,7 @@ class RoutineEditorViewModel @Inject constructor(
         val exercises = dayToExercise.value?.getOrDefault(dayId, LinkedList()) ?: return
 
         if (exercises.size == MAX_EXERCISE_SIZE) {
-            sendEvent(false)
+            sendEvent(RoutineSaveState.EXCEED_MAX_EXERCISE_SIZE)
             return
         }
 
@@ -186,7 +186,7 @@ class RoutineEditorViewModel @Inject constructor(
         val exerciseSets = exerciseToSet.value?.getOrDefault(exerciseId, LinkedList()) ?: return
 
         if (exerciseSets.size == MAX_EXERCISE_SET_SIZE) {
-            sendEvent(false)
+            sendEvent(RoutineSaveState.EXCEED_MAX_EXERCISE_SET_SIZE)
             return
         }
 
@@ -222,35 +222,35 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             if (title.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.ROUTINE_TITLE_EMPTY)
                 return@launch
             }
             if (description.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.ROUTINE_DESCRIPTION_EMPTY)
                 return@launch
             }
             if (days.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.DAY_EMPTY)
                 return@launch
             }
 
             val exercises = dayToExercise.value?.values?.flatMap { exercises ->
                 if (exercises.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_EMPTY)
                     return@launch
                 }
                 exercises
             } ?: run {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.EXERCISE_EMPTY)
                 return@launch
             }
             val exerciseSets = exercises.flatMap { exercise ->
                 if (exercise.title.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_TITLE_EMPTY)
                     return@launch
                 }
                 if (exercise.exerciseSets.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_SET_EMPTY)
                     return@launch
                 }
                 exercise.exerciseSets
@@ -262,13 +262,13 @@ class RoutineEditorViewModel @Inject constructor(
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
             )
-            sendEvent(true)
+            sendEvent(RoutineSaveState.SUCCESS)
         }
     }
 
-    private fun sendEvent(isPossible: Boolean) {
+    private fun sendEvent(saveState: RoutineSaveState) {
         viewModelScope.launch {
-            _isPossibleSaveRoutine.emit(isPossible)
+            _isPossibleSaveRoutine.emit(saveState)
         }
     }
 
@@ -344,10 +344,23 @@ class RoutineEditorViewModel @Inject constructor(
         }
     }
 
+    enum class RoutineSaveState {
+        SUCCESS,
+        ROUTINE_TITLE_EMPTY,
+        ROUTINE_DESCRIPTION_EMPTY,
+        EXERCISE_TITLE_EMPTY,
+        DAY_EMPTY,
+        EXERCISE_EMPTY,
+        EXERCISE_SET_EMPTY,
+        EXCEED_MAX_DAY_SIZE,
+        EXCEED_MAX_EXERCISE_SIZE,
+        EXCEED_MAX_EXERCISE_SET_SIZE
+    }
+
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
         private const val DEFAULT_ROUTINE_ID = ""
-        private const val MAX_ROUTINE_SIZE = 10
+        private const val MAX_DAY_SIZE = 10
         private const val MAX_EXERCISE_SIZE = 10
         private const val MAX_EXERCISE_SET_SIZE = 10
     }
