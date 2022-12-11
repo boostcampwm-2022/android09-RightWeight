@@ -36,7 +36,7 @@ class RoutineEditorFragment : Fragment() {
     private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
     private val backPressedDialog = CommonDialogFragment { findNavController().navigateUp() }
-    private var backPressedCallback = object : OnBackPressedCallback(true) {
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             backPressedDialog.show(
                 parentFragmentManager,
@@ -77,7 +77,7 @@ class RoutineEditorFragment : Fragment() {
         binding.recyclerViewDay.itemAnimator = null
     }
 
-    private fun setDayFocus(position: Int){
+    private fun setDayFocus(position: Int) {
         viewModel.clickDay(position)
         val centerSmoothScroller =
             CenterSmoothScroller(binding.recyclerViewDay.context)
@@ -89,10 +89,9 @@ class RoutineEditorFragment : Fragment() {
         viewModel.days.observe(viewLifecycleOwner) {
             val lastListSize = routineDayAdapter.currentList.size
             routineDayAdapter.submitList(it)
-            if(lastListSize < it.size){
-                setDayFocus(it.size -1)
-            }
-            else if(lastListSize > it.size){
+            if (lastListSize < it.size) {
+                setDayFocus(it.size - 1)
+            } else if (lastListSize > it.size) {
                 setDayFocus(0)
             }
         }
