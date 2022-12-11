@@ -89,6 +89,7 @@ class RoutineEditorViewModel @Inject constructor(
         val day = DayUiModel(createUUID(), routineId, days.size, true)
 
         days.add(day)
+        dayToExercise.value?.put(day.dayId, LinkedList())
         clickDay(days.lastIndex)
     }
 
