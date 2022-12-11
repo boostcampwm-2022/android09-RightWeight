@@ -4,6 +4,8 @@ import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.datasource.local.HistoryLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
@@ -22,7 +24,7 @@ import javax.inject.Inject
 class HistoryRepositoryImpl @Inject constructor(
     private val historyLocalDataSource: HistoryLocalDataSource,
     private val historyRemoteDatasource: HistoryRemoteDatasource
-): HistoryRepository {
+) : HistoryRepository {
 
     override suspend fun saveHistory(
         routineId: String,
@@ -31,7 +33,13 @@ class HistoryRepositoryImpl @Inject constructor(
         exercises: List<Exercise>,
         exerciseSets: List<ExerciseSet>
     ) {
-        return  historyLocalDataSource.insertHistory(routineId, day, routineTitle, exercises, exerciseSets)
+        return historyLocalDataSource.insertHistory(
+            routineId,
+            day,
+            routineTitle,
+            exercises,
+            exerciseSets
+        )
     }
 
     override suspend fun insertHistorySet(historyExerciseId: String) {
@@ -50,8 +58,27 @@ class HistoryRepositoryImpl @Inject constructor(
         return historyLocalDataSource.getHistoryAfterDate(startDate).map { it.toHistoryUiModel() }
     }
 
+    override suspend fun restoreHistory(userId: String, historyIds: List<String>) {
+        var path = "user/${userId}/history"
+        val histories = historyRemoteDatasource.getHistories(path)
+        val historyExercises = mutableListOf<HistoryExercise>()
+        val historySets = mutableListOf<HistorySet>()
+
+        histories.forEach {
+            path = "user/${userId}/day/${it.historyId}/exercise"
+            historyExercises.addAll(historyRemoteDatasource.getHistoryExercises(path))
+
+        }
+        historyExercises.forEach {
+            path = "user/${userId}/day/${it.historyId}/exercise/${it.exerciseId}/exercise_set"
+            historySets.addAll(
+                historyRemoteDatasource.getHistoryExerciseSets(path)
+            )
+        }
+    }
+
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
-        return  historyLocalDataSource.getHistoryByDate(localDate)
+        return historyLocalDataSource.getHistoryByDate(localDate)
     }
 
     override fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?> {
