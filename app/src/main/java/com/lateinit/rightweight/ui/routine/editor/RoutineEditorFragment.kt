@@ -101,6 +101,7 @@ class RoutineEditorFragment : Fragment(){
 
         exerciseAdapter = RoutineExerciseAdapter(exercisePartAdapter, exerciseEventListener)
         binding.recyclerViewExercise.adapter = exerciseAdapter
+        binding.recyclerViewExercise.setItemAnimator(null)
     }
 
     private fun setDayExercisesObserve() {
@@ -118,7 +119,6 @@ class RoutineEditorFragment : Fragment(){
                 )
             }
         })
-        //(requireActivity() as AppCompatActivity).on
     }
 
     private fun setRoutineSaveButtonEvent() {
