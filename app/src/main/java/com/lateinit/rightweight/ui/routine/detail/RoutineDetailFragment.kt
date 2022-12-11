@@ -117,7 +117,10 @@ class RoutineDetailFragment : Fragment() {
     private fun setRoutineDayAdapter() {
         routineDayAdapter =
             RoutineDayAdapter { position -> viewModel.clickDay(position) }
-        binding.recyclerViewDay.adapter = routineDayAdapter
+        binding.recyclerViewDay.apply {
+            adapter = routineDayAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setDayUiModelsObserve() {
@@ -130,7 +133,10 @@ class RoutineDetailFragment : Fragment() {
         exerciseAdapter = DetailExerciseAdapter { position ->
             viewModel.clickExercise(position)
         }
-        binding.recyclerViewExercise.adapter = exerciseAdapter
+        binding.recyclerViewExercise.apply {
+            adapter = exerciseAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setCurrentDayPositionObserve() {

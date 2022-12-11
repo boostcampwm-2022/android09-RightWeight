@@ -59,6 +59,7 @@ class HistorySetAdapter(
         fun bind(historyExerciseSetUiModel: HistoryExerciseSetUiModel) {
             this.historyExerciseSetUiModel = historyExerciseSetUiModel
             binding.historyExerciseSetUiModel = historyExerciseSetUiModel
+            binding.executePendingBindings()
         }
     }
 

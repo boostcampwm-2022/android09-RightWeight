@@ -91,8 +91,10 @@ class HomeFragment : Fragment() {
         }
 
         adapter = ConcatAdapter(homeAdapters)
-        binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
-        binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
+        binding.layoutDayExercises.recyclerViewTodayRoutine.apply {
+            adapter = adapter
+            itemAnimator = ExpandableItemAnimator()
+        }
     }
 
     override fun onDestroyView() {

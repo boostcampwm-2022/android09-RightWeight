@@ -56,14 +56,20 @@ class SharedRoutineDetailFragment : Fragment() {
             RoutineDayAdapter { position ->
                 viewModel.clickDay(position)
             }
-        binding.recyclerViewDay.adapter = routineDayAdapter
+        binding.recyclerViewDay.apply {
+            adapter = routineDayAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setExerciseAdapter() {
         exerciseAdapter = DetailExerciseAdapter { position ->
             viewModel.clickExercise(position)
         }
-        binding.recyclerViewExercise.adapter = exerciseAdapter
+        binding.recyclerViewExercise.apply {
+            adapter = exerciseAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setSharedRoutineDetailCollect() {

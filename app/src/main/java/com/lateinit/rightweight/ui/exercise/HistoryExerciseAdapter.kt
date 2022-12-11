@@ -72,8 +72,13 @@ class HistoryExerciseAdapter(
                 binding.root.context.getString(historyExerciseUiModel.part.partName)
             binding.textViewExercisePart.setText(exercisePartName, false)
 
-            binding.recyclerViewSet.adapter = historySetAdapter
+            binding.recyclerViewSet.apply {
+                adapter = historySetAdapter
+                itemAnimator = null
+            }
             historySetAdapter.submitList(historyExerciseUiModel.exerciseSets)
+
+            binding.executePendingBindings()
         }
     }
 

@@ -177,7 +177,10 @@ class ExerciseFragment : Fragment() {
         }
 
         historyExerciseAdapter = HistoryExerciseAdapter(exercisePartAdapter, historyEventListener)
-        binding.recyclerViewHistory.adapter = historyExerciseAdapter
+        binding.recyclerViewHistory.apply {
+            adapter = historyExerciseAdapter
+            itemAnimator = null
+        }
     }
 
     private fun collectHistory() {
