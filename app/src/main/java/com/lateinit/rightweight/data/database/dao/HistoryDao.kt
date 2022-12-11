@@ -39,6 +39,9 @@ interface HistoryDao {
     @Query("SELECT * FROM history WHERE date = :localDate")
     fun getHistoryByDate(localDate: LocalDate) : Flow<History>
 
+    @Query("SELECT * FROM history ORDER BY date DESC LIMIT 1")
+    fun getLatestHistory() : History
+
     @Transaction
     @Query("SELECT * FROM history WHERE date > :startDate")
     suspend fun getHistoryAfterDate(
@@ -76,7 +79,7 @@ interface HistoryDao {
 
     @Query("DELETE FROM history_exercise WHERE exercise_id = :historyExerciseId")
     suspend fun removeHistoryExercise(historyExerciseId: String)
-
+    
     @Query("DELETE FROM history")
     suspend fun removeAllHistories()
 

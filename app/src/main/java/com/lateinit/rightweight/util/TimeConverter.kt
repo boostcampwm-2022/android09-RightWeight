@@ -7,3 +7,9 @@ fun convertTimeStamp(count: Int): String {
 
     return "${"%02d".format(hours)}:${"%02d".format(minutes)}:${"%02d".format(seconds)}"
 }
+
+fun convertTimeStampToTimeCount(timeStamp: String): Int {
+    val (hour, minute, second) = timeStamp.split(":").map { it.toInt() }
+
+    return hour * 60 * 60 + minute * 60 + second
+}

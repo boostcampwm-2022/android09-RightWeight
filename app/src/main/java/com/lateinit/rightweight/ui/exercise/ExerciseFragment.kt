@@ -20,6 +20,7 @@ import com.lateinit.rightweight.service.TimerService.Companion.IS_TIMER_RUNNING_
 import com.lateinit.rightweight.service.TimerService.Companion.MANAGE_ACTION_NAME
 import com.lateinit.rightweight.service.TimerService.Companion.PAUSE
 import com.lateinit.rightweight.service.TimerService.Companion.PENDING_INTENT_TAG
+import com.lateinit.rightweight.service.TimerService.Companion.SET_TIME_COUNT
 import com.lateinit.rightweight.service.TimerService.Companion.START
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
@@ -32,6 +33,7 @@ import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
 import com.lateinit.rightweight.util.collectOnLifecycle
 import com.lateinit.rightweight.util.convertTimeStamp
+import com.lateinit.rightweight.util.convertTimeStampToTimeCount
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -93,6 +95,7 @@ class ExerciseFragment : Fragment() {
     private fun startTimerServiceWithMode(mode: String) {
         timerServiceIntent.putExtra(MANAGE_ACTION_NAME, mode)
         requireActivity().startService(timerServiceIntent)
+        timerServiceIntent.removeExtra(MANAGE_ACTION_NAME)
     }
 
     private fun setBroadcastReceiver() {
@@ -181,14 +184,23 @@ class ExerciseFragment : Fragment() {
         collectOnLifecycle {
             viewModel.historyUiModel.collect {
                 it ?: return@collect
+
+                sendSavedTimeCountToService(convertTimeStampToTimeCount(it.time))
                 historyExerciseAdapter.submitList(it.exercises)
             }
         }
     }
 
+    private fun sendSavedTimeCountToService(timeCount: Int) {
+        timerServiceIntent.putExtra(SET_TIME_COUNT, timeCount)
+        requireActivity().startService(timerServiceIntent)
+        timerServiceIntent.removeExtra(SET_TIME_COUNT)
+        startTimerServiceWithMode(STATUS)
+    }
+
     private fun handleNavigationEvent() {
         collectOnLifecycle {
-            viewModel.navigationEvent.collect { _ ->
+            viewModel.navigationEvent.collect {
                 findNavController().navigateUp()
             }
         }
