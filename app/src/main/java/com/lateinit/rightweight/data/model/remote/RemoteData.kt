@@ -106,9 +106,7 @@ data class HistoryField(
     @SerializedName("routine_title")
     val routineTitle: StringValue,
     @SerializedName("order")
-    val order: IntValue,
-    @SerializedName("routine_id")
-    val routineId: StringValue,
+    val order: IntValue
 ) : RemoteData()
 
 data class HistoryExerciseField(
