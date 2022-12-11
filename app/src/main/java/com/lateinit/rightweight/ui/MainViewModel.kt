@@ -101,16 +101,16 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch() {
             val userInfoInServer = userRepository.restoreUserInfo(userId)
             if(userInfoInServer != null){
-                restoreRoutine(userId)
-                restoreUserInfo(
-                    userInfoInServer.routineId.value,
-                    userInfoInServer.dayId.value
-                )
+                restoreHistory(userId)
+//                restoreUserInfo(
+//                    userInfoInServer.routineId.value,
+//                    userInfoInServer.dayId.value
+//                )
             }
         }
     }
 
-    private suspend fun restoreRoutine(userId: String) {
+    private suspend fun restoreHistory(userId: String) {
         historyRepository.restoreHistory(userId)
     }
 

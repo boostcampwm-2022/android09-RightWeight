@@ -58,8 +58,7 @@ fun HistoryField.toHistory(historyId: String): History {
         time = time.value,
         routineTitle = routineTitle.value,
         dayOrder = order.value.toInt(),
-        completed = true,
-        routineId = routineId.value
+        completed = true
     )
 }
 
