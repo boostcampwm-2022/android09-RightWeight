@@ -2,9 +2,7 @@ package com.lateinit.rightweight.ui.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
 import com.lateinit.rightweight.data.repository.HistoryRepository
-import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -72,15 +69,8 @@ class CalendarViewModel @Inject constructor(
         return historyRepository.getHistoryBetweenDate(
             startDay.minusDays(startDayDiff),
             endDay.plusDays(endDayDiff)
-        ).mapDateToHistoryUiModels()
+        )
     }
-
-    private fun Flow<List<HistoryWithHistoryExercises>>.mapDateToHistoryUiModels() =
-        this.map { historyWithExercises ->
-            historyWithExercises.associate { historyWithExercise ->
-                historyWithExercise.history.date to historyWithExercise.toHistoryUiModel()
-            }
-        }
 
     companion object {
         private const val START_DAY_OF_MONTH = 1
