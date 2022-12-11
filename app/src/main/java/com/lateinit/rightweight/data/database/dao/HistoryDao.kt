@@ -23,8 +23,8 @@ interface HistoryDao {
         sets: List<HistorySet>
     )
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHistories(
+    @Insert
+    suspend fun restoreHistory(
         history: List<History>,
         exercises: List<HistoryExercise>,
         sets: List<HistorySet>
@@ -80,12 +80,4 @@ interface HistoryDao {
     @Query("DELETE FROM history")
     suspend fun removeAllHistories()
 
-    @Transaction
-    suspend fun restoreHistory(
-        histories: List<History>,
-        exercises: List<HistoryExercise>,
-        sets: List<HistorySet>
-    ){
-        insertHistories(histories,exercises,sets)
-    }
 }
