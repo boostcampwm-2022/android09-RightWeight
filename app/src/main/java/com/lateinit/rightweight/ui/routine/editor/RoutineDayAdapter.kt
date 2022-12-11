@@ -38,6 +38,7 @@ class RoutineDayAdapter(
 
         fun bind(dayUiModel: DayUiModel) {
             binding.dayUiModel = dayUiModel
+            binding.executePendingBindings()
         }
 
     }

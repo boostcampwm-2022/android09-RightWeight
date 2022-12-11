@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -14,7 +15,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineEditorBinding
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.EDITOR_BACK_PRESSED_DIALOG_TAG
 import com.lateinit.rightweight.ui.model.routine.ExercisePartTypeUiModel
+import com.lateinit.rightweight.util.CenterSmoothScroller
 import com.lateinit.rightweight.ui.routine.editor.RoutineEditorViewModel.RoutineSaveState
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +35,16 @@ class RoutineEditorFragment : Fragment() {
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: RoutineExerciseAdapter
 
+    private val backPressedDialog = CommonDialogFragment { findNavController().navigateUp() }
+    private val backPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            backPressedDialog.show(
+                parentFragmentManager,
+                EDITOR_BACK_PRESSED_DIALOG_TAG, R.string.editor_back_pressed_message
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -46,6 +60,7 @@ class RoutineEditorFragment : Fragment() {
         setRoutineDaysObserve()
         setExerciseAdapter()
         setDayExercisesObserve()
+        setBackStackEvent()
         setRoutineSaveButtonEvent()
     }
 
@@ -55,13 +70,30 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setRoutineDayAdapter() {
-        routineDayAdapter = RoutineDayAdapter { position -> viewModel.clickDay(position) }
+        routineDayAdapter = RoutineDayAdapter { position ->
+            setDayFocus(position)
+        }
         binding.recyclerViewDay.adapter = routineDayAdapter
+        binding.recyclerViewDay.itemAnimator = null
+    }
+
+    private fun setDayFocus(position: Int) {
+        viewModel.clickDay(position)
+        val centerSmoothScroller =
+            CenterSmoothScroller(binding.recyclerViewDay.context)
+        centerSmoothScroller.targetPosition = position
+        binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
     }
 
     private fun setRoutineDaysObserve() {
         viewModel.days.observe(viewLifecycleOwner) {
+            val lastListSize = routineDayAdapter.currentList.size
             routineDayAdapter.submitList(it)
+            if (lastListSize < it.size) {
+                setDayFocus(it.size - 1)
+            } else if (lastListSize > it.size) {
+                setDayFocus(0)
+            }
         }
     }
 
@@ -97,12 +129,21 @@ class RoutineEditorFragment : Fragment() {
 
         exerciseAdapter = RoutineExerciseAdapter(exercisePartAdapter, exerciseEventListener)
         binding.recyclerViewExercise.adapter = exerciseAdapter
+        binding.recyclerViewExercise.itemAnimator = null
     }
 
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
+            val lastListSize = exerciseAdapter.currentList.size
             exerciseAdapter.submitList(it)
+            if (lastListSize < it.size) {
+                binding.nestedScrollViewRoutineEditor.fullScroll(View.FOCUS_DOWN)
+            }
         }
+    }
+
+    private fun setBackStackEvent() {
+        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
     }
 
     private fun setRoutineSaveButtonEvent() {
@@ -154,5 +195,10 @@ class RoutineEditorFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        backPressedCallback.remove()
     }
 }

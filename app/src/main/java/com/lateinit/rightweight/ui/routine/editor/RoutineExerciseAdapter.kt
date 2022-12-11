@@ -75,7 +75,9 @@ class RoutineExerciseAdapter(
             binding.textViewExercisePart.setText(exercisePartName, false)
 
             binding.recyclerViewSet.adapter = routineSetAdapter
+            binding.recyclerViewSet.itemAnimator = null
             routineSetAdapter.submitList(exerciseUiModel.exerciseSets)
+            binding.executePendingBindings()
         }
     }
 

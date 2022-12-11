@@ -27,6 +27,7 @@ class RoutineSetAdapter(val exerciseEventListener: RoutineExerciseAdapter.Exerci
 
         fun bind(exerciseSetUiModel: ExerciseSetUiModel) {
             binding.exerciseSetUiModel = exerciseSetUiModel
+            binding.executePendingBindings()
             binding.buttonSetRemove.setOnClickListener {
                 exerciseEventListener.onSetRemove(exerciseSetUiModel.exerciseId, layoutPosition)
             }

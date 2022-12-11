@@ -16,6 +16,7 @@
     <string name="input_exercise_name">운동이름을 입력하세요</string>
     <string name="input_routine_name">루틴이름을 입력해 주세요</string>
     <string name="input_routine_description">루틴에 대한 설명을 입력해 주세요</string>
+    <string name="editor_back_pressed_message">현재 작성된 내용이 사라집니다. 이전 화면으로 돌아가도 괜찮으시겠습니까?</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">회원탈퇴</string>
     <string name="detail">상세</string>
