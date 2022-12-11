@@ -43,5 +43,6 @@ class CommonDialogFragment(private val callback: (String?) -> Unit) : DialogFrag
         const val SELECTED_ROUTINE_REMOVE_DIALOG_TAG = "SELECTED_ROUTINE_REMOVE"
         const val ROUTINE_REMOVE_DIALOG_TAG = "ROUTINE_REMOVE"
         const val END_EXERCISE_DIALOG_TAG = "END_EXERCISE"
+        const val EDITOR_BACK_PRESSED_DIALOG_TAG = "EDITOR_BACK_PRESSED"
     }
 }
