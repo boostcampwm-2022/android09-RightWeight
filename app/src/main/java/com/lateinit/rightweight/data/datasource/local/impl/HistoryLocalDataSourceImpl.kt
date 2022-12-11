@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class HistoryLocalDataSourceImpl @Inject constructor(
     private val historyDao: HistoryDao
-): HistoryLocalDataSource {
+) : HistoryLocalDataSource {
 
     override suspend fun insertHistory(
         routineId: String,
@@ -30,20 +30,41 @@ class HistoryLocalDataSourceImpl @Inject constructor(
         val history = History(historyId, LocalDate.now(), "00:00:00", routineTitle, day.order, false)
         val historyExercises = mutableListOf<HistoryExercise>()
         val historySets = mutableListOf<HistorySet>()
-        for(exercise in exercises){
+        for (exercise in exercises) {
             val historyExerciseId = createRandomUUID()
-            val historyExercise = HistoryExercise(historyExerciseId, historyId, exercise.title, exercise.order, exercise.part)
+            val historyExercise = HistoryExercise(
+                historyExerciseId,
+                historyId,
+                exercise.title,
+                exercise.order,
+                exercise.part
+            )
             historyExercises.add(historyExercise)
-            for(exerciseSet in exerciseSets){
-                if(exerciseSet.exerciseId == exercise.exerciseId){
+            for (exerciseSet in exerciseSets) {
+                if (exerciseSet.exerciseId == exercise.exerciseId) {
                     val historySetId = createRandomUUID()
-                    val historySet = HistorySet(historySetId, historyExerciseId, exerciseSet.weight, exerciseSet.count, exerciseSet.order, false)
+                    val historySet = HistorySet(
+                        historySetId,
+                        historyExerciseId,
+                        exerciseSet.weight,
+                        exerciseSet.count,
+                        exerciseSet.order,
+                        false
+                    )
                     historySets.add(historySet)
                 }
             }
         }
 
         historyDao.insertHistory(history, historyExercises, historySets)
+    }
+
+    override suspend fun restoreHistory(
+        histories: List<History>,
+        exercises: List<HistoryExercise>,
+        sets: List<HistorySet>
+    ) {
+        historyDao.restoreHistory(histories, exercises, sets)
     }
 
     override suspend fun insertHistorySet(historyExerciseId: String) {

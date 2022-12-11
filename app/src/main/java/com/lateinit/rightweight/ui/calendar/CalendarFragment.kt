@@ -6,16 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
 import com.lateinit.rightweight.databinding.FragmentCalendarBinding
 import com.lateinit.rightweight.ui.home.ExpandableItemAnimator
 import com.lateinit.rightweight.ui.home.HomeAdapter
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -53,9 +50,14 @@ class CalendarFragment : Fragment() {
 
     private fun setCalendarView() {
         completedDayDecorator = CompletedDayDecorator(requireContext())
-        binding.calendarView.addDecorators(DayDecorator(requireContext()), completedDayDecorator)
-        binding.calendarView.setSelectedDate(LocalDate.now())
         setCalendarListeners()
+        binding.calendarView.apply {
+            val today = LocalDate.now()
+
+            state().edit().setMaximumDate(today).commit()
+            addDecorators(DayDecorator(requireContext()), completedDayDecorator)
+            setSelectedDate(today)
+        }
     }
 
     private fun setCalendarListeners() {
@@ -69,29 +71,26 @@ class CalendarFragment : Fragment() {
     }
 
     private fun collectMonthHistories() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dateToExerciseHistories.collectLatest {
-                    completedDayDecorator.changeCompletedHistories(it)
-                    binding.calendarView.invalidateDecorators()
-                }
+        viewLifecycleOwner.collectOnLifecycle {
+            viewModel.dateToExerciseHistories.collectLatest {
+                completedDayDecorator.changeCompletedDates(it.keys)
+                binding.calendarView.invalidateDecorators()
             }
         }
     }
 
     private fun collectSelectedDayInfo() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.selectedDayInfo.collectLatest { dayUiModel ->
-                    dayUiModel?.let {
-                        val adapters = it.exercises.map { exerciseUiModel ->
-                            HomeAdapter(exerciseUiModel)
-                        }
-                        val adapter = ConcatAdapter(adapters)
+        viewLifecycleOwner.collectOnLifecycle {
+            viewModel.selectedDayInfo.collectLatest { dayInfo ->
+                dayInfo?.let {
+                    val adapters = it.exercises.map { exerciseUiModel ->
+                        HomeAdapter(exerciseUiModel)
+                    }
+                    val adapter = ConcatAdapter(adapters)
 
-                        binding.layoutDayExercises.recyclerViewTodayRoutine.adapter = adapter
-                        binding.layoutDayExercises.recyclerViewTodayRoutine.itemAnimator =
-                            ExpandableItemAnimator()
+                    binding.layoutDayExercises.apply {
+                        recyclerViewTodayRoutine.adapter = adapter
+                        recyclerViewTodayRoutine.itemAnimator = ExpandableItemAnimator()
                     }
                 }
             }

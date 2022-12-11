@@ -30,8 +30,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:mcv_allowClickDaysOutsideCurrentMonth="false"
-                app:mcv_selectionColor="@color/secondaryColor"
                 app:mcv_showOtherDates="other_months" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -48,6 +46,7 @@
                 android:layout_marginTop="20dp"
                 android:text="@{viewModel.routineTitle}"
                 android:textAppearance="@style/Text.Medium.Bold"
+                android:visibility="@{viewModel.routineTitle.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toTopOf="@id/layout_day_exercises"
                 app:layout_constraintEnd_toStartOf="@id/text_view_exercise_time"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -62,7 +61,7 @@
                 android:text="@{@string/exercise_time(viewModel.exerciseTime)}"
                 android:textAppearance="@style/Text.Caption"
                 android:textColor="@color/black"
-                android:visibility="@{viewModel.exerciseTime.empty ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{viewModel.exerciseTime.empty ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="@id/text_view_routine_title"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toEndOf="@id/text_view_routine_title"
@@ -75,7 +74,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="20dp"
-                android:visibility="@{viewModel.selectedDayInfo != null ? View.VISIBLE : View.GONE}"
                 app:dayUiModel="@{viewModel.selectedDayInfo}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -83,6 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@id/text_view_routine_title" />
 
             <TextView
+                android:id="@+id/text_view_no_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/history_none"
