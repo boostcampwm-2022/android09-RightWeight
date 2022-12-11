@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
-class HistoryLocalLocalDataSourceImpl @Inject constructor(
+class HistoryLocalDataSourceImpl @Inject constructor(
     private val historyDao: HistoryDao
 ): HistoryLocalDataSource {
 
@@ -73,6 +73,10 @@ class HistoryLocalLocalDataSourceImpl @Inject constructor(
         historyDao.insertHistoryExercise(newHistoryExercise)
     }
 
+    override suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises> {
+        return historyDao.getHistoryAfterDate(startDate)
+    }
+
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
         return historyDao.getHistoryByDate(localDate)
     }
@@ -106,5 +110,9 @@ class HistoryLocalLocalDataSourceImpl @Inject constructor(
 
     override suspend fun removeHistoryExercise(historyExerciseId: String) {
         historyDao.removeHistoryExercise(historyExerciseId)
+    }
+
+    override suspend fun removeAllHistories() {
+        historyDao.removeAllHistories()
     }
 }

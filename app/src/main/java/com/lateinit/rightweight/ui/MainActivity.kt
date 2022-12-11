@@ -72,19 +72,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         GoogleSignIn.getClient(applicationContext, options)
     }
 
+    private var isLoginBefore: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
+        isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
 
         setActionBar()
         setNavController()
+        restore()
+    }
+
+    private fun restore() {
+        if(isLoginBefore.not()){
+            viewModel.restore()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
-
     }
 
     override fun onBackPressed() {
@@ -182,17 +190,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        client.signOut()
-        moveToLoginActivity()
+        viewModel.deleteLocalData()
+        collectOnLifecycle {
+            viewModel.deleteEvent.collect {
+                client.signOut()
+                moveToLoginActivity()
+            }
+        }
     }
 
     private fun withdraw() {
+        viewModel.deleteLocalData()
         viewModel.deleteAccount(getString(R.string.google_api_key))
         collectOnLifecycle {
             viewModel.networkState.collect {
                 if (it == NetworkState.SUCCESS) {
-                    client.signOut()
-                    moveToLoginActivity()
+                    logout()
                 } else {
                     Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
                         .show()

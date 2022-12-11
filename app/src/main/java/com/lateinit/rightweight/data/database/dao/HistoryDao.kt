@@ -33,6 +33,12 @@ interface HistoryDao {
     fun getHistoryByDate(localDate: LocalDate) : Flow<History>
 
     @Transaction
+    @Query("SELECT * FROM history WHERE date > :startDate")
+    suspend fun getHistoryAfterDate(
+        startDate: LocalDate,
+    ): List<HistoryWithHistoryExercises>
+
+    @Transaction
     @Query("SELECT * FROM history WHERE date = :localDate")
     fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate) : Flow<HistoryWithHistoryExercises?>
 
@@ -63,4 +69,7 @@ interface HistoryDao {
 
     @Query("DELETE FROM history_exercise WHERE exercise_id = :historyExerciseId")
     suspend fun removeHistoryExercise(historyExerciseId: String)
+
+    @Query("DELETE FROM history")
+    suspend fun removeAllHistories()
 }

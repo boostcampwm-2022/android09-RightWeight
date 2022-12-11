@@ -24,6 +24,8 @@ interface HistoryLocalDataSource {
 
     suspend fun insertHistoryExercise(historyId: String)
 
+    suspend fun getHistoryAfterDate(startDate: LocalDate): List<HistoryWithHistoryExercises>
+
     fun getHistoryByDate(localDate: LocalDate): Flow<History>
 
     fun getHistoryWithHistoryExercisesByDate(localDate: LocalDate): Flow<HistoryWithHistoryExercises?>
@@ -42,4 +44,6 @@ interface HistoryLocalDataSource {
     suspend fun removeHistorySet(historySetId: String)
 
     suspend fun removeHistoryExercise(historyExerciseId: String)
+
+    suspend fun removeAllHistories()
 }

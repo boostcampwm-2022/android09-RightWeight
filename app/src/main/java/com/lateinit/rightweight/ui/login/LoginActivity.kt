@@ -1,11 +1,17 @@
 package com.lateinit.rightweight.ui.login
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnticipateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -54,11 +60,35 @@ class LoginActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setSplachScreen()
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
         setLoginButtonListener()
         collectNetworkResponse()
     }
+
+    private fun setSplachScreen(){
+        installSplashScreen().setOnExitAnimationListener{ splashScreenViewProvider ->
+            ObjectAnimator.ofFloat(splashScreenViewProvider.view, View.ALPHA, 1f, 0f).run {
+                interpolator = AnticipateInterpolator()
+                duration = 2000L
+                doOnStart {
+                    checkLoginBefore()
+                }
+                doOnEnd {
+                    splashScreenViewProvider.remove()
+                }
+                start()
+            }
+        }
+    }
+
+    private fun checkLoginBefore() {
+        client.silentSignIn().addOnSuccessListener {
+            moveToHomeActivity(true)
+        }
+    }
+
 
     private fun setLoginButtonListener() {
         binding.buttonGoogleLogin.setOnClickListener {
@@ -75,8 +105,9 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginToFirebase(getString(R.string.google_api_key), idToken)
     }
 
-    private fun moveToHomeActivity() {
+    private fun moveToHomeActivity(isLoginBefore: Boolean) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("isLoginBefore", isLoginBefore)
         startActivity(intent)
         finish()
     }
@@ -100,7 +131,7 @@ class LoginActivity : AppCompatActivity() {
                             Snackbar.make(binding.root, "예상치 못한 오류", Snackbar.LENGTH_LONG).show()
                         }
                         NetworkState.SUCCESS -> {
-                            moveToHomeActivity()
+                            moveToHomeActivity(false)
                         }
                     }
                 }

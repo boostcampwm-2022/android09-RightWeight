@@ -8,7 +8,8 @@ import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.HistoryField
 import com.lateinit.rightweight.data.remote.model.RemoteData
 import com.lateinit.rightweight.data.remote.model.RootField
-import com.lateinit.rightweight.data.remote.model.RoutineField
+import com.lateinit.rightweight.data.remote.model.UserInfoField
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -34,14 +35,15 @@ interface UserApiService {
         path: String
     ): DocumentsResponse<DetailResponse<RemoteData>>
 
-    @POST("./documents:runQuery")
-    suspend fun getUserRoutine(
-        @Body query: RunQueryBody
-    ): List<DocumentResponse<RoutineField>>
 
     @POST("documents/user/{userId}/:runQuery")
-    suspend fun getLastHistory(
+    suspend fun getLastHistoryDate(
         @Path(value = "userId", encoded = true) userId: String,
         @Body query: RunQueryBody
     ): List<DocumentResponse<HistoryField>>
+
+    @GET("documents/user/{userId}")
+    suspend fun restoreUserInfo(
+        @Path(value = "userId", encoded = true) userId: String
+    ): Response<DetailResponse<UserInfoField>>
 }
