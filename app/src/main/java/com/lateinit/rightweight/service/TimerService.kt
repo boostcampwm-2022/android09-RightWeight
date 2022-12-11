@@ -13,12 +13,20 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.lateinit.rightweight.R
+import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.util.convertTimeStamp
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TimerService : LifecycleService() {
+    @Inject
+    lateinit var db: AppDatabase
+
     private var isTimerRunning = false
     private var timeCount = 0
     private var timer: Job = lifecycleScope.launchWhenCreated {  }
@@ -29,6 +37,7 @@ class TimerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         setNotificationDeepLink(intent)
+        setTimeCount(intent)
         operateTimer(intent)
 
         return super.onStartCommand(intent, flags, startId)
@@ -38,6 +47,12 @@ class TimerService : LifecycleService() {
         intent?.getParcelableExtra<PendingIntent>(PENDING_INTENT_TAG)?.let { pendingIntent ->
             this.pendingIntent = pendingIntent
             createNotification()
+        }
+    }
+
+    private fun setTimeCount(intent: Intent?) {
+        intent?.getIntExtra(SET_TIME_COUNT, timeCount)?.let { timeCount ->
+            this.timeCount = timeCount
         }
     }
 
@@ -114,11 +129,25 @@ class TimerService : LifecycleService() {
         timer = lifecycleScope.launch {
             while (true) {
                 timeCount++
+                saveTime()
                 updateNotification()
                 delay(1_000L)
             }
         }
         changeTimerRunningState(true)
+    }
+
+    private fun saveTime() {
+        if (timeCount % 60 == 0) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val currentHistory = db.historyDao().getLatestHistory()
+                db.historyDao().updateHistory(
+                    currentHistory.copy(
+                        time = convertTimeStamp(timeCount)
+                    )
+                )
+            }
+        }
     }
 
     private fun updateNotification() {
@@ -180,6 +209,7 @@ class TimerService : LifecycleService() {
         const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"
+        const val SET_TIME_COUNT = "set_time_count"
         const val NOTIFICATION_ID = 1
     }
 }

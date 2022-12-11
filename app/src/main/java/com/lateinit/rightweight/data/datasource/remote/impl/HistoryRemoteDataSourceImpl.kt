@@ -1,7 +1,13 @@
 package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.api.UserApiService
+import com.lateinit.rightweight.data.database.entity.History
+import com.lateinit.rightweight.data.database.entity.HistoryExercise
+import com.lateinit.rightweight.data.database.entity.HistorySet
 import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
+import com.lateinit.rightweight.data.mapper.toHistory
+import com.lateinit.rightweight.data.mapper.toHistoryExercise
+import com.lateinit.rightweight.data.mapper.toHistorySet
 import com.lateinit.rightweight.data.model.remote.Direction
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
 import com.lateinit.rightweight.data.model.remote.FromData
@@ -41,6 +47,30 @@ class HistoryRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun commitTransaction(writes: List<WriteModelData>) {
         api.commitTransaction(WriteRequestBody(writes))
+    }
+
+    override suspend fun getHistories(path: String): List<History>{
+        val histories = api.getHistories(path)
+        return histories.documents?.map {
+            val historyId = it.name.split("/").last()
+            it.fields.toHistory(historyId)
+        } ?: emptyList()
+    }
+
+    override suspend fun getHistoryExercises(path: String): List<HistoryExercise> {
+        val exercises = api.getHistoryExercises(path)
+        return exercises.documents?.map {
+            val exerciseId = it.name.split("/").last()
+            it.fields.toHistoryExercise(exerciseId)
+        } ?: emptyList()
+    }
+
+    override suspend fun getHistoryExerciseSets(path: String): List<HistorySet> {
+        val exerciseSets = api.getHistoryExerciseSets(path)
+        return exerciseSets.documents?.map {
+            val exerciseSetId = it.name.split("/").last()
+            it.fields.toHistorySet(exerciseSetId)
+        } ?: emptyList()
     }
 
     companion object {

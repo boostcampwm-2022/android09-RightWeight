@@ -1,11 +1,17 @@
-package com.lateinit.rightweight.data.mapper
+package com.lateinit.rightweight.data.mapper.local
 
 import com.lateinit.rightweight.data.database.entity.Day
 import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.Routine
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
+import com.lateinit.rightweight.data.mapper.toExercisePartType
+import com.lateinit.rightweight.data.model.local.ExercisePartType
 import com.lateinit.rightweight.data.model.remote.DetailResponse
+import com.lateinit.rightweight.data.remote.model.DayField
+import com.lateinit.rightweight.data.remote.model.ExerciseField
+import com.lateinit.rightweight.data.remote.model.ExerciseSetField
+import com.lateinit.rightweight.data.remote.model.RoutineField
 import com.lateinit.rightweight.data.remote.model.SharedRoutineField
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
@@ -98,17 +104,59 @@ fun ExerciseSetUiModel.toExerciseSet(): ExerciseSet {
     )
 }
 
+fun RoutineField.toRoutine(routineId: String): Routine {
+    val refinedModifiedDateString = modifiedDate.value
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
+    return Routine(
+        routineId = routineId,
+        title = title.value,
+        author = author.value,
+        description = description.value,
+        modifiedDate = modifiedDate,
+        order = order.value.toInt()
+    )
+}
+
+fun DayField.toDay(dayId: String): Day {
+    return Day(
+        dayId = dayId,
+        routineId = routineId.value,
+        order = order.value.toInt()
+    )
+}
+
+fun ExerciseField.toExercise(exerciseId: String): Exercise {
+    return Exercise(
+        exerciseId = exerciseId,
+        dayId = dayId.value,
+        title = title.value,
+        order = order.value.toInt(),
+        part = ExercisePartType.valueOf(partType.value)
+    )
+}
+
+fun ExerciseSetField.toExerciseSet(setId: String): ExerciseSet {
+    return ExerciseSet(
+        setId = setId,
+        exerciseId = exerciseId.value,
+        weight = weight.value,
+        count = count.value,
+        order = order.value.toInt()
+    )
+}
+
 fun DetailResponse<SharedRoutineField>.toSharedRoutine(): SharedRoutine {
-    val splitedName = name.split("/")
-    val refinedModifiedDateString = fields.modifiedDate.value?.replace("T", " ")?.replace("Z", "")
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    val routineId = name.split("/").last()
+    val refinedModifiedDateString = fields.modifiedDate.value
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val modifiedDate = LocalDateTime.parse(refinedModifiedDateString, formatter)
     return SharedRoutine(
-        routineId = splitedName.last(),
-        title = fields.title.value.toString(),
-        author = fields.author.value.toString(),
-        description = fields.description.value.toString(),
+        routineId = routineId,
+        title = fields.title.value,
+        author = fields.author.value,
+        description = fields.description.value,
         modifiedDate = modifiedDate,
-        sharedCount = fields.sharedCount.value?.remoteData?.count?.value.toString()
+        sharedCount = fields.sharedCount.value.remoteData.count.value
     )
 }

@@ -7,9 +7,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.lateinit.rightweight.data.mapper.toDay
-import com.lateinit.rightweight.data.mapper.toExercise
-import com.lateinit.rightweight.data.mapper.toExerciseSet
+import com.lateinit.rightweight.data.mapper.local.toDay
+import com.lateinit.rightweight.data.mapper.local.toExercise
+import com.lateinit.rightweight.data.mapper.local.toExerciseSet
+import com.lateinit.rightweight.data.mapper.local.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
@@ -20,12 +21,12 @@ import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
+import com.lateinit.rightweight.util.createRandomUUID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.UUID
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -69,14 +70,14 @@ class RoutineEditorViewModel @Inject constructor(
     }
     val dayExercises: LiveData<List<ExerciseUiModel>> = _dayExercises
 
-    private val _isPossibleSaveRoutine = MutableSharedFlow<Boolean>()
+    private val _isPossibleSaveRoutine = MutableSharedFlow<RoutineSaveState>()
     val isPossibleSaveRoutine = _isPossibleSaveRoutine.asSharedFlow()
 
     init {
         routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
 
         if (routineId.isEmpty()) {
-            routineId = createUUID()
+            routineId = createRandomUUID()
             routineAuthor = savedStateHandle.get<String>("author") ?: DEFAULT_AUTHOR_NAME
             addDay()
         } else {
@@ -86,9 +87,16 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun addDay() {
         val days = _days.value ?: return
-        val day = DayUiModel(createUUID(), routineId, days.size, true)
+
+        if (days.size == MAX_DAY_SIZE) {
+            sendEvent(RoutineSaveState.EXCEED_MAX_DAY_SIZE)
+            return
+        }
+
+        val day = DayUiModel(createRandomUUID(), routineId, days.size, true)
 
         days.add(day)
+        dayToExercise.value?.put(day.dayId, LinkedList())
         clickDay(days.lastIndex)
     }
 
@@ -136,8 +144,14 @@ class RoutineEditorViewModel @Inject constructor(
     fun addExercise() {
         val dayId = currentDay.value?.dayId ?: return
         val exercises = dayToExercise.value?.getOrDefault(dayId, LinkedList()) ?: return
+
+        if (exercises.size == MAX_EXERCISE_SIZE) {
+            sendEvent(RoutineSaveState.EXCEED_MAX_EXERCISE_SIZE)
+            return
+        }
+
         val exercise = ExerciseUiModel(
-            exerciseId = createUUID(),
+            exerciseId = createRandomUUID(),
             dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
             order = exercises.size
@@ -170,8 +184,14 @@ class RoutineEditorViewModel @Inject constructor(
 
     fun addExerciseSet(exerciseId: String) {
         val exerciseSets = exerciseToSet.value?.getOrDefault(exerciseId, LinkedList()) ?: return
+
+        if (exerciseSets.size == MAX_EXERCISE_SET_SIZE) {
+            sendEvent(RoutineSaveState.EXCEED_MAX_EXERCISE_SET_SIZE)
+            return
+        }
+
         val exerciseSet = ExerciseSetUiModel(
-            setId = createUUID(),
+            setId = createRandomUUID(),
             exerciseId = exerciseId,
             order = exerciseSets.size
         )
@@ -202,58 +222,54 @@ class RoutineEditorViewModel @Inject constructor(
             }
 
             if (title.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.ROUTINE_TITLE_EMPTY)
                 return@launch
             }
             if (description.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.ROUTINE_DESCRIPTION_EMPTY)
                 return@launch
             }
             if (days.isNullOrEmpty()) {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.DAY_EMPTY)
                 return@launch
             }
 
             val exercises = dayToExercise.value?.values?.flatMap { exercises ->
                 if (exercises.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_EMPTY)
                     return@launch
                 }
                 exercises
             } ?: run {
-                sendEvent(false)
+                sendEvent(RoutineSaveState.EXERCISE_EMPTY)
                 return@launch
             }
             val exerciseSets = exercises.flatMap { exercise ->
                 if (exercise.title.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_TITLE_EMPTY)
                     return@launch
                 }
                 if (exercise.exerciseSets.isEmpty()) {
-                    sendEvent(false)
+                    sendEvent(RoutineSaveState.EXERCISE_SET_EMPTY)
                     return@launch
                 }
                 exercise.exerciseSets
             }
 
             routineRepository.insertRoutine(
-                RoutineUiModel(routineId, title, routineAuthor, description, LocalDateTime.now(), order),
+                RoutineUiModel(routineId, title, routineAuthor, description, LocalDateTime.now(), order).toRoutine(),
                 days.map { it.toDay() },
                 exercises.map { it.toExercise() },
                 exerciseSets.map { it.toExerciseSet() }
             )
-            sendEvent(true)
+            sendEvent(RoutineSaveState.SUCCESS)
         }
     }
 
-    private fun sendEvent(isPossible: Boolean) {
+    private fun sendEvent(saveState: RoutineSaveState) {
         viewModelScope.launch {
-            _isPossibleSaveRoutine.emit(isPossible)
+            _isPossibleSaveRoutine.emit(saveState)
         }
-    }
-
-    private fun createUUID(): String {
-        return UUID.randomUUID().toString()
     }
 
     private fun getRoutine(routineId: String) {
@@ -324,8 +340,24 @@ class RoutineEditorViewModel @Inject constructor(
         }
     }
 
+    enum class RoutineSaveState {
+        SUCCESS,
+        ROUTINE_TITLE_EMPTY,
+        ROUTINE_DESCRIPTION_EMPTY,
+        EXERCISE_TITLE_EMPTY,
+        DAY_EMPTY,
+        EXERCISE_EMPTY,
+        EXERCISE_SET_EMPTY,
+        EXCEED_MAX_DAY_SIZE,
+        EXCEED_MAX_EXERCISE_SIZE,
+        EXCEED_MAX_EXERCISE_SET_SIZE
+    }
+
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
         private const val DEFAULT_ROUTINE_ID = ""
+        private const val MAX_DAY_SIZE = 10
+        private const val MAX_EXERCISE_SIZE = 10
+        private const val MAX_EXERCISE_SET_SIZE = 10
     }
 }
