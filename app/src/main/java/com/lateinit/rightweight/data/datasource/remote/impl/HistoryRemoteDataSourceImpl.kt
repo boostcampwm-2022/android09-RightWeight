@@ -43,28 +43,28 @@ class HistoryRemoteDataSourceImpl @Inject constructor(
         return LocalDate.parse(lastDateTime, formatter)
     }
 
-    override suspend fun getHistories(routineId: String): List<History>? {
-        val histories = api.getHistories(routineId)
+    override suspend fun getHistories(path: String): List<History>{
+        val histories = api.getHistories(path)
         return histories.documents?.map {
             val historyId = it.name.split("/").last()
             it.fields.toHistory(historyId)
-        }
+        } ?: emptyList()
     }
 
-    override suspend fun getHistoryExercises(path: String): List<HistoryExercise>? {
+    override suspend fun getHistoryExercises(path: String): List<HistoryExercise> {
         val exercises = api.getHistoryExercises(path)
         return exercises.documents?.map {
             val exerciseId = it.name.split("/").last()
             it.fields.toHistoryExercise(exerciseId)
-        }
+        } ?: emptyList()
     }
 
-    override suspend fun getHistoryExerciseSets(path: String): List<HistorySet>? {
+    override suspend fun getHistoryExerciseSets(path: String): List<HistorySet> {
         val exerciseSets = api.getHistoryExerciseSets(path)
         return exerciseSets.documents?.map {
             val exerciseSetId = it.name.split("/").last()
             it.fields.toHistorySet(exerciseSetId)
-        }
+        } ?: emptyList()
     }
 
     companion object {

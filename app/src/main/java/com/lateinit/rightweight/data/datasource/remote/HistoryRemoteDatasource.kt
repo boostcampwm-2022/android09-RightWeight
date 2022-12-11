@@ -8,9 +8,9 @@ import java.time.LocalDate
 interface HistoryRemoteDatasource {
     suspend fun getLatestHistoryDate(userId: String): LocalDate
 
-    suspend fun getHistories(routineId: String): List<History>?
+    suspend fun getHistories(path: String): List<History>
 
-    suspend fun getHistoryExercises(path: String): List<HistoryExercise>?
+    suspend fun getHistoryExercises(path: String): List<HistoryExercise>
 
-    suspend fun getHistoryExerciseSets(path: String): List<HistorySet>?
+    suspend fun getHistoryExerciseSets(path: String): List<HistorySet>
 }
