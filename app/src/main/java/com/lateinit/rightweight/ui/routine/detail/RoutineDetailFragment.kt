@@ -15,7 +15,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
@@ -34,8 +33,6 @@ class RoutineDetailFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
-    private val args: RoutineDetailFragmentArgs by navArgs()
-
     private val viewModel: RoutineDetailViewModel by viewModels()
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
@@ -45,10 +42,10 @@ class RoutineDetailFragment : Fragment() {
             when (dialog.tag) {
                 SELECTED_ROUTINE_REMOVE_DIALOG_TAG -> {
                     viewModel.deselectRoutine()
-                    viewModel.removeRoutine(args.routineId)
+                    viewModel.removeRoutine()
                 }
                 ROUTINE_REMOVE_DIALOG_TAG -> {
-                    viewModel.removeRoutine(args.routineId)
+                    viewModel.removeRoutine()
                 }
             }
         }
@@ -64,7 +61,6 @@ class RoutineDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getRoutine(args.routineId)
         setMenu()
         setBinding()
         setRoutineDayAdapter()
@@ -87,13 +83,13 @@ class RoutineDetailFragment : Fragment() {
                     R.id.action_item_edit -> {
                         val action =
                             RoutineDetailFragmentDirections.actionNavigationRoutineDetailToNavigationRoutineEditor(
-                                routineId = args.routineId
+                                routineId = viewModel.routineId
                             )
                         findNavController().navigate(action)
                         return true
                     }
                     R.id.action_item_remove -> {
-                        removeRoutine(args.routineId)
+                        removeRoutine()
                         return true
                     }
                     R.id.action_item_share -> {
@@ -193,9 +189,9 @@ class RoutineDetailFragment : Fragment() {
     }
 
 
-    private fun removeRoutine(routineId: String) {
+    private fun removeRoutine() {
         val selectedRoutineId = viewModel.userInfo.value?.routineId
-        if (selectedRoutineId != routineId) {
+        if (selectedRoutineId != viewModel.routineId) {
             dialog.show(
                 parentFragmentManager,
                 ROUTINE_REMOVE_DIALOG_TAG,

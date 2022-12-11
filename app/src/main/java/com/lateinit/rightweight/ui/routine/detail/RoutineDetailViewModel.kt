@@ -2,6 +2,7 @@ package com.lateinit.rightweight.ui.routine.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lateinit.rightweight.data.mapper.remote.toDayField
@@ -20,6 +21,7 @@ import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
+import com.lateinit.rightweight.util.DEFAULT_ROUTINE_ID
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -35,10 +37,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val routineRepository: RoutineRepository,
     private val sharedRoutineRepository: SharedRoutineRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
+
+    val routineId =
+        savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -58,6 +64,10 @@ class RoutineDetailViewModel @Inject constructor(
 
     private val _networkState = MutableSharedFlow<NetworkState>()
     val networkState = _networkState.asSharedFlow()
+
+    init {
+        getRoutine()
+    }
 
     fun selectRoutine() {
         viewModelScope.launch {
@@ -83,18 +93,6 @@ class RoutineDetailViewModel @Inject constructor(
                     dayId = ""
                 )
             )
-        }
-    }
-
-    fun getRoutine(routineId: String) {
-        viewModelScope.launch {
-            val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
-
-            _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
-            _dayUiModels.value = routineWithDays.days.mapIndexed { index, dayWithExercise ->
-                dayWithExercise.day.toDayUiModel(index, dayWithExercise.exercises)
-            }
-            _currentDayPosition.value = FIRST_DAY_POSITION
         }
     }
 
@@ -129,7 +127,7 @@ class RoutineDetailViewModel @Inject constructor(
         _currentDayPosition.value = _currentDayPosition.value
     }
 
-    fun removeRoutine(routineId: String) {
+    fun removeRoutine() {
         viewModelScope.launch {
             routineRepository.removeRoutineById(routineId)
             sendEvent(NavigationEvent.RemoveEvent(true))
@@ -144,6 +142,18 @@ class RoutineDetailViewModel @Inject constructor(
             }
             updateSharedRoutine()
             sendNetworkResultEvent(NetworkState.SUCCESS)
+        }
+    }
+
+    private fun getRoutine() {
+        viewModelScope.launch {
+            val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
+
+            _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
+            _dayUiModels.value = routineWithDays.days.mapIndexed { index, dayWithExercise ->
+                dayWithExercise.day.toDayUiModel(index, dayWithExercise.exercises)
+            }
+            _currentDayPosition.value = FIRST_DAY_POSITION
         }
     }
 
@@ -205,7 +215,6 @@ class RoutineDetailViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun deleteSharedRoutine() {
         commitItems.clear()
         val routineId = _routineUiModel.value?.routineId ?: return
@@ -216,7 +225,6 @@ class RoutineDetailViewModel @Inject constructor(
         deleteDays(routineId, dayIds)
         sharedRoutineRepository.commitTransaction(commitItems)
     }
-
 
     private suspend fun deleteDays(
         lastPath: String,
