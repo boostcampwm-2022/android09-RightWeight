@@ -21,6 +21,7 @@ import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentRoutineDetailBinding
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE_REMOVE_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.SELECTED_ROUTINE_REMOVE_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
 import com.lateinit.rightweight.util.collectOnLifecycle
@@ -42,8 +43,11 @@ class RoutineDetailFragment : Fragment() {
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment {
             when (dialog.tag) {
-                ROUTINE_REMOVE_DIALOG_TAG -> {
+                SELECTED_ROUTINE_REMOVE_DIALOG_TAG -> {
                     viewModel.deselectRoutine()
+                    viewModel.removeRoutine(args.routineId)
+                }
+                ROUTINE_REMOVE_DIALOG_TAG -> {
                     viewModel.removeRoutine(args.routineId)
                 }
             }
@@ -186,12 +190,16 @@ class RoutineDetailFragment : Fragment() {
     private fun removeRoutine(routineId: String) {
         val selectedRoutineId = viewModel.userInfo.value?.routineId
         if (selectedRoutineId != routineId) {
-            viewModel.removeRoutine(routineId)
-        } else {
             dialog.show(
                 parentFragmentManager,
                 ROUTINE_REMOVE_DIALOG_TAG,
                 R.string.routine_remove_message
+            )
+        } else {
+            dialog.show(
+                parentFragmentManager,
+                SELECTED_ROUTINE_REMOVE_DIALOG_TAG,
+                R.string.selected_routine_remove_message
             )
         }
     }
