@@ -54,20 +54,9 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getSelectedDayInfo(date: LocalDate): HistoryUiModel? {
-        return if (date in dateToExerciseHistories.value) {
-            getSelectedHistory(date)
-        } else {
-            _routineTitle.value = DEFAULT_ROUTINE_TITLE
-            _exerciseTime.value = DEFAULT_EXERCISE_TIME
-            null
-        }
-    }
-
-    private fun getSelectedHistory(date: LocalDate): HistoryUiModel? {
-        return dateToExerciseHistories.value[date]?.let {
-            _routineTitle.value = it.routineTitle
-            _exerciseTime.value = it.time
-            it
+        return dateToExerciseHistories.value[date].also {
+            _routineTitle.value = it?.routineTitle ?: DEFAULT_ROUTINE_TITLE
+            _exerciseTime.value = it?.time ?: DEFAULT_EXERCISE_TIME
         }
     }
 
