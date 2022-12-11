@@ -8,6 +8,8 @@ import com.lateinit.rightweight.data.model.remote.FromData
 import com.lateinit.rightweight.data.model.remote.OrderByData
 import com.lateinit.rightweight.data.model.remote.RunQueryBody
 import com.lateinit.rightweight.data.model.remote.StructuredQueryData
+import com.lateinit.rightweight.data.model.remote.WriteModelData
+import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -35,6 +37,10 @@ class HistoryRemoteDataSourceImpl @Inject constructor(
         val lastDateTime = documentResponseList.first()
             .document?.fields?.date?.value ?: return DEFAULT_LOCAL_DATE
         return LocalDate.parse(lastDateTime, formatter)
+    }
+
+    override suspend fun commitTransaction(writes: List<WriteModelData>) {
+        api.commitTransaction(WriteRequestBody(writes))
     }
 
     companion object {

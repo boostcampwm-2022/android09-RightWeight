@@ -137,7 +137,7 @@ class MainViewModel @Inject constructor(
         routineWithDaysList.forEach { routineWithDays ->
             updateRoutine(routineWithDays)
         }
-        userRepository.commitTransaction(commitItems)
+        historyRepository.commitTransaction(commitItems)
     }
 
     private suspend fun backupHistory() {
@@ -149,7 +149,7 @@ class MainViewModel @Inject constructor(
             historyList.forEach { history ->
                 updateHistory(history)
             }
-            userRepository.commitTransaction(commitItems)
+            historyRepository.commitTransaction(commitItems)
         }
     }
 

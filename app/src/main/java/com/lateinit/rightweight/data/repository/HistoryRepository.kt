@@ -5,6 +5,7 @@ import com.lateinit.rightweight.data.database.entity.Exercise
 import com.lateinit.rightweight.data.database.entity.ExerciseSet
 import com.lateinit.rightweight.data.database.entity.History
 import com.lateinit.rightweight.data.database.intermediate.HistoryWithHistoryExercises
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
@@ -49,4 +50,6 @@ interface HistoryRepository {
     suspend fun removeHistoryExercise(historyExerciseId: String)
 
     suspend fun removeAllHistories()
+
+    suspend fun commitTransaction(writes: List<WriteModelData>)
 }

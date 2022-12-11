@@ -3,7 +3,6 @@ package com.lateinit.rightweight.data.repository.impl
 import com.lateinit.rightweight.data.datasource.local.UserLocalDataSource
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
 import com.lateinit.rightweight.data.model.local.User
-import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.remote.model.UserInfoField
 import com.lateinit.rightweight.data.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
@@ -28,10 +27,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun restoreUserInfo(userId: String): UserInfoField? {
         return userRemoteDataSource.restoreUserInfo(userId)
-    }
-
-    override suspend fun commitTransaction(writes: List<WriteModelData>) {
-        userRemoteDataSource.commitTransaction(writes)
     }
 
     override suspend fun backupUserInfo(user: User) {

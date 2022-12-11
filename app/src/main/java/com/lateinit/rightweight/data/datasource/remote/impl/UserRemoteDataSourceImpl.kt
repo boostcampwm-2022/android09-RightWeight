@@ -2,8 +2,6 @@ package com.lateinit.rightweight.data.datasource.remote.impl
 
 import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.datasource.remote.UserRemoteDataSource
-import com.lateinit.rightweight.data.model.remote.WriteModelData
-import com.lateinit.rightweight.data.model.remote.WriteRequestBody
 import com.lateinit.rightweight.data.remote.model.RootField
 import com.lateinit.rightweight.data.remote.model.StringValue
 import com.lateinit.rightweight.data.remote.model.UserInfoField
@@ -38,7 +36,4 @@ class UserRemoteDataSourceImpl @Inject constructor(
         } ?: emptyList()
     }
 
-    override suspend fun commitTransaction(writes: List<WriteModelData>) {
-        api.commitTransaction(WriteRequestBody(writes))
-    }
 }

@@ -10,6 +10,7 @@ import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
 import com.lateinit.rightweight.data.mapper.toHistory
 import com.lateinit.rightweight.data.mapper.toHistoryExercise
 import com.lateinit.rightweight.data.mapper.toHistorySet
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
@@ -87,5 +88,9 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun removeAllHistories() {
         historyLocalDataSource.removeAllHistories()
+    }
+
+    override suspend fun commitTransaction(writes: List<WriteModelData>) {
+        historyRemoteDatasource.commitTransaction(writes)
     }
 }
