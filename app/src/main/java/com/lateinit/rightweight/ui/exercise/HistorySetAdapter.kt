@@ -24,7 +24,7 @@ class HistorySetAdapter(
     }
 
     override fun onBindViewHolder(holder: HistorySetViewHolder, position: Int) {
-        holder.bind(getItem(position), (position + 1).toString())
+        holder.bind(getItem(position))
     }
 
     class HistorySetViewHolder(
@@ -56,10 +56,9 @@ class HistorySetAdapter(
             }
         }
 
-        fun bind(historyExerciseSetUiModel: HistoryExerciseSetUiModel, position: String) {
+        fun bind(historyExerciseSetUiModel: HistoryExerciseSetUiModel) {
             this.historyExerciseSetUiModel = historyExerciseSetUiModel
             binding.historyExerciseSetUiModel = historyExerciseSetUiModel
-            binding.position = position
         }
     }
 
