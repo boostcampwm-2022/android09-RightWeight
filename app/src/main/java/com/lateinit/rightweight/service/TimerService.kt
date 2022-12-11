@@ -52,7 +52,9 @@ class TimerService : LifecycleService() {
 
     private fun setTimeCount(intent: Intent?) {
         intent?.getIntExtra(SET_TIME_COUNT, timeCount)?.let { timeCount ->
-            this.timeCount = timeCount
+            if (this.timeCount < timeCount) {
+                this.timeCount = timeCount
+            }
         }
     }
 
