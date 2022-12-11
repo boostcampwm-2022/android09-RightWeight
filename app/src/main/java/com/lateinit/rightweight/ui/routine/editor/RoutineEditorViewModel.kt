@@ -21,12 +21,12 @@ import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
+import com.lateinit.rightweight.util.createRandomUUID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.UUID
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -77,7 +77,7 @@ class RoutineEditorViewModel @Inject constructor(
         routineId = savedStateHandle.get<String>("routineId") ?: DEFAULT_ROUTINE_ID
 
         if (routineId.isEmpty()) {
-            routineId = createUUID()
+            routineId = createRandomUUID()
             routineAuthor = savedStateHandle.get<String>("author") ?: DEFAULT_AUTHOR_NAME
             addDay()
         } else {
@@ -93,7 +93,7 @@ class RoutineEditorViewModel @Inject constructor(
             return
         }
 
-        val day = DayUiModel(createUUID(), routineId, days.size, true)
+        val day = DayUiModel(createRandomUUID(), routineId, days.size, true)
 
         days.add(day)
         dayToExercise.value?.put(day.dayId, LinkedList())
@@ -151,7 +151,7 @@ class RoutineEditorViewModel @Inject constructor(
         }
 
         val exercise = ExerciseUiModel(
-            exerciseId = createUUID(),
+            exerciseId = createRandomUUID(),
             dayId = dayId,
             title = DEFAULT_EXERCISE_TITLE,
             order = exercises.size
@@ -191,7 +191,7 @@ class RoutineEditorViewModel @Inject constructor(
         }
 
         val exerciseSet = ExerciseSetUiModel(
-            setId = createUUID(),
+            setId = createRandomUUID(),
             exerciseId = exerciseId,
             order = exerciseSets.size
         )
@@ -270,10 +270,6 @@ class RoutineEditorViewModel @Inject constructor(
         viewModelScope.launch {
             _isPossibleSaveRoutine.emit(saveState)
         }
-    }
-
-    private fun createUUID(): String {
-        return UUID.randomUUID().toString()
     }
 
     private fun getRoutine(routineId: String) {
