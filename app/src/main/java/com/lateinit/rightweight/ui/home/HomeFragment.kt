@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
 
-    private lateinit var adapter: ConcatAdapter
     private val dialog: CommonDialogFragment by lazy {
         CommonDialogFragment{ tag ->
             when (tag) {
@@ -90,9 +89,8 @@ class HomeFragment : Fragment() {
             HomeAdapter(exerciseUiModel)
         }
 
-        adapter = ConcatAdapter(homeAdapters)
         binding.layoutDayExercises.recyclerViewTodayRoutine.apply {
-            adapter = adapter
+            adapter = ConcatAdapter(homeAdapters)
             itemAnimator = ExpandableItemAnimator()
         }
     }
