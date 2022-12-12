@@ -30,8 +30,8 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            app:cardCornerRadius="4dp"
             android:onClick="@{() -> sharedRoutineClickHandler.gotoSharedRoutineDetailFragment(sharedRoutineUiModel.routineId)}"
+            app:cardCornerRadius="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,11 +45,14 @@
                 <TextView
                     android:id="@+id/text_view_routine_author"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{sharedRoutineUiModel.author}"
-                    android:layout_marginStart="20dp"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_title"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="author" />
@@ -57,46 +60,55 @@
                 <TextView
                     android:id="@+id/text_view_routine_title"
                     style="@style/Text.Medium.Bold"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{sharedRoutineUiModel.title}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_description"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_routine_author"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_author"
+                    app:layout_constraintEnd_toEndOf="@id/text_view_routine_author"
+                    app:layout_constraintStart_toStartOf="@id/text_view_routine_author"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_routine_author"
                     tools:text="Title" />
 
                 <TextView
                     android:id="@+id/text_view_routine_description"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{sharedRoutineUiModel.description}"
                     app:layout_constraintBottom_toTopOf="@id/text_view_routine_modified_time"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_routine_title"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_title"
+                    app:layout_constraintEnd_toEndOf="@id/text_view_routine_author"
+                    app:layout_constraintStart_toStartOf="@id/text_view_routine_author"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_routine_title"
                     tools:text="description" />
 
                 <TextView
                     android:id="@+id/text_view_routine_modified_time"
                     style="@style/Text.Small"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{sharedRoutineUiModel.modifiedDate.format(DateTimeFormatter.ofPattern(@string/date_format))}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_routine_description"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
+                    app:layout_constraintEnd_toStartOf="@id/image_view_routine_share_count"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/text_view_routine_author"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_routine_description"
                     tools:text="2022년 11월 24일" />
 
                 <ImageView
                     android:id="@+id/image_view_routine_share_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_down_arrow"
-                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/shared_routine_shared_count"
+                    android:src="@drawable/ic_download"
+                    app:layout_constraintBottom_toBottomOf="@id/text_view_routine_modified_time"
                     app:layout_constraintEnd_toStartOf="@id/text_view_share_count"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
-                    android:contentDescription="@string/shared_routine_shared_count"/>
+                    app:layout_constraintStart_toEndOf="@id/text_view_routine_modified_time"
+                    app:layout_constraintTop_toTopOf="@id/text_view_routine_modified_time" />
 
                 <TextView
                     android:id="@+id/text_view_share_count"
@@ -104,11 +116,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{sharedRoutineUiModel.sharedCount}"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_view_routine_description"
-                    tools:text="공유 횟수" />
+                    app:layout_constraintBottom_toBottomOf="@id/image_view_routine_share_count"
+                    app:layout_constraintEnd_toEndOf="@id/text_view_routine_author"
+                    app:layout_constraintStart_toEndOf="@id/image_view_routine_share_count"
+                    app:layout_constraintTop_toTopOf="@id/image_view_routine_share_count"
+                    tools:text="10000" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
