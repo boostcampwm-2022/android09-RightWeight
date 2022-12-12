@@ -151,42 +151,40 @@ class SharedRoutineDetailViewModel @Inject constructor(
     }
 
     fun importSharedRoutineToMyRoutines(
-        sharedRoutineUiModel: SharedRoutineUiModel?,
+        sharedRoutineUiModel: SharedRoutineUiModel,
         dayUiModels: List<DayUiModel>
     ) {
-        if (sharedRoutineUiModel != null) {
-            viewModelScope.launch(networkExceptionHandler) {
-                val sharedRoutineId = sharedRoutineUiModel.routineId
-                val routine = sharedRoutineUiModel.toRoutine(
-                    createUUID(),
-                    userInfo.value?.displayName ?: "",
-                    routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
-                )
-                val days = mutableListOf<Day>()
-                val exercises = mutableListOf<Exercise>()
-                val exerciseSets = mutableListOf<ExerciseSet>()
+        viewModelScope.launch(networkExceptionHandler) {
+            val sharedRoutineId = sharedRoutineUiModel.routineId
+            val routine = sharedRoutineUiModel.toRoutine(
+                createUUID(),
+                userInfo.value?.displayName ?: "",
+                routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
+            )
+            val days = mutableListOf<Day>()
+            val exercises = mutableListOf<Exercise>()
+            val exerciseSets = mutableListOf<ExerciseSet>()
 
-                dayUiModels.forEach { dayUiModel ->
-                    val dayId = createUUID()
-                    days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
-                    dayUiModel.exercises.forEach { exerciseUiModel ->
-                        val exerciseId = createUUID()
-                        exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
-                        exerciseUiModel.exerciseSets.forEach { exerciseSetUiModel ->
-                            val exerciseSetId = createUUID()
-                            exerciseSets.add(
-                                exerciseSetUiModel.toExerciseSetWithNewIds(
-                                    exerciseId,
-                                    exerciseSetId
-                                )
+            dayUiModels.forEach { dayUiModel ->
+                val dayId = createUUID()
+                days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
+                dayUiModel.exercises.forEach { exerciseUiModel ->
+                    val exerciseId = createUUID()
+                    exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
+                    exerciseUiModel.exerciseSets.forEach { exerciseSetUiModel ->
+                        val exerciseSetId = createUUID()
+                        exerciseSets.add(
+                            exerciseSetUiModel.toExerciseSetWithNewIds(
+                                exerciseId,
+                                exerciseSetId
                             )
-                        }
+                        )
                     }
                 }
-                routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
-                _navigationEvent.emit(routine.routineId)
-                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
             }
+            routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
+            _navigationEvent.emit(routine.routineId)
+            sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
         }
     }
 

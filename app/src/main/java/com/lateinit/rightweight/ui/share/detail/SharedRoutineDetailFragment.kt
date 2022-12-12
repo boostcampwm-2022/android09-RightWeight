@@ -86,10 +86,21 @@ class SharedRoutineDetailFragment : Fragment() {
                         setCurrentDayPositionObserve(uiState.dayUiModels)
 
                         binding.buttonRoutineImport.setOnClickListener {
-                            viewModel.importSharedRoutineToMyRoutines(
-                                uiState.sharedRoutineUiModel,
-                                uiState.dayUiModels
-                            )
+                            if(uiState.sharedRoutineUiModel != null){
+                                viewModel.importSharedRoutineToMyRoutines(
+                                    uiState.sharedRoutineUiModel,
+                                    uiState.dayUiModels
+                                )
+                            }
+                            else{
+                                Snackbar.make(
+                                    binding.root,
+                                    R.string.none_routine,
+                                    Snackbar.LENGTH_LONG
+                                ).apply {
+                                    anchorView = binding.guideLineBottom
+                                }.show()
+                            }
 
                         }
                     }
