@@ -69,7 +69,7 @@ class HistoryLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertHistorySet(historyExerciseId: String) {
         val historySetId = createRandomUUID()
-        val maxHistorySetOrder = historyDao.getMaxHistorySetOrder()
+        val maxHistorySetOrder = historyDao.getMaxHistorySetOrder(historyExerciseId)
         val newHistorySet = HistorySet(
             setId = historySetId,
             exerciseId = historyExerciseId,
@@ -83,7 +83,7 @@ class HistoryLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertHistoryExercise(historyId: String) {
         val historyExerciseId = createRandomUUID()
-        val maxHistoryExerciseOrder = historyDao.getMaxHistoryExerciseOrder()
+        val maxHistoryExerciseOrder = historyDao.getMaxHistoryExerciseOrder(historyId)
         val newHistoryExercise = HistoryExercise(
             exerciseId = historyExerciseId,
             historyId = historyId,

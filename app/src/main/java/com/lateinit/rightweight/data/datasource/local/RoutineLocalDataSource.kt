@@ -18,7 +18,7 @@ interface RoutineLocalDataSource {
     )
 
     suspend fun restoreRoutines(
-        routine: List<Routine>,
+        routines: List<Routine>,
         days: List<Day>,
         exercises: List<Exercise>,
         sets: List<ExerciseSet>

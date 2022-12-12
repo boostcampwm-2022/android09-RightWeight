@@ -12,6 +12,7 @@ import com.lateinit.rightweight.data.datasource.remote.HistoryRemoteDatasource
 import com.lateinit.rightweight.data.mapper.toHistory
 import com.lateinit.rightweight.data.mapper.toHistoryExercise
 import com.lateinit.rightweight.data.mapper.toHistorySet
+import com.lateinit.rightweight.data.model.remote.WriteModelData
 import com.lateinit.rightweight.data.repository.HistoryRepository
 import com.lateinit.rightweight.ui.mapper.toHistoryUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
@@ -66,17 +67,21 @@ class HistoryRepositoryImpl @Inject constructor(
         val historySets = mutableListOf<HistorySet>()
 
         histories.forEach {
-            path = "user/${userId}/day/${it.historyId}/exercise"
+            path = "user/${userId}/history/${it.historyId}/exercise"
             historyExercises.addAll(historyRemoteDatasource.getHistoryExercises(path))
 
         }
         historyExercises.forEach {
-            path = "user/${userId}/day/${it.historyId}/exercise/${it.exerciseId}/exercise_set"
+            path = "user/${userId}/history/${it.historyId}/exercise/${it.exerciseId}/exercise_set"
             historySets.addAll(
                 historyRemoteDatasource.getHistoryExerciseSets(path)
             )
         }
-        historyLocalDataSource.restoreHistory(histories,historyExercises,historySets)
+        historyLocalDataSource.restoreHistory(
+            histories,
+            historyExercises.sortedBy { it.order },
+            historySets.sortedBy { it.order }
+        )
     }
 
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
@@ -128,5 +133,9 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun removeUncheckedHistoryExercise() {
         historyLocalDataSource.removeUncheckedHistoryExercise()
+    }
+
+    override suspend fun commitTransaction(writes: List<WriteModelData>) {
+        historyRemoteDatasource.commitTransaction(writes)
     }
 }

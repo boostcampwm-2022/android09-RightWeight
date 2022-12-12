@@ -9,6 +9,10 @@
             name="exerciseSetUiModel"
             type="com.lateinit.rightweight.ui.model.ParentExerciseSetUiModel" />
 
+        <variable
+            name="position"
+            type="String" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:gravity="center_horizontal"
-            android:text="@{String.valueOf(exerciseSetUiModel.order + 1)}"
+            android:text="@{position}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

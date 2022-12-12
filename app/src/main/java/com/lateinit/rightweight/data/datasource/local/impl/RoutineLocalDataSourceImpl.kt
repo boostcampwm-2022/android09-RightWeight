@@ -25,12 +25,12 @@ class RoutineLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun restoreRoutines(
-        routine: List<Routine>,
+        routines: List<Routine>,
         days: List<Day>,
         exercises: List<Exercise>,
         sets: List<ExerciseSet>
     ) {
-        routineDao.restoreRoutine(routine, days, exercises, sets)
+        routineDao.restoreRoutine(routines, days, exercises, sets)
     }
 
     override suspend fun updateRoutines(routines: List<Routine>) {
