@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityMainBinding
 import com.lateinit.rightweight.databinding.NavigationHeaderBinding
+import com.lateinit.rightweight.service.TimerService
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.BACKUP_USER_INFO_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
@@ -188,6 +189,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel.deleteLocalData()
         collectOnLifecycle {
             viewModel.deleteEvent.collect {
+                val timerServiceIntent = Intent(this, TimerService::class.java)
+                stopService(timerServiceIntent)
                 client.signOut()
                 moveToLoginActivity()
             }
