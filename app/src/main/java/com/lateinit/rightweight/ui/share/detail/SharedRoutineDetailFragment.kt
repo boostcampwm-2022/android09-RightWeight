@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
@@ -48,6 +50,7 @@ class SharedRoutineDetailFragment : Fragment() {
         setRoutineDayAdapter()
         setExerciseAdapter()
         setSharedRoutineDetailCollect()
+        setButtonRoutineImportOnClickListener()
         handleNavigationEvent()
     }
 
@@ -80,17 +83,32 @@ class SharedRoutineDetailFragment : Fragment() {
                         binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
                         routineDayAdapter.submitList(uiState.dayUiModels)
                         setCurrentDayPositionObserve(uiState.dayUiModels)
-
-                        binding.buttonRoutineImport.setOnClickListener {
-                            viewModel.importSharedRoutineToMyRoutines(
-                                uiState.sharedRoutineUiModel,
-                                uiState.dayUiModels
-                            )
-
-                        }
                     }
-                    is LatestSharedRoutineDetailUiState.Error -> Exception()
+                    is LatestSharedRoutineDetailUiState.Error -> {
+                        Snackbar.make(
+                            binding.root,
+                            R.string.wrong_connection,
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            anchorView = binding.guideLineBottom
+                        }.show()
+                        findNavController().navigateUp()
+                    }
                 }
+            }
+        }
+    }
+
+    private fun setButtonRoutineImportOnClickListener() {
+        binding.buttonRoutineImport.setOnClickListener {
+            if (viewModel.importSharedRoutineToMyRoutines().not()) {
+                Snackbar.make(
+                    binding.root,
+                    R.string.none_routine,
+                    Snackbar.LENGTH_LONG
+                ).apply {
+                    anchorView = binding.guideLineBottom
+                }.show()
             }
         }
     }
@@ -106,7 +124,7 @@ class SharedRoutineDetailFragment : Fragment() {
 
     private fun handleNavigationEvent() {
         viewLifecycleOwner.collectOnLifecycle {
-            viewModel.navigationEvent.collect { 
+            viewModel.navigationEvent.collect {
                 setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()
             }

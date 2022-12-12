@@ -14,12 +14,14 @@ import com.lateinit.rightweight.data.mapper.local.toRoutine
 import com.lateinit.rightweight.data.repository.RoutineRepository
 import com.lateinit.rightweight.data.repository.SharedRoutineRepository
 import com.lateinit.rightweight.data.repository.UserRepository
+import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toSharedRoutineUiModel
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +29,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.SocketException
+import java.net.UnknownHostException
 import java.util.UUID
 import javax.inject.Inject
 
@@ -39,8 +44,8 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val _uiState = MutableStateFlow(
-        LatestSharedRoutineDetailUiState.Success(null, mutableListOf())
+    private val _uiState = MutableStateFlow<LatestSharedRoutineDetailUiState>(
+        LatestSharedRoutineDetailUiState.Success(null, emptyList())
     )
     val uiState: StateFlow<LatestSharedRoutineDetailUiState> = _uiState
 
@@ -50,9 +55,22 @@ class SharedRoutineDetailViewModel @Inject constructor(
     private val _navigationEvent = MutableSharedFlow<String>()
     val navigationEvent = _navigationEvent.asSharedFlow()
 
+    val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        when (throwable) {
+            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+        }
+    }
+
+    private fun sendNetworkResultEvent(state: NetworkState) {
+        _uiState.value = LatestSharedRoutineDetailUiState.Error(state)
+    }
+
 
     fun getSharedRoutineDetail(routineId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(networkExceptionHandler) {
             sharedRoutineRepository.getSharedRoutineDetail(routineId)
                 .collect { sharedRoutineWithDays ->
 
@@ -67,30 +85,34 @@ class SharedRoutineDetailViewModel @Inject constructor(
                                 sharedRoutineWithDay.exercises
                             )
                         }
-                    )
-                    if (_uiState.value.dayUiModels.isNotEmpty()) {
-                        initClickedDay()
+                    ).apply {
+                        if (this.dayUiModels.isNotEmpty()) {
+                            initClickedDay(this)
+                        }
                     }
                 }
 
         }
     }
 
-    private fun initClickedDay() {
-        val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
+    private fun initClickedDay(successUiState: LatestSharedRoutineDetailUiState.Success) {
+        val originDayUiModels = successUiState.dayUiModels.toMutableList()
         originDayUiModels[FIRST_DAY_POSITION] =
             originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
         _currentDayPosition.value = FIRST_DAY_POSITION
         _uiState.value = LatestSharedRoutineDetailUiState.Success(
-            _uiState.value.sharedRoutineUiModel,
+            successUiState.sharedRoutineUiModel,
             originDayUiModels
         )
     }
 
     fun clickDay(dayPosition: Int) {
-        if (_currentDayPosition.value == dayPosition) return
+        if (_currentDayPosition.value == dayPosition
+            || _uiState.value is LatestSharedRoutineDetailUiState.Error
+        ) return
 
-        val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
+        val successUiState = _uiState.value as LatestSharedRoutineDetailUiState.Success
+        val originDayUiModels = successUiState.dayUiModels.toMutableList()
         val lastSelectedPosition = _currentDayPosition.value ?: return
 
         originDayUiModels[lastSelectedPosition] =
@@ -99,14 +121,17 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
         _currentDayPosition.value = dayPosition
         _uiState.value = LatestSharedRoutineDetailUiState.Success(
-            _uiState.value.sharedRoutineUiModel,
+            successUiState.sharedRoutineUiModel,
             originDayUiModels
         )
     }
 
     fun clickExercise(exercisePosition: Int) {
+        if (_uiState.value is LatestSharedRoutineDetailUiState.Error) return
+
+        val successUiState = _uiState.value as LatestSharedRoutineDetailUiState.Success
         val nowDayPosition = _currentDayPosition.value ?: return
-        val originDayUiModels = _uiState.value.dayUiModels.toMutableList()
+        val originDayUiModels = successUiState.dayUiModels.toMutableList()
         val originExerciseUiModels = originDayUiModels[nowDayPosition].exercises.toMutableList()
         val exerciseUiModel = originExerciseUiModels[exercisePosition]
 
@@ -119,19 +144,24 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
         _currentDayPosition.value = _currentDayPosition.value
         _uiState.value = LatestSharedRoutineDetailUiState.Success(
-            _uiState.value.sharedRoutineUiModel,
+            successUiState.sharedRoutineUiModel,
             originDayUiModels
         )
     }
 
-    fun importSharedRoutineToMyRoutines(
-        sharedRoutineUiModel: SharedRoutineUiModel?,
-        dayUiModels: List<DayUiModel>
-    ) {
-        if (sharedRoutineUiModel != null) {
-            viewModelScope.launch {
-                val sharedRoutineId = sharedRoutineUiModel.routineId
-                val routine = sharedRoutineUiModel.toRoutine(
+    fun importSharedRoutineToMyRoutines(): Boolean {
+        if (_uiState.value is LatestSharedRoutineDetailUiState.Error) {
+            return false
+        }
+
+        val successUiState = _uiState.value as LatestSharedRoutineDetailUiState.Success
+
+        if (successUiState.sharedRoutineUiModel == null) {
+            return false
+        } else {
+            viewModelScope.launch(networkExceptionHandler) {
+                val sharedRoutineId = successUiState.sharedRoutineUiModel.routineId
+                val routine = successUiState.sharedRoutineUiModel.toRoutine(
                     createUUID(),
                     userInfo.value?.displayName ?: "",
                     routineRepository.getHigherRoutineOrder()?.plus(1) ?: 0
@@ -140,7 +170,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
                 val exercises = mutableListOf<Exercise>()
                 val exerciseSets = mutableListOf<ExerciseSet>()
 
-                dayUiModels.forEach { dayUiModel ->
+                successUiState.dayUiModels.forEach { dayUiModel ->
                     val dayId = createUUID()
                     days.add(dayUiModel.toDayWithNewIds(routine.routineId, dayId))
                     dayUiModel.exercises.forEach { exerciseUiModel ->
@@ -148,14 +178,20 @@ class SharedRoutineDetailViewModel @Inject constructor(
                         exercises.add(exerciseUiModel.toExerciseWithNewIds(dayId, exerciseId))
                         exerciseUiModel.exerciseSets.forEach { exerciseSetUiModel ->
                             val exerciseSetId = createUUID()
-                            exerciseSets.add(exerciseSetUiModel.toExerciseSetWithNewIds(exerciseId, exerciseSetId))
+                            exerciseSets.add(
+                                exerciseSetUiModel.toExerciseSetWithNewIds(
+                                    exerciseId,
+                                    exerciseSetId
+                                )
+                            )
                         }
                     }
                 }
                 routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
-                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
                 _navigationEvent.emit(routine.routineId)
+                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
             }
+            return true
         }
     }
 
@@ -171,6 +207,6 @@ sealed class LatestSharedRoutineDetailUiState {
         val dayUiModels: List<DayUiModel>
     ) : LatestSharedRoutineDetailUiState()
 
-    data class Error(val exception: Throwable) : LatestSharedRoutineDetailUiState()
+    data class Error(val state: NetworkState) : LatestSharedRoutineDetailUiState()
 }
 

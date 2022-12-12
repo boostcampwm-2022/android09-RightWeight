@@ -50,7 +50,15 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
                     is LatestSharedRoutineUiState.Success -> {
                         sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
                     }
-                    is LatestSharedRoutineUiState.Error -> Exception()
+                    is LatestSharedRoutineUiState.Error -> {
+                        Snackbar.make(
+                            binding.root,
+                            R.string.wrong_connection,
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            anchorView = binding.guideLineBottom
+                        }.show()
+                    }
                 }
             }
         }
