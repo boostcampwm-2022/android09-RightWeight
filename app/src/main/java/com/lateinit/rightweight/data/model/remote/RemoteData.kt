@@ -95,7 +95,9 @@ data class UserInfoField(
     @SerializedName("selected_routine_id")
     val routineId: StringValue,
     @SerializedName("selected_day_id")
-    val dayId: StringValue
+    val dayId: StringValue,
+    @SerializedName("completed_day_id")
+    val completedDayId: StringValue
 ) : RemoteData()
 
 data class HistoryField(
