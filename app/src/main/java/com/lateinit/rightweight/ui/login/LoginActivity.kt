@@ -14,8 +14,6 @@ import androidx.core.animation.doOnStart
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -25,8 +23,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.ActivityLoginBinding
 import com.lateinit.rightweight.ui.MainActivity
+import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -60,14 +58,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setSplachScreen()
+        setSplashScreen()
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this@LoginActivity, R.layout.activity_login)
         setLoginButtonListener()
         collectNetworkResponse()
     }
 
-    private fun setSplachScreen(){
+    private fun setSplashScreen(){
         installSplashScreen().setOnExitAnimationListener{ splashScreenViewProvider ->
             ObjectAnimator.ofFloat(splashScreenViewProvider.view, View.ALPHA, 1f, 0f).run {
                 interpolator = AnticipateInterpolator()
@@ -88,7 +86,6 @@ class LoginActivity : AppCompatActivity() {
             moveToHomeActivity(true)
         }
     }
-
 
     private fun setLoginButtonListener() {
         binding.buttonGoogleLogin.setOnClickListener {
@@ -113,26 +110,24 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun collectNetworkResponse() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                loginViewModel.networkResult.collect { networkResult ->
-                    when (networkResult) {
-                        NetworkState.NO_ERROR -> {}
-                        NetworkState.BAD_INTERNET -> {
-                            Snackbar.make(binding.root, "인터넷 상태 나쁨", Snackbar.LENGTH_LONG).show()
-                        }
-                        NetworkState.PARSE_ERROR -> {
-                            Snackbar.make(binding.root, "파싱 오류", Snackbar.LENGTH_LONG).show()
-                        }
-                        NetworkState.WRONG_CONNECTION -> {
-                            Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG).show()
-                        }
-                        NetworkState.OTHER_ERROR -> {
-                            Snackbar.make(binding.root, "예상치 못한 오류", Snackbar.LENGTH_LONG).show()
-                        }
-                        NetworkState.SUCCESS -> {
-                            moveToHomeActivity(false)
-                        }
+        collectOnLifecycle(Lifecycle.State.CREATED) {
+            loginViewModel.networkResult.collect { networkResult ->
+                when (networkResult) {
+                    NetworkState.NO_ERROR -> {}
+                    NetworkState.BAD_INTERNET -> {
+                        Snackbar.make(binding.root, "인터넷 상태 나쁨", Snackbar.LENGTH_LONG).show()
+                    }
+                    NetworkState.PARSE_ERROR -> {
+                        Snackbar.make(binding.root, "파싱 오류", Snackbar.LENGTH_LONG).show()
+                    }
+                    NetworkState.WRONG_CONNECTION -> {
+                        Snackbar.make(binding.root, "인터넷 연결 오류", Snackbar.LENGTH_LONG).show()
+                    }
+                    NetworkState.OTHER_ERROR -> {
+                        Snackbar.make(binding.root, "예상치 못한 오류", Snackbar.LENGTH_LONG).show()
+                    }
+                    NetworkState.SUCCESS -> {
+                        moveToHomeActivity(false)
                     }
                 }
             }

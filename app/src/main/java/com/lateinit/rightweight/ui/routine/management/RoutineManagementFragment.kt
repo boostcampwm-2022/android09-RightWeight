@@ -99,7 +99,7 @@ class RoutineManagementFragment : Fragment() {
     }
 
     private fun collectRoutines() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.routineUiModels.collect {
                 routineAdapter.submitList(it)
             }

@@ -48,9 +48,14 @@ class DetailExerciseAdapter(
             this.exerciseUiModel = exerciseUiModel
             binding.exerciseUiModel = exerciseUiModel
 
-            binding.recyclerViewSet.adapter = detailExerciseSetAdapter
+            binding.recyclerViewSet.apply {
+                adapter = detailExerciseSetAdapter
+                itemAnimator = null
+            }
             val exerciseSets = exerciseUiModel.exerciseSets
             detailExerciseSetAdapter.submitList(exerciseSets)
+
+            binding.executePendingBindings()
         }
     }
 

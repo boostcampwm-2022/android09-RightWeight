@@ -56,18 +56,24 @@ class SharedRoutineDetailFragment : Fragment() {
             RoutineDayAdapter { position ->
                 viewModel.clickDay(position)
             }
-        binding.recyclerViewDay.adapter = routineDayAdapter
+        binding.recyclerViewDay.apply {
+            adapter = routineDayAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setExerciseAdapter() {
         exerciseAdapter = DetailExerciseAdapter { position ->
             viewModel.clickExercise(position)
         }
-        binding.recyclerViewExercise.adapter = exerciseAdapter
+        binding.recyclerViewExercise.apply {
+            adapter = exerciseAdapter
+            itemAnimator = null
+        }
     }
 
     private fun setSharedRoutineDetailCollect() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
                     is LatestSharedRoutineDetailUiState.Success -> {
@@ -99,7 +105,7 @@ class SharedRoutineDetailFragment : Fragment() {
     }
 
     private fun handleNavigationEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.navigationEvent.collect { 
                 setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()

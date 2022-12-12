@@ -20,6 +20,7 @@ import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.routine.RoutineUiModel
 import com.lateinit.rightweight.util.DEFAULT_AUTHOR_NAME
+import com.lateinit.rightweight.util.DEFAULT_ROUTINE_ID
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 import com.lateinit.rightweight.util.createRandomUUID
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -355,7 +356,6 @@ class RoutineEditorViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_EXERCISE_TITLE = ""
-        private const val DEFAULT_ROUTINE_ID = ""
         private const val MAX_DAY_SIZE = 10
         private const val MAX_EXERCISE_SIZE = 10
         private const val MAX_EXERCISE_SET_SIZE = 10

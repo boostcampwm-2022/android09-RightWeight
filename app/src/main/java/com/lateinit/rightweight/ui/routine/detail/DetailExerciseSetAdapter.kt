@@ -27,6 +27,7 @@ class DetailExerciseSetAdapter :
 
         fun bind(exerciseSetUiModel: ExerciseSetUiModel) {
             binding.exerciseSetUiModel = exerciseSetUiModel
+            binding.executePendingBindings()
         }
     }
 

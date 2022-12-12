@@ -147,7 +147,7 @@ class RoutineEditorFragment : Fragment() {
     }
 
     private fun setRoutineSaveButtonEvent() {
-        collectOnLifecycle {
+        viewLifecycleOwner.collectOnLifecycle {
             viewModel.isPossibleSaveRoutine.collect {
                 when (it) {
                     RoutineSaveState.SUCCESS -> {
