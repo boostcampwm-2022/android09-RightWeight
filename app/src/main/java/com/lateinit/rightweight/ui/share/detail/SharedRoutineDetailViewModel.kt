@@ -97,7 +97,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
         }
     }
 
-    private fun initClickedDay(successUiState:LatestSharedRoutineDetailUiState.Success) {
+    private fun initClickedDay(successUiState: LatestSharedRoutineDetailUiState.Success) {
         val originDayUiModels = successUiState.dayUiModels.toMutableList()
         originDayUiModels[FIRST_DAY_POSITION] =
             originDayUiModels[FIRST_DAY_POSITION].copy(selected = true)
@@ -110,7 +110,8 @@ class SharedRoutineDetailViewModel @Inject constructor(
 
     fun clickDay(dayPosition: Int) {
         if (_currentDayPosition.value == dayPosition
-            || _uiState.value is LatestSharedRoutineDetailUiState.Error) return
+            || _uiState.value is LatestSharedRoutineDetailUiState.Error
+        ) return
 
         val successUiState = _uiState.value as LatestSharedRoutineDetailUiState.Success
         val originDayUiModels = successUiState.dayUiModels.toMutableList()
@@ -128,7 +129,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
     }
 
     fun clickExercise(exercisePosition: Int) {
-        if(_uiState.value is LatestSharedRoutineDetailUiState.Error) return
+        if (_uiState.value is LatestSharedRoutineDetailUiState.Error) return
 
         val successUiState = _uiState.value as LatestSharedRoutineDetailUiState.Success
         val nowDayPosition = _currentDayPosition.value ?: return

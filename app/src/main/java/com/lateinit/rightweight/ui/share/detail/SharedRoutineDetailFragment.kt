@@ -86,13 +86,12 @@ class SharedRoutineDetailFragment : Fragment() {
                         setCurrentDayPositionObserve(uiState.dayUiModels)
 
                         binding.buttonRoutineImport.setOnClickListener {
-                            if(uiState.sharedRoutineUiModel != null){
+                            if (uiState.sharedRoutineUiModel != null) {
                                 viewModel.importSharedRoutineToMyRoutines(
                                     uiState.sharedRoutineUiModel,
                                     uiState.dayUiModels
                                 )
-                            }
-                            else{
+                            } else {
                                 Snackbar.make(
                                     binding.root,
                                     R.string.none_routine,
@@ -129,7 +128,7 @@ class SharedRoutineDetailFragment : Fragment() {
 
     private fun handleNavigationEvent() {
         viewLifecycleOwner.collectOnLifecycle {
-            viewModel.navigationEvent.collect { 
+            viewModel.navigationEvent.collect {
                 setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()
             }
