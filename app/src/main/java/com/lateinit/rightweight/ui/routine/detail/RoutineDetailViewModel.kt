@@ -89,7 +89,6 @@ class RoutineDetailViewModel @Inject constructor(
     fun getRoutine(routineId: String) {
         viewModelScope.launch {
             val routineWithDays = routineRepository.getRoutineWithDaysByRoutineId(routineId)
-
             _routineUiModel.value = routineWithDays.routine.toRoutineUiModel()
             _dayUiModels.value = routineWithDays.days.mapIndexed { index, dayWithExercise ->
                 dayWithExercise.day.toDayUiModel(index, dayWithExercise.exercises)
@@ -212,7 +211,8 @@ class RoutineDetailViewModel @Inject constructor(
         commitItems.add(
             WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${routineId}")
         )
-        val dayIds = sharedRoutineRepository.getChildrenDocumentName("shared_routine/$routineId/day")
+        val dayIds =
+            sharedRoutineRepository.getChildrenDocumentName("shared_routine/$routineId/day")
         deleteDays(routineId, dayIds)
         sharedRoutineRepository.commitTransaction(commitItems)
     }
@@ -227,7 +227,8 @@ class RoutineDetailViewModel @Inject constructor(
             commitItems.add(
                 WriteModelData(delete = "${WriteModelData.defaultPath}/shared_routine/${path}")
             )
-            val exerciseIds = sharedRoutineRepository.getChildrenDocumentName("shared_routine/$path/exercise")
+            val exerciseIds =
+                sharedRoutineRepository.getChildrenDocumentName("shared_routine/$path/exercise")
             deleteExercises(path, exerciseIds)
         }
     }

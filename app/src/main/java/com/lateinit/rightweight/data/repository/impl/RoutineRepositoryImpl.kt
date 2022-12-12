@@ -94,7 +94,13 @@ class RoutineRepositoryImpl @Inject constructor(
                 )
             }
         }
-        routineLocalDataSource.restoreRoutines(routines,days,exercises,exerciseSets)
+
+        routineLocalDataSource.restoreRoutines(
+            routines.sortedBy { it.order },
+            days.sortedBy { it.order },
+            exercises.sortedBy { it.order },
+            exerciseSets.sortedBy { it.order }
+        )
     }
 
     override fun getAllRoutines(): Flow<List<Routine>> {

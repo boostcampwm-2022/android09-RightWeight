@@ -76,7 +76,11 @@ class HistoryRepositoryImpl @Inject constructor(
                 historyRemoteDatasource.getHistoryExerciseSets(path)
             )
         }
-        historyLocalDataSource.restoreHistory(histories,historyExercises,historySets)
+        historyLocalDataSource.restoreHistory(
+            histories,
+            historyExercises.sortedBy { it.order },
+            historySets.sortedBy { it.order }
+        )
     }
 
     override fun getHistoryByDate(localDate: LocalDate): Flow<History> {
