@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun restore() {
-        if(isLoginBefore.not()){
+        if (isLoginBefore.not()) {
             viewModel.restore()
         }
     }
@@ -205,7 +205,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     logout()
                 } else {
                     Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
-                        .show()
+                        .apply {
+                            anchorView = binding.bottomNavigation
+                        }.show()
                 }
             }
         }
@@ -237,13 +239,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         binding.root,
                         R.string.success_backup,
                         Snackbar.LENGTH_LONG
-                    ).show()
+                    ).apply {
+                        anchorView = binding.bottomNavigation
+                    }.show()
                 } else {
                     Snackbar.make(
                         binding.root,
                         R.string.wrong_connection,
                         Snackbar.LENGTH_LONG
-                    ).show()
+                    ).apply {
+                        anchorView = binding.bottomNavigation
+                    }.show()
                 }
             }
         }
