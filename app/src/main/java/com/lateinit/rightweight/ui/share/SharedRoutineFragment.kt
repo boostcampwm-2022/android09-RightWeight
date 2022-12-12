@@ -44,11 +44,17 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
         sharedRoutinePagingAdapter = SharedRoutinePagingAdapter(this)
         binding.recyclerViewSharedRoutines.adapter = sharedRoutinePagingAdapter
 
+        binding.swipeRefreshLayoutSharedRoutines.setOnRefreshListener {
+            sharedRoutinePagingAdapter.refresh()
+        }
+
         viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
                 when (uiState) {
                     is LatestSharedRoutineUiState.Success -> {
                         sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
+                        binding.swipeRefreshLayoutSharedRoutines.isRefreshing = false
+                        binding.recyclerViewSharedRoutines.smoothScrollToPosition(0)
                     }
                     is LatestSharedRoutineUiState.Error -> {
                         Snackbar.make(
