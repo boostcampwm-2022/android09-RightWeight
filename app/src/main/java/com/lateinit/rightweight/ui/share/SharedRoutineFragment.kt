@@ -1,6 +1,7 @@
 package com.lateinit.rightweight.ui.share
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,11 +47,20 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
         viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
+                Log.d("uiState", uiState.toString())
                 when (uiState) {
                     is LatestSharedRoutineUiState.Success -> {
                         sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
                     }
-                    is LatestSharedRoutineUiState.Error -> Exception()
+                    is LatestSharedRoutineUiState.Error -> {
+                        Snackbar.make(
+                            binding.root,
+                            R.string.wrong_connection,
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            anchorView = binding.guideLineBottom
+                        }.show()
+                    }
                 }
             }
         }
