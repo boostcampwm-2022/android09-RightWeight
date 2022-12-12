@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.ui.share.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +78,6 @@ class SharedRoutineDetailFragment : Fragment() {
     private fun setSharedRoutineDetailCollect() {
         viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
-                Log.d("uiState", uiState.toString())
                 when (uiState) {
                     is LatestSharedRoutineDetailUiState.Success -> {
                         binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel

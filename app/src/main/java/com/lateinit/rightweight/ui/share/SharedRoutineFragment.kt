@@ -1,7 +1,6 @@
 package com.lateinit.rightweight.ui.share
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +46,6 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
 
         viewLifecycleOwner.collectOnLifecycle {
             viewModel.uiState.collect { uiState ->
-                Log.d("uiState", uiState.toString())
                 when (uiState) {
                     is LatestSharedRoutineUiState.Success -> {
                         sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
