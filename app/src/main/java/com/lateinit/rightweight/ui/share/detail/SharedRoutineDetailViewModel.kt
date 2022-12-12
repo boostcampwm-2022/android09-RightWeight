@@ -45,7 +45,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
     val userInfo = userRepository.getUser().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _uiState = MutableStateFlow<LatestSharedRoutineDetailUiState>(
-        LatestSharedRoutineDetailUiState.Success(null, mutableListOf())
+        LatestSharedRoutineDetailUiState.Success(null, emptyList())
     )
     val uiState: StateFlow<LatestSharedRoutineDetailUiState> = _uiState
 
@@ -65,9 +65,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
     }
 
     private fun sendNetworkResultEvent(state: NetworkState) {
-        viewModelScope.launch {
-            _uiState.value = LatestSharedRoutineDetailUiState.Error(state)
-        }
+        _uiState.value = LatestSharedRoutineDetailUiState.Error(state)
     }
 
 
