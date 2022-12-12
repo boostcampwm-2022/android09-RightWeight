@@ -6,8 +6,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.lateinit.rightweight.data.api.RoutineApiService
-import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
+import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.data.database.entity.SharedRoutine
 import com.lateinit.rightweight.data.mapper.local.toSharedRoutine
 import com.lateinit.rightweight.data.model.remote.FiledReferenceData
@@ -134,10 +134,7 @@ class SharedRoutineRemoteMediator(
     }
 
     companion object {
-        const val INIT_MODIFIED_DATE_FLAG = "9999-1-1T1:1:1.1Z"
-        const val INIT_SHARED_COUNT_FLAG = "999999999"
+        const val INIT_MODIFIED_DATE_FLAG = "9999-12-31T23:59:59.9Z"
+        const val INIT_SHARED_COUNT_FLAG = Int.MAX_VALUE.toString()
     }
-
 }
-
-
