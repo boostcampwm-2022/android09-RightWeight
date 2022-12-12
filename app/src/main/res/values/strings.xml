@@ -67,6 +67,7 @@
     <string name="stopwatch">stopwatch start and pause</string>
     <string name="profile_image_description">프로필 이미지</string>
     <string name="wrong_connection">인터넷 연결을 확인해주세요.</string>
+    <string name="none_routine">가져올 루틴이 없습니다.</string>
     <string name="success_save_routine">루틴이 저장되었습니다.</string>
     <string name="routine_title_empty">루틴명을 입력해주세요.</string>
     <string name="routine_description_empty">루틴 설명을 입력해주세요.</string>
