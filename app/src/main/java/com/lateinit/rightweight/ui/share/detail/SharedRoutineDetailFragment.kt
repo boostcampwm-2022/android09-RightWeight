@@ -92,6 +92,7 @@ class SharedRoutineDetailFragment : Fragment() {
                         ).apply {
                             anchorView = binding.guideLineBottom
                         }.show()
+                        findNavController().navigateUp()
                     }
                 }
             }
