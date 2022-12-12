@@ -2,7 +2,6 @@ package com.lateinit.rightweight.ui.share.detail
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -146,7 +145,6 @@ class SharedRoutineDetailFragment : Fragment() {
         viewLifecycleOwner.collectOnLifecycle {
             val textViewLoading = loadingDialog.findViewById<TextView>(R.id.text_vitw_loading)
             viewModel.loadingState.collect { state ->
-                Log.d("loadingState", "$state")
                 when (state) {
                     LoadingState.GET -> {
                         textViewLoading.setText(R.string.get_loading_message)
