@@ -89,6 +89,7 @@ class MainViewModel @Inject constructor(
 
     fun backup() {
         viewModelScope.launch() {
+            sendNetworkResultEvent(NetworkState.LOADING)
             backupUserInfo()
             backupMyRoutine()
             backupHistory()
@@ -99,6 +100,7 @@ class MainViewModel @Inject constructor(
     fun restore(){
         val userId = userInfo.value?.userId ?: return
         viewModelScope.launch(networkExceptionHandler) {
+            sendNetworkResultEvent(NetworkState.LOADING)
             val userInfoInServer = userRepository.restoreUserInfo(userId)
             if(userInfoInServer != null){
                 restoreRoutine()
@@ -109,6 +111,7 @@ class MainViewModel @Inject constructor(
                     userInfoInServer.completedDayId.value
                 )
             }
+            sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
 
