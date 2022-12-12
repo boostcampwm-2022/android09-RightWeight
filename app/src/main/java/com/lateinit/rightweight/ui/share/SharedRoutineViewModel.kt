@@ -42,6 +42,12 @@ class SharedRoutineViewModel @Inject constructor(
         getSharedRoutinesByPaging()
     }
 
+    private fun sendNetworkResultEvent(state: NetworkState) {
+        viewModelScope.launch {
+            _uiState.value = LatestSharedRoutineUiState.Error(state)
+        }
+    }
+
     private fun getSharedRoutinesByPaging() {
         viewModelScope.launch(networkExceptionHandler) {
             sharedRoutineRepository.getSharedRoutinesByPaging().cachedIn(this)
@@ -58,12 +64,6 @@ class SharedRoutineViewModel @Inject constructor(
         getSharedRoutinesByPaging()
         viewModelScope.launch {
             sharedRoutineRepository.setSharedRoutineSortType(sortTypeUiModel.toSharedRoutineSortType())
-        }
-    }
-
-    private fun sendNetworkResultEvent(state: NetworkState) {
-        viewModelScope.launch {
-            _uiState.value = LatestSharedRoutineUiState.Error(state)
         }
     }
 
