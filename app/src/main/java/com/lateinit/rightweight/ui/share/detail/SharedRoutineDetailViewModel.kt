@@ -155,7 +155,7 @@ class SharedRoutineDetailViewModel @Inject constructor(
         dayUiModels: List<DayUiModel>
     ) {
         if (sharedRoutineUiModel != null) {
-            viewModelScope.launch {
+            viewModelScope.launch(networkExceptionHandler) {
                 val sharedRoutineId = sharedRoutineUiModel.routineId
                 val routine = sharedRoutineUiModel.toRoutine(
                     createUUID(),
@@ -184,8 +184,8 @@ class SharedRoutineDetailViewModel @Inject constructor(
                     }
                 }
                 routineRepository.insertRoutine(routine, days, exercises, exerciseSets)
-                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
                 _navigationEvent.emit(routine.routineId)
+                sharedRoutineRepository.increaseSharedCount(sharedRoutineId)
             }
         }
     }
