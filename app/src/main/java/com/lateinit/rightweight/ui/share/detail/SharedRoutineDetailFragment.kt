@@ -51,6 +51,7 @@ class SharedRoutineDetailFragment : Fragment() {
         setRoutineDayAdapter()
         setExerciseAdapter()
         setSharedRoutineDetailCollect()
+        setButtonRoutineImportOnClickListener()
         handleNavigationEvent()
     }
 
@@ -84,24 +85,6 @@ class SharedRoutineDetailFragment : Fragment() {
                         binding.sharedRoutineUiModel = uiState.sharedRoutineUiModel
                         routineDayAdapter.submitList(uiState.dayUiModels)
                         setCurrentDayPositionObserve(uiState.dayUiModels)
-
-                        binding.buttonRoutineImport.setOnClickListener {
-                            if (uiState.sharedRoutineUiModel != null) {
-                                viewModel.importSharedRoutineToMyRoutines(
-                                    uiState.sharedRoutineUiModel,
-                                    uiState.dayUiModels
-                                )
-                            } else {
-                                Snackbar.make(
-                                    binding.root,
-                                    R.string.none_routine,
-                                    Snackbar.LENGTH_LONG
-                                ).apply {
-                                    anchorView = binding.guideLineBottom
-                                }.show()
-                            }
-
-                        }
                     }
                     is LatestSharedRoutineDetailUiState.Error -> {
                         Snackbar.make(
@@ -113,6 +96,20 @@ class SharedRoutineDetailFragment : Fragment() {
                         }.show()
                     }
                 }
+            }
+        }
+    }
+
+    private fun setButtonRoutineImportOnClickListener() {
+        binding.buttonRoutineImport.setOnClickListener {
+            if (viewModel.importSharedRoutineToMyRoutines().not()) {
+                Snackbar.make(
+                    binding.root,
+                    R.string.none_routine,
+                    Snackbar.LENGTH_LONG
+                ).apply {
+                    anchorView = binding.guideLineBottom
+                }.show()
             }
         }
     }
