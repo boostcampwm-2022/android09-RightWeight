@@ -17,8 +17,8 @@
             style="@style/Text.Large.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="116dp"
             android:text="@string/app_name"
+            app:layout_constraintBottom_toTopOf="@id/image_view_right_weight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,23 +27,23 @@
             android:id="@+id/image_view_right_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="111dp"
+            android:contentDescription="@string/app_icon_image"
+
             android:src="@drawable/img_right_weight"
+            app:layout_constraintBottom_toTopOf="@id/button_google_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_view_title"
-            android:contentDescription="@string/app_icon_image"/>
+            app:layout_constraintTop_toBottomOf="@id/text_view_title" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/button_google_login"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="44dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="117dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginHorizontal="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_view_right_weight" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
