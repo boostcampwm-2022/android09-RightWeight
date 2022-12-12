@@ -62,6 +62,7 @@ class RoutineEditorFragment : Fragment() {
         setDayExercisesObserve()
         setBackStackEvent()
         setRoutineSaveButtonEvent()
+        setAddDayButtonClickListener()
     }
 
     private fun setBinding() {
@@ -71,29 +72,19 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setRoutineDayAdapter() {
         routineDayAdapter = RoutineDayAdapter { position ->
-            setDayFocus(position)
+            viewModel.clickDay(position)
+            val centerSmoothScroller =
+                CenterSmoothScroller(binding.recyclerViewDay.context)
+            centerSmoothScroller.targetPosition = position
+            binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
         }
         binding.recyclerViewDay.adapter = routineDayAdapter
         binding.recyclerViewDay.itemAnimator = null
     }
 
-    private fun setDayFocus(position: Int) {
-        viewModel.clickDay(position)
-        val centerSmoothScroller =
-            CenterSmoothScroller(binding.recyclerViewDay.context)
-        centerSmoothScroller.targetPosition = position
-        binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
-    }
-
     private fun setRoutineDaysObserve() {
         viewModel.days.observe(viewLifecycleOwner) {
-            val lastListSize = routineDayAdapter.currentList.size
             routineDayAdapter.submitList(it)
-            if (lastListSize < it.size) {
-                setDayFocus(it.size - 1)
-            } else if (lastListSize > it.size) {
-                setDayFocus(0)
-            }
         }
     }
 
@@ -134,10 +125,15 @@ class RoutineEditorFragment : Fragment() {
 
     private fun setDayExercisesObserve() {
         viewModel.dayExercises.observe(viewLifecycleOwner) {
-            val lastListSize = exerciseAdapter.currentList.size
             exerciseAdapter.submitList(it)
-            if (lastListSize < it.size) {
-                binding.nestedScrollViewRoutineEditor.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+    private fun setAddDayButtonClickListener() {
+        binding.buttonAddDay.setOnClickListener {
+            viewModel.addDay()
+            if (routineDayAdapter.itemCount != 0) {
+                binding.recyclerViewDay.smoothScrollToPosition(routineDayAdapter.itemCount)
             }
         }
     }
