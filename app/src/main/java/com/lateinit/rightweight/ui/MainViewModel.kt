@@ -19,6 +19,7 @@ import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toRoutineUiModel
+import com.lateinit.rightweight.ui.model.LoadingState
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryExerciseUiModel
 import com.lateinit.rightweight.ui.model.history.HistoryUiModel
@@ -49,6 +50,9 @@ class MainViewModel @Inject constructor(
 
     private val _networkState = MutableSharedFlow<NetworkState>()
     val networkState = _networkState.asSharedFlow()
+
+    private val _loadingState = MutableSharedFlow<LoadingState>()
+    val loadingState = _loadingState.asSharedFlow()
 
     private val _deleteEvent = MutableSharedFlow<Boolean>()
     val deleteEvent = _deleteEvent.asSharedFlow()
@@ -85,14 +89,19 @@ class MainViewModel @Inject constructor(
 
     private suspend fun sendNetworkResultEvent(state: NetworkState) {
         _networkState.emit(state)
+        if (state != NetworkState.SUCCESS) {
+            _loadingState.emit(LoadingState.FAIL)
+        }
     }
 
     fun backup() {
         viewModelScope.launch(networkExceptionHandler) {
+            _loadingState.emit(LoadingState.BACKUP)
             backupUserInfo()
             backupMyRoutine()
             backupHistory()
             sendNetworkResultEvent(NetworkState.SUCCESS)
+            _loadingState.emit(LoadingState.NONE)
         }
     }
 
@@ -101,6 +110,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(networkExceptionHandler) {
             val userInfoInServer = userRepository.restoreUserInfo(userId)
             if (userInfoInServer != null) {
+                _loadingState.emit(LoadingState.RESTORE)
                 restoreRoutine()
                 restoreHistory(userId)
                 restoreUserInfo(
@@ -108,6 +118,7 @@ class MainViewModel @Inject constructor(
                     userInfoInServer.dayId.value,
                     userInfoInServer.completedDayId.value
                 )
+                _loadingState.emit(LoadingState.NONE)
             }
         }
     }

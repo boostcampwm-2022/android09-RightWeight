@@ -1,5 +1,6 @@
 package com.lateinit.rightweight.ui
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -9,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -36,8 +38,10 @@ import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.BACKUP_USER_INFO_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.LOGOUT_DIALOG_TAG
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.WITHDRAW_DIALOG_TAG
+import com.lateinit.rightweight.ui.dialog.LoadingDialogProvider
 import com.lateinit.rightweight.ui.login.LoginActivity
 import com.lateinit.rightweight.ui.login.NetworkState
+import com.lateinit.rightweight.ui.model.LoadingState
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,6 +66,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
+
+    private val loadingDialog: Dialog by lazy {
+        LoadingDialogProvider().provideLoadingDialog(this, R.layout.dialog_loading)
+    }
+
     private val viewModel: MainViewModel by viewModels()
     private val client: GoogleSignInClient by lazy {
         val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -78,6 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
         isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
 
+        setCollectLoadingState()
         setActionBar()
         setNavController()
         restore()
@@ -250,6 +260,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     ).apply {
                         anchorView = binding.bottomNavigation
                     }.show()
+                }
+            }
+        }
+    }
+
+    private fun setCollectLoadingState() {
+        collectOnLifecycle {
+            val textViewLoading = loadingDialog.findViewById<TextView>(R.id.text_vitw_loading)
+            viewModel.loadingState.collect { state ->
+                when (state) {
+                    LoadingState.RESTORE -> {
+                        textViewLoading.setText(R.string.restore_loading_message)
+                        loadingDialog.show()
+                    }
+                    LoadingState.BACKUP -> {
+                        textViewLoading.setText(R.string.backup_loading_message)
+                        loadingDialog.show()
+                    }
+                    else -> loadingDialog.cancel()
                 }
             }
         }

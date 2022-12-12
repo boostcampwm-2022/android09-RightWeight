@@ -87,4 +87,7 @@
     <string name="backup_message">"지금 상태의 정보를 저장하시겠습니까?"</string>
     <string name="modified_date_sort">"최신순"</string>
     <string name="shared_count_sort">"공유 횟수순"</string>
+    <string name="restore_loading_message">데이터를 복원하는 중 입니다.</string>
+    <string name="backup_loading_message">데이터를 백업하는 중 입니다.</string>
+    <string name="get_loading_message">데이터를 가져오는 중 입니다</string>
 </resources>
