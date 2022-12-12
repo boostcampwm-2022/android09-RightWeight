@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Window
 
+
 class LoadingDialogProvider {
 
     fun provideLoadingDialog(context: Context, loadingLayout: Int): Dialog {
