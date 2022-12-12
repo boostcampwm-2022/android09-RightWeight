@@ -49,6 +49,7 @@ class SharedRoutineFragment : Fragment(), SharedRoutineClickHandler {
                 when (uiState) {
                     is LatestSharedRoutineUiState.Success -> {
                         sharedRoutinePagingAdapter.submitData(uiState.sharedRoutines)
+                        binding.recyclerViewSharedRoutines.smoothScrollToPosition(0)
                     }
                     is LatestSharedRoutineUiState.Error -> {
                         Snackbar.make(
