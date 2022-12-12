@@ -123,7 +123,6 @@
                     style="@style/Text.Small.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->viewModel.addDay()}"
                     android:text="@string/day_add"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="@id/button_remove_day"
