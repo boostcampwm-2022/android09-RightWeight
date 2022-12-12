@@ -17,6 +17,7 @@ import com.lateinit.rightweight.data.repository.UserRepository
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.mapper.toDayUiModel
 import com.lateinit.rightweight.ui.mapper.toSharedRoutineUiModel
+import com.lateinit.rightweight.ui.model.LoadingState
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
 import com.lateinit.rightweight.util.FIRST_DAY_POSITION
@@ -55,27 +56,35 @@ class SharedRoutineDetailViewModel @Inject constructor(
     private val _navigationEvent = MutableSharedFlow<String>()
     val navigationEvent = _navigationEvent.asSharedFlow()
 
-    val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        when (throwable) {
-            is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
-            is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
-            is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
-            else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+    private val _loadingState = MutableSharedFlow<LoadingState>()
+    val loadingState = _loadingState.asSharedFlow()
+
+    private val networkExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch{
+            when (throwable) {
+                is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
+                is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
+                is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+                else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
+            }
         }
     }
 
-    private fun sendNetworkResultEvent(state: NetworkState) {
+    private suspend fun sendNetworkResultEvent(state: NetworkState) {
         _uiState.value = LatestSharedRoutineDetailUiState.Error(state)
+        if(state != NetworkState.SUCCESS){
+            _loadingState.emit(LoadingState.FAIL)
+        }
     }
-
 
     fun getSharedRoutineDetail(routineId: String) {
         viewModelScope.launch(networkExceptionHandler) {
             sharedRoutineRepository.getSharedRoutineDetail(routineId)
                 .collect { sharedRoutineWithDays ->
-
                     if (sharedRoutineWithDays.days.isEmpty()) {
+                        _loadingState.emit(LoadingState.GET)
                         sharedRoutineRepository.requestSharedRoutineDetail(routineId)
+                        _loadingState.emit(LoadingState.NONE)
                     }
 
                     _uiState.value = LatestSharedRoutineDetailUiState.Success(
@@ -91,7 +100,6 @@ class SharedRoutineDetailViewModel @Inject constructor(
                         }
                     }
                 }
-
         }
     }
 

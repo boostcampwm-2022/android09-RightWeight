@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
         isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
 
-        collectLoadingState()
+        setCollectLoadingState()
         setActionBar()
         setNavController()
         restore()
@@ -265,7 +265,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun collectLoadingState() {
+    private fun setCollectLoadingState() {
         collectOnLifecycle {
             val textViewLoading = loadingDialog.findViewById<TextView>(R.id.text_vitw_loading)
             viewModel.loadingState.collect { state ->
@@ -278,8 +278,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         textViewLoading.setText(R.string.backup_loading_message)
                         loadingDialog.show()
                     }
-                    LoadingState.NONE -> loadingDialog.cancel()
-                    LoadingState.FAIL -> loadingDialog.cancel()
+                    else -> loadingDialog.cancel()
                 }
             }
         }

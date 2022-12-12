@@ -1,9 +1,12 @@
 package com.lateinit.rightweight.ui.share.detail
 
+import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -12,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.lateinit.rightweight.R
 import com.lateinit.rightweight.databinding.FragmentSharedRoutineDetailBinding
+import com.lateinit.rightweight.ui.dialog.LoadingDialogProvider
+import com.lateinit.rightweight.ui.model.LoadingState
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
@@ -26,6 +31,10 @@ class SharedRoutineDetailFragment : Fragment() {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
     private val viewModel: SharedRoutineDetailViewModel by viewModels()
+
+    private val loadingDialog: Dialog by lazy {
+        LoadingDialogProvider().provideLoadingDialog(requireContext(), R.layout.dialog_loading)
+    }
 
     private lateinit var routineDayAdapter: RoutineDayAdapter
     private lateinit var exerciseAdapter: DetailExerciseAdapter
@@ -51,7 +60,9 @@ class SharedRoutineDetailFragment : Fragment() {
         setExerciseAdapter()
         setSharedRoutineDetailCollect()
         setButtonRoutineImportOnClickListener()
+        setCollectLoadingState()
         handleNavigationEvent()
+
     }
 
     private fun setRoutineDayAdapter() {
@@ -127,6 +138,22 @@ class SharedRoutineDetailFragment : Fragment() {
             viewModel.navigationEvent.collect {
                 setFragmentResult("routineCopy", bundleOf())
                 findNavController().navigateUp()
+            }
+        }
+    }
+
+    private fun setCollectLoadingState() {
+        viewLifecycleOwner.collectOnLifecycle {
+            val textViewLoading = loadingDialog.findViewById<TextView>(R.id.text_vitw_loading)
+            viewModel.loadingState.collect { state ->
+                Log.d("loadingState", "$state")
+                when (state) {
+                    LoadingState.GET -> {
+                        textViewLoading.setText(R.string.get_loading_message)
+                        loadingDialog.show()
+                    }
+                    else -> loadingDialog.cancel()
+                }
             }
         }
     }

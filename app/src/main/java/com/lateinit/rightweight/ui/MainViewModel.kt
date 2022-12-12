@@ -64,7 +64,6 @@ class MainViewModel @Inject constructor(
             when (throwable) {
                 is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
                 is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
-
                 is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
                 else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
             }
