@@ -1,7 +1,10 @@
 package com.lateinit.rightweight.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.lateinit.rightweight.data.database.intermediate.RoutineWithDays
 import com.lateinit.rightweight.data.mapper.remote.toDayField
 import com.lateinit.rightweight.data.mapper.remote.toExerciseField
@@ -108,6 +111,23 @@ class MainViewModel @Inject constructor(
     fun restore() {
         val userId = userInfo.value?.userId ?: return
         viewModelScope.launch(networkExceptionHandler) {
+            val db = Firebase.firestore
+
+            val user = hashMapOf(
+                "first" to "Ada",
+                "last" to "Lovelace",
+                "born" to 1815
+            )
+
+            db.collection("test")
+                .add(user)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("sdkTest", "DocumentSnapshot added with ID: ${documentReference.id}")
+                }
+                .addOnSuccessListener { e ->
+                    Log.d("sdkTest", "Error adding document")
+                }
+
             val userInfoInServer = userRepository.restoreUserInfo(userId)
             if (userInfoInServer != null) {
                 _loadingState.emit(LoadingState.RESTORE)
