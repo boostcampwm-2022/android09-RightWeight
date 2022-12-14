@@ -17,23 +17,38 @@ import com.lateinit.rightweight.data.database.AppDatabase
 import com.lateinit.rightweight.util.convertTimeStamp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class TimerService : LifecycleService() {
+
     @Inject
     lateinit var db: AppDatabase
-
     private var isTimerRunning = false
     private var timeCount = 0
-    private var timer: Job = lifecycleScope.launchWhenCreated {  }
     private lateinit var notificationManager: NotificationManager
     private lateinit var customNotification: Notification
     private lateinit var notificationLayout: RemoteViews
     private lateinit var pendingIntent: PendingIntent
+
+    override fun onCreate() {
+        super.onCreate()
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            while (true) {
+                if (isTimerRunning.not()) {
+                    continue
+                }
+                timeCount++
+                saveTime()
+                updateNotification()
+                delay(1_000L)
+            }
+        }
+
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         setNotificationDeepLink(intent)
@@ -61,13 +76,11 @@ class TimerService : LifecycleService() {
     private fun operateTimer(intent: Intent?) {
         when (intent?.getStringExtra(MANAGE_ACTION_NAME)) {
             START -> {
-                startTimer()
+                startForeground(NOTIFICATION_ID, customNotification)
+                changeTimerRunningState(true)
             }
             PAUSE -> {
-                pauseTimer()
-            }
-            STOP -> {
-                stopTimer()
+                changeTimerRunningState(false)
             }
             STATUS -> {
                 sendStatus()
@@ -108,7 +121,6 @@ class TimerService : LifecycleService() {
                 .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .build()
-
         }
     }
 
@@ -126,19 +138,6 @@ class TimerService : LifecycleService() {
         notificationManager.createNotificationChannel(notificationChannel)
     }
 
-    private fun startTimer() {
-        startForeground(NOTIFICATION_ID, customNotification)
-        timer = lifecycleScope.launch {
-            while (true) {
-                timeCount++
-                saveTime()
-                updateNotification()
-                delay(1_000L)
-            }
-        }
-        changeTimerRunningState(true)
-    }
-
     private fun saveTime() {
         if (timeCount % 60 == 0) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -153,7 +152,6 @@ class TimerService : LifecycleService() {
     }
 
     private fun updateNotification() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationLayout.setTextViewText(
                 R.id.text_view_notification_timer,
@@ -172,17 +170,6 @@ class TimerService : LifecycleService() {
 
         notificationManager.notify(NOTIFICATION_ID, customNotification)
         sendStatus()
-    }
-
-    private fun pauseTimer() {
-        timer.cancel()
-        changeTimerRunningState(false)
-    }
-
-    private fun stopTimer() {
-        stopForeground(true)
-        timer.cancel()
-        changeTimerRunningState(false)
     }
 
     private fun changeTimerRunningState(isTimerRunning: Boolean) {
@@ -207,7 +194,6 @@ class TimerService : LifecycleService() {
         const val CHANNEL_NAME = "Timer"
         const val START = "start"
         const val PAUSE = "pause"
-        const val STOP = "stop"
         const val STATUS = "status"
         const val TIME_COUNT_INTENT_EXTRA = "time_count"
         const val IS_TIMER_RUNNING_INTENT_EXTRA = "is_timer_running"

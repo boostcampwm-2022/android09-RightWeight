@@ -24,7 +24,6 @@ import com.lateinit.rightweight.service.TimerService.Companion.SET_TIME_COUNT
 import com.lateinit.rightweight.service.TimerService.Companion.START
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
-import com.lateinit.rightweight.service.TimerService.Companion.STOP
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
@@ -212,7 +211,7 @@ class ExerciseFragment : Fragment() {
 
     private fun endExercise() {
         viewModel.endExercise(binding.timeString ?: "")
-        startTimerServiceWithMode(STOP)
+        requireActivity().stopService(timerServiceIntent)
     }
 
     override fun onDestroyView() {
