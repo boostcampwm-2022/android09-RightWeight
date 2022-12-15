@@ -23,6 +23,7 @@ import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.ROUTINE
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.SELECTED_ROUTINE_REMOVE_DIALOG_TAG
 import com.lateinit.rightweight.ui.login.NetworkState
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
+import com.lateinit.rightweight.util.CenterSmoothScroller
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -112,7 +113,13 @@ class RoutineDetailFragment : Fragment() {
 
     private fun setRoutineDayAdapter() {
         routineDayAdapter =
-            RoutineDayAdapter { position -> viewModel.clickDay(position) }
+            RoutineDayAdapter { position ->
+                viewModel.clickDay(position)
+                val centerSmoothScroller =
+                    CenterSmoothScroller(binding.recyclerViewDay.context)
+                centerSmoothScroller.targetPosition = position
+                binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
+            }
         binding.recyclerViewDay.apply {
             adapter = routineDayAdapter
             itemAnimator = null
