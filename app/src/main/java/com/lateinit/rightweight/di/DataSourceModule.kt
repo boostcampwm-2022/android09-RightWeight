@@ -2,6 +2,7 @@ package com.lateinit.rightweight.di
 
 import com.lateinit.rightweight.data.api.AuthApiService
 import com.lateinit.rightweight.data.api.RoutineApiService
+import com.lateinit.rightweight.data.api.TokenApiService
 import com.lateinit.rightweight.data.api.UserApiService
 import com.lateinit.rightweight.data.dataStore.AppPreferencesDataStore
 import com.lateinit.rightweight.data.database.AppDatabase
@@ -40,9 +41,10 @@ class DataSourceModule {
     @Provides
     @Singleton
     fun provideLoginDataSource(
-        api: AuthApiService
+        authApi: AuthApiService,
+        tokenApi: TokenApiService
     ): LoginDataSource {
-        return LoginDataSourceImpl(api)
+        return LoginDataSourceImpl(authApi, tokenApi)
     }
 
     @Provides
