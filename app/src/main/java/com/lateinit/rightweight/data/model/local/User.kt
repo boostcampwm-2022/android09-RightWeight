@@ -9,5 +9,5 @@ data class User(
     val displayName: String,
     val photoUrl: String,
     val idToken: String,
-    val refreshToken: String
+    val oauthIdToken: String
 )
