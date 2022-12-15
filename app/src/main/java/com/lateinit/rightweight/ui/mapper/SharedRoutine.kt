@@ -8,6 +8,7 @@ import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseSetUiModel
 import com.lateinit.rightweight.ui.model.routine.ExerciseUiModel
 import com.lateinit.rightweight.ui.model.shared.SharedRoutineUiModel
+import com.lateinit.rightweight.util.FIRST_DAY_POSITION
 
 fun SharedRoutine.toSharedRoutineUiModel(): SharedRoutineUiModel {
     return SharedRoutineUiModel(
@@ -27,7 +28,7 @@ fun SharedRoutineDay.toDayUiModel(
         dayId = dayId,
         routineId = routineId,
         order = order,
-        selected = false,
+        selected = order == FIRST_DAY_POSITION,
         exercises = exercises.map { it.toExerciseUiModel() }
     )
 }

@@ -19,6 +19,7 @@ import com.lateinit.rightweight.ui.model.LoadingState
 import com.lateinit.rightweight.ui.model.routine.DayUiModel
 import com.lateinit.rightweight.ui.routine.detail.DetailExerciseAdapter
 import com.lateinit.rightweight.ui.routine.editor.RoutineDayAdapter
+import com.lateinit.rightweight.util.CenterSmoothScroller
 import com.lateinit.rightweight.util.collectOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,6 +69,10 @@ class SharedRoutineDetailFragment : Fragment() {
         routineDayAdapter =
             RoutineDayAdapter { position ->
                 viewModel.clickDay(position)
+                val centerSmoothScroller =
+                    CenterSmoothScroller(binding.recyclerViewDay.context)
+                centerSmoothScroller.targetPosition = position
+                binding.recyclerViewDay.layoutManager?.startSmoothScroll(centerSmoothScroller)
             }
         binding.recyclerViewDay.apply {
             adapter = routineDayAdapter
