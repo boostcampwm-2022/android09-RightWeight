@@ -8,5 +8,6 @@ data class User(
     val email: String,
     val displayName: String,
     val photoUrl: String,
-    val idToken: String
+    val idToken: String,
+    val refreshToken: String
 )
