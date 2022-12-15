@@ -44,12 +44,22 @@ class LoginViewModel @Inject constructor(
     private suspend fun saveUser(loginResponse: LoginResponse) {
         with(loginResponse) {
             userRepository.saveUser(
-                User(localId, "", "", "", email, displayName, photoUrl, idToken, refreshToken)
+                User(
+                    localId,
+                    "",
+                    "",
+                    "",
+                    email,
+                    displayName,
+                    photoUrl,
+                    idToken,
+                    oauthIdToken
+                )
             )
         }
     }
 }
 
 enum class NetworkState {
-    NO_ERROR, BAD_INTERNET, PARSE_ERROR, WRONG_CONNECTION, OTHER_ERROR, SUCCESS
+    NO_ERROR, BAD_INTERNET, PARSE_ERROR, WRONG_CONNECTION, OTHER_ERROR, SUCCESS, TOKEN_EXPIRED
 }
