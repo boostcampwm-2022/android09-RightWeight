@@ -73,8 +73,8 @@ class HistoryLocalDataSourceImpl @Inject constructor(
         val newHistorySet = HistorySet(
             setId = historySetId,
             exerciseId = historyExerciseId,
-            weight = "",
-            count = "",
+            weight = "0",
+            count = "0",
             order = maxHistorySetOrder.inc(),
             checked = false
         )

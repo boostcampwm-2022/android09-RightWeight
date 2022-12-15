@@ -44,10 +44,12 @@ class HistorySetAdapter(
             }
 
             binding.editTextSetWeight.setOnFocusChangeListener { _, _ ->
+                historyExerciseSetUiModel.weight = historyExerciseSetUiModel.weight.toInt().toString()
                 historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
 
             binding.editTextSetCount.setOnFocusChangeListener { _, _ ->
+                historyExerciseSetUiModel.count = historyExerciseSetUiModel.count.toInt().toString()
                 historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
 
