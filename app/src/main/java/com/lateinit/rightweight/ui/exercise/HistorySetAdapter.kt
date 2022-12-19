@@ -45,28 +45,26 @@ class HistorySetAdapter(
 
             binding.editTextSetWeight.setOnFocusChangeListener { _, _ ->
                 val lastLength = binding.editTextSetWeight.text.length
-                if(historyExerciseSetUiModel.weight != ""){
+                if(historyExerciseSetUiModel.weight.isNotEmpty()){
                     historyExerciseSetUiModel.weight = historyExerciseSetUiModel.weight.toInt().toString()
                     binding.editTextSetWeight.text.replace(0, lastLength, historyExerciseSetUiModel.weight)
-                    historyEventListener.updateHistorySet(historyExerciseSetUiModel)
                 }
                 else{
                     binding.editTextSetWeight.text.replace(0, lastLength, "0")
-                    historyEventListener.updateHistorySet(historyExerciseSetUiModel)
                 }
+                historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
 
             binding.editTextSetCount.setOnFocusChangeListener { _, _ ->
                 val lastLength = binding.editTextSetCount.text.length
-                if(historyExerciseSetUiModel.count != ""){
+                if(historyExerciseSetUiModel.count.isNotEmpty()){
                     historyExerciseSetUiModel.count = historyExerciseSetUiModel.count.toInt().toString()
                     binding.editTextSetCount.text.replace(0, lastLength, historyExerciseSetUiModel.count)
-                    historyEventListener.updateHistorySet(historyExerciseSetUiModel)
                 }
                 else{
                     binding.editTextSetCount.text.replace(0, lastLength, "0")
-                    historyEventListener.updateHistorySet(historyExerciseSetUiModel)
                 }
+                historyEventListener.updateHistorySet(historyExerciseSetUiModel)
             }
 
             binding.buttonSetRemove.setOnClickListener {
