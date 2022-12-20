@@ -44,11 +44,29 @@ class HistorySetAdapter(
             }
 
             binding.editTextSetWeight.setOnFocusChangeListener { _, _ ->
+                val lastLength = binding.editTextSetWeight.text.length
+
+                historyExerciseSetUiModel.weight = if (historyExerciseSetUiModel.weight.isNotEmpty()) {
+                    historyExerciseSetUiModel.weight.toInt().toString()
+                } else {
+                    "0"
+                }
+
                 historyEventListener.updateHistorySet(historyExerciseSetUiModel)
+                binding.editTextSetWeight.text.replace(0, lastLength, historyExerciseSetUiModel.weight)
             }
 
             binding.editTextSetCount.setOnFocusChangeListener { _, _ ->
+                val lastLength = binding.editTextSetCount.text.length
+
+                historyExerciseSetUiModel.count = if (historyExerciseSetUiModel.count.isNotEmpty()) {
+                    historyExerciseSetUiModel.count.toInt().toString()
+                } else {
+                    "0"
+                }
+
                 historyEventListener.updateHistorySet(historyExerciseSetUiModel)
+                binding.editTextSetCount.text.replace(0, lastLength, historyExerciseSetUiModel.count)
             }
 
             binding.buttonSetRemove.setOnClickListener {
