@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
-        isLoginBefore = intent.extras?.getBoolean("isLoginBefore") ?: false
+        isLoginBefore = intent.extras?.getBoolean("isLoginBefore", true) ?: true
 
         setCollectLoadingState()
         setActionBar()
