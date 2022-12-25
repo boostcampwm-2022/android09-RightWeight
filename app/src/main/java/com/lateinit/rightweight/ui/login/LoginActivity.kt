@@ -129,6 +129,7 @@ class LoginActivity : AppCompatActivity() {
                     NetworkState.SUCCESS -> {
                         moveToHomeActivity(false)
                     }
+                    NetworkState.TOKEN_EXPIRED -> {}
                 }
             }
         }

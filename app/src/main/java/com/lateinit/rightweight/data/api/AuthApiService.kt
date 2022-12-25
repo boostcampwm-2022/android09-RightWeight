@@ -1,7 +1,9 @@
 package com.lateinit.rightweight.data.api
 
+import com.lateinit.rightweight.data.model.remote.DeleteAccountResponse
 import com.lateinit.rightweight.data.model.remote.LoginRequestBody
 import com.lateinit.rightweight.data.model.remote.LoginResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -21,5 +23,6 @@ interface AuthApiService {
     suspend fun deleteAccount(
         @Query("key") key: String,
         @Field("idToken") idToken: String
-    )
+    ): Response<DeleteAccountResponse>
+
 }

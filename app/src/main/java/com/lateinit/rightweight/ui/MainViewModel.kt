@@ -65,6 +65,7 @@ class MainViewModel @Inject constructor(
                 is SocketException -> sendNetworkResultEvent(NetworkState.BAD_INTERNET)
                 is HttpException -> sendNetworkResultEvent(NetworkState.PARSE_ERROR)
                 is UnknownHostException -> sendNetworkResultEvent(NetworkState.WRONG_CONNECTION)
+                is IdTokenExpiredException -> sendNetworkResultEvent(NetworkState.TOKEN_EXPIRED)
                 else -> sendNetworkResultEvent(NetworkState.OTHER_ERROR)
             }
         }
@@ -80,9 +81,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteAccount(key: String) {
-        val userInfo = userInfo.value?.idToken ?: return
+        val idToken = userInfo.value?.idToken ?: return
         viewModelScope.launch(networkExceptionHandler) {
-            loginRepository.deleteAccount(key, userInfo)
+            loginRepository.deleteAccount(key, idToken)
             sendNetworkResultEvent(NetworkState.SUCCESS)
         }
     }
@@ -91,6 +92,20 @@ class MainViewModel @Inject constructor(
         _networkState.emit(state)
         if (state != NetworkState.SUCCESS) {
             _loadingState.emit(LoadingState.FAIL)
+        }
+    }
+
+    fun refreshIdToken(key: String) {
+        val user = userInfo.value ?: return
+
+        viewModelScope.launch {
+            val loginResponse = loginRepository.login(key, user.oauthIdToken)
+            userRepository.saveUser(
+                user.copy(
+                    idToken = loginResponse.idToken,
+                    oauthIdToken = loginResponse.oauthIdToken
+                )
+            )
         }
     }
 
@@ -321,4 +336,5 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    class IdTokenExpiredException(message: String) : Exception(message)
 }

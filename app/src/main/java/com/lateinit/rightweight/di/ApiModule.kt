@@ -3,6 +3,7 @@ package com.lateinit.rightweight.di
 import com.lateinit.rightweight.BuildConfig
 import com.lateinit.rightweight.data.api.AuthApiService
 import com.lateinit.rightweight.data.api.RoutineApiService
+import com.lateinit.rightweight.data.api.TokenApiService
 import com.lateinit.rightweight.data.api.UserApiService
 import dagger.Module
 import dagger.Provides
@@ -41,6 +42,12 @@ class ApiModule {
 
     @Provides
     @Singleton
+    fun provideTokenApiService(@Named("Token") retrofit: Retrofit): TokenApiService {
+        return retrofit.create(TokenApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
     @Named("Auth")
     fun provideAuthRetrofit(
         okHttpClient: OkHttpClient,
@@ -62,6 +69,20 @@ class ApiModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://firestore.googleapis.com/v1/projects/right-weight/databases/(default)/")
+            .addConverterFactory(gsonConverterFactory)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("Token")
+    fun provideTokenRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://securetoken.googleapis.com/v1/")
             .addConverterFactory(gsonConverterFactory)
             .client(okHttpClient)
             .build()

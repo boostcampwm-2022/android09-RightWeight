@@ -1,7 +1,8 @@
 package com.lateinit.rightweight.data.repository.impl
 
-import com.lateinit.rightweight.data.model.remote.LoginResponse
 import com.lateinit.rightweight.data.datasource.remote.LoginDataSource
+import com.lateinit.rightweight.data.model.remote.LoginResponse
+import com.lateinit.rightweight.data.model.remote.RefreshTokenResponse
 import com.lateinit.rightweight.data.repository.LoginRepository
 import javax.inject.Inject
 
@@ -15,5 +16,9 @@ class LoginRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(key: String, idToken: String) {
         loginDataSource.deleteAccount(key, idToken)
+    }
+
+    override suspend fun refreshIdToken(key: String, refreshToken: String): RefreshTokenResponse {
+        return loginDataSource.refreshIdToken(key, refreshToken)
     }
 }
