@@ -24,7 +24,6 @@ import com.lateinit.rightweight.service.TimerService.Companion.SET_TIME_COUNT
 import com.lateinit.rightweight.service.TimerService.Companion.START
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS
 import com.lateinit.rightweight.service.TimerService.Companion.STATUS_ACTION_NAME
-import com.lateinit.rightweight.service.TimerService.Companion.STOP
 import com.lateinit.rightweight.service.TimerService.Companion.TIME_COUNT_INTENT_EXTRA
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment
 import com.lateinit.rightweight.ui.dialog.CommonDialogFragment.Companion.END_EXERCISE_DIALOG_TAG
@@ -51,6 +50,8 @@ class ExerciseFragment : Fragment() {
 
     private var timeCount = 0
     private var isTimerRunning = false
+
+    private lateinit var receiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,11 @@ class ExerciseFragment : Fragment() {
         setBroadcastReceiver()
     }
 
+    override fun onPause() {
+        super.onPause()
+        requireActivity().unregisterReceiver(receiver)
+    }
+
     private fun startServiceWithDeeplink() {
         val pendingIntent = NavDeepLinkBuilder(requireActivity())
             .setGraph(R.navigation.nav_graph)
@@ -103,7 +109,7 @@ class ExerciseFragment : Fragment() {
             addAction(STATUS_ACTION_NAME)
         }
 
-        val receiver = object : BroadcastReceiver() {
+        receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?.let {
                     isTimerRunning = intent.getBooleanExtra(IS_TIMER_RUNNING_INTENT_EXTRA, false)
@@ -212,7 +218,7 @@ class ExerciseFragment : Fragment() {
 
     private fun endExercise() {
         viewModel.endExercise(binding.timeString ?: "")
-        startTimerServiceWithMode(STOP)
+        requireActivity().stopService(timerServiceIntent)
     }
 
     override fun onDestroyView() {
