@@ -211,13 +211,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel.deleteAccount(getString(R.string.google_api_key))
         collectOnLifecycle {
             viewModel.networkState.collect {
-                if (it == NetworkState.SUCCESS) {
-                    logout()
-                } else {
-                    Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
-                        .apply {
-                            anchorView = binding.bottomNavigation
-                        }.show()
+                when (it) {
+                    NetworkState.SUCCESS -> {
+                        logout()
+                    }
+                    NetworkState.TOKEN_EXPIRED -> {
+                        viewModel.refreshIdToken(getString(R.string.google_api_key))
+                        Snackbar.make(binding.root, R.string.retry_message, Snackbar.LENGTH_LONG)
+                            .apply {
+                                anchorView = binding.bottomNavigation
+                            }.show()
+                    }
+                    else -> {
+                        Snackbar.make(binding.root, R.string.wrong_connection, Snackbar.LENGTH_LONG)
+                            .apply {
+                                anchorView = binding.bottomNavigation
+                            }.show()
+                    }
                 }
             }
         }
