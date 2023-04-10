@@ -51,6 +51,8 @@ class ExerciseFragment : Fragment() {
     private var timeCount = 0
     private var isTimerRunning = false
 
+    private lateinit var receiver: BroadcastReceiver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startServiceWithDeeplink()
@@ -79,6 +81,11 @@ class ExerciseFragment : Fragment() {
         setBroadcastReceiver()
     }
 
+    override fun onPause() {
+        super.onPause()
+        requireActivity().unregisterReceiver(receiver)
+    }
+
     private fun startServiceWithDeeplink() {
         val pendingIntent = NavDeepLinkBuilder(requireActivity())
             .setGraph(R.navigation.nav_graph)
@@ -102,7 +109,7 @@ class ExerciseFragment : Fragment() {
             addAction(STATUS_ACTION_NAME)
         }
 
-        val receiver = object : BroadcastReceiver() {
+        receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?.let {
                     isTimerRunning = intent.getBooleanExtra(IS_TIMER_RUNNING_INTENT_EXTRA, false)
